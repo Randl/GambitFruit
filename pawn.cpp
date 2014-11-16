@@ -6,14 +6,9 @@
 #include <cstring>
 
 #include "board.h"
-#include "colour.h"
 #include "hash.h"
 #include "option.h"
 #include "pawn.h"
-#include "piece.h"
-#include "protocol.h"
-#include "square.h"
-#include "util.h"
 
 // constants
 
@@ -52,6 +47,9 @@ static const int BackwardEndgame = 10;
 static const int DoubledOpening[8] = {10,10,10,12,12,10,10,10};
 static const int DoubledEndgame[8] = {18,18,18,20,20,18,18,18};
 
+static const int RamOpening[8] = {0, 20, 18, 12, 6, 4, 2, 0};
+static const int RamEndgame[8] = {0, 20, 18, 18, 16, 12, 6, 0};
+
 static const int IsolatedOpening[8] =		{ 8, 9,10,12,12,10, 9, 8};
 static const int IsolatedOpeningOpen[8] =	{18,19,20,22,22,20,19,18};
 static const int IsolatedEndgame[8] =		{18,19,20,22,22,20,19,18};
@@ -65,6 +63,8 @@ static const int CandidateOpeningMax = 55;
 static const int CandidateEndgameMin = 10;
 static const int CandidateEndgameMax = 110;
 
+static const int PawnIslandsOpening[4] = {0, 4, 8, 16};
+static const int PawnIslandsEndgame[4] = {0, 2, 10, 20};
 // this was moved to eval.cpp
 
 /*
@@ -278,7 +278,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
    int me, opp;
    const sq_t * ptr;
    int sq;
-   bool backward, candidate, doubled, isolated, open, passed;
+    bool backward, candidate, doubled, isolated, open, passed, ram;
    int t1, t2;
    int n;
    int bits;
@@ -289,7 +289,8 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
    uint8 single_file[ColourNb];
    uint8 wsp[ColourNb];
    uint8 badpawns[ColourNb];
-
+    int islands_nb;
+    bool island;
 
    ASSERT(info!=NULL);
    ASSERT(board!=NULL);
@@ -333,12 +334,16 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
    passed_bits[0] = passed_bits[1] = 0;
    single_file[0] = single_file[1] = SquareNone;
 
+    islands_nb = 0;
+
    // features and scoring
 
    for (colour = 0; colour < ColourNb; colour++) {
 
       me = colour;
       opp = COLOUR_OPP(me);
+
+       island = false;
 
       for (ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ptr++) {
 
@@ -362,6 +367,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
          doubled = false;
          isolated = false;
          open = false;
+          ram = false;
          passed = false;
 
          t1 = board->pawn_file[me][file-1] | board->pawn_file[me][file+1];
@@ -455,6 +461,11 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
                }
             }
          }
+         else {
+             //ram // Evgeniy
+             if (board->pawn_file[opp][file] & BitEQ[RANK_OPP(rank + 1)])
+                 ram = true;
+         }
 
          // score
 
@@ -503,12 +514,44 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
             }
          }
 
-         if (candidate) {
+          if (ram) {
+              opening[me] -= RamOpening[rank];
+              endgame[me] -= RamEndgame[rank];
+              switch (file) {
+                  case FileA:
+                      badpawns[me] |= BadPawnFileA;
+                      break;
+                  case FileB:
+                      badpawns[me] |= BadPawnFileB;
+                      break;
+                  case FileC:
+                      badpawns[me] |= BadPawnFileC;
+                      break;
+                  case FileD:
+                      badpawns[me] |= BadPawnFileD;
+                      break;
+                  case FileE:
+                      badpawns[me] |= BadPawnFileE;
+                      break;
+                  case FileF:
+                      badpawns[me] |= BadPawnFileF;
+                      break;
+                  case FileG:
+                      badpawns[me] |= BadPawnFileG;
+                      break;
+                  case FileH:
+                      badpawns[me] |= BadPawnFileH;
+                      break;
+              }
+          }
+          if (candidate) {
             opening[me] += quad(CandidateOpeningMin,CandidateOpeningMax,rank);
             endgame[me] += quad(CandidateEndgameMin,CandidateEndgameMax,rank);
          }
 
-         // this was moved to the dynamic evaluation
+
+
+          // this was moved to the dynamic evaluation
 
 /*
          if (passed) {
@@ -517,6 +560,17 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
          }
 */
       }
+       //islands //Evgeniy
+
+       for (int file = 0; file < 8; ++file) {
+           if (board->pawn_file[me] != 0)
+               island = true;
+           else if (island)
+               ++islands_nb;
+       }
+       opening[me] -= PawnIslandsOpening[islands_nb];
+       endgame[me] -= PawnIslandsEndgame[islands_nb];
+
    }
 
    // store info

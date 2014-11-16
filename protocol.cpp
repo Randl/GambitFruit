@@ -34,7 +34,7 @@
     #define GetProcAddress dlsym
 #endif
 
-#define VERSION "1.0 Beta 5.0"
+#define VERSION "1.0 Beta 5.1"
 
 static const double NormalRatio = 1.0;
 static const double PonderRatio = 1.25;

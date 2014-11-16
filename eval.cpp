@@ -3,21 +3,17 @@
 
 // includes
 
+#include <math.h>
 #include <cstdlib> // for abs()
 
 #include "attack.h"
-#include "board.h"
-#include "colour.h"
 #include "eval.h"
 #include "material.h"
 #include "move.h"
 #include "option.h"
 #include "pawn.h"
-#include "piece.h"
 #include "see.h"
-#include "util.h"
 #include "value.h"
-#include "vector.h"
 
 // macros
 
@@ -155,7 +151,7 @@ static const int KingAttackWeight[16] = {
 static int MobUnit[ColourNb][PieceNb];
 
 static int KingAttackUnit[PieceNb];
-
+static int KingTropismUnit[PieceNb];
 // prototypes
 
 static void eval_draw          (const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int mul[2]);
@@ -245,10 +241,11 @@ void eval_init() {
    MobUnit[Black][BQ] = MobDefense;
    MobUnit[Black][BK] = MobDefense;
 
-   // KingAttackUnit[]
+    // KingAttackUnit[] && KingTropismUnit
 
    for (piece = 0; piece < PieceNb; piece++) {
       KingAttackUnit[piece] = 0;
+       KingTropismUnit[piece] = 0;
    }
 
    KingAttackUnit[WN] = 1;
@@ -260,6 +257,18 @@ void eval_init() {
    KingAttackUnit[BB] = 1;
    KingAttackUnit[BR] = 2;
    KingAttackUnit[BQ] = 4;
+
+    KingTropismUnit[WN] = 2;
+    KingTropismUnit[WB] = 1;
+    KingTropismUnit[WR] = 1;
+    KingTropismUnit[WQ] = 4;
+
+    KingTropismUnit[BN] = 2;
+    KingTropismUnit[BB] = 1;
+    KingTropismUnit[BR] = 1;
+    KingTropismUnit[BQ] = 4;
+
+
 }
 
 // eval()
@@ -280,7 +289,7 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 	/*
 	BitBases
 	*/
-#if defined _WIN32
+
 
 	int total_pieces;
 	int player;
@@ -298,7 +307,6 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 	egbb_piece[0] = _WKING;
 	egbb_piece[1] = _BKING;
 
-#endif	
 	/*
 	End Bitbases
 	*/
@@ -991,8 +999,10 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
    const sq_t * ptr;
    int piece;
    int attack_tot;
+    int dist_total;
    int piece_nb;
    int king_file, king_rank;
+    int piece_file, piece_rank;
 
    ASSERT(board!=NULL);
    ASSERT(mat_info!=NULL);
@@ -1031,9 +1041,9 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 			  }
 		  } 
 	  }
-	
 
-	  if (king_is_safe[White] == false){ 
+
+       if (!king_is_safe[White]) {
 	  
 		  me = White;
 
@@ -1093,7 +1103,7 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 		  } 
 	  }
 
-	  if (king_is_safe[Black] == false){ 
+       if (!king_is_safe[Black]) {
 
 	      me = Black;
 
@@ -1160,12 +1170,25 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 			   } */
             }
 
+
+             //piece distance (tropism) //Evgeniy
+             dist_total = 0;
+
+             for (ptr = &board->piece[opp][1]; (from = *ptr) != SquareNone; ptr++) { // HACK: no king
+
+                 piece = board->square[from];
+
+                 piece_file = SQUARE_FILE(from);
+                 piece_rank = SQUARE_RANK(from);
+
+                 dist_total += 1 / sqrt((piece_rank - king_rank) ^ 2 + (piece_file - king_file) ^ 2) * KingTropismUnit[piece];
+             }
             // scoring
 
             ASSERT(piece_nb>=0&&piece_nb<16);
 
 			op[colour] -= (attack_tot * KingAttackOpening * KingAttackWeight[piece_nb]) / 256;
-				
+             op[colour] -= (dist_total * KingAttackOpening * KingAttackWeight[piece_nb]) / 256;
          }
       }
    
