@@ -466,7 +466,7 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 
       if (SQUARE_COLOUR(wb) != SQUARE_COLOUR(bb)) {
          if (mul[White] == 16) mul[White] = 8; // 1/2
-         if (mul[Black] == 16) mul[Black] = 8; // 1/2
+          if (mul[Black] == 16) mul[Black] = 8; // 1/2  //TODO: less?
       }
    }
 
@@ -1189,6 +1189,8 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 
 			op[colour] -= (attack_tot * KingAttackOpening * KingAttackWeight[piece_nb]) / 256;
              op[colour] -= (dist_total * KingAttackOpening * KingAttackWeight[piece_nb]) / 256;
+
+             //TODO: h7/h2 sac
          }
       }
    
