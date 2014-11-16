@@ -105,6 +105,7 @@ struct search_current_t {
 
 // variables
 
+extern int MAX_THREADS;
 extern search_param_t SearchStack[HeightMax]; // Thomas
 extern search_input_t SearchInput[1];
 extern search_info_t SearchInfo[1];

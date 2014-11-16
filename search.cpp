@@ -7,23 +7,17 @@
 #include <cstring>
 
 #include "attack.h"
-#include "board.h"
 #include "book.h"
-#include "colour.h"
 #include "list.h"
-#include "material.h"
 #include "move.h"
-#include "move_do.h"
 #include "move_gen.h"
 #include "option.h"
-#include "pawn.h"
 #include "protocol.h"
 #include "pv.h"
 #include "search.h"
 #include "search_full.h"
 #include "sort.h"
 #include "trans.h"
-#include "util.h"
 #include "value.h"
 
 // constants
@@ -48,6 +42,7 @@ static const int BadThreshold = 50; // 50
 static const bool UseExtension = true;
 
 // variables
+int MAX_THREADS;
 
 static search_multipv_t save_multipv[MultiPVMax];
 

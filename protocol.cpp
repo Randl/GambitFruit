@@ -15,16 +15,13 @@
 #include "material.h"
 #include "move.h"
 #include "move_do.h"
-#include "move_legal.h"
 #include "option.h"
 #include "pawn.h"
 #include "posix.h"
 #include "protocol.h"
 #include "pst.h"
 #include "search.h"
-#include "search_full.h"
 #include "trans.h"
-#include "util.h"
 
 // constants
 #if defined (_WIN32) || defined(_WIN64)
@@ -108,7 +105,7 @@ static void init() {
 	  //SearchInput->multipv = option_get_int("MultiPV");
 
       load_egbb_library();
-
+       MAX_THREADS = option_get_int("Threads");
       trans_alloc(Trans);
 
       pawn_init();

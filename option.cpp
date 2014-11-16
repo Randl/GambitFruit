@@ -7,7 +7,6 @@
 
 #include "option.h"
 #include "protocol.h"
-#include "util.h"
 
 // types
 
@@ -109,7 +108,7 @@ static option_t Option[] = {
 
    { "Contempt Factor",	true, "0", "spin", "min -1000 max 1000", NULL },
 
-
+        {"Threads", true, "1", "spin", "min 1 max 32", NULL},
 
    { NULL, false, NULL, NULL, NULL, NULL, },
 };
