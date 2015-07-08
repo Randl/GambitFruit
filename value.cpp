@@ -10,7 +10,7 @@
 
 // variables
 
-int_fast32_t ValuePiece[PieceNb];
+std::array<int_fast32_t, PieceNb> ValuePiece;
 
 // functions
 

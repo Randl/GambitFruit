@@ -6,6 +6,7 @@
 
 // includes
 
+#include <array>
 #include "colour.h"
 #include "util.h"
 
@@ -87,14 +88,14 @@ typedef int_fast32_t sq_t;
 
 // "constants"
 
-extern constexpr int_fast32_t SquareFrom64[64];
-extern constexpr int_fast32_t RankMask[ColourNb];
-extern constexpr int_fast32_t PromoteRank[ColourNb];
+extern constexpr std::array<int_fast32_t, 64> SquareFrom64;
+extern constexpr std::array<int_fast32_t, ColourNb> RankMask;
+extern constexpr std::array<int_fast32_t, ColourNb> PromoteRank;
 
 // variables
 
-extern int_fast32_t SquareTo64[SquareNb];
-extern bool SquareIsPromote[SquareNb];
+extern std::array<int_fast32_t, SquareNb> SquareTo64;
+extern std::array<bool, SquareNb> SquareIsPromote;
 
 // functions
 

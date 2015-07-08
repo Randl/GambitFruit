@@ -6,7 +6,8 @@
 
 // includes
 
-#include <cstdint>
+#include <cstdint> 
+#include <array>
 #include "board.h"
 #include "util.h"
 #include "vector.h"
@@ -37,11 +38,11 @@ struct attack_t {
 
 // variables
 
-extern int_fast32_t DeltaIncLine[DeltaNb];
-extern int_fast32_t DeltaIncAll[DeltaNb];
+extern std::array<int_fast32_t, DeltaNb> DeltaIncLine;
+extern std::array<int_fast32_t, DeltaNb> DeltaIncAll;
 
-extern int_fast32_t DeltaMask[DeltaNb];
-extern int_fast32_t IncMask[IncNb];
+extern std::array<int_fast32_t, DeltaNb> DeltaMask; 
+extern std::array<int_fast32_t, IncNb> IncMask;
 
 // functions
 

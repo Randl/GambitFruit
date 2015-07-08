@@ -49,16 +49,16 @@ static const int_fast32_t BackwardOpening = 8;
 static const int_fast32_t BackwardOpeningOpen = 16;
 static const int_fast32_t BackwardEndgame = 10;
 */
-static constexpr int_fast32_t DoubledOpening[8] = {10,10,10,12,12,10,10,10};
-static constexpr int_fast32_t DoubledEndgame[8] = {18,18,18,20,20,18,18,18};
+static constexpr std::array<int_fast32_t, 8> DoubledOpening = {10,10,10,12,12,10,10,10};
+static constexpr std::array<int_fast32_t, 8> DoubledEndgame = {18,18,18,20,20,18,18,18};
 
-static constexpr int_fast32_t IsolatedOpening[8] =		{ 8, 9,10,12,12,10, 9, 8};
-static constexpr int_fast32_t IsolatedOpeningOpen[8] =	{18,19,20,22,22,20,19,18};
-static constexpr int_fast32_t IsolatedEndgame[8] =		{18,19,20,22,22,20,19,18};
+static constexpr std::array<int_fast32_t, 8> IsolatedOpening =		{ 8, 9,10,12,12,10, 9, 8};
+static constexpr std::array<int_fast32_t, 8> IsolatedOpeningOpen =	{18,19,20,22,22,20,19,18};
+static constexpr std::array<int_fast32_t, 8> IsolatedEndgame =		{18,19,20,22,22,20,19,18};
 
-static constexpr int_fast32_t BackwardOpening[8] =		{ 6, 7, 8,10,10, 8, 7, 6};
-static constexpr int_fast32_t BackwardOpeningOpen[8] =	{12,14,16,18,18,16,14,12}; 
-static constexpr int_fast32_t BackwardEndgame[8] =		{ 8, 9,10,12,12,10, 9, 8};
+static constexpr std::array<int_fast32_t, 8> BackwardOpening =		{ 6, 7, 8,10,10, 8, 7, 6};
+static constexpr std::array<int_fast32_t, 8> BackwardOpeningOpen =	{12,14,16,18,18,16,14,12}; 
+static constexpr std::array<int_fast32_t, 8> BackwardEndgame =		{ 8, 9,10,12,12,10, 9, 8};
 
 static constexpr int_fast32_t CandidateOpeningMin = 5;
 static constexpr int_fast32_t CandidateOpeningMax = 55;
@@ -74,26 +74,26 @@ static const int_fast32_t PassedEndgameMin = 20;
 static const int_fast32_t PassedEndgameMax = 140;
 */
 
-static /* const */ int_fast32_t Bonus[RankNb];
+static /* const */ std::array<int_fast32_t, RankNb> Bonus;
 
 // variables
 
-int_fast32_t BitEQ[16];
-int_fast32_t BitLT[16];
-int_fast32_t BitLE[16];
-int_fast32_t BitGT[16];
-int_fast32_t BitGE[16];
+std::array<int_fast32_t, 16> BitEQ;
+std::array<int_fast32_t, 16> BitLT;
+std::array<int_fast32_t, 16> BitLE;
+std::array<int_fast32_t, 16> BitGT;
+std::array<int_fast32_t, 16> BitGE;
 
-int_fast32_t BitFirst[0x100];
-int_fast32_t BitLast[0x100];
-int_fast32_t BitCount[0x100];
-int_fast32_t BitRev[0x100];
+std::array<int_fast32_t, 0x100> BitFirst;
+std::array<int_fast32_t, 0x100> BitLast;
+std::array<int_fast32_t, 0x100> BitCount;
+std::array<int_fast32_t, 0x100> BitRev;
 
 static pawn_t Pawn[1];
 
-static int_fast32_t BitRank1[RankNb];
-static int_fast32_t BitRank2[RankNb];
-static int_fast32_t BitRank3[RankNb];
+static std::array<int_fast32_t, RankNb> BitRank1[RankNb];
+static std::array<int_fast32_t, RankNb> BitRank2[RankNb];
+static std::array<int_fast32_t, RankNb> BitRank3[RankNb];
 
 // prototypes
 

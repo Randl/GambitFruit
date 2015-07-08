@@ -6,6 +6,7 @@
 
 // includes
 
+#include <array>
 #include "util.h"
 
 // constants
@@ -20,7 +21,7 @@ constexpr int_fast32_t StageNb = 2;
 
 // variables
 
-extern int_fast16_t Pst[12][64][StageNb];
+extern std::array<std::array<std::array<int_fast16_t, StageNb>, 64>, 12> Pst;
 
 // functions
 

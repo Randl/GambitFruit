@@ -10,7 +10,7 @@
 
 // variables
 
-int_fast32_t Distance[DeltaNb];
+std::array<int_fast32_t, DeltaNb> Distance;
 
 // functions
 

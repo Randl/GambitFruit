@@ -6,12 +6,13 @@
 
 // includes
 
+#include <array>
 #include "colour.h"
 #include "util.h"
 
-// constexprants
+// constants
 
-constexprexpr int_fast32_t WhitePawnFlag = 1 << 2;
+constexpr int_fast32_t WhitePawnFlag = 1 << 2;
 constexpr int_fast32_t BlackPawnFlag = 1 << 3;
 constexpr int_fast32_t KnightFlag    = 1 << 4;
 constexpr int_fast32_t BishopFlag    = 1 << 5;
@@ -85,25 +86,25 @@ constexpr int_fast32_t BlackKing12   = 11;
 
 typedef int_fast32_t inc_t;
 
-// "constexprants"
+// "constants"
 
-extern constexpr int_fast32_t PawnMake[ColourNb];
-extern constexpr int_fast32_t PieceFrom12[12];
+extern constexpr std::array<int_fast32_t, ColourNb> PawnMake;
+extern constexpr std::array<int_fast32_t, 12> PieceFrom12;
 
-extern constexpr inc_t PawnMoveInc[ColourNb];
+extern constexpr std::array<inc_t, ColourNb> PawnMoveInc;
 
-extern constexpr inc_t KnightInc[8+1];
-extern constexpr inc_t BishopInc[4+1];
-extern constexpr inc_t RookInc[4+1];
-extern constexpr inc_t QueenInc[8+1];
-extern constexpr inc_t KingInc[8+1];
+extern constexpr std::array<inc_t, 8+1> KnightInc;
+extern constexpr std::array<inc_t, 4+1> BishopInc;
+extern constexpr std::array<inc_t, 4+1> RookInc;
+extern constexpr std::array<inc_t, 8+1> QueenInc;
+extern constexpr std::array<inc_t, 8+1> KingInc;
 
 // variables
 
-extern int_fast32_t PieceTo12[PieceNb];
-extern int_fast32_t PieceOrder[PieceNb];
+extern std::array<int_fast32_t, PieceNb> PieceTo12;
+extern std::array<int_fast32_t, PieceNb> PieceOrder;
 
-extern const inc_t * PieceInc[PieceNb];
+extern const std::array<inc_t *, PieceNb> PieceInc[PieceNb];
 
 // functions
 

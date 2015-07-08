@@ -6,6 +6,7 @@
 
 // includes
 
+#include <array>
 #include "util.h"
 
 // "constants"
@@ -24,7 +25,7 @@ constexpr int_fast32_t DeltaOffset = 119;
 
 // variables
 
-extern int_fast32_t Distance[DeltaNb];
+extern std::array<int_fast32_t, DeltaNb> Distance;
 
 // functions
 

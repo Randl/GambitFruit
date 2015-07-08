@@ -5,7 +5,7 @@
 
 #include <cctype>
 #include <cstring>
-
+#include <array>
 #include "attack.h"
 #include "colour.h"
 #include "list.h"
@@ -18,7 +18,7 @@
 
 // constants
 
-static constexpr int_fast32_t PromotePiece[4] = { Knight64, Bishop64, Rook64, Queen64 };
+static constexpr std::array<int_fast32_t, 4> PromotePiece = { Knight64, Bishop64, Rook64, Queen64 };
 
 // functions
 

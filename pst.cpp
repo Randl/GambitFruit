@@ -35,7 +35,7 @@ static constexpr int_fast32_t alt_pawn_opening[64] = {
 	 0, 0, 0,  0,  0, 0, 0, 0
 };*/
 
-static constexpr int_fast32_t alt_pawn_opening[64] = {
+static constexpr std::array<int_fast32_t, 64> alt_pawn_opening = {
 	 0,  0, 0,  0,  0, 0, 0, 0,
     -10,-4, 0, -5, -5, 0,-4,-10,
 	-10,-4, 0,  8,  5, 0,-4,-10,
@@ -46,7 +46,7 @@ static constexpr int_fast32_t alt_pawn_opening[64] = {
 	 0,  0, 0,  0,  0, 0, 0, 0
 };
 
-static constexpr int_fast32_t alt_pawn_endgame[64] = {
+static constexpr std::array<int_fast32_t, 64> alt_pawn_endgame = {
 	 0, 0, 0, 0, 0, 0, 0, 0,
 	-5,-2, 0, 0, 0, 0,-2,-5,
 	-5,-2, 0, 3, 3, 0,-2,-5,
@@ -57,7 +57,7 @@ static constexpr int_fast32_t alt_pawn_endgame[64] = {
 	 0, 0, 0, 0, 0, 0, 0,-5
 };
 
-static constexpr int_fast32_t alt_knight[64] = {
+static constexpr std::array<int_fast32_t, 64> alt_knight = {
 	-20,  0,-10,-10,-10,-10,-10,-20,
 	-10,  0,  0,  3,  3,  0,  0,-10,
 	-10,  0,  5,  5,  5,  5,  0,-10,
@@ -68,7 +68,7 @@ static constexpr int_fast32_t alt_knight[64] = {
 	-20,-10,-10,-10,-10,-10,-10,-20
 };
 
-static constexpr int_fast32_t alt_bishop[64] = {
+static constexpr std::array<int_fast32_t, 64> alt_bishop = {
 	-2,-2,-2,-2,-2,-2,-2,-2,
 	-2, 8, 5, 5, 5, 5, 8,-2,
 	-2, 3, 3, 5, 5, 3, 3,-2,
@@ -108,45 +108,45 @@ static constexpr int_fast32_t KingRankOpening = 10;
 
 // "constants"
 
-static constexpr int_fast32_t PawnFile[8] = {
+static constexpr std::array<int_fast32_t, 8> PawnFile = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr int_fast32_t KnightLine[8] = {
+static constexpr std::array<int_fast32_t, 8> KnightLine = {
    -4, -2, +0, +1, +1, +0, -2, -4,
 };
 
-static constexpr int_fast32_t KnightRank[8] = {
+static constexpr std::array<int_fast32_t, 8> KnightRank = {
    -2, -1, +0, +1, +2, +3, +2, +1,
 };
 
-static constexpr int_fast32_t BishopLine[8] = {
+static constexpr std::array<int_fast32_t, 8> BishopLine = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr int_fast32_t RookFile[8] = {
+static constexpr std::array<int_fast32_t, 8> RookFile = {
    -2, -1, +0, +1, +1, +0, -1, -2,
 };
 
-static constexpr int_fast32_t QueenLine[8] = {
+static constexpr std::array<int_fast32_t, 8> QueenLine = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr int_fast32_t KingLine[8] = {
+static constexpr std::array<int_fast32_t, 8> KingLine = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr int_fast32_t KingFile[8] = {
+static constexpr std::array<int_fast32_t, 8> KingFile = {
    +3, +4, +2, +0, +0, +2, +4, +3,
 };
 
-static constexpr int_fast32_t KingRank[8] = {
+static constexpr std::array<int_fast32_t, 8> KingRank = {
    +1, +0, -2, -3, -4, -5, -6, -7,
 };
 
 // variables
 
-int_fast16_t Pst[12][64][StageNb];
+std::array<std::array<std::array<int_fast16_t, StageNb>, 64>, 12> Pst;
 
 // prototypes
 

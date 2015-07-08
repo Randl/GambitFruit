@@ -4,7 +4,7 @@
 // includes
 
 #include <cstdlib> // for abs()
-
+#include <array>
 #include "attack.h"
 #include "board.h"
 #include "colour.h"
@@ -38,7 +38,7 @@
 #define MAX_PIECES 32
 // constants and variables
 
-constexpr int_fast32_t KnightOutpostMatrix[2][256] = {
+constexpr std::array<std::array<int_fast32_t, 256>, 2> KnightOutpostMatrix = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -88,15 +88,15 @@ static constexpr int_fast32_t MobMove = 1;
 static constexpr int_fast32_t MobAttack = 1;
 static constexpr int_fast32_t MobDefense = 0;
 
-static constexpr int_fast32_t knight_mob[9]  =     {-16,-12,-8,-4, 0, 4, 8, 12, 16 };
-static constexpr int_fast32_t bishop_mob[14] =     {-30,-25,-20,-15,-10,-5, 0, 5, 10, 15, 20, 25, 30, 35 };
-static constexpr int_fast32_t rook_mob_open[15] =  { -14, -12,-10, -8, -6,-4,-2, 0, 2, 4,  6,  8, 10, 12, 14 };
-static constexpr int_fast32_t rook_mob_end[15]  =  { -28, -24,-20,-16,-12,-8,-4, 0, 4, 8, 12, 16, 20, 24, 28 };
-static constexpr int_fast32_t queen_mob_open[27] = {-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
-static constexpr int_fast32_t queen_mob_end[27] =  {-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26 };
+static constexpr std::array<int_fast32_t, 9> knight_mob  =     {-16,-12,-8,-4, 0, 4, 8, 12, 16 };
+static constexpr std::array<int_fast32_t, 14> bishop_mob =     {-30,-25,-20,-15,-10,-5, 0, 5, 10, 15, 20, 25, 30, 35 };
+static constexpr std::array<int_fast32_t, 15> rook_mob_open =  { -14, -12,-10, -8, -6,-4,-2, 0, 2, 4,  6,  8, 10, 12, 14 };
+static constexpr std::array<int_fast32_t, 15> rook_mob_end  =  { -28, -24,-20,-16,-12,-8,-4, 0, 4, 8, 12, 16, 20, 24, 28 };
+static constexpr std::array<int_fast32_t, 27> queen_mob_open = {-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
+static constexpr std::array<int_fast32_t, 27> queen_mob_end =  {-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26 };
 
-static constexpr int_fast32_t pawns_on_bishop_colour_opening[9] = {9,6,3,0,-3,-6,-9,-12,-15};
-static constexpr int_fast32_t pawns_on_bishop_colour_endgame[9] = {12,8,4,0,-4,-8,-12,-16,-20};
+static constexpr std::array<int_fast32_t, 9> pawns_on_bishop_colour_opening = {9,6,3,0,-3,-6,-9,-12,-15};
+static constexpr std::array<int_fast32_t, 9> pawns_on_bishop_colour_endgame = {12,8,4,0,-4,-8,-12,-16,-20};
 
 static constexpr int_fast32_t RookSemiOpenFileOpening = 10;
 static constexpr int_fast32_t RookSemiOpenFileEndgame = 10;
@@ -145,16 +145,16 @@ static constexpr int_fast32_t DefenderDistance = 20;
 
 // "constants"
 
-static constexpr int_fast32_t KingAttackWeight[16] = {
+static constexpr std::array<int_fast32_t, 16> KingAttackWeight = {
    0, 0, 128, 192, 224, 240, 248, 252, 254, 255, 256, 256 ,256, 256, 256, 256,
 };
 
 
 // variables
 
-static int_fast32_t MobUnit[ColourNb][PieceNb];
+static std::array< std::array<int_fast32_t, PieceNb> , ColourNb> MobUnit;
 
-static int_fast32_t KingAttackUnit[PieceNb];
+static std::array<int_fast32_t, PieceNb> KingAttackUnit;
 
 // prototypes
 

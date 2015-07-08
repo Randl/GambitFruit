@@ -6,6 +6,7 @@
 
 // includes
 
+#include <array>
 #include "board.h"
 #include "colour.h"
 #include "util.h"
@@ -46,16 +47,16 @@ struct pawn_info_t {
 
 // variables
 
-extern int_fast32_t BitEQ[16];
-extern int_fast32_t BitLT[16];
-extern int_fast32_t BitLE[16];
-extern int_fast32_t BitGT[16];
-extern int_fast32_t BitGE[16];
+extern std::array<int_fast32_t, 16> BitEQ;
+extern std::array<int_fast32_t, 16> BitLT;
+extern std::array<int_fast32_t, 16> BitLE;
+extern std::array<int_fast32_t, 16> BitGT;
+extern std::array<int_fast32_t, 16> BitGE;
 
-extern int_fast32_t BitFirst[0x100];
-extern int_fast32_t BitLast[0x100];
-extern int_fast32_t BitCount[0x100];
-extern int_fast32_t BitRev[0x100];
+extern std::array<int_fast32_t, 0x100> BitFirst;
+extern std::array<int_fast32_t, 0x100> BitLast;
+extern std::array<int_fast32_t, 0x100> BitCount;
+extern std::array<int_fast32_t, 0x100> BitRev;
 
 // functions
 

@@ -11,9 +11,9 @@
 
 // "constants"
 
-constexpr int_fast32_t PawnMake[ColourNb] = { WhitePawn256, BlackPawn256 };
+constexpr std::array<int_fast32_t, ColourNb> PawnMake = { WhitePawn256, BlackPawn256 };
 
-constexpr int_fast32_t PieceFrom12[12] = {
+constexpr std::array<int_fast32_t, 12> PieceFrom12 = {
    WhitePawn256,   BlackPawn256,
    WhiteKnight256, BlackKnight256,
    WhiteBishop256, BlackBishop256,
@@ -24,36 +24,36 @@ constexpr int_fast32_t PieceFrom12[12] = {
 
 static const char PieceString[12+1] = "PpNnBbRrQqKk";
 
-constexpr inc_t PawnMoveInc[ColourNb] = {
+constexpr std::array<inc_t, ColourNb> PawnMoveInc = {
    +16, -16,
 };
 
-constexpr inc_t KnightInc[8+1] = {
+constexpr std::array<inc_t, 8+1> KnightInc = {
    -33, -31, -18, -14, +14, +18, +31, +33, 0
 };
 
-constexpr inc_t BishopInc[4+1] = {
+constexpr std::array<inc_t, 4+1> BishopInc = {
    -17, -15, +15, +17, 0
 };
 
-constexpr inc_t RookInc[4+1] = {
+constexpr std::array<inc_t, 4+1> RookInc = {
    -16, -1, +1, +16, 0
 };
 
-constexpr inc_t QueenInc[8+1] = {
+constexpr std::array<inc_t, 8+1> QueenInc = {
    -17, -16, -15, -1, +1, +15, +16, +17, 0
 };
 
-constexpr inc_t KingInc[8+1] = {
+constexpr std::array<inc_t, 8+1> KingInc = {
    -17, -16, -15, -1, +1, +15, +16, +17, 0
 };
 
 // variables
 
-int_fast32_t PieceTo12[PieceNb];
-int_fast32_t PieceOrder[PieceNb];
+std::array<int_fast32_t, PieceNb> PieceTo12;
+std::array<int_fast32_t, PieceNb> PieceOrder;
 
-const inc_t * PieceInc[PieceNb];
+std::array<inc_t *, PieceNb> PieceInc[PieceNb];
 
 // functions
 

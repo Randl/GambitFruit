@@ -6,6 +6,7 @@
 
 // includes
 
+#inculde <array>
 #include "util.h"
 
 // constants
@@ -18,7 +19,7 @@ constexpr int_fast32_t RandomNb = 781;
 
 // "constants"
 
-extern constexpr uint_fast64_t Random64[RandomNb];
+extern constexpr std::array<uint_fast64_t, RandomNb> Random64;
 
 // functions
 

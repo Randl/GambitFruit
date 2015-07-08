@@ -3,6 +3,7 @@
 
 // includes
 
+#include <array>
 #include "attack.h"
 #include "board.h"
 #include "colour.h"
@@ -76,14 +77,14 @@ static int_fast32_t PosEvasionQS;
 static int_fast32_t PosCheckQS;
 static int_fast32_t PosCaptureQS;
 
-static int_fast32_t Code[CODE_SIZE];
+static std::array<int_fast32_t, CODE_SIZE> Code;
 
-static uint_fast16_t Killer[HeightMax][KillerNb];
+static std::array<std::array<uint_fast16_t, KillerNb>, HeightMax> Killer;
 
-static fail_high_stats_t FailHighStats[HistorySize];
-static uint_fast16_t History[HistorySize];
-static uint_fast16_t HistHit[HistorySize];
-static uint_fast16_t HistTot[HistorySize];
+static std::array<fail_high_stats_t, HistorySize> FailHighStats;
+static std::array<uint_fast16_t, HistorySize> History;
+static std::array<uint_fast16_t, HistorySize> HistHit;
+static std::array<uint_fast16_t, HistorySize> HistTot;
 
 // prototypes
 

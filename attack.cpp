@@ -12,16 +12,16 @@
 
 // variables
 
-int_fast32_t DeltaIncLine[DeltaNb];
-int_fast32_t DeltaIncAll[DeltaNb];
+std::array<int_fast32_t, DeltaNb> DeltaIncLine;
+std::array<int_fast32_t, DeltaNb> DeltaIncAll;
 
-int_fast32_t DeltaMask[DeltaNb];
-int_fast32_t IncMask[IncNb];
+std::array<int_fast32_t, DeltaNb> DeltaMask; 
+std::array<int_fast32_t, IncNb> IncMask;
 
-static int_fast32_t PieceCode[PieceNb];
+static std::array<int_fast32_t, PieceNb> PieceCode[PieceNb];
 
-static int_fast32_t PieceDeltaSize[4][256]; // 4kB
-static int_fast32_t PieceDeltaDelta[4][256][4]; // 16 kB
+static std::array<std::array<int_fast32_t, 256>, 4> PieceDeltaSize; // 4kB
+static std::array<std::array<std::array<int_fast32_t, 4>, 256>, 4> PieceDeltaDelta[4][256][4]; // 16 kB
 
 // prototypes
 

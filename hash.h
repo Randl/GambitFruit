@@ -7,6 +7,7 @@
 // includes
 
 #include <cstdint>
+#include <array>
 #include "board.h"
 #include "util.h"
 
@@ -24,7 +25,7 @@ constexpr int_fast32_t RandomTurn      = 780; // 1
 
 // variables
 
-extern uint_fast64_t Castle64[16];
+extern std::array<uint_fast64_t, 16> Castle64;
 
 // functions
 

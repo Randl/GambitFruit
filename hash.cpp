@@ -12,7 +12,7 @@
 
 // variables
 
-uint_fast64_t Castle64[16];
+std::array<uint_fast64_t, 16> Castle64[16];
 
 // prototypes
 

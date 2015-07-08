@@ -6,6 +6,7 @@
 
 // includes
 
+#include <array>
 #include "piece.h"
 #include "util.h"
 
@@ -31,7 +32,7 @@ constexpr int_fast32_t ValueEvalInf = ValueMate - 256; // handle mates upto 255 
 
 // variables
 
-extern int_fast32_t ValuePiece[PieceNb];
+extern std::array<int_fast32_t, PieceNb> ValuePiece;
 
 // functions
 

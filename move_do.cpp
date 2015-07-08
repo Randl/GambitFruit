@@ -2,7 +2,7 @@
 // move_do.cpp
 
 // includes
-
+#include <array>
 #include "attack.h"
 #include "board.h"
 #include "colour.h"
@@ -18,7 +18,7 @@
 
 // variables
 
-static int_fast32_t CastleMask[SquareNb];
+static std::array<int_fast32_t, SquareNb> CastleMask;
 
 // prototypes
 

@@ -4,7 +4,7 @@
 // includes
 
 #include <cstring>
-
+#include <array>
 #include "board.h"
 #include "colour.h"
 #include "hash.h"
@@ -55,7 +55,7 @@ static /*const*/ int_fast32_t bad_trade_value = 50; // not used like in crafty..
 
 static int_fast32_t bitbase_pieces = 2;
 
-static constexpr int_fast32_t RookPawnPenalty[17] = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
+static constexpr std::array<int_fast32_t, 17> RookPawnPenalty = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
 
 // types
 
