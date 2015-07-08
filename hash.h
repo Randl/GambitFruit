@@ -17,10 +17,10 @@
 
 // constants
 
-const int_fast32_t RandomPiece     =   0; // 12 * 64
-const int_fast32_t RandomCastle    = 768; // 4
-const int_fast32_t RandomEnPassant = 772; // 8
-const int_fast32_t RandomTurn      = 780; // 1
+constexpr int_fast32_t RandomPiece     =   0; // 12 * 64
+constexpr int_fast32_t RandomCastle    = 768; // 4
+constexpr int_fast32_t RandomEnPassant = 772; // 8
+constexpr int_fast32_t RandomTurn      = 780; // 1
 
 // variables
 

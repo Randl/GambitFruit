@@ -14,30 +14,30 @@
 
 // constants
 
-const int_fast32_t Empty = 0;
-const int_fast32_t Edge = Knight64; // HACK: uncoloured knight
+constexpr int_fast32_t Empty = 0;
+constexpr int_fast32_t Edge = Knight64; // HACK: uncoloured knight
 
-const int_fast32_t WP = WhitePawn256;
-const int_fast32_t WN = WhiteKnight256;
-const int_fast32_t WB = WhiteBishop256;
-const int_fast32_t WR = WhiteRook256;
-const int_fast32_t WQ = WhiteQueen256;
-const int_fast32_t WK = WhiteKing256;
+constexpr int_fast32_t WP = WhitePawn256;
+constexpr int_fast32_t WN = WhiteKnight256;
+constexpr int_fast32_t WB = WhiteBishop256;
+constexpr int_fast32_t WR = WhiteRook256;
+constexpr int_fast32_t WQ = WhiteQueen256;
+constexpr int_fast32_t WK = WhiteKing256;
 
-const int_fast32_t BP = BlackPawn256;
-const int_fast32_t BN = BlackKnight256;
-const int_fast32_t BB = BlackBishop256;
-const int_fast32_t BR = BlackRook256;
-const int_fast32_t BQ = BlackQueen256;
-const int_fast32_t BK = BlackKing256;
+constexpr int_fast32_t BP = BlackPawn256;
+constexpr int_fast32_t BN = BlackKnight256;
+constexpr int_fast32_t BB = BlackBishop256;
+constexpr int_fast32_t BR = BlackRook256;
+constexpr int_fast32_t BQ = BlackQueen256;
+constexpr int_fast32_t BK = BlackKing256;
 
-const int_fast32_t FlagsNone = 0;
-const int_fast32_t FlagsWhiteKingCastle  = 1 << 0;
-const int_fast32_t FlagsWhiteQueenCastle = 1 << 1;
-const int_fast32_t FlagsBlackKingCastle  = 1 << 2;
-const int_fast32_t FlagsBlackQueenCastle = 1 << 3;
+constexpr int_fast32_t FlagsNone = 0;
+constexpr int_fast32_t FlagsWhiteKingCastle  = 1 << 0;
+constexpr int_fast32_t FlagsWhiteQueenCastle = 1 << 1;
+constexpr int_fast32_t FlagsBlackKingCastle  = 1 << 2;
+constexpr int_fast32_t FlagsBlackQueenCastle = 1 << 3;
 
-const int_fast32_t StackSize = 4096;
+constexpr int_fast32_t StackSize = 4096;
 
 // macros
 
@@ -84,23 +84,23 @@ struct board_t {
 
 // functions
 
-extern bool board_is_ok         (const board_t * board);
+extern bool board_is_ok         (constexpr board_t * board);
 
 extern void board_clear         (board_t * board);
-extern void board_copy          (board_t * dst, const board_t * src);
+extern void board_copy          (board_t * dst, constexpr board_t * src);
 
 extern void board_init_list     (board_t * board);
 
-extern bool board_is_legal      (const board_t * board);
-extern bool board_is_check      (const board_t * board);
-extern bool board_is_mate       (const board_t * board);
+extern bool board_is_legal      (constexpr board_t * board);
+extern bool board_is_check      (constexpr board_t * board);
+extern bool board_is_mate       (constexpr board_t * board);
 extern bool board_is_stalemate  (board_t * board);
 
-extern bool board_is_repetition (const board_t * board);
+extern bool board_is_repetition (constexpr board_t * board);
 
-extern int_fast32_t  board_material      (const board_t * board);
-extern int_fast32_t  board_opening       (const board_t * board);
-extern int_fast32_t  board_endgame       (const board_t * board);
+extern int_fast32_t  board_material      (constexpr board_t * board);
+extern int_fast32_t  board_opening       (constexpr board_t * board);
+extern int_fast32_t  board_endgame       (constexpr board_t * board);
 
 #endif // !defined BOARD_H
 

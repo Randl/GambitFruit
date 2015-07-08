@@ -11,18 +11,18 @@
 
 // constants
 
-const int_fast32_t ValuePawn   = 100;   // was 100
-const int_fast32_t ValueKnight = 325;   // was 300
-const int_fast32_t ValueBishop = 325;   // was 300
-const int_fast32_t ValueRook   = 500;   // was 500
-const int_fast32_t ValueQueen  = 1000;  // was 900
-const int_fast32_t ValueKing   = 10000; // was 10000
+constexpr int_fast32_t ValuePawn   = 100;   // was 100
+constexpr int_fast32_t ValueKnight = 325;   // was 300
+constexpr int_fast32_t ValueBishop = 325;   // was 300
+constexpr int_fast32_t ValueRook   = 500;   // was 500
+constexpr int_fast32_t ValueQueen  = 1000;  // was 900
+constexpr int_fast32_t ValueKing   = 10000; // was 10000
 
-const int_fast32_t ValueNone    = -32767;
+constexpr int_fast32_t ValueNone    = -32767;
 /*const*/ extern int_fast32_t ValueDraw;
-const int_fast32_t ValueMate    = 30000;
-const int_fast32_t ValueInf     = ValueMate;
-const int_fast32_t ValueEvalInf = ValueMate - 256; // handle mates upto 255 plies
+constexpr int_fast32_t ValueMate    = 30000;
+constexpr int_fast32_t ValueInf     = ValueMate;
+constexpr int_fast32_t ValueEvalInf = ValueMate - 256; // handle mates upto 255 plies
 
 // macros
 

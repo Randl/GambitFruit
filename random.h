@@ -10,7 +10,7 @@
 
 // constants
 
-const int_fast32_t RandomNb = 781;
+constexpr int_fast32_t RandomNb = 781;
 
 // macros
 
@@ -18,7 +18,7 @@ const int_fast32_t RandomNb = 781;
 
 // "constants"
 
-extern const uint_fast64_t Random64[RandomNb];
+extern constexpr uint_fast64_t Random64[RandomNb];
 
 // functions
 

@@ -36,14 +36,14 @@ int_fast32_t ValueDraw;
 
 // transposition table
 
-static const int_fast32_t TransDepth = 1;
+static constexpr int_fast32_t TransDepth = 1;
 
 
 // null move
 
 static /* const */ bool UseNull = true;
 static /* const */ bool UseNullEval = true; // true
-static const int_fast32_t NullDepth = 2;
+static constexpr int_fast32_t NullDepth = 2;
 static /* const */ int_fast32_t NullReduction = 3;
 
 static /* const */ bool UseVer = true;
@@ -52,8 +52,8 @@ static /* const */ int_fast32_t VerReduction = 5; // was 3
 
 // move ordering
 
-static const int_fast32_t IIDDepth = 3;
-static const int_fast32_t IIDReduction = 2;
+static constexpr int_fast32_t IIDDepth = 3;
+static constexpr int_fast32_t IIDReduction = 2;
 
 // extensions
 
@@ -62,14 +62,14 @@ static bool use_rebel_reduction = false; // I hope I did this right...
 
 // razoring
 
-static const int_fast32_t RazorDepth = 3;
-static const int_fast32_t RazorMargin = 300;
+static constexpr int_fast32_t RazorDepth = 3;
+static constexpr int_fast32_t RazorMargin = 300;
 
 // history pruning
 
 static /* const */ bool UseHistory = true;
-static const int_fast32_t HistoryDepth = 3; // was 3
-static const int_fast32_t HistoryMoveNb = 3; // was 3
+static constexpr int_fast32_t HistoryDepth = 3; // was 3
+static constexpr int_fast32_t HistoryMoveNb = 3; // was 3
 static /* const */ int_fast32_t HistoryValue = 9830; // 60%
 static /* const */ int_fast32_t HistoryBound = 2458; // * 16384 + 50) / 100 10%=1638 15%=2458 20%=3277
 static /* const */ bool UseExtendedHistory = true;
@@ -78,7 +78,7 @@ static bool research_on_beta = true;
 // futility pruning
 
 static /* const */ bool UseFutility = true; // false
-static const int_fast32_t FutilityMargin = 100;
+static constexpr int_fast32_t FutilityMargin = 100;
 //static bool quick_futility = false;
 static /* const */ int_fast32_t FutilityMargin1 = 100;
 static /* const */ int_fast32_t FutilityMargin2 = 200;
@@ -94,9 +94,9 @@ static /* const */ int_fast32_t CheckDepth = 0; // 1 - CheckNb
 
 // misc
 
-static const int_fast32_t NodeAll = -1;
-static const int_fast32_t NodePV  =  0;
-static const int_fast32_t NodeCut = +1;
+static constexpr int_fast32_t NodeAll = -1;
+static constexpr int_fast32_t NodePV  =  0;
+static constexpr int_fast32_t NodeCut = +1;
 
 // macros
 

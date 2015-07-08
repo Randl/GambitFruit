@@ -11,7 +11,7 @@
 
 // constants
 
-static const bool UseStrict = true;
+static constexpr bool UseStrict = true;
 
 // functions
 

@@ -18,13 +18,13 @@
 
 // constants
 
-static const bool UseModulo = false;
+static constexpr bool UseModulo = false;
 
-static const int_fast32_t DateSize = 16;
+static constexpr int_fast32_t DateSize = 16;
 
-static const int_fast32_t ClusterSize = 4; // TODO: unsigned?
+static constexpr int_fast32_t ClusterSize = 4; // TODO: unsigned?
 
-static const int_fast32_t DepthNone = -128;
+static constexpr int_fast32_t DepthNone = -128;
 
 // types
 

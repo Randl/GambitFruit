@@ -12,7 +12,7 @@
 
 // constants
 
-const int_fast32_t ListSize = 256;
+constexpr int_fast32_t ListSize = 256;
 
 // macros
 

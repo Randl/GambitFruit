@@ -28,14 +28,14 @@ enum mat_dummy_t {
    MAT_NB
 };
 
-const int_fast32_t DrawNodeFlag    = 1 << 0;
-const int_fast32_t DrawBishopFlag  = 1 << 1;
+constexpr int_fast32_t DrawNodeFlag    = 1 << 0;
+constexpr int_fast32_t DrawBishopFlag  = 1 << 1;
 
-const int_fast32_t MatRookPawnFlag = 1 << 0;
-const int_fast32_t MatBishopFlag   = 1 << 1;
-const int_fast32_t MatKnightFlag   = 1 << 2;
-const int_fast32_t MatKingFlag     = 1 << 3;
-const int_fast32_t MatBitbaseFlag  = 1 << 4;
+constexpr int_fast32_t MatRookPawnFlag = 1 << 0;
+constexpr int_fast32_t MatBishopFlag   = 1 << 1;
+constexpr int_fast32_t MatKnightFlag   = 1 << 2;
+constexpr int_fast32_t MatKingFlag     = 1 << 3;
+constexpr int_fast32_t MatBitbaseFlag  = 1 << 4;
 
 // types
 

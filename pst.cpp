@@ -14,17 +14,17 @@
 
 // constants
 
-static const int_fast32_t A1=000, B1=001, C1=002, D1=003, E1=004, F1=005, G1=006, H1=007;
-static const int_fast32_t A2=010, B2=011, C2=012, D2=013, E2=014, F2=015, G2=016, H2=017;
-static const int_fast32_t A3=020, B3=021, C3=022, D3=023, E3=024, F3=025, G3=026, H3=027;
-static const int_fast32_t A4=030, B4=031, C4=032, D4=033, E4=034, F4=035, G4=036, H4=037;
-static const int_fast32_t A5=040, B5=041, C5=042, D5=043, E5=044, F5=045, G5=046, H5=047;
-static const int_fast32_t A6=050, B6=051, C6=052, D6=053, E6=054, F6=055, G6=056, H6=057;
-static const int_fast32_t A7=060, B7=061, C7=062, D7=063, E7=064, F7=065, G7=066, H7=067;
-static const int_fast32_t A8=070, B8=071, C8=072, D8=073, E8=074, F8=075, G8=076, H8=077;
+static constexpr int_fast32_t A1=000, B1=001, C1=002, D1=003, E1=004, F1=005, G1=006, H1=007;
+static constexpr int_fast32_t A2=010, B2=011, C2=012, D2=013, E2=014, F2=015, G2=016, H2=017;
+static constexpr int_fast32_t A3=020, B3=021, C3=022, D3=023, E3=024, F3=025, G3=026, H3=027;
+static constexpr int_fast32_t A4=030, B4=031, C4=032, D4=033, E4=034, F4=035, G4=036, H4=037;
+static constexpr int_fast32_t A5=040, B5=041, C5=042, D5=043, E5=044, F5=045, G5=046, H5=047;
+static constexpr int_fast32_t A6=050, B6=051, C6=052, D6=053, E6=054, F6=055, G6=056, H6=057;
+static constexpr int_fast32_t A7=060, B7=061, C7=062, D7=063, E7=064, F7=065, G7=066, H7=067;
+static constexpr int_fast32_t A8=070, B8=071, C8=072, D8=073, E8=074, F8=075, G8=076, H8=077;
 
 /*
-static const int_fast32_t alt_pawn_opening[64] = {
+static constexpr int_fast32_t alt_pawn_opening[64] = {
 	 0, 0, 0,  0,  0, 0, 0, 0,
 	 1, 2, 3, -5, -5, 3, 2, 1,
 	 3, 5, 8, 12, 12, 8, 5, 3,
@@ -35,7 +35,7 @@ static const int_fast32_t alt_pawn_opening[64] = {
 	 0, 0, 0,  0,  0, 0, 0, 0
 };*/
 
-static const int_fast32_t alt_pawn_opening[64] = {
+static constexpr int_fast32_t alt_pawn_opening[64] = {
 	 0,  0, 0,  0,  0, 0, 0, 0,
     -10,-4, 0, -5, -5, 0,-4,-10,
 	-10,-4, 0,  8,  5, 0,-4,-10,
@@ -46,7 +46,7 @@ static const int_fast32_t alt_pawn_opening[64] = {
 	 0,  0, 0,  0,  0, 0, 0, 0
 };
 
-static const int_fast32_t alt_pawn_endgame[64] = {
+static constexpr int_fast32_t alt_pawn_endgame[64] = {
 	 0, 0, 0, 0, 0, 0, 0, 0,
 	-5,-2, 0, 0, 0, 0,-2,-5,
 	-5,-2, 0, 3, 3, 0,-2,-5,
@@ -57,7 +57,7 @@ static const int_fast32_t alt_pawn_endgame[64] = {
 	 0, 0, 0, 0, 0, 0, 0,-5
 };
 
-static const int_fast32_t alt_knight[64] = {
+static constexpr int_fast32_t alt_knight[64] = {
 	-20,  0,-10,-10,-10,-10,-10,-20,
 	-10,  0,  0,  3,  3,  0,  0,-10,
 	-10,  0,  5,  5,  5,  5,  0,-10,
@@ -68,7 +68,7 @@ static const int_fast32_t alt_knight[64] = {
 	-20,-10,-10,-10,-10,-10,-10,-20
 };
 
-static const int_fast32_t alt_bishop[64] = {
+static constexpr int_fast32_t alt_bishop[64] = {
 	-2,-2,-2,-2,-2,-2,-2,-2,
 	-2, 8, 5, 5, 5, 5, 8,-2,
 	-2, 3, 3, 5, 5, 3, 3,-2,
@@ -82,65 +82,65 @@ static const int_fast32_t alt_bishop[64] = {
 // constants and variables
 
 static /* const */ int_fast32_t PieceActivityWeight = 256; // 100%
-static const int_fast32_t KingSafetyWeight = 256; // 100%
+static constexpr int_fast32_t KingSafetyWeight = 256; // 100%
 static /* const */ int_fast32_t PawnStructureWeight = 256; // 100%
 static bool alt_pawn_table = false;
 static bool alt_knight_table = false;
 static bool alt_bishop_table = false;
 
-static const int_fast32_t PawnFileOpening = 5;
-static const int_fast32_t KnightCentreOpening = 5;
-static const int_fast32_t KnightCentreEndgame = 5;
-static const int_fast32_t KnightRankOpening = 5;
-static const int_fast32_t KnightBackRankOpening = 0;
-static const int_fast32_t KnightTrapped = 100;
-static const int_fast32_t BishopCentreOpening = 2;
-static const int_fast32_t BishopCentreEndgame = 3;
-static const int_fast32_t BishopBackRankOpening = 10;
-static const int_fast32_t BishopDiagonalOpening = 4;
-static const int_fast32_t RookFileOpening = 3;
-static const int_fast32_t QueenCentreOpening = 0;
-static const int_fast32_t QueenCentreEndgame = 4;
-static const int_fast32_t QueenBackRankOpening = 5;
-static const int_fast32_t KingCentreEndgame = 12;
-static const int_fast32_t KingFileOpening = 10;
-static const int_fast32_t KingRankOpening = 10;
+static constexpr int_fast32_t PawnFileOpening = 5;
+static constexpr int_fast32_t KnightCentreOpening = 5;
+static constexpr int_fast32_t KnightCentreEndgame = 5;
+static constexpr int_fast32_t KnightRankOpening = 5;
+static constexpr int_fast32_t KnightBackRankOpening = 0;
+static constexpr int_fast32_t KnightTrapped = 100;
+static constexpr int_fast32_t BishopCentreOpening = 2;
+static constexpr int_fast32_t BishopCentreEndgame = 3;
+static constexpr int_fast32_t BishopBackRankOpening = 10;
+static constexpr int_fast32_t BishopDiagonalOpening = 4;
+static constexpr int_fast32_t RookFileOpening = 3;
+static constexpr int_fast32_t QueenCentreOpening = 0;
+static constexpr int_fast32_t QueenCentreEndgame = 4;
+static constexpr int_fast32_t QueenBackRankOpening = 5;
+static constexpr int_fast32_t KingCentreEndgame = 12;
+static constexpr int_fast32_t KingFileOpening = 10;
+static constexpr int_fast32_t KingRankOpening = 10;
 
 // "constants"
 
-static const int_fast32_t PawnFile[8] = {
+static constexpr int_fast32_t PawnFile[8] = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static const int_fast32_t KnightLine[8] = {
+static constexpr int_fast32_t KnightLine[8] = {
    -4, -2, +0, +1, +1, +0, -2, -4,
 };
 
-static const int_fast32_t KnightRank[8] = {
+static constexpr int_fast32_t KnightRank[8] = {
    -2, -1, +0, +1, +2, +3, +2, +1,
 };
 
-static const int_fast32_t BishopLine[8] = {
+static constexpr int_fast32_t BishopLine[8] = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static const int_fast32_t RookFile[8] = {
+static constexpr int_fast32_t RookFile[8] = {
    -2, -1, +0, +1, +1, +0, -1, -2,
 };
 
-static const int_fast32_t QueenLine[8] = {
+static constexpr int_fast32_t QueenLine[8] = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static const int_fast32_t KingLine[8] = {
+static constexpr int_fast32_t KingLine[8] = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static const int_fast32_t KingFile[8] = {
+static constexpr int_fast32_t KingFile[8] = {
    +3, +4, +2, +0, +0, +2, +4, +3,
 };
 
-static const int_fast32_t KingRank[8] = {
+static constexpr int_fast32_t KingRank[8] = {
    +1, +0, -2, -3, -4, -5, -6, -7,
 };
 

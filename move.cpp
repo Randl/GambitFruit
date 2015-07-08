@@ -18,7 +18,7 @@
 
 // constants
 
-static const int_fast32_t PromotePiece[4] = { Knight64, Bishop64, Rook64, Queen64 };
+static constexpr int_fast32_t PromotePiece[4] = { Knight64, Bishop64, Rook64, Queen64 };
 
 // functions
 

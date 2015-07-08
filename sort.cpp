@@ -21,18 +21,18 @@
 
 // constants
 
-static const int_fast32_t KillerNb = 2;
+static constexpr int_fast32_t KillerNb = 2;
 
-static const int_fast32_t HistorySize = 12 * 64;
-static const int_fast32_t HistoryMax = 16384;
+static constexpr int_fast32_t HistorySize = 12 * 64;
+static constexpr int_fast32_t HistoryMax = 16384;
 
-static const int_fast32_t TransScore   = +32766;
-static const int_fast32_t GoodScore    =  +4000;
-static const int_fast32_t KillerScore  =     +4;
-static const int_fast32_t HistoryScore = -24000;
-static const int_fast32_t BadScore     = -28000;
+static constexpr int_fast32_t TransScore   = +32766;
+static constexpr int_fast32_t GoodScore    =  +4000;
+static constexpr int_fast32_t KillerScore  =     +4;
+static constexpr int_fast32_t HistoryScore = -24000;
+static constexpr int_fast32_t BadScore     = -28000;
 
-static const int_fast32_t CODE_SIZE = 256;
+static constexpr int_fast32_t CODE_SIZE = 256;
 
 // macros
 

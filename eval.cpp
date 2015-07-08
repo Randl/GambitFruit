@@ -38,7 +38,7 @@
 #define MAX_PIECES 32
 // constants and variables
 
-const int_fast32_t KnightOutpostMatrix[2][256] = {
+constexpr int_fast32_t KnightOutpostMatrix[2][256] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -84,68 +84,68 @@ static /*const  */ int_fast32_t ShelterOpening = 256; // 100%
 static /* const */ int_fast32_t KingSafetyWeight = 256; // 100%
 static /* const */ int_fast32_t PassedPawnWeight = 256; // 100%
 
-static const int_fast32_t MobMove = 1;
-static const int_fast32_t MobAttack = 1;
-static const int_fast32_t MobDefense = 0;
+static constexpr int_fast32_t MobMove = 1;
+static constexpr int_fast32_t MobAttack = 1;
+static constexpr int_fast32_t MobDefense = 0;
 
-static const int_fast32_t knight_mob[9]  =     {-16,-12,-8,-4, 0, 4, 8, 12, 16 };
-static const int_fast32_t bishop_mob[14] =     {-30,-25,-20,-15,-10,-5, 0, 5, 10, 15, 20, 25, 30, 35 };
-static const int_fast32_t rook_mob_open[15] =  { -14, -12,-10, -8, -6,-4,-2, 0, 2, 4,  6,  8, 10, 12, 14 };
-static const int_fast32_t rook_mob_end[15]  =  { -28, -24,-20,-16,-12,-8,-4, 0, 4, 8, 12, 16, 20, 24, 28 };
-static const int_fast32_t queen_mob_open[27] = {-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
-static const int_fast32_t queen_mob_end[27] =  {-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26 };
+static constexpr int_fast32_t knight_mob[9]  =     {-16,-12,-8,-4, 0, 4, 8, 12, 16 };
+static constexpr int_fast32_t bishop_mob[14] =     {-30,-25,-20,-15,-10,-5, 0, 5, 10, 15, 20, 25, 30, 35 };
+static constexpr int_fast32_t rook_mob_open[15] =  { -14, -12,-10, -8, -6,-4,-2, 0, 2, 4,  6,  8, 10, 12, 14 };
+static constexpr int_fast32_t rook_mob_end[15]  =  { -28, -24,-20,-16,-12,-8,-4, 0, 4, 8, 12, 16, 20, 24, 28 };
+static constexpr int_fast32_t queen_mob_open[27] = {-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
+static constexpr int_fast32_t queen_mob_end[27] =  {-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26 };
 
-static const int_fast32_t pawns_on_bishop_colour_opening[9] = {9,6,3,0,-3,-6,-9,-12,-15};
-static const int_fast32_t pawns_on_bishop_colour_endgame[9] = {12,8,4,0,-4,-8,-12,-16,-20};
+static constexpr int_fast32_t pawns_on_bishop_colour_opening[9] = {9,6,3,0,-3,-6,-9,-12,-15};
+static constexpr int_fast32_t pawns_on_bishop_colour_endgame[9] = {12,8,4,0,-4,-8,-12,-16,-20};
 
-static const int_fast32_t RookSemiOpenFileOpening = 10;
-static const int_fast32_t RookSemiOpenFileEndgame = 10;
-static const int_fast32_t RookOpenFileOpening = 20;
-static const int_fast32_t RookOpenFileEndgame = 20;
-static const int_fast32_t RookSemiKingFileOpening = 10;
-static const int_fast32_t RookKingFileOpening = 20;
-static const int_fast32_t RookOnBadPawnFileOpening = 8;
-static const int_fast32_t RookOnBadPawnFileEndgame = 8;
+static constexpr int_fast32_t RookSemiOpenFileOpening = 10;
+static constexpr int_fast32_t RookSemiOpenFileEndgame = 10;
+static constexpr int_fast32_t RookOpenFileOpening = 20;
+static constexpr int_fast32_t RookOpenFileEndgame = 20;
+static constexpr int_fast32_t RookSemiKingFileOpening = 10;
+static constexpr int_fast32_t RookKingFileOpening = 20;
+static constexpr int_fast32_t RookOnBadPawnFileOpening = 8;
+static constexpr int_fast32_t RookOnBadPawnFileEndgame = 8;
 
 static /* const */ int_fast32_t KingAttackOpening = 20; // was 20
 
-static const int_fast32_t knight_tropism_opening = 3;
-static const int_fast32_t bishop_tropism_opening = 2;
-static const int_fast32_t rook_tropism_opening = 2;
-static const int_fast32_t queen_tropism_opening = 2;
+static constexpr int_fast32_t knight_tropism_opening = 3;
+static constexpr intconstexpr _fast32_t bishop_tropism_opening = 2;
+static constexpr int_fast32_t rook_tropism_opening = 2;
+static constexpr int_fast32_t queen_tropism_opening = 2;
 
-static const int_fast32_t knight_tropism_endgame = 3;
-static const int_fast32_t bishop_tropism_endgame = 1;
-static const int_fast32_t rook_tropism_endgame = 1;
-static const int_fast32_t queen_tropism_endgame = 4;
+static constexpr int_fast32_t knight_tropism_endgame = 3;
+static constexpr int_fast32_t bishop_tropism_endgame = 1;
+static constexpr int_fast32_t rook_tropism_endgame = 1;
+static constexpr int_fast32_t queen_tropism_endgame = 4;
 
 static /* const */ int_fast32_t StormOpening = 10;
 
-static const int_fast32_t Rook7thOpening = 20;
-static const int_fast32_t Rook7thEndgame = 40;
-static const int_fast32_t Queen7thOpening = 10;
-static const int_fast32_t Queen7thEndgame = 20;
+static constexpr int_fast32_t Rook7thOpening = 20;
+static constexpr int_fast32_t Rook7thEndgame = 40;
+static constexpr int_fast32_t Queen7thOpening = 10;
+static constexpr int_fast32_t Queen7thEndgame = 20;
 
-static const int_fast32_t TrappedBishop = 100;
+static constexpr int_fast32_t TrappedBishop = 100;
 
-static const int_fast32_t BlockedBishop = 50;
-static const int_fast32_t BlockedRook = 50;
-static const int_fast32_t BlockedCenterPawn = 10;
+static constexpr int_fast32_t BlockedBishop = 50;
+static constexpr int_fast32_t BlockedRook = 50;
+static constexpr int_fast32_t BlockedCenterPawn = 10;
 
-static const int_fast32_t PassedOpeningMin = 10;
-static const int_fast32_t PassedOpeningMax = 70;
-static const int_fast32_t PassedEndgameMin = 20;
-static const int_fast32_t PassedEndgameMax = 140;
+static constexpr int_fast32_t PassedOpeningMin = 10;
+static constexpr int_fast32_t PassedOpeningMax = 70;
+static constexpr int_fast32_t PassedEndgameMin = 20;
+static constexpr int_fast32_t PassedEndgameMax = 140;
 
-static const int_fast32_t UnstoppablePasser = 800;
-static const int_fast32_t FreePasser = 60;
+static constexpr int_fast32_t UnstoppablePasser = 800;
+static constexpr int_fast32_t FreePasser = 60;
 
-static const int_fast32_t AttackerDistance = 5;
-static const int_fast32_t DefenderDistance = 20;
+static constexpr int_fast32_t AttackerDistance = 5;
+static constexpr int_fast32_t DefenderDistance = 20;
 
 // "constants"
 
-static const int_fast32_t KingAttackWeight[16] = {
+static constexpr int_fast32_t KingAttackWeight[16] = {
    0, 0, 128, 192, 224, 240, 248, 252, 254, 255, 256, 256 ,256, 256, 256, 256,
 };
 

@@ -10,13 +10,13 @@
 
 // "constants"
 
-const int_fast32_t IncNone = 0;
-const int_fast32_t IncNb = 2 * 17 + 1;
-const int_fast32_t IncOffset = 17;
+constexpr int_fast32_t IncNone = 0;
+constexpr int_fast32_t IncNb = 2 * 17 + 1;
+constexpr int_fast32_t IncOffset = 17;
 
-const int_fast32_t DeltaNone = 0;
-const int_fast32_t DeltaNb = 2 * 119 + 1;
-const int_fast32_t DeltaOffset = 119;
+constexpr int_fast32_t DeltaNone = 0;
+constexpr int_fast32_t DeltaNb = 2 * 119 + 1;
+constexpr int_fast32_t DeltaOffset = 119;
 
 // macros
 

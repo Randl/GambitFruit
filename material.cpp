@@ -18,16 +18,16 @@
 
 
 // constants
+constexpr 
+static constexpr uint_fast32_t TableSize = 256; // 4kB
 
-static const uint_fast32_t TableSize = 256; // 4kB
+static constexpr int_fast32_t PawnPhase   = 0;
+static constexpr int_fast32_t KnightPhase = 1;
+static constexpr int_fast32_t BishopPhase = 1;
+static constexpr int_fast32_t RookPhase   = 2;
+static constexpr int_fast32_t QueenPhase  = 4;
 
-static const int_fast32_t PawnPhase   = 0;
-static const int_fast32_t KnightPhase = 1;
-static const int_fast32_t BishopPhase = 1;
-static const int_fast32_t RookPhase   = 2;
-static const int_fast32_t QueenPhase  = 4;
-
-static const int_fast32_t TotalPhase = PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
+static constexpr int_fast32_t TotalPhase = PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
 
 // constants and variables
 
@@ -55,7 +55,7 @@ static /*const*/ int_fast32_t bad_trade_value = 50; // not used like in crafty..
 
 static int_fast32_t bitbase_pieces = 2;
 
-static const int_fast32_t RookPawnPenalty[17] = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
+static constexpr int_fast32_t RookPawnPenalty[17] = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
 
 // types
 

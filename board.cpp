@@ -22,7 +22,7 @@
 
 // constants
 
-static const bool UseSlowDebug = false;
+static constexpr bool UseSlowDebug = false;
 
 // functions
 

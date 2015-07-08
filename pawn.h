@@ -20,16 +20,16 @@
 
 // constants
 
-const int_fast32_t BackRankFlag = 1 << 0;
+constexpr int_fast32_t BackRankFlag = 1 << 0;
 
-const int_fast32_t BadPawnFileA = 1 << 0;
-const int_fast32_t BadPawnFileB = 1 << 1;
-const int_fast32_t BadPawnFileC = 1 << 2;
-const int_fast32_t BadPawnFileD = 1 << 3;
-const int_fast32_t BadPawnFileE = 1 << 4;
-const int_fast32_t BadPawnFileF = 1 << 5;
-const int_fast32_t BadPawnFileG = 1 << 6;
-const int_fast32_t BadPawnFileH = 1 << 7;
+constexpr int_fast32_t BadPawnFileA = 1 << 0;
+constexpr int_fast32_t BadPawnFileB = 1 << 1;
+constexpr int_fast32_t BadPawnFileC = 1 << 2;
+constexpr int_fast32_t BadPawnFileD = 1 << 3;
+constexpr int_fast32_t BadPawnFileE = 1 << 4;
+constexpr int_fast32_t BadPawnFileF = 1 << 5;
+constexpr int_fast32_t BadPawnFileG = 1 << 6;
+constexpr int_fast32_t BadPawnFileH = 1 << 7;
 
 // types
 

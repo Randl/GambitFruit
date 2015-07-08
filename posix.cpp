@@ -24,7 +24,7 @@
 
 // constants
 
-static const bool UseDebug = false;
+static constexpr bool UseDebug = false;
 
 // prototypes
 

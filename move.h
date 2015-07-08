@@ -12,21 +12,21 @@
 
 // constants
 
-const int_fast32_t MoveNone = 0;  // HACK: a1a1 cannot be a legal move
-const int_fast32_t MoveNull = 11; // HACK: a1d2 cannot be a legal move
+constexprint_fast32_t MoveNone = 0;  // HACK: a1a1 cannot be a legal move
+constexprint_fast32_t MoveNull = 11; // HACK: a1d2 cannot be a legal move
 
-const int_fast32_t MoveNormal    = 0 << 14;
-const int_fast32_t MoveCastle    = 1 << 14;
-const int_fast32_t MovePromote   = 2 << 14;
-const int_fast32_t MoveEnPassant = 3 << 14;
-const int_fast32_t MoveFlags     = 3 << 14;
+constexprint_fast32_t MoveNormal    = 0 << 14;
+constexprint_fast32_t MoveCastle    = 1 << 14;
+constexprint_fast32_t MovePromote   = 2 << 14;
+constexprint_fast32_t MoveEnPassant = 3 << 14;
+constexprint_fast32_t MoveFlags     = 3 << 14;
 
-const int_fast32_t MovePromoteKnight = MovePromote | (0 << 12);
-const int_fast32_t MovePromoteBishop = MovePromote | (1 << 12);
-const int_fast32_t MovePromoteRook   = MovePromote | (2 << 12);
-const int_fast32_t MovePromoteQueen  = MovePromote | (3 << 12);
+constexprint_fast32_t MovePromoteKnight = MovePromote | (0 << 12);
+constexprint_fast32_t MovePromoteBishop = MovePromote | (1 << 12);
+constexprint_fast32_t MovePromoteRook   = MovePromote | (2 << 12);
+constexprint_fast32_t MovePromoteQueen  = MovePromote | (3 << 12);
 
-const int_fast32_t MoveAllFlags = 0xF << 12;
+constexprint_fast32_t MoveAllFlags = 0xF << 12;
 
 const char NullMoveString[] = "null"; // "0000" in UCI
 

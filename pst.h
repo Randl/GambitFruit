@@ -10,9 +10,9 @@
 
 // constants
 
-const int_fast32_t Opening = 0;
-const int_fast32_t Endgame = 1;
-const int_fast32_t StageNb = 2;
+constexpr int_fast32_t Opening = 0;
+constexpr int_fast32_t Endgame = 1;
+constexpr int_fast32_t StageNb = 2;
 
 // macros
 

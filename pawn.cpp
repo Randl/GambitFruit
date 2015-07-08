@@ -17,7 +17,7 @@
 
 // constants
 
-static const uint_fast32_t TableSize = 16384; // 256kB
+static constexpr uint_fast32_t TableSize = 16384; // 256kB
 
 // types
 
@@ -49,21 +49,21 @@ static const int_fast32_t BackwardOpening = 8;
 static const int_fast32_t BackwardOpeningOpen = 16;
 static const int_fast32_t BackwardEndgame = 10;
 */
-static const int_fast32_t DoubledOpening[8] = {10,10,10,12,12,10,10,10};
-static const int_fast32_t DoubledEndgame[8] = {18,18,18,20,20,18,18,18};
+static constexpr int_fast32_t DoubledOpening[8] = {10,10,10,12,12,10,10,10};
+static constexpr int_fast32_t DoubledEndgame[8] = {18,18,18,20,20,18,18,18};
 
-static const int_fast32_t IsolatedOpening[8] =		{ 8, 9,10,12,12,10, 9, 8};
-static const int_fast32_t IsolatedOpeningOpen[8] =	{18,19,20,22,22,20,19,18};
-static const int_fast32_t IsolatedEndgame[8] =		{18,19,20,22,22,20,19,18};
+static constexpr int_fast32_t IsolatedOpening[8] =		{ 8, 9,10,12,12,10, 9, 8};
+static constexpr int_fast32_t IsolatedOpeningOpen[8] =	{18,19,20,22,22,20,19,18};
+static constexpr int_fast32_t IsolatedEndgame[8] =		{18,19,20,22,22,20,19,18};
 
-static const int_fast32_t BackwardOpening[8] =		{ 6, 7, 8,10,10, 8, 7, 6};
-static const int_fast32_t BackwardOpeningOpen[8] =	{12,14,16,18,18,16,14,12}; 
-static const int_fast32_t BackwardEndgame[8] =		{ 8, 9,10,12,12,10, 9, 8};
+static constexpr int_fast32_t BackwardOpening[8] =		{ 6, 7, 8,10,10, 8, 7, 6};
+static constexpr int_fast32_t BackwardOpeningOpen[8] =	{12,14,16,18,18,16,14,12}; 
+static constexpr int_fast32_t BackwardEndgame[8] =		{ 8, 9,10,12,12,10, 9, 8};
 
-static const int_fast32_t CandidateOpeningMin = 5;
-static const int_fast32_t CandidateOpeningMax = 55;
-static const int_fast32_t CandidateEndgameMin = 10;
-static const int_fast32_t CandidateEndgameMax = 110;
+static constexpr int_fast32_t CandidateOpeningMin = 5;
+static constexpr int_fast32_t CandidateOpeningMax = 55;
+static constexpr int_fast32_t CandidateEndgameMin = 10;
+static constexpr int_fast32_t CandidateEndgameMax = 110;
 
 // this was moved to eval.cpp
 

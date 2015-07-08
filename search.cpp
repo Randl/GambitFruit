@@ -28,24 +28,24 @@
 
 // constants
 
-static const bool UseCpuTime = false; // false
+static constexpr bool UseCpuTime = false; // false
 
-static const bool UseShortSearch = true;
-static const int_fast32_t ShortSearchDepth = 1;
+static constexpr bool UseShortSearch = true;
+static constexpr int_fast32_t ShortSearchDepth = 1;
 
-static const bool DispBest = true; // true
-static const bool DispDepthStart = true; // true
-static const bool DispDepthEnd = true; // true
-static const bool DispRoot = true; // true
-static const bool DispStat = true; // true
+static constexpr bool DispBest = true; // true
+static constexpr bool DispDepthStart = true; // true
+static constexpr bool DispDepthEnd = true; // true
+static constexpr bool DispRoot = true; // true
+static constexpr bool DispStat = true; // true
 
-static const int_fast32_t EasyThreshold = 150;
-static const double EasyRatio = 0.20;
+static constexpr int_fast32_t EasyThreshold = 150;
+static constexpr double EasyRatio = 0.20;
 
-static const double EarlyRatio = 0.60;
+static constexpr double EarlyRatio = 0.60;
 
-static const int_fast32_t BadThreshold = 50; // 50
-static const bool UseExtension = true;
+static constexpr int_fast32_t BadThreshold = 50; // 50
+static constexpr bool UseExtension = true;
 
 // variables
 

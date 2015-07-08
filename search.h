@@ -15,18 +15,18 @@
 
 // constants
 
-const int_fast32_t MultiPVMax = 10;
+constexpr int_fast32_t MultiPVMax = 10;
 
-const int_fast32_t DepthMax = 64;
-const int_fast32_t HeightMax = 256;
+constexpr int_fast32_t DepthMax = 64;
+constexpr int_fast32_t HeightMax = 256;
 
-const int_fast32_t SearchNormal = 0;
-const int_fast32_t SearchShort  = 1;
+constexpr int_fast32_t SearchNormal = 0;
+constexpr int_fast32_t SearchShort  = 1;
 
-const int_fast32_t SearchUnknown = 0;
-const int_fast32_t SearchUpper   = 1;
-const int_fast32_t SearchLower   = 2;
-const int_fast32_t SearchExact   = 3;
+constexpr int_fast32_t SearchUnknown = 0;
+constexpr int_fast32_t SearchUpper   = 1;
+constexpr int_fast32_t SearchLower   = 2;
+constexpr int_fast32_t SearchExact   = 3;
 
 // types
 
