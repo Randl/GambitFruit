@@ -1,0 +1,20 @@
+To turn off Lazy Eval set Chess knowledge to 500.  
+If you have any suggestions  please email them to me. 
+Bitbases can be found here: http://oics.olympuschess.com/tracker/index.php
+And latest egbdll: https://sites.google.com/site/dshawul/home or https://github.com/dshawul/egbbdll
+
+Added:
+6-men EGBB
+
+TODO:
+SMP(Lazy SMP) 
+bug fixes
+Converting to c++11
+Pawn Ram handling
+Tune extensions and reductions
+better draw recog
+Tune king safety with tropism
+Values tuning (Pawn Shielding, King safety, tropism, etc) 
+ 
+
+Thanks for everyone contributed to Gambit Fruit, Fruit 2.1, Toga, and to those who gave me ideas. 
