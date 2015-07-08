@@ -348,8 +348,8 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
          // assume black sacrifices a minor against the lone pawn
 
-         b_min--;
-         b_tot--;
+         --b_min;
+         --b_tot;
 
          if (false) {
 
@@ -382,7 +382,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
          // assume black sacrifices a rook against the lone pawn
 
-         b_maj--;
+         --b_maj;
          b_tot -= 2;
 
          if (false) {
@@ -484,8 +484,8 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
          // assume white sacrifices a minor against the lone pawn
 
-         w_min--;
-         w_tot--;
+         --w_min;
+         --w_tot;
 
          if (false) {
 
@@ -518,7 +518,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
          // assume white sacrifices a rook against the lone pawn
 
-         w_maj--;
+         --w_maj;
          w_tot -= 2;
 
          if (false) {

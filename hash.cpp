@@ -26,7 +26,7 @@ void hash_init() {
 
    int_fast32_t i;
 
-   for (i = 0; i < 16; i++) Castle64[i] = hash_castle_key(i);
+   for (i = 0; i < 16; ++i) Castle64[i] = hash_castle_key(i);
 }
 
 // hash_key()
@@ -46,14 +46,14 @@ uint_fast64_t hash_key(const board_t * board) {
 
    // pieces
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
-      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          key ^= hash_piece_key(piece,sq);
       }
 
-      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          key ^= hash_piece_key(piece,sq);
       }
@@ -92,8 +92,8 @@ uint_fast64_t hash_pawn_key(const board_t * board) {
 
    // pawns
 
-   for (colour = 0; colour < ColourNb; colour++) {
-      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
+      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          key ^= hash_piece_key(piece,sq);
       }
@@ -117,7 +117,7 @@ uint_fast64_t hash_material_key(const board_t * board) {
 
    // counters
 
-   for (piece_12 = 0; piece_12 < 12; piece_12++) {
+   for (piece_12 = 0; piece_12 < 12; ++piece_12) {
       count = board->number[piece_12];
       key ^= hash_counter_key(piece_12,count);
    }
@@ -146,7 +146,7 @@ uint_fast64_t hash_castle_key(int_fast32_t flags) {
 
    key = 0;
 
-   for (i = 0; i < 4; i++) {
+   for (i = 0; i < 4; ++i) {
       if ((flags & (1<<i)) != 0) key ^= RANDOM_64(RandomCastle+i);
    }
 
@@ -188,7 +188,7 @@ static uint_fast64_t hash_counter_key(int_fast32_t piece_12, int_fast32_t count)
    // counter
 
    index = piece_12 * 16;
-   for (i = 0; i < count; i++) key ^= RANDOM_64(index+i);
+   for (i = 0; i < count; ++i) key ^= RANDOM_64(index+i);
 
    return key;
 }

@@ -207,8 +207,8 @@ void eval_init() {
 
    // mobility table
 
-   for (colour = 0; colour < ColourNb; colour++) {
-      for (piece = 0; piece < PieceNb; piece++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
+      for (piece = 0; piece < PieceNb; ++piece) {
          MobUnit[colour][piece] = 0;
       }
    }
@@ -247,7 +247,7 @@ void eval_init() {
 
    // KingAttackUnit[]
 
-   for (piece = 0; piece < PieceNb; piece++) {
+   for (piece = 0; piece < PieceNb; ++piece) {
       KingAttackUnit[piece] = 0;
    }
 
@@ -518,7 +518,7 @@ static void eval_draw(const board_t * board, const material_info_t * mat_info, c
 
    // draw patterns
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       me = colour;
       opp = COLOUR_OPP(me);
@@ -660,7 +660,7 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
    
    // eval
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       me = colour;
       opp = COLOUR_OPP(me);
@@ -671,7 +671,7 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
 
       // piece loop
 
-      for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+      for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
          piece = board->square[from];
 
@@ -1123,7 +1123,7 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 
    // king attacks
 
-      for (colour = 0; colour < ColourNb; colour++) {
+      for (colour = 0; colour < ColourNb; ++colour) {
 
          if ((mat_info->cflags[colour] & MatKingFlag) != 0) {
 
@@ -1139,12 +1139,12 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
             attack_tot = 0;
             piece_nb = 0;
 			
-            for (ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+            for (ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
                piece = board->square[from];
 
                if (piece_attack_king(board,piece,from,king)) {
-                  piece_nb++;
+                  ++piece_nb;
                   attack_tot += KingAttackUnit[piece];
                }
 /*		       else{
@@ -1198,7 +1198,7 @@ static void eval_passer(const board_t * board, const pawn_info_t * pawn_info, in
 
    // passed pawns
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       att = colour;
       def = COLOUR_OPP(att);
@@ -1398,7 +1398,7 @@ static bool unstoppable_passer(const board_t * board, int_fast32_t pawn, int_fas
 
    // clear promotion path?
 
-   for (ptr = &board->piece[me][0]; (sq=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
       if (SQUARE_FILE(sq) == file && PAWN_RANK(sq,me) > rank) {
          return false; // "friendly" blocker
       }
@@ -1408,7 +1408,7 @@ static bool unstoppable_passer(const board_t * board, int_fast32_t pawn, int_fas
 
    if (rank == Rank2) {
       pawn += PAWN_MOVE_INC(me);
-      rank++;
+      ++rank;
       ASSERT(rank==PAWN_RANK(pawn,me));
    }
 
@@ -1418,7 +1418,7 @@ static bool unstoppable_passer(const board_t * board, int_fast32_t pawn, int_fas
 
    dist = DISTANCE(pawn,prom);
    ASSERT(dist==Rank8-rank);
-   if (board->turn == opp) dist++;
+   if (board->turn == opp) ++dist;
 
    if (DISTANCE(king,prom) > dist) return true; // not in the square
 
@@ -1549,21 +1549,21 @@ static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast3
 
    // att
 
-   for (ptr = &board->piece[att][0]; (sq=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[att][0]; (sq=*ptr) != SquareNone; ++ptr) {
       list[pos++] = sq;
    }
 
-   for (ptr = &board->pawn[att][0]; (sq=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->pawn[att][0]; (sq=*ptr) != SquareNone; ++ptr) {
       list[pos++] = sq;
    }
 
    // def
 
-   for (ptr = &board->piece[def][0]; (sq=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[def][0]; (sq=*ptr) != SquareNone; ++ptr) {
       list[pos++] = sq;
    }
 
-   for (ptr = &board->pawn[def][0]; (sq=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->pawn[def][0]; (sq=*ptr) != SquareNone; ++ptr) {
       list[pos++] = sq;
    }
 
@@ -1578,7 +1578,7 @@ static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast3
    pawn = board->pawn[att][0];
 
    if (SQUARE_FILE(pawn) >= FileE) {
-      for (i = 0; i < pos; i++) {
+      for (i = 0; i < pos; ++i) {
          list[i] = SQUARE_FILE_MIRROR(list[i]);
       }
    }
@@ -1586,7 +1586,7 @@ static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast3
    // rank flip?
 
    if (COLOUR_IS_BLACK(pawn_colour)) {
-      for (i = 0; i < pos; i++) {
+      for (i = 0; i < pos; ++i) {
          list[i] = SQUARE_RANK_MIRROR(list[i]);
       }
    }
@@ -1832,7 +1832,7 @@ static bool bishop_can_attack(const board_t * board, int_fast32_t to, int_fast32
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(COLOUR_IS_OK(colour));
 
-   for (ptr = &board->piece[colour][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+   for (ptr = &board->piece[colour][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
       piece = board->square[from];
 

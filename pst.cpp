@@ -176,9 +176,9 @@ void pst_init() {
 
    // init
 
-   for (piece = 0; piece < 12; piece++) {
-      for (sq = 0; sq < 64; sq++) {
-         for (stage = 0; stage < StageNb; stage++) {
+   for (piece = 0; piece < 12; ++piece) {
+      for (sq = 0; sq < 64; ++sq) {
+         for (stage = 0; stage < StageNb; ++stage) {
             P(piece,sq,stage) = 0;
          }
       }
@@ -189,14 +189,14 @@ void pst_init() {
    piece = WhitePawn12;
 
    if (alt_pawn_table) {
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_pawn_opening[sq];
 			P(piece,sq,Endgame) += alt_pawn_endgame[sq];
 		}		
    } else {
 		// file
 
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += PawnFile[square_file(sq)] * PawnFileOpening;
 		}
 
@@ -214,7 +214,7 @@ void pst_init() {
 
    // weight
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) = (P(piece,sq,Opening) * PawnStructureWeight) / 256;
       P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PawnStructureWeight) / 256;
    }
@@ -224,14 +224,14 @@ void pst_init() {
    piece = WhiteKnight12;
 
    if (alt_knight_table) {
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_knight[sq];
 			P(piece,sq,Endgame) += alt_knight[sq];
 		}		
    } else {
 		// centre
 
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += KnightLine[square_file(sq)] * KnightCentreOpening;
 			P(piece,sq,Opening) += KnightLine[square_rank(sq)] * KnightCentreOpening;
 			P(piece,sq,Endgame) += KnightLine[square_file(sq)] * KnightCentreEndgame;
@@ -240,13 +240,13 @@ void pst_init() {
 
 		// rank
 
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += KnightRank[square_rank(sq)] * KnightRankOpening;
 		}
 
 		// back rank
 
-		for (sq = A1; sq <= H1; sq++) { // HACK: only first rank
+		for (sq = A1; sq <= H1; ++sq) { // HACK: only first rank
 			P(piece,sq,Opening) -= KnightBackRankOpening;
 		}
    }
@@ -257,7 +257,7 @@ void pst_init() {
 
    // weight
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
       P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
    }
@@ -267,14 +267,14 @@ void pst_init() {
    piece = WhiteBishop12;
 
    if (alt_bishop_table) {
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_bishop[sq];
 			P(piece,sq,Endgame) += alt_bishop[sq];
 		}				
    } else {
 		// centre
 
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += BishopLine[square_file(sq)] * BishopCentreOpening;
 			P(piece,sq,Opening) += BishopLine[square_rank(sq)] * BishopCentreOpening;
 			P(piece,sq,Endgame) += BishopLine[square_file(sq)] * BishopCentreEndgame;
@@ -283,13 +283,13 @@ void pst_init() {
 
 		// back rank
 
-		for (sq = A1; sq <= H1; sq++) { // HACK: only first rank
+		for (sq = A1; sq <= H1; ++sq) { // HACK: only first rank
 			P(piece,sq,Opening) -= BishopBackRankOpening;
 		}
 
 		// main diagonals
 
-		for (i = 0; i < 8; i++) {
+		for (i = 0; i < 8; ++i) {
 			sq = square_make(i,i);
 			P(piece,sq,Opening) += BishopDiagonalOpening;
 			P(piece,square_opp(sq),Opening) += BishopDiagonalOpening;
@@ -297,7 +297,7 @@ void pst_init() {
 
 		// weight
 
-		for (sq = 0; sq < 64; sq++) {
+		for (sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
 			P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
 		}
@@ -308,13 +308,13 @@ void pst_init() {
 
    // file
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) += RookFile[square_file(sq)] * RookFileOpening;
    }
 
    // weight
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
       P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
    }
@@ -325,7 +325,7 @@ void pst_init() {
 
    // centre
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) += QueenLine[square_file(sq)] * QueenCentreOpening;
       P(piece,sq,Opening) += QueenLine[square_rank(sq)] * QueenCentreOpening;
       P(piece,sq,Endgame) += QueenLine[square_file(sq)] * QueenCentreEndgame;
@@ -334,13 +334,13 @@ void pst_init() {
 
    // back rank
 
-   for (sq = A1; sq <= H1; sq++) { // HACK: only first rank
+   for (sq = A1; sq <= H1; ++sq) { // HACK: only first rank
       P(piece,sq,Opening) -= QueenBackRankOpening;
    }
 
    // weight
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
       P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
    }
@@ -351,26 +351,26 @@ void pst_init() {
 
    // centre
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Endgame) += KingLine[square_file(sq)] * KingCentreEndgame;
       P(piece,sq,Endgame) += KingLine[square_rank(sq)] * KingCentreEndgame;
    }
 
    // file
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) += KingFile[square_file(sq)] * KingFileOpening;
    }
 
    // rank
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) += KingRank[square_rank(sq)] * KingRankOpening;
    }
 
    // weight
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) = (P(piece,sq,Opening) * KingSafetyWeight)    / 256;
       P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
    }
@@ -378,8 +378,8 @@ void pst_init() {
    // symmetry copy for black
 
    for (piece = 0; piece < 12; piece += 2) { // HACK
-      for (sq = 0; sq < 64; sq++) {
-         for (stage = 0; stage < StageNb; stage++) {
+      for (sq = 0; sq < 64; ++sq) {
+         for (stage = 0; stage < StageNb; ++stage) {
             P(piece+1,sq,stage) = -P(piece,square_opp(sq),stage); // HACK
          }
       }

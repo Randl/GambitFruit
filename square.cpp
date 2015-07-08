@@ -38,15 +38,15 @@ void square_init() {
 
    // SquareTo64[]
 
-   for (sq = 0; sq < SquareNb; sq++) SquareTo64[sq] = -1;
+   for (sq = 0; sq < SquareNb; ++sq) SquareTo64[sq] = -1;
 
-   for (sq = 0; sq < 64; sq++) {
+   for (sq = 0; sq < 64; ++sq) {
       SquareTo64[SquareFrom64[sq]] = sq;
    }
 
    // SquareIsPromote[]
 
-   for (sq = 0; sq < SquareNb; sq++) {
+   for (sq = 0; sq < SquareNb; ++sq) {
       SquareIsPromote[sq] = SQUARE_IS_OK(sq) && (SQUARE_RANK(sq) == Rank1 || SQUARE_RANK(sq) == Rank8);
    }
 }

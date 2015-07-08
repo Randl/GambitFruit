@@ -22,7 +22,7 @@ void value_init() {
 
    // ValuePiece[]
 
-   for (piece = 0; piece < PieceNb; piece++) ValuePiece[piece] = -1;
+   for (piece = 0; piece < PieceNb; ++piece) ValuePiece[piece] = -1;
 
    ValuePiece[Empty] = 0; // needed?
    ValuePiece[Edge]  = 0; // needed?

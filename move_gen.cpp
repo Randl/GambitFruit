@@ -128,14 +128,14 @@ static void add_moves(list_t * list, const board_t * board) {
 
    // piece moves
 
-   for (ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
       piece = board->square[from];
       inc_ptr = PIECE_INC(piece);
 
       if (PIECE_IS_SLIDER(piece)) {
 
-         for (; (inc=*inc_ptr) != IncNone; inc_ptr++) {
+         for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
             for (to = from+inc; (capture=board->square[to]) == Empty; to += inc) {
                LIST_ADD(list,MOVE_MAKE(from,to));
             }
@@ -146,7 +146,7 @@ static void add_moves(list_t * list, const board_t * board) {
 
       } else {
 
-         for (; (inc=*inc_ptr) != IncNone; inc_ptr++) {
+         for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
             to = from + inc;
             capture = board->square[to];
             if (capture == Empty || FLAG_IS(capture,opp_flag)) {
@@ -160,7 +160,7 @@ static void add_moves(list_t * list, const board_t * board) {
 
    inc = PAWN_MOVE_INC(me);
 
-   for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
       to = from + (inc-1);
       if (FLAG_IS(board->square[to],opp_flag)) {
@@ -206,7 +206,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
    // piece captures
 
-   for (ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
       piece = board->square[from];
 
@@ -355,7 +355,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
    if (COLOUR_IS_WHITE(me)) {
 
-      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
          to = from + 15;
          if (FLAG_IS(board->square[to],opp_flag)) add_pawn_move(list,from,to);
@@ -375,7 +375,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
    } else { // black
 
-      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
          to = from - 17;
          if (FLAG_IS(board->square[to],opp_flag)) add_pawn_move(list,from,to);
@@ -411,7 +411,7 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 
    // piece moves
 
-   for (ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
       piece = board->square[from];
 
@@ -560,7 +560,7 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 
    if (COLOUR_IS_WHITE(me)) {
 
-      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
          // non promotes
 
@@ -582,7 +582,7 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 
    } else { // black
 
-      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 
          // non promotes
 
@@ -620,7 +620,7 @@ static void add_promotes(list_t * list, const board_t * board) {
 
    inc = PAWN_MOVE_INC(me);
 
-   for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
       if (PAWN_RANK(from,me) == Rank7) {
          to = from + inc;
          if (board->square[to] == Empty) {

@@ -34,7 +34,7 @@ void move_do_init() {
 
    int_fast32_t sq;
 
-   for (sq = 0; sq < SquareNb; sq++) CastleMask[sq] = 0xF;
+   for (sq = 0; sq < SquareNb; ++sq) CastleMask[sq] = 0xF;
 
    CastleMask[E1] &= ~FlagsWhiteKingCastle;
    CastleMask[H1] &= ~FlagsWhiteKingCastle;
@@ -178,7 +178,7 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
       // insert the promote piece in MV order
 
-      for (pos = board->piece_size[me]; pos > 0 && piece > board->square[board->piece[me][pos-1]]; pos--) // HACK
+      for (pos = board->piece_size[me]; pos > 0 && piece > board->square[board->piece[me][pos-1]]; --pos) // HACK
          ;
 
       square_set(board,to,piece,pos,true);
@@ -435,7 +435,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
       ASSERT(board->pos[square]==pos);
       board->pos[square] = -1;
 
-      for (i = pos; i < size-1; i++) {
+      for (i = pos; i < size-1; ++i) {
 
          sq = board->piece[colour][i+1];
 
@@ -447,7 +447,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 
       // size
 
-      size--;
+      --size;
 
       board->piece[colour][size] = SquareNone;
       board->piece_size[colour] = size;
@@ -466,7 +466,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
       ASSERT(board->pos[square]==pos);
       board->pos[square] = -1;
 
-      for (i = pos; i < size-1; i++) {
+      for (i = pos; i < size-1; ++i) {
 
          sq = board->pawn[colour][i+1];
 
@@ -478,7 +478,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 
       // size
 
-      size--;
+      --size;
 
       board->pawn[colour][size] = SquareNone;
       board->pawn_size[colour] = size;
@@ -561,7 +561,7 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 
       // size
 
-      size++;
+      ++size;
 
       board->piece[colour][size] = SquareNone;
       board->piece_size[colour] = size;
@@ -570,7 +570,7 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 
       ASSERT(pos>=0&&pos<size);
 
-      for (i = size-1; i > pos; i--) {
+      for (i = size-1; i > pos; --i) {
 
          sq = board->piece[colour][i-1];
 
@@ -594,7 +594,7 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 
       // size
 
-      size++;
+      ++size;
 
       board->pawn[colour][size] = SquareNone;
       board->pawn_size[colour] = size;
@@ -603,7 +603,7 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 
       ASSERT(pos>=0&&pos<size);
 
-      for (i = size-1; i > pos; i--) {
+      for (i = size-1; i > pos; --i) {
 
          sq = board->pawn[colour][i-1];
 

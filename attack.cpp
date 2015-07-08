@@ -43,13 +43,13 @@ void attack_init() {
 
    // clear
 
-   for (delta = 0; delta < DeltaNb; delta++) {
+   for (delta = 0; delta < DeltaNb; ++delta) {
       DeltaIncLine[delta] = IncNone;
       DeltaIncAll[delta] = IncNone;
       DeltaMask[delta] = 0;
    }
 
-   for (inc = 0; inc < IncNb; inc++) {
+   for (inc = 0; inc < IncNb; ++inc) {
       IncMask[inc] = 0;
    }
 
@@ -63,7 +63,7 @@ void attack_init() {
 
    // knight attacks
 
-   for (dir = 0; dir < 8; dir++) {
+   for (dir = 0; dir < 8; ++dir) {
 
       delta = KnightInc[dir];
       ASSERT(delta_is_ok(delta));
@@ -75,14 +75,14 @@ void attack_init() {
 
    // bishop/queen attacks
 
-   for (dir = 0; dir < 4; dir++) {
+   for (dir = 0; dir < 4; ++dir) {
 
       inc = BishopInc[dir];
       ASSERT(inc!=IncNone);
 
       IncMask[IncOffset+inc] |= BishopFlag;
 
-      for (dist = 1; dist < 8; dist++) {
+      for (dist = 1; dist < 8; ++dist) {
 
          delta = inc*dist;
          ASSERT(delta_is_ok(delta));
@@ -97,14 +97,14 @@ void attack_init() {
 
    // rook/queen attacks
 
-   for (dir = 0; dir < 4; dir++) {
+   for (dir = 0; dir < 4; ++dir) {
 
       inc = RookInc[dir];
       ASSERT(inc!=IncNone);
 
       IncMask[IncOffset+inc] |= RookFlag;
 
-      for (dist = 1; dist < 8; dist++) {
+      for (dist = 1; dist < 8; ++dist) {
 
          delta = inc*dist;
          ASSERT(delta_is_ok(delta));
@@ -119,7 +119,7 @@ void attack_init() {
 
    // king attacks
 
-   for (dir = 0; dir < 8; dir++) {
+   for (dir = 0; dir < 8; ++dir) {
 
       delta = KingInc[dir];
       ASSERT(delta_is_ok(delta));
@@ -129,7 +129,7 @@ void attack_init() {
 
    // PieceCode[]
 
-   for (piece = 0; piece < PieceNb; piece++) {
+   for (piece = 0; piece < PieceNb; ++piece) {
       PieceCode[piece] = -1;
    }
 
@@ -145,23 +145,23 @@ void attack_init() {
 
    // PieceDeltaSize[][] & PieceDeltaDelta[][][]
 
-   for (piece = 0; piece < 4; piece++) {
-      for (delta = 0; delta < 256; delta++) {
+   for (piece = 0; piece < 4; ++piece) {
+      for (delta = 0; delta < 256; ++delta) {
          PieceDeltaSize[piece][delta] = 0;
       }
    }
 
-   for (king = 0; king < SquareNb; king++) {
+   for (king = 0; king < SquareNb; ++king) {
 
       if (SQUARE_IS_OK(king)) {
 
-         for (from = 0; from < SquareNb; from++) {
+         for (from = 0; from < SquareNb; ++from) {
 
             if (SQUARE_IS_OK(from)) {
 
                // knight
 
-               for (pos = 0; (inc=KnightInc[pos]) != IncNone; pos++) {
+               for (pos = 0; (inc=KnightInc[pos]) != IncNone; ++pos) {
                   to = from + inc;
                   if (SQUARE_IS_OK(to) && DISTANCE(to,king) == 1) {
                      add_attack(0,king-from,to-from);
@@ -170,7 +170,7 @@ void attack_init() {
 
                // bishop
 
-               for (pos = 0; (inc=BishopInc[pos]) != IncNone; pos++) {
+               for (pos = 0; (inc=BishopInc[pos]) != IncNone; ++pos) {
                   for (to = from+inc; SQUARE_IS_OK(to); to += inc) {
                      if (DISTANCE(to,king) == 1) {
                         add_attack(1,king-from,to-from);
@@ -181,7 +181,7 @@ void attack_init() {
 
                // rook
 
-               for (pos = 0; (inc=RookInc[pos]) != IncNone; pos++) {
+               for (pos = 0; (inc=RookInc[pos]) != IncNone; ++pos) {
                   for (to = from+inc; SQUARE_IS_OK(to); to += inc) {
                      if (DISTANCE(to,king) == 1) {
                         add_attack(2,king-from,to-from);
@@ -192,7 +192,7 @@ void attack_init() {
 
                // queen
 
-               for (pos = 0; (inc=QueenInc[pos]) != IncNone; pos++) {
+               for (pos = 0; (inc=QueenInc[pos]) != IncNone; ++pos) {
                   for (to = from+inc; SQUARE_IS_OK(to); to += inc) {
                      if (DISTANCE(to,king) == 1) {
                         add_attack(3,king-from,to-from);
@@ -205,8 +205,8 @@ void attack_init() {
       }
    }
 
-   for (piece = 0; piece < 4; piece++) {
-      for (delta = 0; delta < 256; delta++) {
+   for (piece = 0; piece < 4; ++piece) {
+      for (delta = 0; delta < 256; ++delta) {
          size = PieceDeltaSize[piece][delta];
          ASSERT(size>=0&&size<3);
          PieceDeltaDelta[piece][delta][size] = DeltaNone;
@@ -228,13 +228,13 @@ static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t targe
    size = PieceDeltaSize[piece][DeltaOffset+king];
    ASSERT(size>=0&&size<3);
 
-   for (i = 0; i < size; i++) {
+   for (i = 0; i < size; ++i) {
       if (PieceDeltaDelta[piece][DeltaOffset+king][i] == target) return; // already in the table
    }
 
    if (size < 2) {
       PieceDeltaDelta[piece][DeltaOffset+king][size] = target;
-      size++;
+      ++size;
       PieceDeltaSize[piece][DeltaOffset+king] = size;
    }
 }
@@ -265,7 +265,7 @@ bool is_attacked(const board_t * board, int_fast32_t to, int_fast32_t colour) {
 
    // piece attack
 
-   for (ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ++ptr) {
 
       piece = board->square[from];
       delta = to - from;
@@ -354,7 +354,7 @@ bool attack_is_ok(const attack_t * attack) {
 
    if (attack->dn < 0 || attack->dn > 2) return false;
 
-   for (i = 0; i < attack->dn; i++) {
+   for (i = 0; i < attack->dn; ++i) {
       sq = attack->ds[i];
       if (!SQUARE_IS_OK(sq)) return false;
       inc = attack->di[i];
@@ -412,7 +412,7 @@ void attack_set(attack_t * attack, const board_t * board) {
 
    // piece attacks
 
-   for (ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+   for (ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; +ptr) { // HACK: no king
 
       piece = board->square[from];
 
@@ -473,7 +473,7 @@ bool piece_attack_king(const board_t * board, int_fast32_t piece, int_fast32_t f
 
    if (PIECE_IS_SLIDER(piece)) {
 
-      for (delta_ptr = PieceDeltaDelta[code][DeltaOffset+(king-from)]; (delta=*delta_ptr) != DeltaNone; delta_ptr++) {
+      for (delta_ptr = PieceDeltaDelta[code][DeltaOffset+(king-from)]; (delta=*delta_ptr) != DeltaNone; ++delta_ptr) {
 
          ASSERT(delta_is_ok(delta));
 
@@ -494,7 +494,7 @@ bool piece_attack_king(const board_t * board, int_fast32_t piece, int_fast32_t f
 
    } else { // non-slider
 
-      for (delta_ptr = PieceDeltaDelta[code][DeltaOffset+(king-from)]; (delta=*delta_ptr) != DeltaNone; delta_ptr++) {
+      for (delta_ptr = PieceDeltaDelta[code][DeltaOffset+(king-from)]; (delta=*delta_ptr) != DeltaNone; ++delta_ptr) {
 
          ASSERT(delta_is_ok(delta));
 

@@ -140,7 +140,7 @@ void search() {
    bool search_ready;
 
      
-   for (i = 0; i < MultiPVMax; i++){
+   for (i = 0; i < MultiPVMax; ++i){
 	  save_multipv[SearchCurrent->multipv].mate = 0;
 	  save_multipv[SearchCurrent->multipv].depth = 0;
 	  save_multipv[SearchCurrent->multipv].max_depth = 0;
@@ -232,7 +232,7 @@ void search() {
 
    search_ready = false;
 
-   for (depth = 1; depth < DepthMax; depth++) {
+   for (depth = 1; depth < DepthMax; ++depth) {
 	   for (SearchCurrent->multipv = 0; SearchCurrent->multipv <= SearchInput->multipv; SearchCurrent->multipv++){
 
 		  if (DispDepthStart && SearchCurrent->multipv == 0) send("info depth %d",depth);
@@ -354,7 +354,7 @@ void search_update_best() {
 	  }
 	  else{
 		  found = false;
-		  for (i = 0; i < SearchCurrent->multipv; i++){
+		  for (i = 0; i < SearchCurrent->multipv; ++i){
 			  if (save_multipv[i].value < value){
 				  found = true;
 				  break;
@@ -362,7 +362,7 @@ void search_update_best() {
 		  }
 		  if (found){
 
-			  for (z = SearchCurrent->multipv; z > i; z--){
+			  for (z = SearchCurrent->multipv; z > i; --z){
 				  save_multipv[z].mate = save_multipv[z-1].mate;
 				  save_multipv[z].depth = save_multipv[z-1].depth;
 				  save_multipv[z].max_depth = save_multipv[z-1].max_depth;
@@ -393,7 +393,7 @@ void search_update_best() {
 	  }
 	  
       if (depth > 1 || (depth == 1 && SearchCurrent->multipv == SearchInput->multipv)){
-		  for (i = 0; i <= SearchInput->multipv; i++){
+		  for (i = 0; i <= SearchInput->multipv; ++i){
 
 			  if (save_multipv[i].mate == 0) {
 

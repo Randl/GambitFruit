@@ -22,7 +22,7 @@ bool pv_is_ok(const mv_t pv[]) {
 
    if (pv == nullptr) return false;
 
-   for (pos = 0; true; pos++) {
+   for (pos = 0; true; ++pos) {
 
       if (pos >= 256) return false;
       move = pv[pos];

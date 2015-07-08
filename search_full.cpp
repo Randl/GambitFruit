@@ -297,20 +297,20 @@ static int_fast32_t full_root(list_t * list, board_t * board, int_fast32_t alpha
    SearchInfo->check_nb--;
 
    if (SearchCurrent->multipv == 0)
-	  for (i = 0; i < LIST_SIZE(list); i++) list->value[i] = ValueNone;
+	  for (i = 0; i < LIST_SIZE(list); ++i) list->value[i] = ValueNone;
 
    old_alpha = alpha;
    best_value[SearchCurrent->multipv] = ValueNone;
 
    // move loop
 
-   for (i = 0; i < LIST_SIZE(list); i++) {
+   for (i = 0; i < LIST_SIZE(list); ++i) {
 
       move = LIST_MOVE(list,i);
 
 	  if (SearchCurrent->multipv > 0){
 		  found = false;
-		  for (j = 0; j < SearchCurrent->multipv; j++){
+		  for (j = 0; j < SearchCurrent->multipv; ++j){
 			  if (SearchBest[j].pv[0] == move){
 				  found = true;
 				  break;
@@ -715,10 +715,10 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
                ASSERT(move!=trans_move);
                ASSERT(!move_is_tactical(move,board));
                ASSERT(!move_is_check(move,board));
-               new_depth--;
+               --new_depth;
                reduced = true;
 			   if (UseExtendedHistory && value < HistoryValue / 2 && depth >= 8){
-				   new_depth--;
+				   --new_depth;
 				   
 			   }
             }
@@ -751,7 +751,7 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
         value = opt_value + margin;
 
 	if (alpha > value) { 
-		new_depth --; 
+		--new_depth ; 
 		reduced = true;
 		//rebel_reduction = true;
 	}
@@ -781,7 +781,7 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
 	         ASSERT(node_type!=NodePV);
 
 			 SearchStack[height].reduced = false;
-			 new_depth++;
+			 ++new_depth;
 			 ASSERT(new_depth==depth-1);
 		 
 			 value = -full_search(board,-beta,-alpha,new_depth,height+1,new_pv,NODE_OPP(node_type));
@@ -792,7 +792,7 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
 	         ASSERT(node_type!=NodePV);
 
 			 SearchStack[height].reduced = false;
-			 new_depth++;
+			 ++new_depth;
 			 ASSERT(new_depth==depth-1);
 		 
 			 value = -full_search(board,-beta,-alpha,new_depth,height+1,new_pv,NODE_OPP(node_type));
@@ -845,7 +845,7 @@ cut:
 
 		 ASSERT(played_nb>0&&played[played_nb-1]==best_move);
 
-         for (i = 0; i < played_nb-1; i++) {
+         for (i = 0; i < played_nb-1; ++i) {
             move = played[i];
             ASSERT(move!=best_move);
             history_bad(move,board);
@@ -1036,7 +1036,7 @@ static int_fast32_t full_quiescence(board_t * board, int_fast32_t alpha, int_fas
 
    if (in_check) {
       ASSERT(depth<0);
-      depth++; // in-check extension
+      ++depth; // in-check extension
    }
 
    // height limit
@@ -1174,7 +1174,7 @@ static int_fast32_t full_new_depth(int_fast32_t depth, int_fast32_t move, board_
 				  && PAWN_RANK(MOVE_TO(move),board->turn) == Rank7
 				  /* && see_move(move,board) >= 0 */) 
 			|| move_is_check(move,board)) {
-			new_depth++;
+			++new_depth;
 		}
    }
 
@@ -1321,7 +1321,7 @@ static bool simple_stalemate(const board_t * board) {
 
    from = king;
 
-   for (inc_ptr = KingInc; (inc=*inc_ptr) != IncNone; inc_ptr++) {
+   for (inc_ptr = KingInc; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
       to = from + inc;
       capture = board->square[to];
       if (capture == Empty || FLAG_IS(capture,opp_flag)) {

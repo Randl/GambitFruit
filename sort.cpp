@@ -117,15 +117,15 @@ void sort_init() {
 
    // killer
 
-   for (height = 0; height < HeightMax; height++) {
-      for (i = 0; i < KillerNb; i++) Killer[height][i] = MoveNone;
+   for (height = 0; height < HeightMax; ++height) {
+      for (i = 0; i < KillerNb; ++i) Killer[height][i] = MoveNone;
    }
 
    // history
 
-   for (i = 0; i < HistorySize; i++) History[i] = 0;
+   for (i = 0; i < HistorySize; ++i) History[i] = 0;
 
-   for (i = 0; i < HistorySize; i++) {
+   for (i = 0; i < HistorySize; ++i) {
       HistHit[i] = 1;
       HistTot[i] = 1;
 	  FailHighStats[i].success = 1;
@@ -134,7 +134,7 @@ void sort_init() {
 
    // Code[]
 
-   for (pos = 0; pos < CODE_SIZE; pos++) Code[pos] = GEN_ERROR;
+   for (pos = 0; pos < CODE_SIZE; ++pos) Code[pos] = GEN_ERROR;
 
    pos = 0;
 
@@ -513,7 +513,7 @@ void good_move(int_fast32_t move, const board_t * board, int_fast32_t depth, int
    History[index] += HISTORY_INC(depth);
 
    if (History[index] >= HistoryMax) {
-      for (i = 0; i < HistorySize; i++) {
+      for (i = 0; i < HistorySize; ++i) {
          History[i] = (History[i] + 1) / 2;
       }
    } 
@@ -534,8 +534,8 @@ void history_good(int_fast32_t move, const board_t * board) {
 
    index = history_index(move,board);
 
-   HistHit[index]++;
-   HistTot[index]++;
+   ++HistHit[index];
+   ++HistTot[index];
 
    if (HistTot[index] >= HistoryMax) {
       HistHit[index] = (HistHit[index] + 1) / 2;
@@ -561,7 +561,7 @@ void history_bad(int_fast32_t move, const board_t * board) {
 
    index = history_index(move,board);
 
-   HistTot[index]++;
+   ++HistTot[index];
 
    if (HistTot[index] >= HistoryMax) {
       HistHit[index] = (HistHit[index] + 1) / 2;
@@ -665,7 +665,7 @@ void note_moves(list_t * list, const board_t * board, int_fast32_t height, int_f
    size = LIST_SIZE(list);
 
    if (size >= 2) {
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < size; ++i) {
          move = LIST_MOVE(list,i);
          list->value[i] = move_value(move,board,height,trans_killer);
       }
@@ -685,7 +685,7 @@ static void note_captures(list_t * list, const board_t * board) {
    size = LIST_SIZE(list);
 
    if (size >= 2) {
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < size; ++i) {
          move = LIST_MOVE(list,i);
          list->value[i] = capture_value(move,board);
       }
@@ -705,7 +705,7 @@ static void note_quiet_moves(list_t * list, const board_t * board) {
    size = LIST_SIZE(list);
 
    if (size >= 2) {
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < size; ++i) {
          move = LIST_MOVE(list,i);
          list->value[i] = quiet_move_value(move,board);
       }
@@ -725,7 +725,7 @@ static void note_moves_simple(list_t * list, const board_t * board) {
    size = LIST_SIZE(list);
 
    if (size >= 2) {
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < size; ++i) {
          move = LIST_MOVE(list,i);
          list->value[i] = move_value_simple(move,board);
       }
@@ -745,7 +745,7 @@ static void note_mvv_lva(list_t * list, const board_t * board) {
    size = LIST_SIZE(list);
 
    if (size >= 2) {
-      for (i = 0; i < size; i++) {
+      for (i = 0; i < size; ++i) {
          move = LIST_MOVE(list,i);
          list->value[i] = mvv_lva(move,board);
       }

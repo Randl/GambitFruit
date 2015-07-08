@@ -85,7 +85,7 @@ bool trans_is_ok(const trans_t * trans) {
    if (trans->mask == 0 || trans->mask >= trans->size) return false;
    if (trans->date >= DateSize) return false;
 
-   for (date = 0; date < DateSize; date++) {
+   for (date = 0; date < DateSize; ++date) {
       if (trans->age[date] != trans_age(trans,date)) return false;
    }
 
@@ -186,7 +186,7 @@ void trans_clear(trans_t * trans) {
 
    entry = trans->table;
 
-   for (index = 0; index < trans->size; index++) {
+   for (index = 0; index < trans->size; ++index) {
       *entry++ = *clear_entry;
    }
 }
@@ -209,7 +209,7 @@ static void trans_set_date(trans_t * trans, int_fast32_t date) {
 
    trans->date = date;
 
-   for (date = 0; date < DateSize; date++) {
+   for (date = 0; date < DateSize; ++date) {
       trans->age[date] = trans_age(trans,date);
    }
 
@@ -264,7 +264,7 @@ void trans_store(trans_t * trans, uint_fast64_t key, int_fast32_t move, int_fast
 
    entry = trans_entry(trans,key);
 
-   for (i = 0; i < ClusterSize; i++, entry++) {
+   for (i = 0; i < ClusterSize; ++i, ++entry) {
 
       if (entry->lock == KEY_LOCK(key)) {
 
@@ -366,7 +366,7 @@ bool trans_retrieve(trans_t * trans, uint_fast64_t key, int_fast32_t * move, int
 
    entry = trans_entry(trans,key);
 
-   for (i = 0; i < ClusterSize; i++, entry++) {
+   for (i = 0; i < ClusterSize; ++i, ++entry) {
 
       if (entry->lock == KEY_LOCK(key)) {
 

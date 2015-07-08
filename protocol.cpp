@@ -516,7 +516,7 @@ static void parse_position(char string[]) {
 
          move_do(SearchInput->board,move,undo);
 
-         while (*ptr == ' ') ptr++;
+         while (*ptr == ' ') ++ptr;
       }
    }
 }

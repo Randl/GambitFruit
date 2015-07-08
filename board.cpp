@@ -41,7 +41,7 @@ bool board_is_ok(const board_t * board) {
 
    // squares
 
-   for (sq = 0; sq < SquareNb; sq++) {
+   for (sq = 0; sq < SquareNb; ++sq) {
 
       piece = board->square[sq];
       pos = board->pos[sq];
@@ -85,14 +85,14 @@ bool board_is_ok(const board_t * board) {
 
    // piece lists
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       // piece list
 
       size = board->piece_size[colour];
       if (size < 1 || size > 16) return false;
 
-      for (pos = 0; pos < size; pos++) {
+      for (pos = 0; pos < size; ++pos) {
 
          sq = board->piece[colour][pos];
          if (!SQUARE_IS_OK(sq)) return false;
@@ -117,7 +117,7 @@ bool board_is_ok(const board_t * board) {
       size = board->pawn_size[colour];
       if (size < 0 || size > 8) return false;
 
-      for (pos = 0; pos < size; pos++) {
+      for (pos = 0; pos < size; ++pos) {
 
          sq = board->pawn[colour][pos];
          if (!SQUARE_IS_OK(sq)) return false;
@@ -178,13 +178,13 @@ void board_clear(board_t * board) {
 
    // edge squares
 
-   for (sq = 0; sq < SquareNb; sq++) {
+   for (sq = 0; sq < SquareNb; ++sq) {
       board->square[sq] = Edge;
    }
 
    // empty squares
 
-   for (sq_64 = 0; sq_64 < 64; sq_64++) {
+   for (sq_64 = 0; sq_64 < 64; ++sq_64) {
       sq = SQUARE_FROM_64(sq_64);
       board->square[sq] = Empty;
    }
@@ -222,23 +222,23 @@ void board_init_list(board_t * board) {
 
    // init
 
-   for (sq = 0; sq < SquareNb; sq++) {
+   for (sq = 0; sq < SquareNb; ++sq) {
       board->pos[sq] = -1;
    }
 
    board->piece_nb = 0;
-   for (piece = 0; piece < 12; piece++) board->number[piece] = 0;
+   for (piece = 0; piece < 12; ++piece) board->number[piece] = 0;
 
    // piece lists
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       // piece list
 
       pos = 0;
 	  board->piece_material[colour] = 0; // Thomas
       
-      for (sq_64 = 0; sq_64 < 64; sq_64++) {
+      for (sq_64 = 0; sq_64 < 64; ++sq_64) {
 
          sq = SQUARE_FROM_64(sq_64);
          piece = board->square[sq];
@@ -251,7 +251,7 @@ void board_init_list(board_t * board) {
 
             board->pos[sq] = pos;
             board->piece[colour][pos] = sq;
-            pos++;
+            ++pos;
 
             board->piece_nb++;
             board->number[PIECE_TO_12(piece)]++;
@@ -272,13 +272,13 @@ void board_init_list(board_t * board) {
 
       size = board->piece_size[colour];
 
-      for (i = 1; i < size; i++) {
+      for (i = 1; i < size; ++i) {
 
          square = board->piece[colour][i];
          piece = board->square[square];
          order = PIECE_ORDER(piece);
 
-         for (pos = i; pos > 0 && order > PIECE_ORDER(board->square[(sq=board->piece[colour][pos-1])]); pos--) {
+         for (pos = i; pos > 0 && order > PIECE_ORDER(board->square[(sq=board->piece[colour][pos-1])]); --pos) {
             ASSERT(pos>0&&pos<size);
             board->piece[colour][pos] = sq;
             ASSERT(board->pos[sq]==pos-1);
@@ -295,7 +295,7 @@ void board_init_list(board_t * board) {
 
       if (DEBUG) {
 
-         for (i = 0; i < board->piece_size[colour]; i++) {
+         for (i = 0; i < board->piece_size[colour]; ++i) {
 
             sq = board->piece[colour][i];
             ASSERT(board->pos[sq]==i);
@@ -311,13 +311,13 @@ void board_init_list(board_t * board) {
 
       // pawn list
 
-      for (file = 0; file < FileNb; file++) {
+      for (file = 0; file < FileNb; ++file) {
          board->pawn_file[colour][file] = 0;
       }
 
       pos = 0;
 
-      for (sq_64 = 0; sq_64 < 64; sq_64++) {
+      for (sq_64 = 0; sq_64 < 64; ++sq_64) {
 
          sq = SQUARE_FROM_64(sq_64);
          piece = board->square[sq];
@@ -329,7 +329,7 @@ void board_init_list(board_t * board) {
 
             board->pos[sq] = pos;
             board->pawn[colour][pos] = sq;
-            pos++;
+            ++pos;
 
             board->piece_nb++;
             board->number[PIECE_TO_12(piece)]++;
@@ -357,7 +357,7 @@ void board_init_list(board_t * board) {
 
    // hash key
 
-   for (i = 0; i < board->ply_nb; i++) board->stack[i] = 0; // HACK
+   for (i = 0; i < board->ply_nb; ++i) board->stack[i] = 0; // HACK
    board->sp = board->ply_nb;
 
    board->key = hash_key(board);
@@ -424,7 +424,7 @@ bool board_is_stalemate(board_t * board) {
 
    gen_moves(list,board);
 
-   for (i = 0; i < LIST_SIZE(list); i++) {
+   for (i = 0; i < LIST_SIZE(list); ++i) {
       move = LIST_MOVE(list,i);
       if (pseudo_is_legal(move,board)) return false; // legal move => not stalemate
    }
@@ -476,14 +476,14 @@ int_fast32_t board_opening(const board_t * board) {
 
    opening = 0;
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
-      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          opening += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Opening);
       }
 
-      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          opening += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Opening);
       }
@@ -505,14 +505,14 @@ int_fast32_t board_endgame(const board_t * board) {
 
    endgame = 0;
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
-      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          endgame += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Endgame);
       }
 
-      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
          piece = board->square[sq];
          endgame += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Endgame);
       }

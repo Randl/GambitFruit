@@ -111,7 +111,7 @@ void pawn_init_bit() {
 
    // rank-indexed Bit*[]
 
-   for (rank = 0; rank < RankNb; rank++) {
+   for (rank = 0; rank < RankNb; ++rank) {
 
       BitEQ[rank] = 0;
       BitLT[rank] = 0;
@@ -124,7 +124,7 @@ void pawn_init_bit() {
       BitRank3[rank] = 0;
    }
 
-   for (rank = Rank1; rank <= Rank8; rank++) {
+   for (rank = Rank1; rank <= Rank8; ++rank) {
       BitEQ[rank] = 1 << (rank - Rank1);
       BitLT[rank] = BitEQ[rank] - 1;
       BitLE[rank] = BitLT[rank] | BitEQ[rank];
@@ -132,7 +132,7 @@ void pawn_init_bit() {
       BitGE[rank] = BitGT[rank] | BitEQ[rank];
    }
 
-   for (rank = Rank1; rank <= Rank8; rank++) {
+   for (rank = Rank1; rank <= Rank8; ++rank) {
       BitRank1[rank] = BitEQ[rank+1];
       BitRank2[rank] = BitEQ[rank+1] | BitEQ[rank+2];
       BitRank3[rank] = BitEQ[rank+1] | BitEQ[rank+2] | BitEQ[rank+3];
@@ -140,18 +140,18 @@ void pawn_init_bit() {
 
    // bit-indexed Bit*[]
 
-   for (b = 0; b < 0x100; b++) {
+   for (b = 0; b < 0x100; ++b) {
 
       first = Rank8; // HACK for pawn shelter
       last = Rank1; // HACK
       count = 0;
       rev = 0;
 
-      for (rank = Rank1; rank <= Rank8; rank++) {
+      for (rank = Rank1; rank <= Rank8; ++rank) {
          if ((b & BitEQ[rank]) != 0) {
             if (rank < first) first = rank;
             if (rank > last) last = rank;
-            count++;
+            ++count;
             rev |= BitEQ[RANK_OPP(rank)];
          }
       }
@@ -175,7 +175,7 @@ void pawn_init() {
 
    // bonus
 
-   for (rank = 0; rank < RankNb; rank++) Bonus[rank] = 0;
+   for (rank = 0; rank < RankNb; ++rank) Bonus[rank] = 0;
 
    Bonus[Rank4] = 26;
    Bonus[Rank5] = 77;
@@ -297,17 +297,17 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
    // pawn_file[]
 
 #if DEBUG
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       int_fast32_t pawn_file[FileNb];
 
       me = colour;
 
-      for (file = 0; file < FileNb; file++) {
+      for (file = 0; file < FileNb; ++file) {
          pawn_file[file] = 0;
       }
 
-      for (ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
 
          file = SQUARE_FILE(sq);
          rank = PAWN_RANK(sq,me);
@@ -318,7 +318,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
          pawn_file[file] |= BIT(rank);
       }
 
-      for (file = 0; file < FileNb; file++) {
+      for (file = 0; file < FileNb; ++file) {
          if (board->pawn_file[colour][file] != pawn_file[file]) my_fatal("board->pawn_file[][]\n");
       }
    }
@@ -335,12 +335,12 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
    // features and scoring
 
-   for (colour = 0; colour < ColourNb; colour++) {
+   for (colour = 0; colour < ColourNb; ++colour) {
 
       me = colour;
       opp = COLOUR_OPP(me);
 
-      for (ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ptr++) {
+      for (ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
 
          // init
 
@@ -368,7 +368,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
          t2 = board->pawn_file[me][file] | BitRev[board->pawn_file[opp][file]];
 
 	 // square colour
-	 if (SQUARE_COLOUR(sq) == White) wsp[me]++;
+	 if (SQUARE_COLOUR(sq) == White) ++wsp[me];
 
 	 // pawn duo
 	 if (BIT_COUNT(BitRev[board->pawn_file[me][file+1]]&BitEQ[rank])) {

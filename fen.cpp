@@ -20,7 +20,7 @@ const char * const StartFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQk
 
 // variables
 
-static const bool Strict = false;
+static constexpr bool Strict = false;
 
 // functions
 
@@ -45,7 +45,7 @@ void board_from_fen(board_t * board, const char fen[]) {
 
    // piece placement
 
-   for (rank = Rank8; rank >= Rank1; rank--) {
+   for (rank = Rank8; rank >= Rank1; --rank) {
 
       for (file = FileA; file <= FileH;) {
 
@@ -53,10 +53,10 @@ void board_from_fen(board_t * board, const char fen[]) {
 
             len = c - '0';
 
-            for (i = 0; i < len; i++) {
+            for (i = 0; i < len; ++i) {
                if (file > FileH) my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
                board->square[SQUARE_MAKE(file,rank)] = Empty;
-               file++;
+               ++file;
             }
 
          } else { // piece
@@ -65,7 +65,7 @@ void board_from_fen(board_t * board, const char fen[]) {
             if (piece == PieceNone256) my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
 
             board->square[SQUARE_MAKE(file,rank)] = piece;
-            file++;
+            ++file;
          }
 
          c = fen[++pos];
@@ -208,7 +208,7 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
 
    // piece placement
 
-   for (rank = Rank8; rank >= Rank1; rank--) {
+   for (rank = Rank8; rank >= Rank1; --rank) {
 
       for (file = FileA; file <= FileH;) {
 
@@ -219,8 +219,8 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
          if (piece == Empty) {
 
             len = 0;
-            for (; file <= FileH && board->square[SQUARE_MAKE(file,rank)] == Empty; file++) {
-               len++;
+            for (; file <= FileH && board->square[SQUARE_MAKE(file,rank)] == Empty; ++file) {
+               ++len;
             }
 
             ASSERT(len>=1&&len<=8);
@@ -229,7 +229,7 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
          } else {
 
             c = piece_to_char(piece);
-            file++;
+            ++file;
          }
 
          fen[pos++] = c;

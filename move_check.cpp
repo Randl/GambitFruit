@@ -75,7 +75,7 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 
    // indirect checks
 
-   for (ptr = pin; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = pin; (from=*ptr) != SquareNone; ++ptr) {
 
       piece = board->square[from];
 
@@ -106,7 +106,7 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 
       } else if (PIECE_IS_SLIDER(piece)) {
 
-         for (inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; inc_ptr++) {
+         for (inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; ++inc_ptr) {
             for (to = from+inc; board->square[to] == Empty; to += inc) {
                ASSERT(DELTA_INC_LINE(to-king)!=DELTA_INC_LINE(from-king));
                LIST_ADD(list,MOVE_MAKE(from,to));
@@ -115,7 +115,7 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 
       } else {
 
-         for (inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; inc_ptr++) {
+         for (inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; ++inc_ptr) {
             to = from + inc;
             if (board->square[to] == Empty) {
                if (DELTA_INC_LINE(to-king) != DELTA_INC_LINE(from-king)) {
@@ -128,9 +128,9 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 
    // piece direct checks
 
-   for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+   for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
-      for (ptr_2 = pin; (sq=*ptr_2) != SquareNone; ptr_2++) {
+      for (ptr_2 = pin; (sq=*ptr_2) != SquareNone; ++ptr_2) {
          if (sq == from) goto next_piece;
       }
 
@@ -141,7 +141,7 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 
       if (PIECE_IS_SLIDER(piece)) {
 
-         for (; (inc=*inc_ptr) != IncNone; inc_ptr++) {
+         for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
             for (to = from+inc; board->square[to] == Empty; to += inc) {
                if (PIECE_ATTACK(board,piece,to,king)) {
                   LIST_ADD(list,MOVE_MAKE(from,to));
@@ -151,7 +151,7 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 
       } else {
 
-         for (; (inc=*inc_ptr) != IncNone; inc_ptr++) {
+         for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
             to = from + inc;
             if (board->square[to] == Empty) {
                if (PSEUDO_ATTACK(piece,king-to)) {
@@ -345,7 +345,7 @@ static void find_pins(int_fast32_t list[], const board_t * board) {
 
    king = KING_POS(board,opp);
 
-   for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+   for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
       piece = board->square[from];
 

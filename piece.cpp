@@ -65,23 +65,23 @@ void piece_init() {
 
    // PieceTo12[]
 
-   for (piece = 0; piece < PieceNb; piece++) PieceTo12[piece] = -1;
+   for (piece = 0; piece < PieceNb; ++piece) PieceTo12[piece] = -1;
 
-   for (piece_12 = 0; piece_12 < 12; piece_12++) {
+   for (piece_12 = 0; piece_12 < 12; ++piece_12) {
       PieceTo12[PieceFrom12[piece_12]] = piece_12;
    }
 
    // PieceOrder[]
 
-   for (piece = 0; piece < PieceNb; piece++) PieceOrder[piece] = -1;
+   for (piece = 0; piece < PieceNb; ++piece) PieceOrder[piece] = -1;
 
-   for (piece_12 = 0; piece_12 < 12; piece_12++) {
+   for (piece_12 = 0; piece_12 < 12; ++piece_12) {
       PieceOrder[PieceFrom12[piece_12]] = piece_12 >> 1;
    }
 
    // PieceInc[]
 
-   for (piece = 0; piece < PieceNb; piece++) {
+   for (piece = 0; piece < PieceNb; ++piece) {
       PieceInc[piece] = nullptr;
    }
 

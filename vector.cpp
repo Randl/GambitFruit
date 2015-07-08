@@ -22,11 +22,11 @@ void vector_init() {
 
    // Distance[]
 
-   for (delta = 0; delta < DeltaNb; delta++) Distance[delta] = -1;
+   for (delta = 0; delta < DeltaNb; ++delta) Distance[delta] = -1;
 
-   for (y = -7; y <= +7; y++) {
+   for (y = -7; y <= +7; ++y) {
 
-      for (x = -7; x <= +7; x++) {
+      for (x = -7; x <= +7; ++x) {
 
          delta = y * 16 + x;
          ASSERT(delta_is_ok(delta));
@@ -63,7 +63,7 @@ bool inc_is_ok(int_fast32_t inc) {
 
    int_fast32_t dir;
 
-   for (dir = 0; dir < 8; dir++) {
+   for (dir = 0; dir < 8; ++dir) {
       if (KingInc[dir] == inc) return true;
    }
 

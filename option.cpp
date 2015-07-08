@@ -126,7 +126,7 @@ void option_init() {
 
    option_t * opt;
 
-   for (opt = &Option[0]; opt->var != nullptr; opt++) {
+   for (opt = &Option[0]; opt->var != nullptr; ++opt) {
       option_set(opt->var,opt->init);
    }
 }
@@ -137,7 +137,7 @@ void option_list() {
 
    option_t * opt;
 
-   for (opt = &Option[0]; opt->var != nullptr; opt++) {
+   for (opt = &Option[0]; opt->var != nullptr; ++opt) {
       if (opt->declare) {
          if (opt->extra != nullptr && *opt->extra != '\0') {
             send("option name %s type %s default %s %s",opt->var,opt->type,opt->val,opt->extra);
@@ -228,7 +228,7 @@ static option_t * option_find(const char var[]) {
 
    ASSERT(var!=nullptr);
 
-   for (opt = &Option[0]; opt->var != nullptr; opt++) {
+   for (opt = &Option[0]; opt->var != nullptr; ++opt) {
       if (my_string_equal(opt->var,var)) return opt;
    }
 

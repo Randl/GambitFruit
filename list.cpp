@@ -35,7 +35,7 @@ void list_remove(list_t * list, int_fast32_t pos) {
    ASSERT(list_is_ok(list));
    ASSERT(pos>=0&&pos<list->size);
 
-   for (i = pos; i < list->size-1; i++) {
+   for (i = pos; i < list->size-1; ++i) {
       list->move[i] = list->move[i+1];
       list->value[i] = list->value[i+1];
    }
@@ -54,7 +54,7 @@ void list_copy(list_t * dst, const list_t * src) {
 
    dst->size = src->size;
 
-   for (i = 0; i < src->size; i++) {
+   for (i = 0; i < src->size; ++i) {
       dst->move[i] = src->move[i];
       dst->value[i] = src->value[i];
    }
@@ -77,12 +77,12 @@ void list_sort(list_t * list) {
 
    // insert sort (stable)
 
-   for (i = size-2; i >= 0; i--) {
+   for (i = size-2; i >= 0; --i) {
 
       move = list->move[i];
       value = list->value[i];
 
-      for (j = i; value < list->value[j+1]; j++) {
+      for (j = i; value < list->value[j+1]; ++j) {
          list->move[j] = list->move[j+1];
          list->value[j] = list->value[j+1];
       }
@@ -96,7 +96,7 @@ void list_sort(list_t * list) {
    // debug
 
    if (DEBUG) {
-      for (i = 0; i < size-1; i++) {
+      for (i = 0; i < size-1; ++i) {
          ASSERT(list->value[i]>=list->value[i+1]);
       }
    }
@@ -111,7 +111,7 @@ bool list_contain(const list_t * list, int_fast32_t move) {
    ASSERT(list_is_ok(list));
    ASSERT(move_is_ok(move));
 
-   for (i = 0; i < list->size; i++) {
+   for (i = 0; i < list->size; ++i) {
       if (list->move[i] == move) return true;
    }
 
@@ -126,7 +126,7 @@ void list_note(list_t * list) {
 
    ASSERT(list_is_ok(list));
 
-   for (i = 0; i < list->size; i++) {
+   for (i = 0; i < list->size; ++i) {
       move = list->move[i];
       ASSERT(move_is_ok(move));
       list->value[i] = -move_order(move);
@@ -147,7 +147,7 @@ void list_filter(list_t * list, board_t * board, move_test_t test, bool keep) {
 
    pos = 0;
 
-   for (i = 0; i < LIST_SIZE(list); i++) {
+   for (i = 0; i < LIST_SIZE(list); ++i) {
 
       ASSERT(pos>=0&&pos<=i);
 
@@ -157,7 +157,7 @@ void list_filter(list_t * list, board_t * board, move_test_t test, bool keep) {
       if ((*test)(move,board) == keep) {
          list->move[pos] = move;
          list->value[pos] = value;
-         pos++;
+         ++pos;
       }
    }
 

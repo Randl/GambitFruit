@@ -97,7 +97,7 @@ static bool gen_evasions(list_t * list, const board_t * board, const attack_t * 
 
    king = KING_POS(board,me);
 
-   for (inc_ptr = KingInc; (inc=*inc_ptr) != IncNone; inc_ptr++) {
+   for (inc_ptr = KingInc; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
       if (inc != -attack->di[0] && inc != -attack->di[1]) { // avoid escaping along a check line
          to = king + inc;
          piece = board->square[to];
@@ -271,7 +271,7 @@ static bool add_piece_moves(list_t * list, const board_t * board, int_fast32_t t
 
    me = board->turn;
 
-   for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ptr++) { // HACK: no king
+   for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
       piece = board->square[from];
 

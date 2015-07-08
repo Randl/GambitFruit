@@ -96,7 +96,7 @@ int_fast32_t book_move(board_t * board) {
       best_move = MoveNone;
       best_score = 0;
 
-      for (pos = find_pos(board->key); pos < BookSize; pos++) {
+      for (pos = find_pos(board->key); pos < BookSize; ++pos) {
 
          read_entry(entry,pos);
          if (entry->key != board->key) break;
@@ -118,7 +118,7 @@ int_fast32_t book_move(board_t * board) {
 
          gen_legal_moves(list,board);
 
-         for (i = 0; i < list->size; i++) {
+         for (i = 0; i < list->size; ++i) {
             move = list->move[i];
             if ((move & 07777) == best_move) return move;
          }
@@ -196,7 +196,7 @@ static uint_fast64_t read_integer(FILE * file, int_fast32_t size) {
 
    n = 0;
 
-   for (i = 0; i < size; i++) {
+   for (i = 0; i < size; ++i) {
 
       b = fgetc(file);
 

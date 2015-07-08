@@ -135,7 +135,7 @@ int_fast32_t see_move(int_fast32_t move, const board_t * board) {
 
    // remove the moved piece (if it's an attacker)
 
-   for (pos = 0; pos < alist->size && alist->square[pos] != from; pos++)
+   for (pos = 0; pos < alist->size && alist->square[pos] != from; ++pos)
       ;
 
    if (pos < alist->size) alist_remove(alist,pos);
@@ -260,7 +260,7 @@ static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to,
 
    // piece attacks
 
-   for (ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ptr++) {
+   for (ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ++ptr) {
 
       piece = board->square[from];
       delta = to - from;
@@ -348,7 +348,7 @@ static void alist_add(alist_t * alist, int_fast32_t square, const board_t * boar
    size = ++alist->size; // HACK
    ASSERT(size>0&&size<16);
 
-   for (pos = size-1; pos > 0 && piece > board->square[alist->square[pos-1]]; pos--) { // HACK
+   for (pos = size-1; pos > 0 && piece > board->square[alist->square[pos-1]]; --pos) { // HACK
       ASSERT(pos>0&&pos<size);
       alist->square[pos] = alist->square[pos-1];
    }
@@ -371,7 +371,7 @@ static void alist_remove(alist_t * alist, int_fast32_t pos) {
 
    ASSERT(pos>=0&&pos<size);
 
-   for (i = pos; i < size-1; i++) {
+   for (i = pos; i < size-1; ++i) {
       ASSERT(i>=0&&i<size-1);
       alist->square[i] = alist->square[i+1];
    }
@@ -392,7 +392,7 @@ static int_fast32_t alist_pop(alist_t * alist, const board_t * board) {
    size = alist->size;
 
    if (size != 0) {
-      size--;
+      --size;
       ASSERT(size>=0);
       sq = alist->square[size];
       alist->size = size;
