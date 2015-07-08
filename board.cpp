@@ -1,5 +1,5 @@
 
-// board.cpp
+//board.cpp
 
 // includes
 
@@ -30,10 +30,10 @@ static const bool UseSlowDebug = false;
 
 bool board_is_ok(const board_t * board) {
 
-   int sq, piece, colour;
-   int size, pos;
+   int_fast32_t sq, piece, colour;
+   int_fast32_t size, pos;
 
-   if (board == NULL) return false;
+   if (board == nullptr) return false;
 
    // optional heavy DEBUG mode
 
@@ -172,9 +172,9 @@ bool board_is_ok(const board_t * board) {
 
 void board_clear(board_t * board) {
 
-   int sq, sq_64;
+   int_fast32_t sq, sq_64;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // edge squares
 
@@ -201,7 +201,7 @@ void board_clear(board_t * board) {
 
 void board_copy(board_t * dst, const board_t * src) {
 
-   ASSERT(dst!=NULL);
+   ASSERT(dst!=nullptr);
    ASSERT(board_is_ok(src));
 
    *dst = *src;
@@ -211,14 +211,14 @@ void board_copy(board_t * dst, const board_t * src) {
 
 void board_init_list(board_t * board) {
 
-   int sq_64, sq, piece;
-   int colour, pos;
-   int i, size;
-   int square;
-   int order;
-   int file;
+   int_fast32_t sq_64, sq, piece;
+   int_fast32_t colour, pos;
+   int_fast32_t i, size;
+   int_fast32_t square;
+   int_fast32_t order;
+   int_fast32_t file;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -377,7 +377,7 @@ void board_init_list(board_t * board) {
 
 bool board_is_legal(const board_t * board) {
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    return !IS_IN_CHECK(board,COLOUR_OPP(board->turn));
 }
@@ -386,7 +386,7 @@ bool board_is_legal(const board_t * board) {
 
 bool board_is_check(const board_t * board) {
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    return IS_IN_CHECK(board,board->turn);
 }
@@ -397,7 +397,7 @@ bool board_is_mate(const board_t * board) {
 
    attack_t attack[1];
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    attack_set(attack,board);
 
@@ -412,9 +412,9 @@ bool board_is_mate(const board_t * board) {
 bool board_is_stalemate(board_t * board) {
 
    list_t list[1];
-   int i, move;
+   int_fast32_t i, move;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -436,9 +436,9 @@ bool board_is_stalemate(board_t * board) {
 
 bool board_is_repetition(const board_t * board) {
 
-   int i, z;
+   int_fast32_t i, z;
    
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // 50-move rule
 
@@ -465,14 +465,14 @@ bool board_is_repetition(const board_t * board) {
 
 // board_opening()
 
-int board_opening(const board_t * board) {
+int_fast32_t board_opening(const board_t * board) {
 
-   int opening;
-   int colour;
+   int_fast32_t opening;
+   int_fast32_t colour;
    const sq_t * ptr;
-   int sq, piece;
+   int_fast32_t sq, piece;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    opening = 0;
 
@@ -494,14 +494,14 @@ int board_opening(const board_t * board) {
 
 // board_endgame()
 
-int board_endgame(const board_t * board) {
+int_fast32_t board_endgame(const board_t * board) {
 
-   int endgame;
-   int colour;
+   int_fast32_t endgame;
+   int_fast32_t colour;
    const sq_t * ptr;
-   int sq, piece;
+   int_fast32_t sq, piece;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    endgame = 0;
 
@@ -522,4 +522,3 @@ int board_endgame(const board_t * board) {
 }
 
 // end of board.cpp
-

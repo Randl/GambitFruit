@@ -10,9 +10,9 @@
 
 // constants
 
-const int Opening = 0;
-const int Endgame = 1;
-const int StageNb = 2;
+const int_fast32_t Opening = 0;
+const int_fast32_t Endgame = 1;
+const int_fast32_t StageNb = 2;
 
 // macros
 
@@ -20,7 +20,7 @@ const int StageNb = 2;
 
 // variables
 
-extern sint16 Pst[12][64][StageNb];
+extern int_fast16_t Pst[12][64][StageNb];
 
 // functions
 

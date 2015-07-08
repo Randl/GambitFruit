@@ -1,4 +1,3 @@
-
 // attack.cpp
 
 // includes
@@ -13,20 +12,20 @@
 
 // variables
 
-int DeltaIncLine[DeltaNb];
-int DeltaIncAll[DeltaNb];
+int_fast32_t DeltaIncLine[DeltaNb];
+int_fast32_t DeltaIncAll[DeltaNb];
 
-int DeltaMask[DeltaNb];
-int IncMask[IncNb];
+int_fast32_t DeltaMask[DeltaNb];
+int_fast32_t IncMask[IncNb];
 
-static int PieceCode[PieceNb];
+static int_fast32_t PieceCode[PieceNb];
 
-static int PieceDeltaSize[4][256]; // 4kB
-static int PieceDeltaDelta[4][256][4]; // 16 kB
+static int_fast32_t PieceDeltaSize[4][256]; // 4kB
+static int_fast32_t PieceDeltaDelta[4][256][4]; // 16 kB
 
 // prototypes
 
-static void add_attack (int piece, int king, int target);
+static void add_attack (int_fast32_t piece, int_fast32_t king, int_fast32_t target);
 
 // functions
 
@@ -34,13 +33,13 @@ static void add_attack (int piece, int king, int target);
 
 void attack_init() {
 
-   int delta, inc;
-   int piece;
-   int dir, dist;
-   int size;
-   int king;
-   int from, to;
-   int pos;
+   int_fast32_t delta, inc;
+   int_fast32_t piece;
+   int_fast32_t dir, dist;
+   int_fast32_t size;
+   int_fast32_t king;
+   int_fast32_t from, to;
+   int_fast32_t pos;
 
    // clear
 
@@ -217,10 +216,10 @@ void attack_init() {
 
 // add_attack()
 
-static void add_attack(int piece, int king, int target) {
+static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t target) {
 
-   int size;
-   int i;
+   int_fast32_t size;
+   int_fast32_t i;
 
    ASSERT(piece>=0&&piece<4);
    ASSERT(delta_is_ok(king));
@@ -242,15 +241,15 @@ static void add_attack(int piece, int king, int target) {
 
 // is_attacked()
 
-bool is_attacked(const board_t * board, int to, int colour) {
+bool is_attacked(const board_t * board, int_fast32_t to, int_fast32_t colour) {
 
-   int inc;
-   int pawn;
+   int_fast32_t inc;
+   int_fast32_t pawn;
    const sq_t * ptr;
-   int from;
-   int piece;
-   int delta;
-   int sq;
+   int_fast32_t from;
+   int_fast32_t piece;
+   int_fast32_t delta;
+   int_fast32_t sq;
 
    ASSERT(board!=NULL);
    ASSERT(SQUARE_IS_OK(to));
@@ -289,12 +288,12 @@ bool is_attacked(const board_t * board, int to, int colour) {
 
 // line_is_empty()
 
-bool line_is_empty(const board_t * board, int from, int to) {
+bool line_is_empty(const board_t * board, int_fast32_t from, int_fast32_t to) {
 
-   int delta;
-   int inc, sq;
+   int_fast32_t delta;
+   int_fast32_t inc, sq;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(from));
    ASSERT(SQUARE_IS_OK(to));
 
@@ -315,11 +314,11 @@ bool line_is_empty(const board_t * board, int from, int to) {
 
 // is_pinned()
 
-bool is_pinned(const board_t * board, int square, int colour) {
+bool is_pinned(const board_t * board, int_fast32_t square, int_fast32_t colour) {
 
-   int from, to;
-   int inc;
-   int sq, piece;
+   int_fast32_t from, to;
+   int_fast32_t inc;
+   int_fast32_t sq, piece;
 
    ASSERT(board!=NULL);
    ASSERT(SQUARE_IS_OK(square));
@@ -346,8 +345,8 @@ bool is_pinned(const board_t * board, int square, int colour) {
 
 bool attack_is_ok(const attack_t * attack) {
 
-   int i;
-   int sq, inc;
+   int_fast32_t i;
+   int_fast32_t sq, inc;
 
    if (attack == NULL) return false;
 
@@ -372,13 +371,13 @@ bool attack_is_ok(const attack_t * attack) {
 
 void attack_set(attack_t * attack, const board_t * board) {
 
-   int me, opp;
+   int_fast32_t me, opp;
    const sq_t * ptr;
-   int from, to;
-   int inc;
-   int pawn;
-   int delta, piece;
-   int sq;
+   int_fast32_t from, to;
+   int_fast32_t inc;
+   int_fast32_t pawn;
+   int_fast32_t delta, piece;
+   int_fast32_t sq;
 
    ASSERT(attack!=NULL);
    ASSERT(board!=NULL);
@@ -453,14 +452,14 @@ void attack_set(attack_t * attack, const board_t * board) {
 
 // piece_attack_king()
 
-bool piece_attack_king(const board_t * board, int piece, int from, int king) {
+bool piece_attack_king(const board_t * board, int_fast32_t piece, int_fast32_t from, int_fast32_t king) {
 
    const inc_t * inc_ptr;
-   int code;
-   const int * delta_ptr;
-   int delta, inc;
-   int to;
-   int sq;
+   int_fast32_t code;
+   const int_fast32_t * delta_ptr;
+   int_fast32_t delta, inc;
+   int_fast32_t to;
+   int_fast32_t sq;
 
    ASSERT(board!=NULL);
    ASSERT(piece_is_ok(piece));
@@ -512,4 +511,3 @@ bool piece_attack_king(const board_t * board, int piece, int from, int king) {
 }
 
 // end of attack.cpp
-

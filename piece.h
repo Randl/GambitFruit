@@ -11,52 +11,52 @@
 
 // constants
 
-const int WhitePawnFlag = 1 << 2;
-const int BlackPawnFlag = 1 << 3;
-const int KnightFlag    = 1 << 4;
-const int BishopFlag    = 1 << 5;
-const int RookFlag      = 1 << 6;
-const int KingFlag      = 1 << 7;
+const int_fast32_t WhitePawnFlag = 1 << 2;
+const int_fast32_t BlackPawnFlag = 1 << 3;
+const int_fast32_t KnightFlag    = 1 << 4;
+const int_fast32_t BishopFlag    = 1 << 5;
+const int_fast32_t RookFlag      = 1 << 6;
+const int_fast32_t KingFlag      = 1 << 7;
 
-const int PawnFlags  = WhitePawnFlag | BlackPawnFlag;
-const int QueenFlags = BishopFlag | RookFlag;
+const int_fast32_t PawnFlags  = WhitePawnFlag | BlackPawnFlag;
+const int_fast32_t QueenFlags = BishopFlag | RookFlag;
 
-const int PieceNone64 = 0;
-const int WhitePawn64 = WhitePawnFlag;
-const int BlackPawn64 = BlackPawnFlag;
-const int Knight64    = KnightFlag;
-const int Bishop64    = BishopFlag;
-const int Rook64      = RookFlag;
-const int Queen64     = QueenFlags;
-const int King64      = KingFlag;
+const int_fast32_t PieceNone64 = 0;
+const int_fast32_t WhitePawn64 = WhitePawnFlag;
+const int_fast32_t BlackPawn64 = BlackPawnFlag;
+const int_fast32_t Knight64    = KnightFlag;
+const int_fast32_t Bishop64    = BishopFlag;
+const int_fast32_t Rook64      = RookFlag;
+const int_fast32_t Queen64     = QueenFlags;
+const int_fast32_t King64      = KingFlag;
 
-const int PieceNone256   = 0;
-const int WhitePawn256   = WhitePawn64 | WhiteFlag;
-const int BlackPawn256   = BlackPawn64 | BlackFlag;
-const int WhiteKnight256 = Knight64    | WhiteFlag;
-const int BlackKnight256 = Knight64    | BlackFlag;
-const int WhiteBishop256 = Bishop64    | WhiteFlag;
-const int BlackBishop256 = Bishop64    | BlackFlag;
-const int WhiteRook256   = Rook64      | WhiteFlag;
-const int BlackRook256   = Rook64      | BlackFlag;
-const int WhiteQueen256  = Queen64     | WhiteFlag;
-const int BlackQueen256  = Queen64     | BlackFlag;
-const int WhiteKing256   = King64      | WhiteFlag;
-const int BlackKing256   = King64      | BlackFlag;
-const int PieceNb        = 256;
+const int_fast32_t PieceNone256   = 0;
+const int_fast32_t WhitePawn256   = WhitePawn64 | WhiteFlag;
+const int_fast32_t BlackPawn256   = BlackPawn64 | BlackFlag;
+const int_fast32_t WhiteKnight256 = Knight64    | WhiteFlag;
+const int_fast32_t BlackKnight256 = Knight64    | BlackFlag;
+const int_fast32_t WhiteBishop256 = Bishop64    | WhiteFlag;
+const int_fast32_t BlackBishop256 = Bishop64    | BlackFlag;
+const int_fast32_t WhiteRook256   = Rook64      | WhiteFlag;
+const int_fast32_t BlackRook256   = Rook64      | BlackFlag;
+const int_fast32_t WhiteQueen256  = Queen64     | WhiteFlag;
+const int_fast32_t BlackQueen256  = Queen64     | BlackFlag;
+const int_fast32_t WhiteKing256   = King64      | WhiteFlag;
+const int_fast32_t BlackKing256   = King64      | BlackFlag;
+const int_fast32_t PieceNb        = 256;
 
-const int WhitePawn12   =  0;
-const int BlackPawn12   =  1;
-const int WhiteKnight12 =  2;
-const int BlackKnight12 =  3;
-const int WhiteBishop12 =  4;
-const int BlackBishop12 =  5;
-const int WhiteRook12   =  6;
-const int BlackRook12   =  7;
-const int WhiteQueen12  =  8;
-const int BlackQueen12  =  9;
-const int WhiteKing12   = 10;
-const int BlackKing12   = 11;
+const int_fast32_t WhitePawn12   =  0;
+const int_fast32_t BlackPawn12   =  1;
+const int_fast32_t WhiteKnight12 =  2;
+const int_fast32_t BlackKnight12 =  3;
+const int_fast32_t WhiteBishop12 =  4;
+const int_fast32_t BlackBishop12 =  5;
+const int_fast32_t WhiteRook12   =  6;
+const int_fast32_t BlackRook12   =  7;
+const int_fast32_t WhiteQueen12  =  8;
+const int_fast32_t BlackQueen12  =  9;
+const int_fast32_t WhiteKing12   = 10;
+const int_fast32_t BlackKing12   = 11;
 
 // macros
 
@@ -83,12 +83,12 @@ const int BlackKing12   = 11;
 
 // types
 
-typedef int inc_t;
+typedef int_fast32_t inc_t;
 
 // "constants"
 
-extern const int PawnMake[ColourNb];
-extern const int PieceFrom12[12];
+extern const int_fast32_t PawnMake[ColourNb];
+extern const int_fast32_t PieceFrom12[12];
 
 extern const inc_t PawnMoveInc[ColourNb];
 
@@ -100,8 +100,8 @@ extern const inc_t KingInc[8+1];
 
 // variables
 
-extern int PieceTo12[PieceNb];
-extern int PieceOrder[PieceNb];
+extern int_fast32_t PieceTo12[PieceNb];
+extern int_fast32_t PieceOrder[PieceNb];
 
 extern const inc_t * PieceInc[PieceNb];
 
@@ -109,12 +109,12 @@ extern const inc_t * PieceInc[PieceNb];
 
 extern void piece_init      ();
 
-extern bool piece_is_ok     (int piece);
+extern bool piece_is_ok     (int_fast32_t piece);
 
-extern int  piece_from_12   (int piece_12);
+extern int_fast32_t  piece_from_12   (int_fast32_t piece_12);
 
-extern int  piece_to_char   (int piece);
-extern int  piece_from_char (int c);
+extern int_fast32_t  piece_to_char   (int_fast32_t piece);
+extern int_fast32_t  piece_from_char (int_fast32_t c);
 
 #endif // !defined PIECE_H
 

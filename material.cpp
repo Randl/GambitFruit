@@ -19,43 +19,43 @@
 
 // constants
 
-static const uint32 TableSize = 256; // 4kB
+static const uint_fast32_t TableSize = 256; // 4kB
 
-static const int PawnPhase   = 0;
-static const int KnightPhase = 1;
-static const int BishopPhase = 1;
-static const int RookPhase   = 2;
-static const int QueenPhase  = 4;
+static const int_fast32_t PawnPhase   = 0;
+static const int_fast32_t KnightPhase = 1;
+static const int_fast32_t BishopPhase = 1;
+static const int_fast32_t RookPhase   = 2;
+static const int_fast32_t QueenPhase  = 4;
 
-static const int TotalPhase = PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
+static const int_fast32_t TotalPhase = PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
 
 // constants and variables
 
 #define ABS(x) ((x)<0?-(x):(x))
 
-//static /* const */ int MaterialWeight = 256; // 100%
+//static /* const */ int_fast32_t MaterialWeight = 256; // 100%
 
-static /*const*/ int PawnOpening   = 80; // was 100
-static /*const*/ int PawnEndgame   = 90; // was 100
-static /*const*/ int KnightOpening = 320;
-static /*const*/ int KnightEndgame = 320;
-static /*const*/ int BishopOpening = 325;
-static /*const*/ int BishopEndgame = 325;
-static /*const*/ int RookOpening   = 500;
-static /*const*/ int RookEndgame   = 500;
-static /*const*/ int QueenOpening  = 975;
-static /*const*/ int QueenEndgame  = 975;
+static /*const*/ int_fast32_t PawnOpening   = 80; // was 100
+static /*const*/ int_fast32_t PawnEndgame   = 90; // was 100
+static /*const*/ int_fast32_t KnightOpening = 320;
+static /*const*/ int_fast32_t KnightEndgame = 320;
+static /*const*/ int_fast32_t BishopOpening = 325;
+static /*const*/ int_fast32_t BishopEndgame = 325;
+static /*const*/ int_fast32_t RookOpening   = 500;
+static /*const*/ int_fast32_t RookEndgame   = 500;
+static /*const*/ int_fast32_t QueenOpening  = 975;
+static /*const*/ int_fast32_t QueenEndgame  = 975;
 
-static /*const*/ int BishopPairOpening = 50;
-static /*const*/ int BishopPairEndgame = 50;
+static /*const*/ int_fast32_t BishopPairOpening = 50;
+static /*const*/ int_fast32_t BishopPairEndgame = 50;
 
-static /*const*/ int Queen_Knight_combo = 15; // with no rooks
-static /*const*/ int Rook_Bishop_combo = 15;  // with no queens
-static /*const*/ int bad_trade_value = 50; // not used like in crafty... (will be for 3 minors vs queen)
+static /*const*/ int_fast32_t Queen_Knight_combo = 15; // with no rooks
+static /*const*/ int_fast32_t Rook_Bishop_combo = 15;  // with no queens
+static /*const*/ int_fast32_t bad_trade_value = 50; // not used like in crafty... (will be for 3 minors vs queen)
 
-static int bitbase_pieces = 2;
+static int_fast32_t bitbase_pieces = 2;
 
-static const int RookPawnPenalty[17] = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
+static const int_fast32_t RookPawnPenalty[17] = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
 
 // types
 
@@ -63,13 +63,13 @@ typedef material_info_t entry_t;
 
 struct material_t {
    entry_t * table;
-   uint32 size;
-   uint32 mask;
-   uint32 used;
-   sint64 read_nb;
-   sint64 read_hit;
-   sint64 write_nb;
-   sint64 write_collision;
+   uint_fast32_t size;
+   uint_fast32_t mask;
+   uint_fast32_t used;
+   int_fast64_t read_nb;
+   int_fast64_t read_hit;
+   int_fast64_t write_nb;
+   int_fast64_t write_collision;
 };
 
 // variables
@@ -115,7 +115,7 @@ void material_init() {
 
    Material->size = 0;
    Material->mask = 0;
-   Material->table = NULL;
+   Material->table = nullptr;
 }
 
 // material_alloc()
@@ -137,7 +137,7 @@ void material_alloc() {
 
 void material_clear() {
 
-   if (Material->table != NULL) {
+   if (Material->table != nullptr) {
       memset(Material->table,0,Material->size*sizeof(entry_t));
    }
 
@@ -152,11 +152,11 @@ void material_clear() {
 
 void material_get_info(material_info_t * info, const board_t * board) {
 
-   uint64 key;
+   uint_fast64_t key;
    entry_t * entry;
 
-   ASSERT(info!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(info!=nullptr);
+   ASSERT(board!=nullptr);
 
    // probe
 
@@ -201,22 +201,22 @@ void material_get_info(material_info_t * info, const board_t * board) {
 
 static void material_comp_info(material_info_t * info, const board_t * board) {
 
-   int wp, wn, wb, wr, wq;
-   int bp, bn, bb, br, bq;
-   int wt, bt;
-   int wm, bm;
-   int colour;
-   uint8 recog;
-   uint8 flags;
-   uint8 cflags[ColourNb];
-   uint8 mul[ColourNb];
-   sint16 phase;
-   sint16 opening, endgame;
-   int owf,obf,ewf,ebf; /* Thomas */
-   int WhiteMinors,BlackMinors,WhiteMajors,BlackMajors;
+   int_fast32_t wp, wn, wb, wr, wq;
+   int_fast32_t bp, bn, bb, br, bq;
+   int_fast32_t wt, bt;
+   int_fast32_t wm, bm;
+   int_fast32_t colour;
+   uint_fast8_t recog;
+   uint_fast8_t flags;
+   uint_fast8_t cflags[ColourNb];
+   uint_fast8_t mul[ColourNb];
+   int_fast16_t phase;
+   int_fast16_t opening, endgame;
+   int_fast32_t owf,obf,ewf,ebf; /* Thomas */
+   int_fast32_t WhiteMinors,BlackMinors,WhiteMajors,BlackMajors;
 
-   ASSERT(info!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(info!=nullptr);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -282,13 +282,13 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
    if (wp == 0) { // white has no pawns
 
-      int w_maj = wq * 2 + wr;
-      int w_min = wb + wn;
-      int w_tot = w_maj * 2 + w_min;
+      int_fast32_t w_maj = wq * 2 + wr;
+      int_fast32_t w_min = wb + wn;
+      int_fast32_t w_tot = w_maj * 2 + w_min;
 
-      int b_maj = bq * 2 + br;
-      int b_min = bb + bn;
-      int b_tot = b_maj * 2 + b_min;
+      int_fast32_t b_maj = bq * 2 + br;
+      int_fast32_t b_min = bb + bn;
+      int_fast32_t b_tot = b_maj * 2 + b_min;
 
       if (false) {
 
@@ -334,13 +334,13 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
    } else if (wp == 1) { // white has one pawn
 
-      int w_maj = wq * 2 + wr;
-      int w_min = wb + wn;
-      int w_tot = w_maj * 2 + w_min;
+      int_fast32_t w_maj = wq * 2 + wr;
+      int_fast32_t w_min = wb + wn;
+      int_fast32_t w_tot = w_maj * 2 + w_min;
 
-      int b_maj = bq * 2 + br;
-      int b_min = bb + bn;
-      int b_tot = b_maj * 2 + b_min;
+      int_fast32_t b_maj = bq * 2 + br;
+      int_fast32_t b_min = bb + bn;
+      int_fast32_t b_tot = b_maj * 2 + b_min;
 
       if (false) {
 
@@ -418,13 +418,13 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
    if (bp == 0) { // black has no pawns
 
-      int w_maj = wq * 2 + wr;
-      int w_min = wb + wn;
-      int w_tot = w_maj * 2 + w_min;
+      int_fast32_t w_maj = wq * 2 + wr;
+      int_fast32_t w_min = wb + wn;
+      int_fast32_t w_tot = w_maj * 2 + w_min;
 
-      int b_maj = bq * 2 + br;
-      int b_min = bb + bn;
-      int b_tot = b_maj * 2 + b_min;
+      int_fast32_t b_maj = bq * 2 + br;
+      int_fast32_t b_min = bb + bn;
+      int_fast32_t b_tot = b_maj * 2 + b_min;
 
       if (false) {
 
@@ -470,13 +470,13 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
    } else if (bp == 1) { // black has one pawn
 
-      int w_maj = wq * 2 + wr;
-      int w_min = wb + wn;
-      int w_tot = w_maj * 2 + w_min;
+      int_fast32_t w_maj = wq * 2 + wr;
+      int_fast32_t w_min = wb + wn;
+      int_fast32_t w_tot = w_maj * 2 + w_min;
 
-      int b_maj = bq * 2 + br;
-      int b_min = bb + bn;
-      int b_tot = b_maj * 2 + b_min;
+      int_fast32_t b_maj = bq * 2 + br;
+      int_fast32_t b_min = bb + bn;
+      int_fast32_t b_tot = b_maj * 2 + b_min;
 
       if (false) {
 

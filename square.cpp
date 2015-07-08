@@ -9,7 +9,7 @@
 
 // "constants"
 
-const int SquareFrom64[64] = {
+const int_fast32_t SquareFrom64[64] = {
    A1, B1, C1, D1, E1, F1, G1, H1,
    A2, B2, C2, D2, E2, F2, G2, H2,
    A3, B3, C3, D3, E3, F3, G3, H3,
@@ -20,12 +20,12 @@ const int SquareFrom64[64] = {
    A8, B8, C8, D8, E8, F8, G8, H8,
 };
 
-const int RankMask[ColourNb] = { 0, 0xF };
-const int PromoteRank[ColourNb] = { 0xB0, 0x40 };
+const int_fast32_t RankMask[ColourNb] = { 0, 0xF };
+const int_fast32_t PromoteRank[ColourNb] = { 0xB0, 0x40 };
 
 // variables
 
-int SquareTo64[SquareNb];
+int_fast32_t SquareTo64[SquareNb];
 bool SquareIsPromote[SquareNb];
 
 // functions
@@ -34,7 +34,7 @@ bool SquareIsPromote[SquareNb];
 
 void square_init() {
 
-   int sq;
+   int_fast32_t sq;
 
    // SquareTo64[]
 
@@ -53,7 +53,7 @@ void square_init() {
 
 // file_from_char()
 
-int file_from_char(int c) {
+int_fast32_t file_from_char(int_fast32_t c) {
 
    ASSERT(c>='a'&&c<='h');
 
@@ -62,7 +62,7 @@ int file_from_char(int c) {
 
 // rank_from_char()
 
-int rank_from_char(int c) {
+int_fast32_t rank_from_char(int_fast32_t c) {
 
    ASSERT(c>='1'&&c<='8');
 
@@ -71,7 +71,7 @@ int rank_from_char(int c) {
 
 // file_to_char()
 
-int file_to_char(int file) {
+int_fast32_t file_to_char(int_fast32_t file) {
 
    ASSERT(file>=FileA&&file<=FileH);
 
@@ -80,7 +80,7 @@ int file_to_char(int file) {
 
 // rank_to_char()
 
-int rank_to_char(int rank) {
+int_fast32_t rank_to_char(int_fast32_t rank) {
 
    ASSERT(rank>=Rank1&&rank<=Rank8);
 
@@ -89,10 +89,10 @@ int rank_to_char(int rank) {
 
 // square_to_string()
 
-bool square_to_string(int square, char string[], int size) {
+bool square_to_string(int_fast32_t square, char string[], int_fast32_t size) {
 
    ASSERT(SQUARE_IS_OK(square));
-   ASSERT(string!=NULL);
+   ASSERT(string!=nullptr);
    ASSERT(size>=3);
 
    if (size < 3) return false;
@@ -106,11 +106,11 @@ bool square_to_string(int square, char string[], int size) {
 
 // square_from_string()
 
-int square_from_string(const char string[]) {
+int_fast32_t square_from_string(const char string[]) {
 
-   int file, rank;
+   int_fast32_t file, rank;
 
-   ASSERT(string!=NULL);
+   ASSERT(string!=nullptr);
 
    if (string[0] < 'a' || string[0] > 'h') return SquareNone;
    if (string[1] < '1' || string[1] > '8') return SquareNone;

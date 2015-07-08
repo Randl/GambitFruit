@@ -32,8 +32,8 @@ void gen_legal_moves(list_t * list, board_t * board) {
 
    attack_t attack[1];
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    attack_set(attack,board);
 
@@ -53,8 +53,8 @@ void gen_legal_moves(list_t * list, board_t * board) {
 
 void gen_moves(list_t * list, const board_t * board) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -74,8 +74,8 @@ void gen_moves(list_t * list, const board_t * board) {
 
 void gen_captures(list_t * list, const board_t * board) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    LIST_CLEAR(list);
 
@@ -91,8 +91,8 @@ void gen_captures(list_t * list, const board_t * board) {
 
 void gen_quiet_moves(list_t * list, const board_t * board) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -110,16 +110,16 @@ void gen_quiet_moves(list_t * list, const board_t * board) {
 
 static void add_moves(list_t * list, const board_t * board) {
 
-   int me, opp;
-   int opp_flag;
+   int_fast32_t me, opp;
+   int_fast32_t opp_flag;
    const sq_t * ptr;
-   int from, to;
-   int piece, capture;
+   int_fast32_t from, to;
+   int_fast32_t piece, capture;
    const inc_t * inc_ptr;
-   int inc;
+   int_fast32_t inc;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    me = board->turn;
    opp = COLOUR_OPP(me);
@@ -190,14 +190,14 @@ static void add_moves(list_t * list, const board_t * board) {
 
 static void add_captures(list_t * list, const board_t * board) {
 
-   int me, opp;
-   int opp_flag;
+   int_fast32_t me, opp;
+   int_fast32_t opp_flag;
    const sq_t * ptr;
-   int from, to;
-   int piece, capture;
+   int_fast32_t from, to;
+   int_fast32_t piece, capture;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    me = board->turn;
    opp = COLOUR_OPP(me);
@@ -399,13 +399,13 @@ static void add_captures(list_t * list, const board_t * board) {
 
 static void add_quiet_moves(list_t * list, const board_t * board) {
 
-   int me;
+   int_fast32_t me;
    const sq_t * ptr;
-   int from, to;
-   int piece;
+   int_fast32_t from, to;
+   int_fast32_t piece;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    me = board->turn;
 
@@ -608,13 +608,13 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 
 static void add_promotes(list_t * list, const board_t * board) {
 
-   int me;
-   int inc;
+   int_fast32_t me;
+   int_fast32_t inc;
    const sq_t * ptr;
-   int from, to;
+   int_fast32_t from, to;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    me = board->turn;
 
@@ -634,13 +634,13 @@ static void add_promotes(list_t * list, const board_t * board) {
 
 static void add_en_passant_captures(list_t * list, const board_t * board) {
 
-   int from, to;
-   int me;
-   int inc;
-   int pawn;
+   int_fast32_t from, to;
+   int_fast32_t me;
+   int_fast32_t inc;
+   int_fast32_t pawn;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    to = board->ep_square;
 
@@ -669,8 +669,8 @@ static void add_en_passant_captures(list_t * list, const board_t * board) {
 
 static void add_castle_moves(list_t * list, const board_t * board) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -712,11 +712,11 @@ static void add_castle_moves(list_t * list, const board_t * board) {
 
 // add_pawn_move()
 
-void add_pawn_move(list_t * list, int from, int to) {
+void add_pawn_move(list_t * list, int_fast32_t from, int_fast32_t to) {
 
-   int move;
+   int_fast32_t move;
 
-   ASSERT(list!=NULL);
+   ASSERT(list!=nullptr);
    ASSERT(SQUARE_IS_OK(from));
    ASSERT(SQUARE_IS_OK(to));
 
@@ -734,9 +734,9 @@ void add_pawn_move(list_t * list, int from, int to) {
 
 // add_promote()
 
-void add_promote(list_t * list, int move) {
+void add_promote(list_t * list, int_fast32_t move) {
 
-   ASSERT(list!=NULL);
+   ASSERT(list!=nullptr);
    ASSERT(move_is_ok(move));
 
    ASSERT((move&~07777)==0); // HACK

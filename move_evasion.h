@@ -6,6 +6,7 @@
 
 // includes
 
+#include <cstdint>
 #include "attack.h"
 #include "board.h"
 #include "list.h"

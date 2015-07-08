@@ -31,7 +31,7 @@
 static const bool UseCpuTime = false; // false
 
 static const bool UseShortSearch = true;
-static const int ShortSearchDepth = 1;
+static const int_fast32_t ShortSearchDepth = 1;
 
 static const bool DispBest = true; // true
 static const bool DispDepthStart = true; // true
@@ -39,12 +39,12 @@ static const bool DispDepthEnd = true; // true
 static const bool DispRoot = true; // true
 static const bool DispStat = true; // true
 
-static const int EasyThreshold = 150;
+static const int_fast32_t EasyThreshold = 150;
 static const double EasyRatio = 0.20;
 
 static const double EarlyRatio = 0.60;
 
-static const int BadThreshold = 50; // 50
+static const int_fast32_t BadThreshold = 50; // 50
 static const bool UseExtension = true;
 
 // variables
@@ -68,14 +68,14 @@ static void search_send_stat ();
 
 // depth_is_ok()
 
-bool depth_is_ok(int depth) {
+bool depth_is_ok(int_fast32_t depth) {
 
    return depth > -128 && depth < DepthMax;
 }
 
 // height_is_ok()
 
-bool height_is_ok(int height) {
+bool height_is_ok(int_fast32_t height) {
 
    return height >= 0 && height < HeightMax;
 }
@@ -134,9 +134,9 @@ void search_clear() {
 
 void search() {
 
-   int move;
-   int depth;
-   int i;
+   int_fast32_t move;
+   int_fast32_t depth;
+   int_fast32_t i;
    bool search_ready;
 
      
@@ -316,11 +316,11 @@ void search() {
 
 void search_update_best() {
 
-   int move, value, flags, depth, max_depth;
+   int_fast32_t move, value, flags, depth, max_depth;
    const mv_t * pv;
    double time;
-   sint64 node_nb;
-   int mate, i, z;
+   int_fast64_t node_nb;
+   int_fast32_t mate, i, z;
    bool found;
    char move_string[256], pv_string[512];
       
@@ -442,9 +442,9 @@ void search_update_best() {
 
 void search_update_root() {
 
-   int move, move_pos, move_nb;
+   int_fast32_t move, move_pos, move_nb;
    double time;
-   sint64 node_nb;
+   int_fast64_t node_nb;
    char move_string[256];
 
    if (DispRoot) {
@@ -472,7 +472,7 @@ void search_update_root() {
 void search_update_current() {
 
    my_timer_t *timer;
-   sint64 node_nb;
+   int_fast64_t node_nb;
    double time, speed, cpu;
 
    timer = SearchCurrent->timer;
@@ -524,7 +524,7 @@ void search_check() {
 static void search_send_stat() {
 
    double time, speed, cpu;
-   sint64 node_nb;
+   int_fast64_t node_nb;
 
    search_update_current();
 

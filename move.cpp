@@ -18,13 +18,13 @@
 
 // constants
 
-static const int PromotePiece[4] = { Knight64, Bishop64, Rook64, Queen64 };
+static const int_fast32_t PromotePiece[4] = { Knight64, Bishop64, Rook64, Queen64 };
 
 // functions
 
 // move_is_ok()
 
-bool move_is_ok(int move) {
+bool move_is_ok(int_fast32_t move) {
 
    if (move < 0 || move >= 65536) return false;
 
@@ -36,9 +36,9 @@ bool move_is_ok(int move) {
 
 // move_promote()
 
-int move_promote(int move) {
+int_fast32_t move_promote(int_fast32_t move) {
 
-   int code, piece;
+   int_fast32_t code, piece;
 
    ASSERT(move_is_ok(move));
 
@@ -61,7 +61,7 @@ int move_promote(int move) {
 
 // move_order()
 
-int move_order(int move) {
+int_fast32_t move_order(int_fast32_t move) {
 
    ASSERT(move_is_ok(move));
 
@@ -70,17 +70,17 @@ int move_order(int move) {
 
 // move_is_capture()
 
-bool move_is_capture(int move, const board_t * board) {
+bool move_is_capture(int_fast32_t move, const board_t * board) {
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    return MOVE_IS_EN_PASSANT(move) || board->square[MOVE_TO(move)] != Empty;
 }
 
 // move_is_under_promote()
 
-bool move_is_under_promote(int move) {
+bool move_is_under_promote(int_fast32_t move) {
 
    ASSERT(move_is_ok(move));
 
@@ -89,20 +89,20 @@ bool move_is_under_promote(int move) {
 
 // move_is_tactical()
 
-bool move_is_tactical(int move, const board_t * board) {
+bool move_is_tactical(int_fast32_t move, const board_t * board) {
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    return (move & (1 << 15)) != 0 || board->square[MOVE_TO(move)] != Empty; // HACK
 }
 
 // move_capture()
 
-int move_capture(int move, const board_t * board) {
+int_fast32_t move_capture(int_fast32_t move, const board_t * board) {
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    if (MOVE_IS_EN_PASSANT(move)) {
       return PAWN_OPP(board->square[MOVE_FROM(move)]);
@@ -113,10 +113,10 @@ int move_capture(int move, const board_t * board) {
 
 // move_to_string()
 
-bool move_to_string(int move, char string[], int size) {
+bool move_to_string(int_fast32_t move, char string[], int_fast32_t size) {
 
    ASSERT(move==MoveNull||move_is_ok(move));
-   ASSERT(string!=NULL);
+   ASSERT(string!=nullptr);
    ASSERT(size>=6);
 
    if (size < 6) return false;
@@ -146,15 +146,15 @@ bool move_to_string(int move, char string[], int size) {
 
 // move_from_string()
 
-int move_from_string(const char string[], const board_t * board) {
+int_fast32_t move_from_string(const char string[], const board_t * board) {
 
    char tmp_string[3];
-   int from, to;
-   int move;
-   int piece, delta;
+   int_fast32_t from, to;
+   int_fast32_t move;
+   int_fast32_t piece, delta;
 
-   ASSERT(string!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(string!=nullptr);
+   ASSERT(board!=nullptr);
 
    // from
 

@@ -17,7 +17,7 @@
 
 // constants
 
-static const uint32 TableSize = 16384; // 256kB
+static const uint_fast32_t TableSize = 16384; // 256kB
 
 // types
 
@@ -25,75 +25,75 @@ typedef pawn_info_t entry_t;
 
 struct pawn_t {
    entry_t * table;
-   uint32 size;
-   uint32 mask;
-   uint32 used;
-   sint64 read_nb;
-   sint64 read_hit;
-   sint64 write_nb;
-   sint64 write_collision;
+   uint_fast32_t size;
+   uint_fast32_t mask;
+   uint_fast32_t used;
+   int_fast64_t read_nb;
+   int_fast64_t read_hit;
+   int_fast64_t write_nb;
+   int_fast64_t write_collision;
 };
 
 // constants and variables
 
-static /* const */ int PawnStructureWeight = 256; // 100%
+static /* const */ int_fast32_t PawnStructureWeight = 256; // 100%
 /*
-static const int DoubledOpening = 10;
-static const int DoubledEndgame = 20;
+static const int_fast32_t DoubledOpening = 10;
+static const int_fast32_t DoubledEndgame = 20;
 
-static const int IsolatedOpening = 10;
-static const int IsolatedOpeningOpen = 20;
-static const int IsolatedEndgame = 20;
+static const int_fast32_t IsolatedOpening = 10;
+static const int_fast32_t IsolatedOpeningOpen = 20;
+static const int_fast32_t IsolatedEndgame = 20;
 
-static const int BackwardOpening = 8;
-static const int BackwardOpeningOpen = 16;
-static const int BackwardEndgame = 10;
+static const int_fast32_t BackwardOpening = 8;
+static const int_fast32_t BackwardOpeningOpen = 16;
+static const int_fast32_t BackwardEndgame = 10;
 */
-static const int DoubledOpening[8] = {10,10,10,12,12,10,10,10};
-static const int DoubledEndgame[8] = {18,18,18,20,20,18,18,18};
+static const int_fast32_t DoubledOpening[8] = {10,10,10,12,12,10,10,10};
+static const int_fast32_t DoubledEndgame[8] = {18,18,18,20,20,18,18,18};
 
-static const int IsolatedOpening[8] =		{ 8, 9,10,12,12,10, 9, 8};
-static const int IsolatedOpeningOpen[8] =	{18,19,20,22,22,20,19,18};
-static const int IsolatedEndgame[8] =		{18,19,20,22,22,20,19,18};
+static const int_fast32_t IsolatedOpening[8] =		{ 8, 9,10,12,12,10, 9, 8};
+static const int_fast32_t IsolatedOpeningOpen[8] =	{18,19,20,22,22,20,19,18};
+static const int_fast32_t IsolatedEndgame[8] =		{18,19,20,22,22,20,19,18};
 
-static const int BackwardOpening[8] =		{ 6, 7, 8,10,10, 8, 7, 6};
-static const int BackwardOpeningOpen[8] =	{12,14,16,18,18,16,14,12}; 
-static const int BackwardEndgame[8] =		{ 8, 9,10,12,12,10, 9, 8};
+static const int_fast32_t BackwardOpening[8] =		{ 6, 7, 8,10,10, 8, 7, 6};
+static const int_fast32_t BackwardOpeningOpen[8] =	{12,14,16,18,18,16,14,12}; 
+static const int_fast32_t BackwardEndgame[8] =		{ 8, 9,10,12,12,10, 9, 8};
 
-static const int CandidateOpeningMin = 5;
-static const int CandidateOpeningMax = 55;
-static const int CandidateEndgameMin = 10;
-static const int CandidateEndgameMax = 110;
+static const int_fast32_t CandidateOpeningMin = 5;
+static const int_fast32_t CandidateOpeningMax = 55;
+static const int_fast32_t CandidateEndgameMin = 10;
+static const int_fast32_t CandidateEndgameMax = 110;
 
 // this was moved to eval.cpp
 
 /*
-static const int PassedOpeningMin = 10;
-static const int PassedOpeningMax = 70;
-static const int PassedEndgameMin = 20;
-static const int PassedEndgameMax = 140;
+static const int_fast32_t PassedOpeningMin = 10;
+static const int_fast32_t PassedOpeningMax = 70;
+static const int_fast32_t PassedEndgameMin = 20;
+static const int_fast32_t PassedEndgameMax = 140;
 */
 
-static /* const */ int Bonus[RankNb];
+static /* const */ int_fast32_t Bonus[RankNb];
 
 // variables
 
-int BitEQ[16];
-int BitLT[16];
-int BitLE[16];
-int BitGT[16];
-int BitGE[16];
+int_fast32_t BitEQ[16];
+int_fast32_t BitLT[16];
+int_fast32_t BitLE[16];
+int_fast32_t BitGT[16];
+int_fast32_t BitGE[16];
 
-int BitFirst[0x100];
-int BitLast[0x100];
-int BitCount[0x100];
-int BitRev[0x100];
+int_fast32_t BitFirst[0x100];
+int_fast32_t BitLast[0x100];
+int_fast32_t BitCount[0x100];
+int_fast32_t BitRev[0x100];
 
 static pawn_t Pawn[1];
 
-static int BitRank1[RankNb];
-static int BitRank2[RankNb];
-static int BitRank3[RankNb];
+static int_fast32_t BitRank1[RankNb];
+static int_fast32_t BitRank2[RankNb];
+static int_fast32_t BitRank3[RankNb];
 
 // prototypes
 
@@ -105,9 +105,9 @@ static void pawn_comp_info (pawn_info_t * info, const board_t * board);
 
 void pawn_init_bit() {
 
-   int rank;
-   int first, last, count;
-   int b, rev;
+   int_fast32_t rank;
+   int_fast32_t first, last, count;
+   int_fast32_t b, rev;
 
    // rank-indexed Bit*[]
 
@@ -167,7 +167,7 @@ void pawn_init_bit() {
 
 void pawn_init() {
 
-   int rank;
+   int_fast32_t rank;
 
    // UCI options
 
@@ -186,7 +186,7 @@ void pawn_init() {
 
    Pawn->size = 0;
    Pawn->mask = 0;
-   Pawn->table = NULL;
+   Pawn->table = nullptr;
 }
 
 // pawn_alloc()
@@ -208,7 +208,7 @@ void pawn_alloc() {
 
 void pawn_clear() {
 
-   if (Pawn->table != NULL) {
+   if (Pawn->table != nullptr) {
       memset(Pawn->table,0,Pawn->size*sizeof(entry_t));
    }
 
@@ -223,11 +223,11 @@ void pawn_clear() {
 
 void pawn_get_info(pawn_info_t * info, const board_t * board) {
 
-   uint64 key;
+   uint_fast64_t key;
    entry_t * entry;
 
-   ASSERT(info!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(info!=nullptr);
+   ASSERT(board!=nullptr);
 
    // probe
 
@@ -273,33 +273,33 @@ void pawn_get_info(pawn_info_t * info, const board_t * board) {
 
 static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
-   int colour;
-   int file, rank;
-   int me, opp;
+   int_fast32_t colour;
+   int_fast32_t file, rank;
+   int_fast32_t me, opp;
    const sq_t * ptr;
-   int sq;
+   int_fast32_t sq;
    bool backward, candidate, doubled, isolated, open, passed;
-   int t1, t2;
-   int n;
-   int bits;
-   int file_bits[ColourNb];
-   sint16 opening[ColourNb], endgame[ColourNb];
-   uint8 flags[ColourNb];
-   uint8 passed_bits[ColourNb];
-   uint8 single_file[ColourNb];
-   uint8 wsp[ColourNb];
-   uint8 badpawns[ColourNb];
+   int_fast32_t t1, t2;
+   int_fast32_t n;
+   int_fast32_t bits;
+   int_fast32_t file_bits[ColourNb];
+   int_fast16_t opening[ColourNb], endgame[ColourNb];
+   uint_fast8_t flags[ColourNb];
+   uint_fast8_t passed_bits[ColourNb];
+   uint_fast8_t single_file[ColourNb];
+   uint_fast8_t wsp[ColourNb];
+   uint_fast8_t badpawns[ColourNb];
 
 
-   ASSERT(info!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(info!=nullptr);
+   ASSERT(board!=nullptr);
 
    // pawn_file[]
 
 #if DEBUG
    for (colour = 0; colour < ColourNb; colour++) {
 
-      int pawn_file[FileNb];
+      int_fast32_t pawn_file[FileNb];
 
       me = colour;
 
@@ -568,9 +568,9 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
 // quad()
 
-int quad(int y_min, int y_max, int x) {
+int_fast32_t quad(int_fast32_t y_min, int_fast32_t y_max, int_fast32_t x) {
 
-   int y;
+   int_fast32_t y;
 
    ASSERT(y_min>=0&&y_min<=y_max&&y_max<=+32767);
    ASSERT(x>=Rank2&&x<=Rank7);

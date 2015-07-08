@@ -6,6 +6,7 @@
 
 // includes
 
+#include <cstdint>
 #include <cstdio>
 
 // constants
@@ -48,25 +49,6 @@
 #  define ASSERT(a)
 #endif
 
-// types
-
-typedef signed char sint8;
-typedef unsigned char uint8;
-
-typedef signed short sint16;
-typedef unsigned short uint16;
-
-typedef signed int sint32;
-typedef unsigned int uint32;
-
-#ifdef _MSC_VER
-  typedef signed __int64 sint64;
-  typedef unsigned __int64 uint64;
-#else
-  typedef signed long long int sint64;
-  typedef unsigned long long int uint64;
-#endif
-
 struct my_timer_t {
    double start_real;
    double start_cpu;
@@ -80,9 +62,6 @@ struct my_timer_t {
 /*
 BitBases
 */
-#define USE_EGBB _WIN32
-
-#if defined _WIN32
 
 #define _WKING     1
 #define _WQUEEN    2
@@ -101,8 +80,6 @@ BitBases
 typedef int (*PPROBE_EGBB) (int player, int* piece, int* square);
 extern PPROBE_EGBB probe_egbb;
 extern int egbb_is_loaded;
-
-#endif
 /*
 end BitBases
 */
@@ -114,7 +91,7 @@ extern void   util_init             ();
 extern void   my_random_init        ();
 extern int    my_random             (int n);
 
-extern sint64 my_atoll              (const char string[]);
+extern int_fast64_t my_atoll              (const char string[]);
 
 extern int    my_round              (double x);
 

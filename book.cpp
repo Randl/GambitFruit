@@ -17,24 +17,24 @@
 // types
 
 struct entry_t {
-   uint64 key;
-   uint16 move;
-   uint16 count;
-   uint16 n;
-   uint16 sum;
+   uint_fast64_t key;
+   uint_fast16_t move;
+   uint_fast16_t count;
+   uint_fast16_t n;
+   uint_fast16_t sum;
 };
 
 // variables
 
 static FILE * BookFile;
-static int BookSize;
+static int_fast32_t BookSize;
 
 // prototypes
 
-static int    find_pos     (uint64 key);
+static int_fast32_t    find_pos     (uint_fast64_t key);
 
-static void   read_entry   (entry_t * entry, int n);
-static uint64 read_integer (FILE * file, int size);
+static void   read_entry   (entry_t * entry, int_fast32_t n);
+static uint_fast64_t read_integer (FILE * file, int_fast32_t size);
 
 // functions
 
@@ -42,7 +42,7 @@ static uint64 read_integer (FILE * file, int size);
 
 void book_init() {
 
-   BookFile = NULL;
+   BookFile = nullptr;
    BookSize = 0;
 }
 
@@ -50,11 +50,11 @@ void book_init() {
 
 void book_open(const char file_name[]) {
 
-   ASSERT(file_name!=NULL);
+   ASSERT(file_name!=nullptr);
 
    BookFile = fopen(file_name,"rb");
 
-   if (BookFile != NULL) {
+   if (BookFile != nullptr) {
 
       if (fseek(BookFile,0,SEEK_END) == -1) {
          my_fatal("book_open(): fseek(): %s\n",strerror(errno));
@@ -69,27 +69,27 @@ void book_open(const char file_name[]) {
 
 void book_close() {
 
-   if (BookFile != NULL && fclose(BookFile) == EOF) {
+   if (BookFile != nullptr && fclose(BookFile) == EOF) {
       my_fatal("book_close(): fclose(): %s\n",strerror(errno));
    }
 }
 
 // book_move()
 
-int book_move(board_t * board) {
+int_fast32_t book_move(board_t * board) {
 
-   int best_move;
-   int best_score;
-   int pos;
+   int_fast32_t best_move;
+   int_fast32_t best_score;
+   int_fast32_t pos;
    entry_t entry[1];
-   int move;
-   int score;
+   int_fast32_t move;
+   int_fast32_t score;
    list_t list[1];
-   int i;
+   int_fast32_t i;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
-   if (BookFile != NULL && BookSize != 0) {
+   if (BookFile != nullptr && BookSize != 0) {
 
       // draw a move according to a fixed probability distribution
 
@@ -130,9 +130,9 @@ int book_move(board_t * board) {
 
 // find_pos()
 
-static int find_pos(uint64 key) {
+static int_fast32_t find_pos(uint_fast64_t key) {
 
-   int left, right, mid;
+   int_fast32_t left, right, mid;
    entry_t entry[1];
 
    // binary search (finds the leftmost entry)
@@ -165,12 +165,12 @@ static int find_pos(uint64 key) {
 
 // read_entry()
 
-static void read_entry(entry_t * entry, int n) {
+static void read_entry(entry_t * entry, int_fast32_t n) {
 
-   ASSERT(entry!=NULL);
+   ASSERT(entry!=nullptr);
    ASSERT(n>=0&&n<BookSize);
 
-   ASSERT(BookFile!=NULL);
+   ASSERT(BookFile!=nullptr);
 
    if (fseek(BookFile,n*16,SEEK_SET) == -1) {
       my_fatal("read_entry(): fseek(): %s\n",strerror(errno));
@@ -185,13 +185,13 @@ static void read_entry(entry_t * entry, int n) {
 
 // read_integer()
 
-static uint64 read_integer(FILE * file, int size) {
+static uint_fast64_t read_integer(FILE * file, int_fast32_t size) {
 
-   uint64 n;
-   int i;
-   int b;
+   uint_fast64_t n;
+   int_fast32_t i;
+   int_fast32_t b;
 
-   ASSERT(file!=NULL);
+   ASSERT(file!=nullptr);
    ASSERT(size>0&&size<=8);
 
    n = 0;
@@ -216,4 +216,3 @@ static uint64 read_integer(FILE * file, int size) {
 }
 
 // end of book.cpp
-

@@ -15,36 +15,36 @@
 
 // constants
 
-const int MultiPVMax = 10;
+const int_fast32_t MultiPVMax = 10;
 
-const int DepthMax = 64;
-const int HeightMax = 256;
+const int_fast32_t DepthMax = 64;
+const int_fast32_t HeightMax = 256;
 
-const int SearchNormal = 0;
-const int SearchShort  = 1;
+const int_fast32_t SearchNormal = 0;
+const int_fast32_t SearchShort  = 1;
 
-const int SearchUnknown = 0;
-const int SearchUpper   = 1;
-const int SearchLower   = 2;
-const int SearchExact   = 3;
+const int_fast32_t SearchUnknown = 0;
+const int_fast32_t SearchUpper   = 1;
+const int_fast32_t SearchLower   = 2;
+const int_fast32_t SearchExact   = 3;
 
 // types
 
 struct search_multipv_t {
-   int mate;
-   int depth;
-   int max_depth;
-   int value;
+   int_fast32_t mate;
+   int_fast32_t depth;
+   int_fast32_t max_depth;
+   int_fast32_t value;
    double time;
-   sint64 node_nb;
+   int_fast64_t node_nb;
    char pv_string[512];
 
 };
 
 struct search_param_t {
-   int move;
-   int best_move;
-   int threat_move;
+   int_fast32_t move;
+   int_fast32_t best_move;
+   int_fast32_t threat_move;
    bool reduced;
 };
 
@@ -53,8 +53,8 @@ struct search_input_t {
    list_t list[1];
    bool infinite;
    bool depth_is_limited;
-   int depth_limit;
-   int multipv;
+   int_fast32_t depth_limit;
+   int_fast32_t multipv;
    bool time_is_limited;
    double time_limit_1;
    double time_limit_2;
@@ -64,18 +64,18 @@ struct search_info_t {
    jmp_buf buf;
    bool can_stop;
    bool stop;
-   int check_nb;
-   int check_inc;
+   int_fast32_t check_nb;
+   int_fast32_t check_inc;
    double last_time;
 };
 
 struct search_root_t {
    list_t list[1];
-   int depth;
-   int move;
-   int move_pos;
-   int move_nb;
-   int last_value;
+   int_fast32_t depth;
+   int_fast32_t move;
+   int_fast32_t move_pos;
+   int_fast32_t move_nb;
+   int_fast32_t last_value;
    bool bad_1;
    bool bad_2;
    bool change;
@@ -84,20 +84,20 @@ struct search_root_t {
 };
 
 struct search_best_t {
-   int move;
-   int value;
-   int flags;
-   int depth;
+   int_fast32_t move;
+   int_fast32_t value;
+   int_fast32_t flags;
+   int_fast32_t depth;
    mv_t pv[HeightMax];
 };
 
 struct search_current_t {
    board_t board[1];
    my_timer_t timer[1];
-   int max_depth;
-   int max_extensions; // Thomas
-   int multipv;
-   sint64 node_nb;
+   int_fast32_t max_depth;
+   int_fast32_t max_extensions; // Thomas
+   int_fast32_t multipv;
+   int_fast64_t node_nb;
    double time;
    double speed;
    double cpu;
@@ -114,8 +114,8 @@ extern search_current_t SearchCurrent[1];
 
 // functions
 
-extern bool depth_is_ok           (int depth);
-extern bool height_is_ok          (int height);
+extern bool depth_is_ok           (int_fast32_t depth);
+extern bool height_is_ok          (int_fast32_t height);
 
 extern void search_clear          ();
 extern void search                ();

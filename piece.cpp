@@ -11,9 +11,9 @@
 
 // "constants"
 
-const int PawnMake[ColourNb] = { WhitePawn256, BlackPawn256 };
+const int_fast32_t PawnMake[ColourNb] = { WhitePawn256, BlackPawn256 };
 
-const int PieceFrom12[12] = {
+const int_fast32_t PieceFrom12[12] = {
    WhitePawn256,   BlackPawn256,
    WhiteKnight256, BlackKnight256,
    WhiteBishop256, BlackBishop256,
@@ -50,8 +50,8 @@ const inc_t KingInc[8+1] = {
 
 // variables
 
-int PieceTo12[PieceNb];
-int PieceOrder[PieceNb];
+int_fast32_t PieceTo12[PieceNb];
+int_fast32_t PieceOrder[PieceNb];
 
 const inc_t * PieceInc[PieceNb];
 
@@ -61,7 +61,7 @@ const inc_t * PieceInc[PieceNb];
 
 void piece_init() {
 
-   int piece, piece_12;
+   int_fast32_t piece, piece_12;
 
    // PieceTo12[]
 
@@ -82,7 +82,7 @@ void piece_init() {
    // PieceInc[]
 
    for (piece = 0; piece < PieceNb; piece++) {
-      PieceInc[piece] = NULL;
+      PieceInc[piece] = nullptr;
    }
 
    PieceInc[WhiteKnight256] = KnightInc;
@@ -100,7 +100,7 @@ void piece_init() {
 
 // piece_is_ok()
 
-bool piece_is_ok(int piece) {
+bool piece_is_ok(int_fast32_t piece) {
 
    if (piece < 0 || piece >= PieceNb) return false;
 
@@ -111,7 +111,7 @@ bool piece_is_ok(int piece) {
 
 // piece_from_12()
 
-int piece_from_12(int piece_12) {
+int_fast32_t piece_from_12(int_fast32_t piece_12) {
 
    ASSERT(piece_12>=0&&piece_12<12);
 
@@ -120,7 +120,7 @@ int piece_from_12(int piece_12) {
 
 // piece_to_char()
 
-int piece_to_char(int piece) {
+int_fast32_t piece_to_char(int_fast32_t piece) {
 
    ASSERT(piece_is_ok(piece));
 
@@ -129,12 +129,12 @@ int piece_to_char(int piece) {
 
 // piece_from_char()
 
-int piece_from_char(int c) {
+int_fast32_t piece_from_char(int_fast32_t c) {
 
    const char *ptr;
 
    ptr = strchr(PieceString,c);
-   if (ptr == NULL) return PieceNone256;
+   if (ptr == nullptr) return PieceNone256;
 
    return piece_from_12(ptr-PieceString);
 }

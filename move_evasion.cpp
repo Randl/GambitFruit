@@ -17,9 +17,9 @@
 
 static bool gen_evasions      (list_t * list, const board_t * board, const attack_t * attack, bool legal, bool stop);
 
-static bool add_pawn_moves    (list_t * list, const board_t * board, int to, bool legal, bool stop);
-static bool add_pawn_captures (list_t * list, const board_t * board, int to, bool legal, bool stop);
-static bool add_piece_moves   (list_t * list, const board_t * board, int to, bool legal, bool stop);
+static bool add_pawn_moves    (list_t * list, const board_t * board, int_fast32_t to, bool legal, bool stop);
+static bool add_pawn_captures (list_t * list, const board_t * board, int_fast32_t to, bool legal, bool stop);
+static bool add_piece_moves   (list_t * list, const board_t * board, int_fast32_t to, bool legal, bool stop);
 
 // functions
 
@@ -27,9 +27,9 @@ static bool add_piece_moves   (list_t * list, const board_t * board, int to, boo
 
 void gen_legal_evasions(list_t * list, const board_t * board, const attack_t * attack) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(attack!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
+   ASSERT(attack!=nullptr);
 
    gen_evasions(list,board,attack,true,false);
 
@@ -42,9 +42,9 @@ void gen_legal_evasions(list_t * list, const board_t * board, const attack_t * a
 
 void gen_pseudo_evasions(list_t * list, const board_t * board, const attack_t * attack) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(attack!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
+   ASSERT(attack!=nullptr);
 
    gen_evasions(list,board,attack,false,false);
 
@@ -59,8 +59,8 @@ bool legal_evasion_exist(const board_t * board, const attack_t * attack) {
 
    list_t list[1]; // dummy
 
-   ASSERT(board!=NULL);
-   ASSERT(attack!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(attack!=nullptr);
 
    return gen_evasions(list,board,attack,true,true);
 }
@@ -69,17 +69,17 @@ bool legal_evasion_exist(const board_t * board, const attack_t * attack) {
 
 static bool gen_evasions(list_t * list, const board_t * board, const attack_t * attack, bool legal, bool stop) {
 
-   int me, opp;
-   int opp_flag;
-   int king;
+   int_fast32_t me, opp;
+   int_fast32_t opp_flag;
+   int_fast32_t king;
    const inc_t * inc_ptr;
-   int inc;
-   int to;
-   int piece;
+   int_fast32_t inc;
+   int_fast32_t to;
+   int_fast32_t piece;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(attack!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
+   ASSERT(attack!=nullptr);
    ASSERT(legal==true||legal==false);
    ASSERT(stop==true||stop==false);
 
@@ -139,16 +139,16 @@ static bool gen_evasions(list_t * list, const board_t * board, const attack_t * 
 
 // add_pawn_moves()
 
-static bool add_pawn_moves(list_t * list, const board_t * board, int to, bool legal, bool stop) {
+static bool add_pawn_moves(list_t * list, const board_t * board, int_fast32_t to, bool legal, bool stop) {
 
-   int me;
-   int inc;
-   int pawn;
-   int from;
-   int piece;
+   int_fast32_t me;
+   int_fast32_t inc;
+   int_fast32_t pawn;
+   int_fast32_t from;
+   int_fast32_t piece;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(legal==true||legal==false);
    ASSERT(stop==true||stop==false);
@@ -187,15 +187,15 @@ static bool add_pawn_moves(list_t * list, const board_t * board, int to, bool le
 
 // add_pawn_captures()
 
-static bool add_pawn_captures(list_t * list, const board_t * board, int to, bool legal, bool stop) {
+static bool add_pawn_captures(list_t * list, const board_t * board, int_fast32_t to, bool legal, bool stop) {
 
-   int me;
-   int inc;
-   int pawn;
-   int from;
+   int_fast32_t me;
+   int_fast32_t inc;
+   int_fast32_t pawn;
+   int_fast32_t from;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(legal==true||legal==false);
    ASSERT(stop==true||stop==false);
@@ -257,14 +257,14 @@ static bool add_pawn_captures(list_t * list, const board_t * board, int to, bool
 
 // add_piece_moves()
 
-static bool add_piece_moves(list_t * list, const board_t * board, int to, bool legal, bool stop) {
+static bool add_piece_moves(list_t * list, const board_t * board, int_fast32_t to, bool legal, bool stop) {
 
-   int me;
+   int_fast32_t me;
    const sq_t * ptr;
-   int from, piece;
+   int_fast32_t from, piece;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(legal==true||legal==false);
    ASSERT(stop==true||stop==false);

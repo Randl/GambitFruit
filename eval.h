@@ -6,6 +6,7 @@
 
 // includes
 
+#include <cstdint>
 #include "board.h"
 #include "util.h"
 
@@ -13,7 +14,7 @@
 
 extern void eval_init ();
 
-extern int  eval      (/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_check);
+extern int_fast32_t  eval      (/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t beta, bool do_le, bool in_check);
 
 #endif // !defined EVAL_H
 

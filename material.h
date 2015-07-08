@@ -6,6 +6,7 @@
 
 // includes
 
+#include <cstdint>
 #include "board.h"
 #include "colour.h"
 #include "util.h"
@@ -27,27 +28,27 @@ enum mat_dummy_t {
    MAT_NB
 };
 
-const int DrawNodeFlag    = 1 << 0;
-const int DrawBishopFlag  = 1 << 1;
+const int_fast32_t DrawNodeFlag    = 1 << 0;
+const int_fast32_t DrawBishopFlag  = 1 << 1;
 
-const int MatRookPawnFlag = 1 << 0;
-const int MatBishopFlag   = 1 << 1;
-const int MatKnightFlag   = 1 << 2;
-const int MatKingFlag     = 1 << 3;
-const int MatBitbaseFlag  = 1 << 4;
+const int_fast32_t MatRookPawnFlag = 1 << 0;
+const int_fast32_t MatBishopFlag   = 1 << 1;
+const int_fast32_t MatKnightFlag   = 1 << 2;
+const int_fast32_t MatKingFlag     = 1 << 3;
+const int_fast32_t MatBitbaseFlag  = 1 << 4;
 
 // types
 
 struct material_info_t {
-   uint32 lock;
-   uint8 recog;
-   uint8 flags;
-   uint8 cflags[ColourNb];
-   uint8 mul[ColourNb];
-   sint16 phase;
-   sint16 opening;
-   sint16 endgame;
-   //int pv[ColourNb]; /* Material without pawn and king */
+   uint_fast32_t lock;
+   uint_fast8_t recog;
+   uint_fast8_t flags;
+   uint_fast8_t cflags[ColourNb];
+   uint_fast8_t mul[ColourNb];
+   int_fast16_t phase;
+   int_fast16_t opening;
+   int_fast16_t endgame;
+   //int_fast32_t pv[ColourNb]; /* Material without pawn and king */
 };
 
 // functions

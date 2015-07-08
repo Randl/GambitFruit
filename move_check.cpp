@@ -21,9 +21,9 @@ static void add_quiet_checks      (list_t * list, const board_t * board);
 
 static void add_castle_checks     (list_t * list, board_t * board);
 
-static void add_check             (list_t * list, int move, board_t * board);
+static void add_check             (list_t * list, int_fast32_t move, board_t * board);
 
-static void find_pins             (int list[], const board_t * board);
+static void find_pins             (int_fast32_t list[], const board_t * board);
 
 // functions
 
@@ -31,8 +31,8 @@ static void find_pins             (int list[], const board_t * board);
 
 void gen_quiet_checks(list_t * list, board_t * board) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -50,19 +50,19 @@ void gen_quiet_checks(list_t * list, board_t * board) {
 
 static void add_quiet_checks(list_t * list, const board_t * board) {
 
-   int me, opp;
-   int king;
+   int_fast32_t me, opp;
+   int_fast32_t king;
    const sq_t * ptr, * ptr_2;
-   int from, to, sq;
-   int piece;
+   int_fast32_t from, to, sq;
+   int_fast32_t piece;
    const inc_t * inc_ptr;
-   int inc;
-   int pawn;
-   int rank;
-   int pin[8+1];
+   int_fast32_t inc;
+   int_fast32_t pawn;
+   int_fast32_t rank;
+   int_fast32_t pin[8+1];
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -216,8 +216,8 @@ next_piece: ;
 
 static void add_castle_checks(list_t * list, board_t * board) {
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -259,13 +259,13 @@ static void add_castle_checks(list_t * list, board_t * board) {
 
 // add_check()
 
-static void add_check(list_t * list, int move, board_t * board) {
+static void add_check(list_t * list, int_fast32_t move, board_t * board) {
 
    undo_t undo[1];
 
-   ASSERT(list!=NULL);
+   ASSERT(list!=nullptr);
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    move_do(board,move,undo);
    if (IS_IN_CHECK(board,board->turn)) LIST_ADD(list,move);
@@ -274,15 +274,15 @@ static void add_check(list_t * list, int move, board_t * board) {
 
 // move_is_check()
 
-bool move_is_check(int move, board_t * board) {
+bool move_is_check(int_fast32_t move, board_t * board) {
 
    undo_t undo[1];
    bool check;
-   int me, opp, king;
-   int from, to, piece;
+   int_fast32_t me, opp, king;
+   int_fast32_t from, to, piece;
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // slow test for complex moves
 
@@ -322,21 +322,21 @@ bool move_is_check(int move, board_t * board) {
 
 // find_pins()
 
-static void find_pins(int list[], const board_t * board) {
+static void find_pins(int_fast32_t list[], const board_t * board) {
 
-   int me, opp;
-   int king;
+   int_fast32_t me, opp;
+   int_fast32_t king;
    const sq_t * ptr;
-   int from;
-   int piece;
-   int delta;
-   int inc;
-   int sq;
-   int capture;
-   int pin;
+   int_fast32_t from;
+   int_fast32_t piece;
+   int_fast32_t delta;
+   int_fast32_t inc;
+   int_fast32_t sq;
+   int_fast32_t capture;
+   int_fast32_t pin;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
 
    // init
 

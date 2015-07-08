@@ -6,26 +6,27 @@
 
 // includes
 
+#include <cstdint>
 #include "board.h"
 #include "util.h"
 
 // constants
 
-const int MoveNone = 0;  // HACK: a1a1 cannot be a legal move
-const int MoveNull = 11; // HACK: a1d2 cannot be a legal move
+const int_fast32_t MoveNone = 0;  // HACK: a1a1 cannot be a legal move
+const int_fast32_t MoveNull = 11; // HACK: a1d2 cannot be a legal move
 
-const int MoveNormal    = 0 << 14;
-const int MoveCastle    = 1 << 14;
-const int MovePromote   = 2 << 14;
-const int MoveEnPassant = 3 << 14;
-const int MoveFlags     = 3 << 14;
+const int_fast32_t MoveNormal    = 0 << 14;
+const int_fast32_t MoveCastle    = 1 << 14;
+const int_fast32_t MovePromote   = 2 << 14;
+const int_fast32_t MoveEnPassant = 3 << 14;
+const int_fast32_t MoveFlags     = 3 << 14;
 
-const int MovePromoteKnight = MovePromote | (0 << 12);
-const int MovePromoteBishop = MovePromote | (1 << 12);
-const int MovePromoteRook   = MovePromote | (2 << 12);
-const int MovePromoteQueen  = MovePromote | (3 << 12);
+const int_fast32_t MovePromoteKnight = MovePromote | (0 << 12);
+const int_fast32_t MovePromoteBishop = MovePromote | (1 << 12);
+const int_fast32_t MovePromoteRook   = MovePromote | (2 << 12);
+const int_fast32_t MovePromoteQueen  = MovePromote | (3 << 12);
 
-const int MoveAllFlags = 0xF << 12;
+const int_fast32_t MoveAllFlags = 0xF << 12;
 
 const char NullMoveString[] = "null"; // "0000" in UCI
 
@@ -46,24 +47,24 @@ const char NullMoveString[] = "null"; // "0000" in UCI
 
 // types
 
-typedef uint16 mv_t;
+typedef uint_fast16_t mv_t;
 
 // functions
 
-extern bool move_is_ok            (int move);
+extern bool move_is_ok            (int_fast32_t move);
 
-extern int  move_promote          (int move);
+extern int_fast32_t  move_promote          (int_fast32_t move);
 
-extern int  move_order            (int move);
+extern int_fast32_t  move_order            (int_fast32_t move);
 
-extern bool move_is_capture       (int move, const board_t * board);
-extern bool move_is_under_promote (int move);
-extern bool move_is_tactical      (int move, const board_t * board);
+extern bool move_is_capture       (int_fast32_t move, const board_t * board);
+extern bool move_is_under_promote (int_fast32_t move);
+extern bool move_is_tactical      (int_fast32_t move, const board_t * board);
 
-extern int  move_capture          (int move, const board_t * board);
+extern int_fast32_t  move_capture          (int_fast32_t move, const board_t * board);
 
-extern bool move_to_string        (int move, char string[], int size);
-extern int  move_from_string      (const char string[], const board_t * board);
+extern bool move_to_string        (int_fast32_t move, char string[], int_fast32_t size);
+extern int_fast32_t  move_from_string      (const char string[], const board_t * board);
 
 #endif // !defined MOVE_H
 

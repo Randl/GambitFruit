@@ -17,21 +17,21 @@
 
 // prototypes
 
-static bool move_is_pseudo_debug (int move, board_t * board);
+static bool move_is_pseudo_debug (int_fast32_t move, board_t * board);
 
 // functions
 
 // move_is_pseudo()
 
-bool move_is_pseudo(int move, board_t * board) {
+bool move_is_pseudo(int_fast32_t move, board_t * board) {
 
-   int me, opp;
-   int from, to;
-   int piece, capture;
-   int inc, delta;
+   int_fast32_t me, opp;
+   int_fast32_t from, to;
+   int_fast32_t piece, capture;
+   int_fast32_t inc, delta;
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -105,15 +105,15 @@ bool move_is_pseudo(int move, board_t * board) {
 
 // quiet_is_pseudo()
 
-bool quiet_is_pseudo(int move, board_t * board) {
+bool quiet_is_pseudo(int_fast32_t move, board_t * board) {
 
-   int me, opp;
-   int from, to;
-   int piece;
-   int inc, delta;
+   int_fast32_t me, opp;
+   int_fast32_t from, to;
+   int_fast32_t piece;
+   int_fast32_t inc, delta;
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 
@@ -179,17 +179,17 @@ bool quiet_is_pseudo(int move, board_t * board) {
 
 // pseudo_is_legal()
 
-bool pseudo_is_legal(int move, board_t * board) {
+bool pseudo_is_legal(int_fast32_t move, board_t * board) {
 
-   int me, opp;
-   int from, to;
-   int piece;
+   int_fast32_t me, opp;
+   int_fast32_t from, to;
+   int_fast32_t piece;
    bool legal;
-   int king;
+   int_fast32_t king;
    undo_t undo[1];
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -241,12 +241,12 @@ bool pseudo_is_legal(int move, board_t * board) {
 
 // move_is_pseudo_debug()
 
-static bool move_is_pseudo_debug(int move, board_t * board) {
+static bool move_is_pseudo_debug(int_fast32_t move, board_t * board) {
 
    list_t list[1];
 
    ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    ASSERT(!board_is_check(board));
 

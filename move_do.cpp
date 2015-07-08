@@ -18,13 +18,13 @@
 
 // variables
 
-static int CastleMask[SquareNb];
+static int_fast32_t CastleMask[SquareNb];
 
 // prototypes
 
-static void square_clear (board_t * board, int square, int piece, bool update);
-static void square_set   (board_t * board, int square, int piece, int pos, bool update);
-static void square_move  (board_t * board, int from, int to, int piece, bool update);
+static void square_clear (board_t * board, int_fast32_t square, int_fast32_t piece, bool update);
+static void square_set   (board_t * board, int_fast32_t square, int_fast32_t piece, int_fast32_t pos, bool update);
+static void square_move  (board_t * board, int_fast32_t from, int_fast32_t to, int_fast32_t piece, bool update);
 
 // functions
 
@@ -32,7 +32,7 @@ static void square_move  (board_t * board, int from, int to, int piece, bool upd
 
 void move_do_init() {
 
-   int sq;
+   int_fast32_t sq;
 
    for (sq = 0; sq < SquareNb; sq++) CastleMask[sq] = 0xF;
 
@@ -51,19 +51,19 @@ void move_do_init() {
 
 // move_do()
 
-void move_do(board_t * board, int move, undo_t * undo) {
+void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
-   int me, opp;
-   int from, to;
-   int piece, pos, capture;
-   int old_flags, new_flags;
-   int delta;
-   int sq;
-   int pawn, rook;
+   int_fast32_t me, opp;
+   int_fast32_t from, to;
+   int_fast32_t piece, pos, capture;
+   int_fast32_t old_flags, new_flags;
+   int_fast32_t delta;
+   int_fast32_t sq;
+   int_fast32_t pawn, rook;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(move_is_ok(move));
-   ASSERT(undo!=NULL);
+   ASSERT(undo!=nullptr);
 
    ASSERT(board_is_legal(board));
 
@@ -218,16 +218,16 @@ void move_do(board_t * board, int move, undo_t * undo) {
 
 // move_undo()
 
-void move_undo(board_t * board, int move, const undo_t * undo) {
+void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 
-   int me;
-   int from, to;
-   int piece, pos;
-   int rook;
+   int_fast32_t me;
+   int_fast32_t from, to;
+   int_fast32_t piece, pos;
+   int_fast32_t rook;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(move_is_ok(move));
-   ASSERT(undo!=NULL);
+   ASSERT(undo!=nullptr);
 
    // init
 
@@ -316,10 +316,10 @@ void move_undo(board_t * board, int move, const undo_t * undo) {
 
 void move_do_null(board_t * board, undo_t * undo) {
 
-   int sq;
+   int_fast32_t sq;
 
-   ASSERT(board!=NULL);
-   ASSERT(undo!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(undo!=nullptr);
 
    ASSERT(board_is_legal(board));
    ASSERT(!board_is_check(board));
@@ -367,8 +367,8 @@ void move_do_null(board_t * board, undo_t * undo) {
 
 void move_undo_null(board_t * board, const undo_t * undo) {
 
-   ASSERT(board!=NULL);
-   ASSERT(undo!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(undo!=nullptr);
 
    ASSERT(board_is_legal(board));
    ASSERT(!board_is_check(board));
@@ -393,15 +393,15 @@ void move_undo_null(board_t * board, const undo_t * undo) {
 
 // square_clear()
 
-static void square_clear(board_t * board, int square, int piece, bool update) {
+static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piece, bool update) {
 
-   int pos, piece_12, colour;
-   int sq;
-   int i, size;
-   int sq_64;
-   uint64 hash_xor;
+   int_fast32_t pos, piece_12, colour;
+   int_fast32_t sq;
+   int_fast32_t i, size;
+   int_fast32_t sq_64;
+   uint_fast64_t hash_xor;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(square));
    ASSERT(piece_is_ok(piece));
    ASSERT(update==true||update==false);
@@ -526,15 +526,15 @@ static void square_clear(board_t * board, int square, int piece, bool update) {
 
 // square_set()
 
-static void square_set(board_t * board, int square, int piece, int pos, bool update) {
+static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece, int_fast32_t pos, bool update) {
 
-   int piece_12, colour;
-   int sq;
-   int i, size;
-   int sq_64;
-   uint64 hash_xor;
+   int_fast32_t piece_12, colour;
+   int_fast32_t sq;
+   int_fast32_t i, size;
+   int_fast32_t sq_64;
+   uint_fast64_t hash_xor;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(square));
    ASSERT(piece_is_ok(piece));
    ASSERT(pos>=0);
@@ -661,16 +661,16 @@ static void square_set(board_t * board, int square, int piece, int pos, bool upd
 
 // square_move()
 
-static void square_move(board_t * board, int from, int to, int piece, bool update) {
+static void square_move(board_t * board, int_fast32_t from, int_fast32_t to, int_fast32_t piece, bool update) {
 
-   int colour;
-   int pos;
-   int from_64, to_64;
-   int piece_12;
-   int piece_index;
-   uint64 hash_xor;
+   int_fast32_t colour;
+   int_fast32_t pos;
+   int_fast32_t from_64, to_64;
+   int_fast32_t piece_12;
+   int_fast32_t piece_index;
+   uint_fast64_t hash_xor;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(from));
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(piece_is_ok(piece));

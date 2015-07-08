@@ -6,6 +6,7 @@
 
 // includes
 
+#include <cstdint>
 #include "colour.h"
 #include "piece.h"
 #include "square.h"
@@ -13,30 +14,30 @@
 
 // constants
 
-const int Empty = 0;
-const int Edge = Knight64; // HACK: uncoloured knight
+const int_fast32_t Empty = 0;
+const int_fast32_t Edge = Knight64; // HACK: uncoloured knight
 
-const int WP = WhitePawn256;
-const int WN = WhiteKnight256;
-const int WB = WhiteBishop256;
-const int WR = WhiteRook256;
-const int WQ = WhiteQueen256;
-const int WK = WhiteKing256;
+const int_fast32_t WP = WhitePawn256;
+const int_fast32_t WN = WhiteKnight256;
+const int_fast32_t WB = WhiteBishop256;
+const int_fast32_t WR = WhiteRook256;
+const int_fast32_t WQ = WhiteQueen256;
+const int_fast32_t WK = WhiteKing256;
 
-const int BP = BlackPawn256;
-const int BN = BlackKnight256;
-const int BB = BlackBishop256;
-const int BR = BlackRook256;
-const int BQ = BlackQueen256;
-const int BK = BlackKing256;
+const int_fast32_t BP = BlackPawn256;
+const int_fast32_t BN = BlackKnight256;
+const int_fast32_t BB = BlackBishop256;
+const int_fast32_t BR = BlackRook256;
+const int_fast32_t BQ = BlackQueen256;
+const int_fast32_t BK = BlackKing256;
 
-const int FlagsNone = 0;
-const int FlagsWhiteKingCastle  = 1 << 0;
-const int FlagsWhiteQueenCastle = 1 << 1;
-const int FlagsBlackKingCastle  = 1 << 2;
-const int FlagsBlackQueenCastle = 1 << 3;
+const int_fast32_t FlagsNone = 0;
+const int_fast32_t FlagsWhiteKingCastle  = 1 << 0;
+const int_fast32_t FlagsWhiteQueenCastle = 1 << 1;
+const int_fast32_t FlagsBlackKingCastle  = 1 << 2;
+const int_fast32_t FlagsBlackQueenCastle = 1 << 3;
 
-const int StackSize = 4096;
+const int_fast32_t StackSize = 4096;
 
 // macros
 
@@ -46,39 +47,39 @@ const int StackSize = 4096;
 
 struct board_t {
 
-   int piece_material[ColourNb]; // Thomas
+   int_fast32_t piece_material[ColourNb]; // Thomas
      	
-   int square[SquareNb];
-   int pos[SquareNb];
+   int_fast32_t square[SquareNb];
+   int_fast32_t pos[SquareNb];
 
    sq_t piece[ColourNb][17]; // was 32
-   int piece_size[ColourNb];
+   int_fast32_t piece_size[ColourNb];
 
    sq_t pawn[ColourNb][9]; // was 16
-   int pawn_size[ColourNb];
+   int_fast32_t pawn_size[ColourNb];
 
-   int piece_nb;
-   int number[12]; // was 16
+   int_fast32_t piece_nb;
+   int_fast32_t number[12]; // was 16
 
-   int pawn_file[ColourNb][FileNb];
+   int_fast32_t pawn_file[ColourNb][FileNb];
 
    bool turn;
-   int flags;
-   int ep_square;
-   int ply_nb;
-   int sp; // TODO: MOVE ME?
+   int_fast32_t flags;
+   int_fast32_t ep_square;
+   int_fast32_t ply_nb;
+   int_fast32_t sp; // TODO: MOVE ME?
 
-   int cap_sq;
+   int_fast32_t cap_sq;
 
-   int opening;
-   int endgame;
-   int pvalue; //Ryan
+   int_fast32_t opening;
+   int_fast32_t endgame;
+   int_fast32_t pvalue; //Ryan
 
-   uint64 key;
-   uint64 pawn_key;
-   uint64 material_key;
+   uint_fast64_t key;
+   uint_fast64_t pawn_key;
+   uint_fast64_t material_key;
 
-   uint64 stack[StackSize];
+   uint_fast64_t stack[StackSize];
 };
 
 // functions
@@ -97,11 +98,10 @@ extern bool board_is_stalemate  (board_t * board);
 
 extern bool board_is_repetition (const board_t * board);
 
-extern int  board_material      (const board_t * board);
-extern int  board_opening       (const board_t * board);
-extern int  board_endgame       (const board_t * board);
+extern int_fast32_t  board_material      (const board_t * board);
+extern int_fast32_t  board_opening       (const board_t * board);
+extern int_fast32_t  board_endgame       (const board_t * board);
 
 #endif // !defined BOARD_H
 
 // end of board.h
-

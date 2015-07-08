@@ -12,11 +12,11 @@
 
 // variables
 
-uint64 Castle64[16];
+uint_fast64_t Castle64[16];
 
 // prototypes
 
-static uint64 hash_counter_key (int piece_12, int count);
+static uint_fast64_t hash_counter_key (int_fast32_t piece_12, int_fast32_t count);
 
 // functions
 
@@ -24,21 +24,21 @@ static uint64 hash_counter_key (int piece_12, int count);
 
 void hash_init() {
 
-   int i;
+   int_fast32_t i;
 
    for (i = 0; i < 16; i++) Castle64[i] = hash_castle_key(i);
 }
 
 // hash_key()
 
-uint64 hash_key(const board_t * board) {
+uint_fast64_t hash_key(const board_t * board) {
 
-   uint64 key;
-   int colour;
+   uint_fast64_t key;
+   int_fast32_t colour;
    const sq_t * ptr;
-   int sq, piece;
+   int_fast32_t sq, piece;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -77,14 +77,14 @@ uint64 hash_key(const board_t * board) {
 
 // hash_pawn_key()
 
-uint64 hash_pawn_key(const board_t * board) {
+uint_fast64_t hash_pawn_key(const board_t * board) {
 
-   uint64 key;
-   int colour;
+   uint_fast64_t key;
+   int_fast32_t colour;
    const sq_t * ptr;
-   int sq, piece;
+   int_fast32_t sq, piece;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -104,12 +104,12 @@ uint64 hash_pawn_key(const board_t * board) {
 
 // hash_material_key()
 
-uint64 hash_material_key(const board_t * board) {
+uint_fast64_t hash_material_key(const board_t * board) {
 
-   uint64 key;
-   int piece_12, count;
+   uint_fast64_t key;
+   int_fast32_t piece_12, count;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    // init
 
@@ -127,7 +127,7 @@ uint64 hash_material_key(const board_t * board) {
 
 // hash_piece_key()
 
-uint64 hash_piece_key(int piece, int square) {
+uint_fast64_t hash_piece_key(int_fast32_t piece, int_fast32_t square) {
 
    ASSERT(piece_is_ok(piece));
    ASSERT(SQUARE_IS_OK(square));
@@ -137,10 +137,10 @@ uint64 hash_piece_key(int piece, int square) {
 
 // hash_castle_key()
 
-uint64 hash_castle_key(int flags) {
+uint_fast64_t hash_castle_key(int_fast32_t flags) {
 
-   uint64 key;
-   int i;
+   uint_fast64_t key;
+   int_fast32_t i;
 
    ASSERT((flags&~0xF)==0);
 
@@ -155,7 +155,7 @@ uint64 hash_castle_key(int flags) {
 
 // hash_ep_key()
 
-uint64 hash_ep_key(int square) {
+uint_fast64_t hash_ep_key(int_fast32_t square) {
 
    ASSERT(SQUARE_IS_OK(square));
 
@@ -164,7 +164,7 @@ uint64 hash_ep_key(int square) {
 
 // hash_turn_key()
 
-uint64 hash_turn_key(int colour) {
+uint_fast64_t hash_turn_key(int_fast32_t colour) {
 
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -173,10 +173,10 @@ uint64 hash_turn_key(int colour) {
 
 // hash_counter_key()
 
-static uint64 hash_counter_key(int piece_12, int count) {
+static uint_fast64_t hash_counter_key(int_fast32_t piece_12, int_fast32_t count) {
 
-   uint64 key;
-   int i, index;
+   uint_fast64_t key;
+   int_fast32_t i, index;
 
    ASSERT(piece_12>=0&&piece_12<12);
    ASSERT(count>=0&&count<=10);

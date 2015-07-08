@@ -19,7 +19,7 @@ static const bool UseStrict = true;
 
 bool list_is_ok(const list_t * list) {
 
-   if (list == NULL) return false;
+   if (list == nullptr) return false;
 
    if (list->size < 0 || list->size >= ListSize) return false;
 
@@ -28,9 +28,9 @@ bool list_is_ok(const list_t * list) {
 
 // list_remove()
 
-void list_remove(list_t * list, int pos) {
+void list_remove(list_t * list, int_fast32_t pos) {
 
-   int i;
+   int_fast32_t i;
 
    ASSERT(list_is_ok(list));
    ASSERT(pos>=0&&pos<list->size);
@@ -47,9 +47,9 @@ void list_remove(list_t * list, int pos) {
 
 void list_copy(list_t * dst, const list_t * src) {
 
-   int i;
+   int_fast32_t i;
 
-   ASSERT(dst!=NULL);
+   ASSERT(dst!=nullptr);
    ASSERT(list_is_ok(src));
 
    dst->size = src->size;
@@ -64,9 +64,9 @@ void list_copy(list_t * dst, const list_t * src) {
 
 void list_sort(list_t * list) {
 
-   int size;
-   int i, j;
-   int move, value;
+   int_fast32_t size;
+   int_fast32_t i, j;
+   int_fast32_t move, value;
 
    ASSERT(list_is_ok(list));
 
@@ -104,9 +104,9 @@ void list_sort(list_t * list) {
 
 // list_contain()
 
-bool list_contain(const list_t * list, int move) {
+bool list_contain(const list_t * list, int_fast32_t move) {
 
-   int i;
+   int_fast32_t i;
 
    ASSERT(list_is_ok(list));
    ASSERT(move_is_ok(move));
@@ -122,7 +122,7 @@ bool list_contain(const list_t * list, int move) {
 
 void list_note(list_t * list) {
 
-   int i, move;
+   int_fast32_t i, move;
 
    ASSERT(list_is_ok(list));
 
@@ -137,12 +137,12 @@ void list_note(list_t * list) {
 
 void list_filter(list_t * list, board_t * board, move_test_t test, bool keep) {
 
-   int pos;
-   int i, move, value;
+   int_fast32_t pos;
+   int_fast32_t i, move, value;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(test!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
+   ASSERT(test!=nullptr);
    ASSERT(keep==true||keep==false);
 
    pos = 0;

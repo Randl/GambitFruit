@@ -38,7 +38,7 @@
 #define MAX_PIECES 32
 // constants and variables
 
-const int KnightOutpostMatrix[2][256] = {
+const int_fast32_t KnightOutpostMatrix[2][256] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -74,115 +74,115 @@ const int KnightOutpostMatrix[2][256] = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static int lazy_eval_cutoff = 50; 
+static int_fast32_t lazy_eval_cutoff = 50; 
 static bool KingSafety = false; // true
-//static int KingSafetyMargin = 1600;
+//static int_fast32_t KingSafetyMargin = 1600;
 static bool king_is_safe[ColourNb];
 
-static /* const */ int PieceActivityWeight = 256; // 100%
-static /*const  */ int ShelterOpening = 256; // 100%
-static /* const */ int KingSafetyWeight = 256; // 100%
-static /* const */ int PassedPawnWeight = 256; // 100%
+static /* const */ int_fast32_t PieceActivityWeight = 256; // 100%
+static /*const  */ int_fast32_t ShelterOpening = 256; // 100%
+static /* const */ int_fast32_t KingSafetyWeight = 256; // 100%
+static /* const */ int_fast32_t PassedPawnWeight = 256; // 100%
 
-static const int MobMove = 1;
-static const int MobAttack = 1;
-static const int MobDefense = 0;
+static const int_fast32_t MobMove = 1;
+static const int_fast32_t MobAttack = 1;
+static const int_fast32_t MobDefense = 0;
 
-static const int knight_mob[9]  =     {-16,-12,-8,-4, 0, 4, 8, 12, 16 };
-static const int bishop_mob[14] =     {-30,-25,-20,-15,-10,-5, 0, 5, 10, 15, 20, 25, 30, 35 };
-static const int rook_mob_open[15] =  { -14, -12,-10, -8, -6,-4,-2, 0, 2, 4,  6,  8, 10, 12, 14 };
-static const int rook_mob_end[15]  =  { -28, -24,-20,-16,-12,-8,-4, 0, 4, 8, 12, 16, 20, 24, 28 };
-static const int queen_mob_open[27] = {-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
-static const int queen_mob_end[27] =  {-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26 };
+static const int_fast32_t knight_mob[9]  =     {-16,-12,-8,-4, 0, 4, 8, 12, 16 };
+static const int_fast32_t bishop_mob[14] =     {-30,-25,-20,-15,-10,-5, 0, 5, 10, 15, 20, 25, 30, 35 };
+static const int_fast32_t rook_mob_open[15] =  { -14, -12,-10, -8, -6,-4,-2, 0, 2, 4,  6,  8, 10, 12, 14 };
+static const int_fast32_t rook_mob_end[15]  =  { -28, -24,-20,-16,-12,-8,-4, 0, 4, 8, 12, 16, 20, 24, 28 };
+static const int_fast32_t queen_mob_open[27] = {-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
+static const int_fast32_t queen_mob_end[27] =  {-26,-24,-22,-20,-18,-16,-14,-12,-10,-8,-6,-4,-2,0,2,4,6,8,10,12,14,16,18,20,22,24,26 };
 
-static const int pawns_on_bishop_colour_opening[9] = {9,6,3,0,-3,-6,-9,-12,-15};
-static const int pawns_on_bishop_colour_endgame[9] = {12,8,4,0,-4,-8,-12,-16,-20};
+static const int_fast32_t pawns_on_bishop_colour_opening[9] = {9,6,3,0,-3,-6,-9,-12,-15};
+static const int_fast32_t pawns_on_bishop_colour_endgame[9] = {12,8,4,0,-4,-8,-12,-16,-20};
 
-static const int RookSemiOpenFileOpening = 10;
-static const int RookSemiOpenFileEndgame = 10;
-static const int RookOpenFileOpening = 20;
-static const int RookOpenFileEndgame = 20;
-static const int RookSemiKingFileOpening = 10;
-static const int RookKingFileOpening = 20;
-static const int RookOnBadPawnFileOpening = 8;
-static const int RookOnBadPawnFileEndgame = 8;
+static const int_fast32_t RookSemiOpenFileOpening = 10;
+static const int_fast32_t RookSemiOpenFileEndgame = 10;
+static const int_fast32_t RookOpenFileOpening = 20;
+static const int_fast32_t RookOpenFileEndgame = 20;
+static const int_fast32_t RookSemiKingFileOpening = 10;
+static const int_fast32_t RookKingFileOpening = 20;
+static const int_fast32_t RookOnBadPawnFileOpening = 8;
+static const int_fast32_t RookOnBadPawnFileEndgame = 8;
 
-static /* const */ int KingAttackOpening = 20; // was 20
+static /* const */ int_fast32_t KingAttackOpening = 20; // was 20
 
-static const int knight_tropism_opening = 3;
-static const int bishop_tropism_opening = 2;
-static const int rook_tropism_opening = 2;
-static const int queen_tropism_opening = 2;
+static const int_fast32_t knight_tropism_opening = 3;
+static const int_fast32_t bishop_tropism_opening = 2;
+static const int_fast32_t rook_tropism_opening = 2;
+static const int_fast32_t queen_tropism_opening = 2;
 
-static const int knight_tropism_endgame = 3;
-static const int bishop_tropism_endgame = 1;
-static const int rook_tropism_endgame = 1;
-static const int queen_tropism_endgame = 4;
+static const int_fast32_t knight_tropism_endgame = 3;
+static const int_fast32_t bishop_tropism_endgame = 1;
+static const int_fast32_t rook_tropism_endgame = 1;
+static const int_fast32_t queen_tropism_endgame = 4;
 
-static /* const */ int StormOpening = 10;
+static /* const */ int_fast32_t StormOpening = 10;
 
-static const int Rook7thOpening = 20;
-static const int Rook7thEndgame = 40;
-static const int Queen7thOpening = 10;
-static const int Queen7thEndgame = 20;
+static const int_fast32_t Rook7thOpening = 20;
+static const int_fast32_t Rook7thEndgame = 40;
+static const int_fast32_t Queen7thOpening = 10;
+static const int_fast32_t Queen7thEndgame = 20;
 
-static const int TrappedBishop = 100;
+static const int_fast32_t TrappedBishop = 100;
 
-static const int BlockedBishop = 50;
-static const int BlockedRook = 50;
-static const int BlockedCenterPawn = 10;
+static const int_fast32_t BlockedBishop = 50;
+static const int_fast32_t BlockedRook = 50;
+static const int_fast32_t BlockedCenterPawn = 10;
 
-static const int PassedOpeningMin = 10;
-static const int PassedOpeningMax = 70;
-static const int PassedEndgameMin = 20;
-static const int PassedEndgameMax = 140;
+static const int_fast32_t PassedOpeningMin = 10;
+static const int_fast32_t PassedOpeningMax = 70;
+static const int_fast32_t PassedEndgameMin = 20;
+static const int_fast32_t PassedEndgameMax = 140;
 
-static const int UnstoppablePasser = 800;
-static const int FreePasser = 60;
+static const int_fast32_t UnstoppablePasser = 800;
+static const int_fast32_t FreePasser = 60;
 
-static const int AttackerDistance = 5;
-static const int DefenderDistance = 20;
+static const int_fast32_t AttackerDistance = 5;
+static const int_fast32_t DefenderDistance = 20;
 
 // "constants"
 
-static const int KingAttackWeight[16] = {
+static const int_fast32_t KingAttackWeight[16] = {
    0, 0, 128, 192, 224, 240, 248, 252, 254, 255, 256, 256 ,256, 256, 256, 256,
 };
 
 
 // variables
 
-static int MobUnit[ColourNb][PieceNb];
+static int_fast32_t MobUnit[ColourNb][PieceNb];
 
-static int KingAttackUnit[PieceNb];
+static int_fast32_t KingAttackUnit[PieceNb];
 
 // prototypes
 
-static void eval_draw          (const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int mul[2]);
+static void eval_draw          (const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int_fast32_t mul[2]);
 
-static void eval_piece         (const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int * opening, int * endgame);
-static void eval_king          (const board_t * board, const material_info_t * mat_info, int * opening, int * endgame);
-static void eval_passer        (const board_t * board, const pawn_info_t * pawn_info, int * opening, int * endgame);
-static void eval_pattern       (const board_t * board, int * opening, int * endgame);
+static void eval_piece         (const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int_fast32_t * opening, int_fast32_t * endgame);
+static void eval_king          (const board_t * board, const material_info_t * mat_info, int_fast32_t * opening, int_fast32_t * endgame);
+static void eval_passer        (const board_t * board, const pawn_info_t * pawn_info, int_fast32_t * opening, int_fast32_t * endgame);
+static void eval_pattern       (const board_t * board, int_fast32_t * opening, int_fast32_t * endgame);
 
-static bool unstoppable_passer (const board_t * board, int pawn, int colour);
-static bool king_passer        (const board_t * board, int pawn, int colour);
-static bool free_passer        (const board_t * board, int pawn, int colour);
+static bool unstoppable_passer (const board_t * board, int_fast32_t pawn, int_fast32_t colour);
+static bool king_passer        (const board_t * board, int_fast32_t pawn, int_fast32_t colour);
+static bool free_passer        (const board_t * board, int_fast32_t pawn, int_fast32_t colour);
 
-static int  pawn_att_dist      (int pawn, int king, int colour);
-static int  pawn_def_dist      (int pawn, int king, int colour);
+static int_fast32_t  pawn_att_dist      (int_fast32_t pawn, int_fast32_t king, int_fast32_t colour);
+static int_fast32_t  pawn_def_dist      (int_fast32_t pawn, int_fast32_t king, int_fast32_t colour);
 
-static void draw_init_list     (int list[], const board_t * board, int pawn_colour);
+static void draw_init_list     (int_fast32_t list[], const board_t * board, int_fast32_t pawn_colour);
 
-static bool draw_krpkr         (const int list[], int turn);
-static bool draw_kbpkb         (const int list[], int turn);
+static bool draw_krpkr         (const int_fast32_t list[], int_fast32_t turn);
+static bool draw_kbpkb         (const int_fast32_t list[], int_fast32_t turn);
 
-static int  shelter_square     (const board_t * board, int square, int colour);
-static int  shelter_file       (const board_t * board, int file, int rank, int colour);
+static int_fast32_t  shelter_square     (const board_t * board, int_fast32_t square, int_fast32_t colour);
+static int_fast32_t  shelter_file       (const board_t * board, int_fast32_t file, int_fast32_t rank, int_fast32_t colour);
 
-static int  storm_file         (const board_t * board, int file, int colour);
+static int_fast32_t  storm_file         (const board_t * board, int_fast32_t file, int_fast32_t colour);
 
-static bool bishop_can_attack  (const board_t * board, int to, int colour);
+static bool bishop_can_attack  (const board_t * board, int_fast32_t to, int_fast32_t colour);
 
 // functions
 
@@ -190,8 +190,8 @@ static bool bishop_can_attack  (const board_t * board, int to, int colour);
 
 void eval_init() {
 
-   int colour;
-   int piece;
+   int_fast32_t colour;
+   int_fast32_t piece;
 
    // UCI options
 
@@ -264,33 +264,33 @@ void eval_init() {
 
 // eval()
 
-int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_check) {
+int_fast32_t eval(/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t beta, bool do_le, bool in_check) {
 
-   int opening, endgame;
+   int_fast32_t opening, endgame;
    material_info_t mat_info[1];
    pawn_info_t pawn_info[1];
-   int mul[ColourNb];
-   int phase;
-   int eval;
-   int wb, bb;
-   int lazy_eval;
-   int tempo;
+   int_fast32_t mul[ColourNb];
+   int_fast32_t phase;
+   int_fast32_t eval;
+   int_fast32_t wb, bb;
+   int_fast32_t lazy_eval;
+   int_fast32_t tempo;
    bool is_cut;
 
 	/*
 	BitBases
 	*/
 
-	int total_pieces;
-	int player;
-	int w_ksq;
-	int b_ksq;
-	int egbb_piece[MAX_PIECES];
-	int egbb_square[MAX_PIECES];
+	int_fast32_t total_pieces;
+	int_fast32_t player;
+	int_fast32_t w_ksq;
+	int_fast32_t b_ksq;
+	int_fast32_t egbb_piece[MAX_PIECES];
+	int_fast32_t egbb_square[MAX_PIECES];
 	
 	player = board->turn; 
 	total_pieces = 2;
-    for (int i = 0; i < MAX_PIECES; ++i) {
+    for (int_fast32_t i = 0; i < MAX_PIECES; ++i) {
         egbb_piece[i] = 0;
         egbb_square[i] = 0;
     }
@@ -301,7 +301,7 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 	End Bitbases
 	*/
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
 
    ASSERT(board_is_legal(board));
    ASSERT(!board_is_check(board)); // exceptions are extremely rare
@@ -321,11 +321,11 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
    if(egbb_is_loaded && (mat_info->flags & MatBitbaseFlag) != 0) {
 
 	   const sq_t * ptr;
-	   int from;
-	   int score;
-		int piece;
-		int psquare;
-		//int sq_copy[64];
+	   int_fast32_t from;
+	   int_fast32_t score;
+		  int_fast32_t piece;
+	  	int_fast32_t psquare;
+		//int_fast32_t sq_copy[64];
 
 		//for (from=0; from < 64; ++from) {
 		//	sq_copy[from] = board->square[SQUARE_FROM_64(from)];
@@ -502,19 +502,19 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 
 // eval_draw()
 
-static void eval_draw(const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int mul[2]) {
+static void eval_draw(const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int_fast32_t mul[2]) {
 
-   int colour;
-   int me, opp;
-   int pawn, king;
-   int pawn_file;
-   int prom;
-   int list[7+1];
+   int_fast32_t colour;
+   int_fast32_t me, opp;
+   int_fast32_t pawn, king;
+   int_fast32_t pawn_file;
+   int_fast32_t prom;
+   int_fast32_t list[7+1];
 
-   ASSERT(board!=NULL);
-   ASSERT(mat_info!=NULL);
-   ASSERT(pawn_info!=NULL);
-   ASSERT(mul!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(mat_info!=nullptr);
+   ASSERT(pawn_info!=nullptr);
+   ASSERT(mul!=nullptr);
 
    // draw patterns
 
@@ -630,28 +630,28 @@ static void eval_draw(const board_t * board, const material_info_t * mat_info, c
 
 // eval_piece()
 
-static void eval_piece(const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int * opening, int * endgame) {
+static void eval_piece(const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   int colour;
-   int op[ColourNb], eg[ColourNb];
-   int me, opp;
-   int opp_flag;
+   int_fast32_t colour;
+   int_fast32_t op[ColourNb], eg[ColourNb];
+   int_fast32_t me, opp;
+   int_fast32_t opp_flag;
    const sq_t * ptr;
-   int from, to;
-   int piece;
-   int mob;
-   int capture;
-   const int * unit;
-   int rook_file, king_file;
-   int king;
-   int delta;
-   int king_rank,piece_rank,new_mob, piece_file;
+   int_fast32_t from, to;
+   int_fast32_t piece;
+   int_fast32_t mob;
+   int_fast32_t capture;
+   const int_fast32_t * unit;
+   int_fast32_t rook_file, king_file;
+   int_fast32_t king;
+   int_fast32_t delta;
+   int_fast32_t king_rank,piece_rank,new_mob, piece_file;
 
-   ASSERT(board!=NULL);
-   ASSERT(mat_info!=NULL);
-   ASSERT(pawn_info!=NULL);
-   ASSERT(opening!=NULL);
-   ASSERT(endgame!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(mat_info!=nullptr);
+   ASSERT(pawn_info!=nullptr);
+   ASSERT(opening!=nullptr);
+   ASSERT(endgame!=nullptr);
 
    // init
 
@@ -973,26 +973,26 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
 
 // eval_king()
 
-static void eval_king(const board_t * board, const material_info_t * mat_info, int * opening, int * endgame) {
+static void eval_king(const board_t * board, const material_info_t * mat_info, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   int colour;
-   int op[ColourNb], eg[ColourNb];
-   int me, opp;
-   int from;
-   int penalty_1, penalty_2;
-   int tmp;
-   int penalty;
-   int king;
+   int_fast32_t colour;
+   int_fast32_t op[ColourNb], eg[ColourNb];
+   int_fast32_t me, opp;
+   int_fast32_t from;
+   int_fast32_t penalty_1, penalty_2;
+   int_fast32_t tmp;
+   int_fast32_t penalty;
+   int_fast32_t king;
    const sq_t * ptr;
-   int piece;
-   int attack_tot;
-   int piece_nb;
-   int king_file, king_rank;
+   int_fast32_t piece;
+   int_fast32_t attack_tot;
+   int_fast32_t piece_nb;
+   int_fast32_t king_file, king_rank;
 
-   ASSERT(board!=NULL);
-   ASSERT(mat_info!=NULL);
-   ASSERT(opening!=NULL);
-   ASSERT(endgame!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(mat_info!=nullptr);
+   ASSERT(opening!=nullptr);
+   ASSERT(endgame!=nullptr);
 
    // init
 
@@ -1172,22 +1172,22 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 
 // eval_passer()
 
-static void eval_passer(const board_t * board, const pawn_info_t * pawn_info, int * opening, int * endgame) {
+static void eval_passer(const board_t * board, const pawn_info_t * pawn_info, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   int colour;
-   int op[ColourNb], eg[ColourNb];
-   int att, def;
-   int bits;
-   int file, rank;
-   int sq;
-   int min, max;
-   int delta;
-   int white_passed_nb, black_passed_nb;
+   int_fast32_t colour;
+   int_fast32_t op[ColourNb], eg[ColourNb];
+   int_fast32_t att, def;
+   int_fast32_t bits;
+   int_fast32_t file, rank;
+   int_fast32_t sq;
+   int_fast32_t min, max;
+   int_fast32_t delta;
+   int_fast32_t white_passed_nb, black_passed_nb;
    
-   ASSERT(board!=NULL);
-   ASSERT(pawn_info!=NULL);
-   ASSERT(opening!=NULL);
-   ASSERT(endgame!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(pawn_info!=nullptr);
+   ASSERT(opening!=nullptr);
+   ASSERT(endgame!=nullptr);
 
    // init
 
@@ -1260,11 +1260,11 @@ static void eval_passer(const board_t * board, const pawn_info_t * pawn_info, in
 
 // eval_pattern()
 
-static void eval_pattern(const board_t * board, int * opening, int * endgame) {
+static void eval_pattern(const board_t * board, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   ASSERT(board!=NULL);
-   ASSERT(opening!=NULL);
-   ASSERT(endgame!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(opening!=nullptr);
+   ASSERT(endgame!=nullptr);
 
    // trapped bishop (7th rank)
 
@@ -1374,17 +1374,17 @@ static void eval_pattern(const board_t * board, int * opening, int * endgame) {
 
 // unstoppable_passer()
 
-static bool unstoppable_passer(const board_t * board, int pawn, int colour) {
+static bool unstoppable_passer(const board_t * board, int_fast32_t pawn, int_fast32_t colour) {
 
-   int me, opp;
-   int file, rank;
-   int king;
-   int prom;
+   int_fast32_t me, opp;
+   int_fast32_t file, rank;
+   int_fast32_t king;
+   int_fast32_t prom;
    const sq_t * ptr;
-   int sq;
-   int dist;
+   int_fast32_t sq;
+   int_fast32_t dist;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(pawn));
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -1427,14 +1427,14 @@ static bool unstoppable_passer(const board_t * board, int pawn, int colour) {
 
 // king_passer()
 
-static bool king_passer(const board_t * board, int pawn, int colour) {
+static bool king_passer(const board_t * board, int_fast32_t pawn, int_fast32_t colour) {
 
-   int me;
-   int king;
-   int file;
-   int prom;
+   int_fast32_t me;
+   int_fast32_t king;
+   int_fast32_t file;
+   int_fast32_t prom;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(pawn));
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -1456,14 +1456,14 @@ static bool king_passer(const board_t * board, int pawn, int colour) {
 
 // free_passer()
 
-static bool free_passer(const board_t * board, int pawn, int colour) {
+static bool free_passer(const board_t * board, int_fast32_t pawn, int_fast32_t colour) {
 
-   int me, opp;
-   int inc;
-   int sq;
-   int move;
+   int_fast32_t me, opp;
+   int_fast32_t inc;
+   int_fast32_t sq;
+   int_fast32_t move;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(pawn));
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -1484,11 +1484,11 @@ static bool free_passer(const board_t * board, int pawn, int colour) {
 
 // pawn_att_dist()
 
-static int pawn_att_dist(int pawn, int king, int colour) {
+static int_fast32_t pawn_att_dist(int_fast32_t pawn, int_fast32_t king, int_fast32_t colour) {
 
-   int me;
-   int inc;
-   int target;
+   int_fast32_t me;
+   int_fast32_t inc;
+   int_fast32_t target;
 
    ASSERT(SQUARE_IS_OK(pawn));
    ASSERT(SQUARE_IS_OK(king));
@@ -1504,11 +1504,11 @@ static int pawn_att_dist(int pawn, int king, int colour) {
 
 // pawn_def_dist()
 
-static int pawn_def_dist(int pawn, int king, int colour) {
+static int_fast32_t pawn_def_dist(int_fast32_t pawn, int_fast32_t king, int_fast32_t colour) {
 
-   int me;
-   int inc;
-   int target;
+   int_fast32_t me;
+   int_fast32_t inc;
+   int_fast32_t target;
 
    ASSERT(SQUARE_IS_OK(pawn));
    ASSERT(SQUARE_IS_OK(king));
@@ -1524,17 +1524,17 @@ static int pawn_def_dist(int pawn, int king, int colour) {
 
 // draw_init_list()
 
-static void draw_init_list(int list[], const board_t * board, int pawn_colour) {
+static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast32_t pawn_colour) {
 
-   int pos;
-   int att, def;
+   int_fast32_t pos;
+   int_fast32_t att, def;
    const sq_t * ptr;
-   int sq;
-   int pawn;
-   int i;
+   int_fast32_t sq;
+   int_fast32_t pawn;
+   int_fast32_t i;
 
-   ASSERT(list!=NULL);
-   ASSERT(board!=NULL);
+   ASSERT(list!=nullptr);
+   ASSERT(board!=nullptr);
    ASSERT(COLOUR_IS_OK(pawn_colour));
 
    // init
@@ -1595,15 +1595,15 @@ static void draw_init_list(int list[], const board_t * board, int pawn_colour) {
 
 // draw_krpkr()
 
-static bool draw_krpkr(const int list[], int turn) {
+static bool draw_krpkr(const int_fast32_t list[], int_fast32_t turn) {
 
-   int wk, wr, wp, bk, br;
-   int wp_file, wp_rank;
-   int bk_file, bk_rank;
-   int br_file, br_rank;
-   int prom;
+   int_fast32_t wk, wr, wp, bk, br;
+   int_fast32_t wp_file, wp_rank;
+   int_fast32_t bk_file, bk_rank;
+   int_fast32_t br_file, br_rank;
+   int_fast32_t prom;
 
-   ASSERT(list!=NULL);
+   ASSERT(list!=nullptr);
    ASSERT(COLOUR_IS_OK(turn));
 
    // load
@@ -1665,15 +1665,15 @@ static bool draw_krpkr(const int list[], int turn) {
 
 // draw_kbpkb()
 
-static bool draw_kbpkb(const int list[], int turn) {
+static bool draw_kbpkb(const int_fast32_t list[], int_fast32_t turn) {
 
-   int wk, wb, wp, bk, bb;
-   int inc;
-   int end, to;
-   int delta, inc_2;
-   int sq;
+   int_fast32_t wk, wb, wp, bk, bb;
+   int_fast32_t inc;
+   int_fast32_t end, to;
+   int_fast32_t delta, inc_2;
+   int_fast32_t sq;
 
-   ASSERT(list!=NULL);
+   ASSERT(list!=nullptr);
    ASSERT(COLOUR_IS_OK(turn));
 
    // load
@@ -1737,12 +1737,12 @@ static bool draw_kbpkb(const int list[], int turn) {
 
 // shelter_square()
 
-static int shelter_square(const board_t * board, int square, int colour) {
+static int_fast32_t shelter_square(const board_t * board, int_fast32_t square, int_fast32_t colour) {
 
-   int penalty;
-   int file, rank;
+   int_fast32_t penalty;
+   int_fast32_t file, rank;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(square));
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -1767,12 +1767,12 @@ static int shelter_square(const board_t * board, int square, int colour) {
 
 // shelter_file()
 
-static int shelter_file(const board_t * board, int file, int rank, int colour) {
+static int_fast32_t shelter_file(const board_t * board, int_fast32_t file, int_fast32_t rank, int_fast32_t colour) {
 
-   int dist;
-   int penalty;
+   int_fast32_t dist;
+   int_fast32_t penalty;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(file>=FileA&&file<=FileH);
    ASSERT(rank>=Rank1&&rank<=Rank8);
    ASSERT(COLOUR_IS_OK(colour));
@@ -1791,12 +1791,12 @@ static int shelter_file(const board_t * board, int file, int rank, int colour) {
 
 // storm_file()
 
-static int storm_file(const board_t * board, int file, int colour) {
+static int_fast32_t storm_file(const board_t * board, int_fast32_t file, int_fast32_t colour) {
 
-   int dist;
-   int penalty;
+   int_fast32_t dist;
+   int_fast32_t penalty;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(file>=FileA&&file<=FileH);
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -1822,13 +1822,13 @@ static int storm_file(const board_t * board, int file, int colour) {
 
 // bishop_can_attack()
 
-static bool bishop_can_attack(const board_t * board, int to, int colour) {
+static bool bishop_can_attack(const board_t * board, int_fast32_t to, int_fast32_t colour) {
 
    const sq_t * ptr;
-   int from;
-   int piece;
+   int_fast32_t from;
+   int_fast32_t piece;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(COLOUR_IS_OK(colour));
 

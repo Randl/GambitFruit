@@ -21,20 +21,20 @@
 
 void util_init() {
 
-   setvbuf(stdin,NULL,_IONBF,0);
-   setvbuf(stdout,NULL,_IONBF,0); // _IOLBF breaks on Windows!
+   setvbuf(stdin,nullptr,_IONBF,0);
+   setvbuf(stdout,nullptr,_IONBF,0); // _IOLBF breaks on Windows!
 }
 
 // my_random_init()
 
 void my_random_init() {
 
-   srand(time(NULL));
+   srand(time(nullptr));
 }
 
 // my_random()
 
-int my_random(int n) {
+int_fast32_t my_random(int_fast32_t n) {
 
    double r;
 
@@ -47,9 +47,9 @@ int my_random(int n) {
 
 // my_atoll()
 
-sint64 my_atoll(const char string[]) {
+int_fast64_t my_atoll(const char string[]) {
 
-   sint64 n;
+   int_fast64_t n;
 
    sscanf(string,S64_FORMAT,&n);
 
@@ -58,21 +58,21 @@ sint64 my_atoll(const char string[]) {
 
 // my_round()
 
-int my_round(double x) {
+int_fast32_t my_round(double x) {
 
    return int(floor(x+0.5));
 }
 
 // my_malloc()
 
-void * my_malloc(int size) {
+void * my_malloc(int_fast32_t size) {
 
    void * address;
 
    ASSERT(size>0);
 
    address = malloc(size);
-   if (address == NULL) my_fatal("my_malloc(): malloc(): %s\n",strerror(errno));
+   if (address == nullptr) my_fatal("my_malloc(): malloc(): %s\n",strerror(errno));
 
    return address;
 }
@@ -81,7 +81,7 @@ void * my_malloc(int size) {
 
 void my_free(void * address) {
 
-   ASSERT(address!=NULL);
+   ASSERT(address!=nullptr);
 
    free(address);
 }
@@ -92,7 +92,7 @@ void my_fatal(const char format[], ...) {
 
    va_list ap;
 
-   ASSERT(format!=NULL);
+   ASSERT(format!=nullptr);
 
    va_start(ap,format);
    vfprintf(stderr,format,ap);
@@ -104,15 +104,15 @@ void my_fatal(const char format[], ...) {
 
 // my_file_read_line()
 
-bool my_file_read_line(FILE * file, char string[], int size) {
+bool my_file_read_line(FILE * file, char string[], int_fast32_t size) {
 
    char * ptr;
 
-   ASSERT(file!=NULL);
-   ASSERT(string!=NULL);
+   ASSERT(file!=nullptr);
+   ASSERT(string!=nullptr);
    ASSERT(size>0);
 
-   if (fgets(string,size,file) == NULL) {
+   if (fgets(string,size,file) == nullptr) {
       if (feof(file)) {
          return false;
       } else { // error
@@ -123,7 +123,7 @@ bool my_file_read_line(FILE * file, char string[], int size) {
    // suppress '\n'
 
    ptr = strchr(string,'\n');
-   if (ptr != NULL) *ptr = '\0';
+   if (ptr != nullptr) *ptr = '\0';
 
    return true;
 }
@@ -132,17 +132,17 @@ bool my_file_read_line(FILE * file, char string[], int size) {
 
 bool my_string_empty(const char string[]) {
 
-   return string == NULL || string[0] == '\0';
+   return string == nullptr || string[0] == '\0';
 }
 
 // my_string_equal()
 
 bool my_string_equal(const char string_1[], const char string_2[]) {
 
-   int c1, c2;
+   int_fast32_t c1, c2;
 
-   ASSERT(string_1!=NULL);
-   ASSERT(string_2!=NULL);
+   ASSERT(string_1!=nullptr);
+   ASSERT(string_2!=nullptr);
 
    while (true) {
 
@@ -162,7 +162,7 @@ char * my_strdup(const char string[]) {
 
    char * address;
 
-   ASSERT(string!=NULL);
+   ASSERT(string!=nullptr);
 
    // strdup() is not ANSI C
 
@@ -176,11 +176,11 @@ char * my_strdup(const char string[]) {
 
 void my_string_clear(const char * * variable) {
 
-   ASSERT(variable!=NULL);
+   ASSERT(variable!=nullptr);
 
-   if (*variable != NULL) {
+   if (*variable != nullptr) {
       my_free((void*)(*variable));
-      *variable = NULL;
+      *variable = nullptr;
    }
 }
 
@@ -188,10 +188,10 @@ void my_string_clear(const char * * variable) {
 
 void my_string_set(const char * * variable, const char string[]) {
 
-   ASSERT(variable!=NULL);
-   ASSERT(string!=NULL);
+   ASSERT(variable!=nullptr);
+   ASSERT(string!=nullptr);
 
-   if (*variable != NULL) my_free((void*)(*variable));
+   if (*variable != nullptr) my_free((void*)(*variable));
    *variable = my_strdup(string);
 }
 
@@ -199,7 +199,7 @@ void my_string_set(const char * * variable, const char string[]) {
 
 void my_timer_reset(my_timer_t * timer) {
 
-   ASSERT(timer!=NULL);
+   ASSERT(timer!=nullptr);
 
    timer->start_real = 0.0;
    timer->start_cpu = 0.0;
@@ -212,7 +212,7 @@ void my_timer_reset(my_timer_t * timer) {
 
 void my_timer_start(my_timer_t * timer) {
 
-   ASSERT(timer!=NULL);
+   ASSERT(timer!=nullptr);
 
    ASSERT(timer->start_real==0.0);
    ASSERT(timer->start_cpu==0.0);
@@ -227,7 +227,7 @@ void my_timer_start(my_timer_t * timer) {
 
 void my_timer_stop(my_timer_t * timer) {
 
-   ASSERT(timer!=NULL);
+   ASSERT(timer!=nullptr);
 
    ASSERT(timer->running);
 
@@ -244,7 +244,7 @@ double my_timer_elapsed_real(const my_timer_t * timer) {
 
    double elapsed;
 
-   ASSERT(timer!=NULL);
+   ASSERT(timer!=nullptr);
 
    elapsed = timer->elapsed_real;
    if (timer->running) elapsed += now_real() - timer->start_real;
@@ -260,7 +260,7 @@ double my_timer_elapsed_cpu(const my_timer_t * timer) {
 
    double elapsed;
 
-   ASSERT(timer!=NULL);
+   ASSERT(timer!=nullptr);
 
    elapsed = timer->elapsed_cpu;
    if (timer->running) elapsed += now_cpu() - timer->start_cpu;
@@ -277,7 +277,7 @@ double my_timer_cpu_usage(const my_timer_t * timer) {
    double real, cpu;
    double usage;
 
-   ASSERT(timer!=NULL);
+   ASSERT(timer!=nullptr);
 
    real = my_timer_elapsed_real(timer);
    cpu = my_timer_elapsed_cpu(timer);

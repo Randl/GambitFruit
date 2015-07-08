@@ -20,39 +20,39 @@
 
 static const bool UseModulo = false;
 
-static const int DateSize = 16;
+static const int_fast32_t DateSize = 16;
 
-static const int ClusterSize = 4; // TODO: unsigned?
+static const int_fast32_t ClusterSize = 4; // TODO: unsigned?
 
-static const int DepthNone = -128;
+static const int_fast32_t DepthNone = -128;
 
 // types
 
 struct entry_t {
-   uint32 lock;
-   uint16 move;
-   sint8 depth;
-   uint8 date;
-   sint8 move_depth;
-   uint8 flags;
-   sint8 min_depth;
-   sint8 max_depth;
-   sint16 min_value;
-   sint16 max_value;
+   uint_fast32_t lock;
+   uint_fast16_t move;
+   int_fast8_t depth;
+   uint_fast8_t date;
+   int_fast8_t move_depth;
+   uint_fast8_t flags;
+   int_fast8_t min_depth;
+   int_fast8_t max_depth;
+   int_fast16_t  min_value;
+   int_fast16_t  max_value;
 };
 
 struct trans { // HACK: typedef'ed in trans.h
    entry_t * table;
-   uint32 size;
-   uint32 mask;
-   int date;
-   int age[DateSize];
-   uint32 used;
-   sint64 read_nb;
-   sint64 read_hit;
-   sint64 write_nb;
-   sint64 write_hit;
-   sint64 write_collision;
+   uint_fast32_t size;
+   uint_fast32_t mask;
+   int_fast32_t date;
+   int_fast32_t age[DateSize];
+   uint_fast32_t used;
+   int_fast64_t read_nb;
+   int_fast64_t read_hit;
+   int_fast64_t write_nb;
+   int_fast64_t write_hit;
+   int_fast64_t write_collision;
 };
 
 // variables
@@ -63,10 +63,10 @@ trans_t Trans[1];
 
 // prototypes
 
-static void      trans_set_date (trans_t * trans, int date);
-static int       trans_age      (const trans_t * trans, int date);
+static void      trans_set_date (trans_t * trans, int_fast32_t date);
+static int_fast32_t       trans_age      (const trans_t * trans, int_fast32_t date);
 
-static entry_t * trans_entry    (trans_t * trans, uint64 key);
+static entry_t * trans_entry    (trans_t * trans, uint_fast64_t key);
 
 static bool      entry_is_ok    (const entry_t * entry);
 
@@ -76,11 +76,11 @@ static bool      entry_is_ok    (const entry_t * entry);
 
 bool trans_is_ok(const trans_t * trans) {
 
-   int date;
+   int_fast32_t date;
 
-   if (trans == NULL) return false;
+   if (trans == nullptr) return false;
 
-   if (trans->table == NULL) return false;
+   if (trans->table == nullptr) return false;
    if (trans->size == 0) return false;
    if (trans->mask == 0 || trans->mask >= trans->size) return false;
    if (trans->date >= DateSize) return false;
@@ -96,13 +96,13 @@ bool trans_is_ok(const trans_t * trans) {
 
 void trans_init(trans_t * trans) {
 
-   ASSERT(trans!=NULL);
+   ASSERT(trans!=nullptr);
 
    ASSERT(sizeof(entry_t)==16);
 
    trans->size = 0;
    trans->mask = 0;
-   trans->table = NULL;
+   trans->table = nullptr;
 
    trans_set_date(trans,0);
 
@@ -115,9 +115,9 @@ void trans_init(trans_t * trans) {
 
 void trans_alloc(trans_t * trans) {
 
-   uint32 size, target;
+   uint_fast32_t size, target;
 
-   ASSERT(trans!=NULL);
+   ASSERT(trans!=nullptr);
 
    // calculate size
 
@@ -154,7 +154,7 @@ void trans_free(trans_t * trans) {
 
    my_free(trans->table);
 
-   trans->table = NULL;
+   trans->table = nullptr;
    trans->size = 0;
    trans->mask = 0;
 }
@@ -165,9 +165,9 @@ void trans_clear(trans_t * trans) {
 
    entry_t clear_entry[1];
    entry_t * entry;
-   uint32 index;
+   uint_fast32_t index;
 
-   ASSERT(trans!=NULL);
+   ASSERT(trans!=nullptr);
 
    trans_set_date(trans,0);
 
@@ -195,16 +195,16 @@ void trans_clear(trans_t * trans) {
 
 void trans_inc_date(trans_t * trans) {
 
-   ASSERT(trans!=NULL);
+   ASSERT(trans!=nullptr);
 
    trans_set_date(trans,(trans->date+1)%DateSize);
 }
 
 // trans_set_date()
 
-static void trans_set_date(trans_t * trans, int date) {
+static void trans_set_date(trans_t * trans, int_fast32_t date) {
 
-   ASSERT(trans!=NULL);
+   ASSERT(trans!=nullptr);
    ASSERT(date>=0&&date<DateSize);
 
    trans->date = date;
@@ -223,11 +223,11 @@ static void trans_set_date(trans_t * trans, int date) {
 
 // trans_age()
 
-static int trans_age(const trans_t * trans, int date) {
+static int_fast32_t trans_age(const trans_t * trans, int_fast32_t date) {
 
-   int age;
+   int_fast32_t age;
 
-   ASSERT(trans!=NULL);
+   ASSERT(trans!=nullptr);
    ASSERT(date>=0&&date<DateSize);
 
    age = trans->date - date;
@@ -240,11 +240,11 @@ static int trans_age(const trans_t * trans, int date) {
 
 // trans_store()
 
-void trans_store(trans_t * trans, uint64 key, int move, int depth, int min_value, int max_value) {
+void trans_store(trans_t * trans, uint_fast64_t key, int_fast32_t move, int_fast32_t depth, int_fast32_t min_value, int_fast32_t max_value) {
 
    entry_t * entry, * best_entry;
-   int score, best_score;
-   int i;
+   int_fast32_t score, best_score;
+   int_fast32_t i;
 
    ASSERT(trans_is_ok(trans));
    ASSERT(move>=0&&move<65536);
@@ -259,7 +259,7 @@ void trans_store(trans_t * trans, uint64 key, int move, int depth, int min_value
 
    // probe
 
-   best_entry = NULL;
+   best_entry = nullptr;
    best_score = -32767;
 
    entry = trans_entry(trans,key);
@@ -315,7 +315,7 @@ void trans_store(trans_t * trans, uint64 key, int move, int depth, int min_value
    // "best" entry found
 
    entry = best_entry;
-   ASSERT(entry!=NULL);
+   ASSERT(entry!=nullptr);
    ASSERT(entry->lock!=KEY_LOCK(key));
 
    if (entry->date == trans->date) {
@@ -326,7 +326,7 @@ void trans_store(trans_t * trans, uint64 key, int move, int depth, int min_value
 
    // store
 
-   ASSERT(entry!=NULL);
+   ASSERT(entry!=nullptr);
 
    entry->lock = KEY_LOCK(key);
    entry->date = trans->date;
@@ -346,17 +346,17 @@ void trans_store(trans_t * trans, uint64 key, int move, int depth, int min_value
 
 // trans_retrieve()
 
-bool trans_retrieve(trans_t * trans, uint64 key, int * move, int * min_depth, int * max_depth, int * min_value, int * max_value) {
+bool trans_retrieve(trans_t * trans, uint_fast64_t key, int_fast32_t * move, int_fast32_t * min_depth, int_fast32_t * max_depth, int_fast32_t * min_value, int_fast32_t * max_value) {
 
    entry_t * entry;
-   int i;
+   int_fast32_t i;
 
    ASSERT(trans_is_ok(trans));
-   ASSERT(move!=NULL);
-   ASSERT(min_depth!=NULL);
-   ASSERT(max_depth!=NULL);
-   ASSERT(min_value!=NULL);
-   ASSERT(max_value!=NULL);
+   ASSERT(move!=nullptr);
+   ASSERT(min_depth!=nullptr);
+   ASSERT(max_depth!=nullptr);
+   ASSERT(min_value!=nullptr);
+   ASSERT(max_value!=nullptr);
 
    // init
 
@@ -409,9 +409,9 @@ void trans_stats(const trans_t * trans) {
 
 // trans_entry()
 
-static entry_t * trans_entry(trans_t * trans, uint64 key) {
+static entry_t * trans_entry(trans_t * trans, uint_fast64_t key) {
 
-   uint32 index;
+   uint_fast32_t index;
 
    ASSERT(trans_is_ok(trans));
 
@@ -430,7 +430,7 @@ static entry_t * trans_entry(trans_t * trans, uint64 key) {
 
 static bool entry_is_ok(const entry_t * entry) {
 
-   if (entry == NULL) return false;
+   if (entry == nullptr) return false;
 
    if (entry->date >= DateSize) return false;
 

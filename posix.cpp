@@ -60,7 +60,7 @@ bool input_available() {
 
       stdin_h = GetStdHandle(STD_INPUT_HANDLE);
 
-      if (UseDebug && (stdin_h == NULL || stdin_h == INVALID_HANDLE_VALUE)) {
+      if (UseDebug && (stdin_h == nullptr || stdin_h == INVALID_HANDLE_VALUE)) {
          error = GetLastError();
          printf("info string GetStdHandle() failed, error=%d\n",error);
       }
@@ -85,7 +85,7 @@ bool input_available() {
 
    if (is_pipe) {
 
-      if (!PeekNamedPipe(stdin_h,NULL,0,NULL,&val,NULL)) {
+      if (!PeekNamedPipe(stdin_h,nullptr,0,nullptr,&val,nullptr)) {
 
          if (UseDebug) { // PeekNamedPipe() failed, everybody assumes EOF then
             error = GetLastError();
@@ -109,7 +109,7 @@ bool input_available() {
 
 #else // assume POSIX
 
-   int val;
+   int_fast32_t val;
    fd_set set[1];
    struct timeval time_val[1];
 
@@ -119,7 +119,7 @@ bool input_available() {
    time_val->tv_sec = 0;
    time_val->tv_usec = 0;
 
-   val = select(STDIN_FILENO+1,set,NULL,NULL,time_val);
+   val = select(STDIN_FILENO+1,set,nullptr,nullptr,time_val);
    if (val == -1 && errno != EINTR) {
       my_fatal("input_available(): select(): %s\n",strerror(errno));
    }
@@ -181,7 +181,7 @@ double now_cpu() {
 
 static double duration(const struct timeval * tv) {
 
-   ASSERT(tv!=NULL);
+   ASSERT(tv!=nullptr);
 
    return double(tv->tv_sec) + double(tv->tv_usec) * 1E-6;
 }

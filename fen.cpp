@@ -28,15 +28,15 @@ static const bool Strict = false;
 
 void board_from_fen(board_t * board, const char fen[]) {
 
-   int pos;
-   int file, rank, sq;
-   int c;
-   int i, len;
-   int piece;
-   int pawn;
+   int_fast32_t pos;
+   int_fast32_t file, rank, sq;
+   int_fast32_t c;
+   int_fast32_t i, len;
+   int_fast32_t piece;
+   int_fast32_t pawn;
 
-   ASSERT(board!=NULL);
-   ASSERT(fen!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(fen!=nullptr);
 
    board_clear(board);
 
@@ -188,16 +188,16 @@ update:
 
 // board_to_fen()
 
-bool board_to_fen(const board_t * board, char fen[], int size) {
+bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
 
-   int pos;
-   int file, rank;
-   int sq, piece;
-   int c;
-   int len;
+   int_fast32_t pos;
+   int_fast32_t file, rank;
+   int_fast32_t sq, piece;
+   int_fast32_t c;
+   int_fast32_t len;
 
-   ASSERT(board!=NULL);
-   ASSERT(fen!=NULL);
+   ASSERT(board!=nullptr);
+   ASSERT(fen!=nullptr);
    ASSERT(size>=92);
 
    // init

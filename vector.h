@@ -10,13 +10,13 @@
 
 // "constants"
 
-const int IncNone = 0;
-const int IncNb = 2 * 17 + 1;
-const int IncOffset = 17;
+const int_fast32_t IncNone = 0;
+const int_fast32_t IncNb = 2 * 17 + 1;
+const int_fast32_t IncOffset = 17;
 
-const int DeltaNone = 0;
-const int DeltaNb = 2 * 119 + 1;
-const int DeltaOffset = 119;
+const int_fast32_t DeltaNone = 0;
+const int_fast32_t DeltaNb = 2 * 119 + 1;
+const int_fast32_t DeltaOffset = 119;
 
 // macros
 
@@ -24,14 +24,14 @@ const int DeltaOffset = 119;
 
 // variables
 
-extern int Distance[DeltaNb];
+extern int_fast32_t Distance[DeltaNb];
 
 // functions
 
 extern void vector_init ();
 
-extern bool delta_is_ok (int delta);
-extern bool inc_is_ok   (int inc);
+extern bool delta_is_ok (int_fast32_t delta);
+extern bool inc_is_ok   (int_fast32_t inc);
 
 #endif // !defined VECTOR_H
 

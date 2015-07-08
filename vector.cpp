@@ -10,15 +10,15 @@
 
 // variables
 
-int Distance[DeltaNb];
+int_fast32_t Distance[DeltaNb];
 
 // functions
 
 void vector_init() {
 
-   int delta;
-   int x, y;
-   int dist, tmp;
+   int_fast32_t delta;
+   int_fast32_t x, y;
+   int_fast32_t dist, tmp;
 
    // Distance[]
 
@@ -48,7 +48,7 @@ void vector_init() {
 
 // delta_is_ok()
 
-bool delta_is_ok(int delta) {
+bool delta_is_ok(int_fast32_t delta) {
 
    if (delta < -119 || delta > +119) return false;
 
@@ -59,9 +59,9 @@ bool delta_is_ok(int delta) {
 
 // inc_is_ok()
 
-bool inc_is_ok(int inc) {
+bool inc_is_ok(int_fast32_t inc) {
 
-   int dir;
+   int_fast32_t dir;
 
    for (dir = 0; dir < 8; dir++) {
       if (KingInc[dir] == inc) return true;
