@@ -1294,7 +1294,6 @@ static bool simple_stalemate(const board_t * board) {
    int_fast32_t opp_flag;
    int_fast32_t from, to;
    int_fast32_t capture;
-   const inc_t * inc_ptr;
    int_fast32_t inc;
 
    ASSERT(board!=nullptr);
@@ -1321,7 +1320,7 @@ static bool simple_stalemate(const board_t * board) {
 
    from = king;
 
-   for (inc_ptr = KingInc; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
+   for (const inc_t *inc_ptr = KingInc.data(); (inc=*inc_ptr) != IncNone; ++inc_ptr) {
       to = from + inc;
       capture = board->square[to];
       if (capture == Empty || FLAG_IS(capture,opp_flag)) {
@@ -1337,4 +1336,3 @@ static bool simple_stalemate(const board_t * board) {
 }
 
 // end of search_full.cpp
-

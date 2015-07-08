@@ -91,9 +91,9 @@ std::array<int_fast32_t, 0x100> BitRev;
 
 static pawn_t Pawn[1];
 
-static std::array<int_fast32_t, RankNb> BitRank1[RankNb];
-static std::array<int_fast32_t, RankNb> BitRank2[RankNb];
-static std::array<int_fast32_t, RankNb> BitRank3[RankNb];
+static std::array<int_fast32_t, RankNb> BitRank1;
+static std::array<int_fast32_t, RankNb> BitRank2;
+static std::array<int_fast32_t, RankNb> BitRank3;
 
 // prototypes
 
@@ -582,4 +582,3 @@ int_fast32_t quad(int_fast32_t y_min, int_fast32_t y_max, int_fast32_t x) {
 }
 
 // end of pawn.cpp
-

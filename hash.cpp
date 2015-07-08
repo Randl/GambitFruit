@@ -10,9 +10,10 @@
 #include "square.h"
 #include "util.h"
 
+
 // variables
 
-std::array<uint_fast64_t, 16> Castle64[16];
+std::array<uint_fast64_t, 16> Castle64;
 
 // prototypes
 
@@ -194,4 +195,3 @@ static uint_fast64_t hash_counter_key(int_fast32_t piece_12, int_fast32_t count)
 }
 
 // end of hash.cpp
-

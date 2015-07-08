@@ -110,7 +110,7 @@ static constexpr int_fast32_t RookOnBadPawnFileEndgame = 8;
 static /* const */ int_fast32_t KingAttackOpening = 20; // was 20
 
 static constexpr int_fast32_t knight_tropism_opening = 3;
-static constexpr intconstexpr _fast32_t bishop_tropism_opening = 2;
+static constexpr int_fast32_t bishop_tropism_opening = 2;
 static constexpr int_fast32_t rook_tropism_opening = 2;
 static constexpr int_fast32_t queen_tropism_opening = 2;
 
@@ -641,7 +641,6 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
    int_fast32_t piece;
    int_fast32_t mob;
    int_fast32_t capture;
-   const int_fast32_t * unit;
    int_fast32_t rook_file, king_file;
    int_fast32_t king;
    int_fast32_t delta;
@@ -667,7 +666,7 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
 
       opp_flag = COLOUR_FLAG(opp);
 
-      unit = MobUnit[me];
+      auto unit = MobUnit[me];
 
       // piece loop
 

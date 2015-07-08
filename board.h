@@ -84,23 +84,23 @@ struct board_t {
 
 // functions
 
-extern bool board_is_ok         (constexpr board_t * board);
+extern bool board_is_ok         (const board_t * board);
 
 extern void board_clear         (board_t * board);
-extern void board_copy          (board_t * dst, constexpr board_t * src);
+extern void board_copy          (board_t * dst, const board_t * src);
 
 extern void board_init_list     (board_t * board);
 
-extern bool board_is_legal      (constexpr board_t * board);
-extern bool board_is_check      (constexpr board_t * board);
-extern bool board_is_mate       (constexpr board_t * board);
+extern bool board_is_legal      (const board_t * board);
+extern bool board_is_check      (const board_t * board);
+extern bool board_is_mate       (const board_t * board);
 extern bool board_is_stalemate  (board_t * board);
 
-extern bool board_is_repetition (constexpr board_t * board);
+extern bool board_is_repetition (const board_t * board);
 
-extern int_fast32_t  board_material      (constexpr board_t * board);
-extern int_fast32_t  board_opening       (constexpr board_t * board);
-extern int_fast32_t  board_endgame       (constexpr board_t * board);
+extern int_fast32_t  board_material      (const board_t * board);
+extern int_fast32_t  board_opening       (const board_t * board);
+extern int_fast32_t  board_endgame       (const board_t * board);
 
 #endif // !defined BOARD_H
 

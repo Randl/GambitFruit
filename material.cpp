@@ -18,7 +18,6 @@
 
 
 // constants
-constexpr 
 static constexpr uint_fast32_t TableSize = 256; // 4kB
 
 static constexpr int_fast32_t PawnPhase   = 0;
@@ -726,4 +725,3 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 }
 
 // end of material.cpp
-
