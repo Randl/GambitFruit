@@ -658,7 +658,7 @@ static void load_egbb_library() {
     HMODULE hmod;
     PLOAD_EGBB load_egbb;
     const char* main_path = option_get("Bitbase Path");
-    uint32 egbb_cache_size = option_get_int("Bitbase Cache Size");
+    uint32 egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
 
     char path[256];
     strcpy(path,main_path);

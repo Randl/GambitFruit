@@ -280,7 +280,6 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 	/*
 	BitBases
 	*/
-#if defined _WIN32
 
 	int total_pieces;
 	int player;
@@ -298,7 +297,6 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 	egbb_piece[0] = _WKING;
 	egbb_piece[1] = _BKING;
 
-#endif	
 	/*
 	End Bitbases
 	*/
@@ -354,11 +352,8 @@ int eval(/*const*/ board_t * board, int alpha, int beta, bool do_le, bool in_che
 			
 		}
 
-       printf("going into egbb\n") ;
-       printf("%d %d %d %d %d %d %d %d %d\n", player, egbb_square[0], egbb_square[1],
-               egbb_piece[2],egbb_square[2],egbb_piece[3],egbb_square[3], egbb_piece[4],egbb_square[4]);
        score = probe_egbb(player, egbb_piece, egbb_square);
-       printf("got something\n");
+       
 		if(score != _NOTFOUND) {
 			if (score == 0) {
 				return ValueDraw;
@@ -1850,4 +1845,3 @@ static bool bishop_can_attack(const board_t * board, int to, int colour) {
 }
 
 // end of eval.cpp
-

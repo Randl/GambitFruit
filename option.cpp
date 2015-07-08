@@ -41,7 +41,7 @@ static option_t Option[] = {
 
    { "Bitbase Pieces", true, "4", "spin",  "min 3 max 6", NULL },
    { "Bitbase Path", true, "C:/egbb", "string", "", NULL },
-   { "Bitbase Cache Size", true, "16", "spin",  "min 0 max 1024", NULL },
+   { "Bitbase Cache Size", true, "16", "spin",  "min 4 max 1024", NULL },
 
    { "NullMove Pruning",       true, "Always", "combo", "var Always var Fail High var Never", NULL },
    { "NullMove Reduction",     true, "3",         "spin",  "min 1 max 4", NULL },
@@ -236,4 +236,3 @@ static option_t * option_find(const char var[]) {
 }
 
 // end of option.cpp
-
