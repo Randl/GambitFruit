@@ -25,6 +25,8 @@ LDFLAGS  = -lm
 # C++
 
 CXXFLAGS += -fno-exceptions -fno-rtti
+-std=c++14
+CXXFLAGS += -Wall -Wextra -Wshadow -Wstrict-aliasing -Weffc++
 
 # optimisation
 

@@ -50,14 +50,12 @@
 #endif
 
 struct my_timer_t {
-   double start_real;
-   double start_cpu;
-   double elapsed_real;
-   double elapsed_cpu;
-   bool running;
+	double start_real;
+	double start_cpu;
+	double elapsed_real;
+	double elapsed_cpu;
+	bool running;
 };
-
-
 
 /*
 BitBases
@@ -120,4 +118,3 @@ extern double my_timer_cpu_usage    (const my_timer_t * timer);
 #endif // !defined UTIL_H
 
 // end of util.h
-

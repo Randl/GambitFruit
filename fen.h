@@ -22,4 +22,3 @@ extern bool board_to_fen   (const board_t * board, char fen[], int_fast32_t size
 #endif // !defined FEN_H
 
 // end of fen.h
-

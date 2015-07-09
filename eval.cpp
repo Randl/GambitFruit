@@ -21,8 +21,6 @@
 
 // macros
 
-// macro
-
 //BitBases
 
 #define ADD_PIECE(type) {\
@@ -31,13 +29,13 @@
         ++total_pieces;\
 };
 	
-
 //EndBitbases
 
 #define THROUGH(piece) ((piece)==Empty)
-#define MAX_PIECES 32
+
 // constants and variables
 
+constexpr uint_fast8_t  MAX_PIECES = 32;
 constexpr std::array<std::array<int_fast32_t, 256>, 2> KnightOutpostMatrix = {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -189,110 +187,89 @@ static bool bishop_can_attack  (const board_t * board, int_fast32_t to, int_fast
 // eval_init()
 
 void eval_init() {
+	
+	// UCI options
 
-   int_fast32_t colour;
-   int_fast32_t piece;
+	PieceActivityWeight = (option_get_int("Piece Activity") * 256 + 50) / 100;
+	//KingSafetyWeight    = (option_get_int("King Safety")    * 256 + 50) / 100;
+	PassedPawnWeight    = (option_get_int("Passed Pawns")   * 256 + 50) / 100;
+	ShelterOpening      = (option_get_int("Pawn Shelter")   * 256 + 50) / 100;
+	StormOpening		   = (10 * option_get_int("Pawn Storm")) / 100;
+	KingAttackOpening   = (20 * option_get_int("King Attack")) / 100;
 
-   // UCI options
+	if (option_get_int("Chess Knowledge") == 500) 
+		lazy_eval_cutoff = ValueEvalInf;
+	else 
+		lazy_eval_cutoff = (50 * option_get_int("Chess Knowledge")) / 100;
 
-   PieceActivityWeight = (option_get_int("Piece Activity") * 256 + 50) / 100;
-   //KingSafetyWeight    = (option_get_int("King Safety")    * 256 + 50) / 100;
-   PassedPawnWeight    = (option_get_int("Passed Pawns")   * 256 + 50) / 100;
-   ShelterOpening      = (option_get_int("Pawn Shelter")   * 256 + 50) / 100;
-   StormOpening		   = (10 * option_get_int("Pawn Storm")) / 100;
-   KingAttackOpening   = (20 * option_get_int("King Attack")) / 100;
+	// mobility table
 
-   if (option_get_int("Chess Knowledge") == 500) lazy_eval_cutoff = ValueEvalInf;
-   else lazy_eval_cutoff = (50 * option_get_int("Chess Knowledge")) / 100;
+	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) 
+		for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+			MobUnit[colour][piece] = 0;
 
-   // mobility table
+	MobUnit[White][Empty] = MobMove;
 
-   for (colour = 0; colour < ColourNb; ++colour) {
-      for (piece = 0; piece < PieceNb; ++piece) {
-         MobUnit[colour][piece] = 0;
-      }
-   }
+	MobUnit[White][BP] = MobAttack;
+	MobUnit[White][BN] = MobAttack;
+	MobUnit[White][BB] = MobAttack;
+	MobUnit[White][BR] = MobAttack;
+	MobUnit[White][BQ] = MobAttack;
+	MobUnit[White][BK] = MobAttack;
 
-   MobUnit[White][Empty] = MobMove;
+	MobUnit[White][WP] = MobDefense;
+	MobUnit[White][WN] = MobDefense;
+	MobUnit[White][WB] = MobDefense;
+	MobUnit[White][WR] = MobDefense;
+	MobUnit[White][WQ] = MobDefense;
+	MobUnit[White][WK] = MobDefense;
 
-   MobUnit[White][BP] = MobAttack;
-   MobUnit[White][BN] = MobAttack;
-   MobUnit[White][BB] = MobAttack;
-   MobUnit[White][BR] = MobAttack;
-   MobUnit[White][BQ] = MobAttack;
-   MobUnit[White][BK] = MobAttack;
+	MobUnit[Black][Empty] = MobMove;
 
-   MobUnit[White][WP] = MobDefense;
-   MobUnit[White][WN] = MobDefense;
-   MobUnit[White][WB] = MobDefense;
-   MobUnit[White][WR] = MobDefense;
-   MobUnit[White][WQ] = MobDefense;
-   MobUnit[White][WK] = MobDefense;
+	MobUnit[Black][WP] = MobAttack;
+	MobUnit[Black][WN] = MobAttack;
+	MobUnit[Black][WB] = MobAttack;
+	MobUnit[Black][WR] = MobAttack;
+	MobUnit[Black][WQ] = MobAttack;
+	MobUnit[Black][WK] = MobAttack;
 
-   MobUnit[Black][Empty] = MobMove;
+	MobUnit[Black][BP] = MobDefense;
+	MobUnit[Black][BN] = MobDefense;
+	MobUnit[Black][BB] = MobDefense;
+	MobUnit[Black][BR] = MobDefense;
+	MobUnit[Black][BQ] = MobDefense;
+	MobUnit[Black][BK] = MobDefense;
 
-   MobUnit[Black][WP] = MobAttack;
-   MobUnit[Black][WN] = MobAttack;
-   MobUnit[Black][WB] = MobAttack;
-   MobUnit[Black][WR] = MobAttack;
-   MobUnit[Black][WQ] = MobAttack;
-   MobUnit[Black][WK] = MobAttack;
+	// KingAttackUnit[]
 
-   MobUnit[Black][BP] = MobDefense;
-   MobUnit[Black][BN] = MobDefense;
-   MobUnit[Black][BB] = MobDefense;
-   MobUnit[Black][BR] = MobDefense;
-   MobUnit[Black][BQ] = MobDefense;
-   MobUnit[Black][BK] = MobDefense;
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+		KingAttackUnit[piece] = 0;
 
-   // KingAttackUnit[]
+	KingAttackUnit[WN] = 1;
+	KingAttackUnit[WB] = 1;
+	KingAttackUnit[WR] = 2;
+	KingAttackUnit[WQ] = 4;
 
-   for (piece = 0; piece < PieceNb; ++piece) {
-      KingAttackUnit[piece] = 0;
-   }
-
-   KingAttackUnit[WN] = 1;
-   KingAttackUnit[WB] = 1;
-   KingAttackUnit[WR] = 2;
-   KingAttackUnit[WQ] = 4;
-
-   KingAttackUnit[BN] = 1;
-   KingAttackUnit[BB] = 1;
-   KingAttackUnit[BR] = 2;
-   KingAttackUnit[BQ] = 4;
+	KingAttackUnit[BN] = 1;
+	KingAttackUnit[BB] = 1;
+	KingAttackUnit[BR] = 2;
+	KingAttackUnit[BQ] = 4;
 }
 
 // eval()
 
 int_fast32_t eval(/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t beta, bool do_le, bool in_check) {
-
-   int_fast32_t opening, endgame;
-   material_info_t mat_info[1];
-   pawn_info_t pawn_info[1];
-   int_fast32_t mul[ColourNb];
-   int_fast32_t phase;
-   int_fast32_t eval;
-   int_fast32_t wb, bb;
-   int_fast32_t lazy_eval;
-   int_fast32_t tempo;
-   bool is_cut;
-
+	
 	/*
 	BitBases
 	*/
-
-	int_fast32_t total_pieces;
-	int_fast32_t player;
-	int_fast32_t w_ksq;
-	int_fast32_t b_ksq;
-	int_fast32_t egbb_piece[MAX_PIECES];
-	int_fast32_t egbb_square[MAX_PIECES];
 	
-	player = board->turn; 
-	total_pieces = 2;
-    for (int_fast32_t i = 0; i < MAX_PIECES; ++i) {
-        egbb_piece[i] = 0;
-        egbb_square[i] = 0;
+	const int_fast32_t player = board->turn; 
+	int_fast32_t total_pieces = 2;
+	int_fast32_t egbb_piece[MAX_PIECES], egbb_square[MAX_PIECES];
+	for (int_fast32_t i = 0; i < MAX_PIECES; ++i) {
+		egbb_piece[i] = 0;
+		egbb_square[i] = 0;
     }
 	egbb_piece[0] = _WKING;
 	egbb_piece[1] = _BKING;
@@ -301,39 +278,26 @@ int_fast32_t eval(/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t be
 	End Bitbases
 	*/
 
-   ASSERT(board!=nullptr);
+	ASSERT(board!=nullptr);
+	ASSERT(board_is_legal(board));
+	ASSERT(!board_is_check(board)); // exceptions are extremely rare
 
-   ASSERT(board_is_legal(board));
-   ASSERT(!board_is_check(board)); // exceptions are extremely rare
+	// init
 
+	int_fast32_t opening = 0, endgame = 0;
 
-   // init
-
-   opening = 0;
-   endgame = 0;
-
-   // material
-   material_get_info(mat_info,board);
+	// material
+	material_info_t *mat_info;
+	material_get_info(mat_info,board);
 
 	/*
 	BitBases
 	*/
-   if(egbb_is_loaded && (mat_info->flags & MatBitbaseFlag) != 0) {
+	if(egbb_is_loaded && (mat_info->flags & MatBitbaseFlag) != 0) {
 
-	   const sq_t * ptr;
-	   int_fast32_t from;
-	   int_fast32_t score;
-		  int_fast32_t piece;
-	  	int_fast32_t psquare;
-		//int_fast32_t sq_copy[64];
-
-		//for (from=0; from < 64; ++from) {
-		//	sq_copy[from] = board->square[SQUARE_FROM_64(from)];
-		//}
-
-		for (from=0; from < 64; ++from) {
+		for (int_fast32_t from=0; from < 64; ++from) {
 			if (board->square[SQUARE_FROM_64(from)] == Empty) continue;
-			
+						
 			switch (board->square[SQUARE_FROM_64(from)]) {
 				case WP: ADD_PIECE(_WPAWN); break;
 				case BP: ADD_PIECE(_BPAWN); break;
@@ -348,155 +312,139 @@ int_fast32_t eval(/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t be
 				case WK: egbb_square[0] = from; break;
 				case BK: egbb_square[1] = from; break;
 				default: break;
-			}
-			
+			}	
 		}
 
-       score = probe_egbb(player, egbb_piece, egbb_square);
+		const int_fast32_t score = probe_egbb(player, egbb_piece, egbb_square);
        
-		if(score != _NOTFOUND) {
-			if (score == 0) {
+		if(score != _NOTFOUND) 
+			if (score == 0) 
 				return ValueDraw;
-			} else {
+			else 
 				return score;
-			}
-		}
 	}
 
 	/*
 	End bitbases
 	*/
 
+	opening += mat_info->opening;
+	endgame += mat_info->endgame;
 
+	int_fast32_t mul[ColourNb];
+	mul[White] = mat_info->mul[White];
+	mul[Black] = mat_info->mul[Black];
 
-   opening += mat_info->opening;
-   endgame += mat_info->endgame;
+	// PST
+	opening += board->opening;
+	endgame += board->endgame;
 
-   mul[White] = mat_info->mul[White];
-   mul[Black] = mat_info->mul[Black];
+	// draw
+	pawn_info_t *pawn_info;
+	eval_draw(board,mat_info,pawn_info,mul);
 
-   // PST
+	if (mat_info->mul[White] < mul[White]) mul[White] = mat_info->mul[White];
+	if (mat_info->mul[Black] < mul[Black]) mul[Black] = mat_info->mul[Black];
 
-   opening += board->opening;
-   endgame += board->endgame;
+	if (mul[White] == 0 && mul[Black] == 0) return ValueDraw;
 
-   // draw
-
-   eval_draw(board,mat_info,pawn_info,mul);
-
-   if (mat_info->mul[White] < mul[White]) mul[White] = mat_info->mul[White];
-   if (mat_info->mul[Black] < mul[Black]) mul[Black] = mat_info->mul[Black];
-
-   if (mul[White] == 0 && mul[Black] == 0) return ValueDraw;
-
-   is_cut = false;
+	bool is_cut = false;
 
 /*
-   // Tempo
-   if (COLOUR_IS_WHITE(board->turn)){
-	opening += 20;
-	endgame += 10;
-   } else{
-	opening -= 20;
-	endgame -= 10;
-   } 
+	// Tempo
+	if (COLOUR_IS_WHITE(board->turn))  {
+		opening += 20;
+		endgame += 10;
+	} else  {
+		opening -= 20;
+		endgame -= 10;
+	} 
 */
-  phase = mat_info->phase;
-  lazy_eval = ((opening * (256 - mat_info->phase)) + (endgame * mat_info->phase)) / 256;
-  if (COLOUR_IS_BLACK(board->turn)) lazy_eval = -lazy_eval;
+	const int_fast32_t phase = mat_info->phase;
+	int_fast32_t lazy_eval = ((opening * (256 - mat_info->phase)) + (endgame * mat_info->phase)) / 256;
+	if (COLOUR_IS_BLACK(board->turn)) lazy_eval = -lazy_eval;
 
-   /* lazy Cutoff */
-   if (do_le && !in_check && board->piece_size[White] > 2 && board->piece_size[Black] > 2){
+	/* lazy Cutoff */
+	if (do_le && !in_check && board->piece_size[White] > 2 && board->piece_size[Black] > 2)  {
+		
+		ASSERT(eval>=-ValueEvalInf&&eval<=+ValueEvalInf);
+		
+		//if (lazy_eval - lazy_eval_cutoff >= beta)
+		//	return (lazy_eval);
+		if (lazy_eval + board->pvalue + lazy_eval_cutoff <= alpha)  {
+			//return (lazy_eval+board->pvalue); 
+			is_cut = true; 
+			goto cut; //TODO: refactoring
+		}
+		// ende lazy cuttoff 
+	} 
 
-     ASSERT(eval>=-ValueEvalInf&&eval<=+ValueEvalInf);
+	// pawns
 
-	 //if (lazy_eval - lazy_eval_cutoff >= beta)
-	//	return (lazy_eval);
-	 if (lazy_eval + board->pvalue + lazy_eval_cutoff <= alpha) {
-		//return (lazy_eval+board->pvalue); 
-		is_cut = true; 
-		goto cut;
-	 }
-	 // ende lazy cuttoff 
-   } 
-
-
-   // pawns
-
-   pawn_get_info(pawn_info,board);
-
-   opening += pawn_info->opening;
-   endgame += pawn_info->endgame;
+	pawn_get_info(pawn_info,board);
+	
+	opening += pawn_info->opening;
+	endgame += pawn_info->endgame;
    
-   // eval
-   eval_piece(board,mat_info,pawn_info,&opening,&endgame);
-   eval_king(board,mat_info,&opening,&endgame);
-   eval_passer(board,pawn_info,&opening,&endgame);
-   eval_pattern(board,&opening,&endgame);
+	// eval
+	eval_piece(board,mat_info,pawn_info,&opening,&endgame);
+	eval_king(board,mat_info,&opening,&endgame);
+	eval_passer(board,pawn_info,&opening,&endgame);
+	eval_pattern(board,&opening,&endgame);
 
-   cut:
+	cut:
 
-   // phase mix
-   
-   //phase = mat_info->phase;
-   eval = ((opening * (256 - phase)) + (endgame * phase)) / 256;
+	// phase mix
+	int_fast32_t eval = ((opening * (256 - phase)) + (endgame * phase)) / 256;
 
-   // drawish bishop endgames
+	// drawish bishop endgames
+	if ((mat_info->flags & DrawBishopFlag) != 0) {
+		const int_fast32_t wb = board->piece[White][1], bb = board->piece[Black][1];
+		
+		ASSERT(PIECE_IS_BISHOP(board->square[wb]));
+		ASSERT(PIECE_IS_BISHOP(board->square[bb]));
 
-   if ((mat_info->flags & DrawBishopFlag) != 0) {
+		if (SQUARE_COLOUR(wb) != SQUARE_COLOUR(bb)) {
+			if (mul[White] == 16) mul[White] = 8; // 1/2
+			if (mul[Black] == 16) mul[Black] = 8; // 1/2
+		}
+	}
 
-      wb = board->piece[White][1];
-      ASSERT(PIECE_IS_BISHOP(board->square[wb]));
+	// draw bound
 
-      bb = board->piece[Black][1];
-      ASSERT(PIECE_IS_BISHOP(board->square[bb]));
-
-      if (SQUARE_COLOUR(wb) != SQUARE_COLOUR(bb)) {
-         if (mul[White] == 16) mul[White] = 8; // 1/2
-         if (mul[Black] == 16) mul[Black] = 8; // 1/2
-      }
-   }
-
-   // draw bound
-
-   if (eval > ValueDraw) {
-      eval = (eval * mul[White]) / 16;
-   } else if (eval < ValueDraw) {
-      eval = (eval * mul[Black]) / 16;
-   }
+	if (eval > ValueDraw) 
+		eval = (eval * mul[White]) / 16;
+	else if (eval < ValueDraw) 
+		eval = (eval * mul[Black]) / 16;
 
    // value range
 
-   if (eval < -ValueEvalInf) eval = -ValueEvalInf;
-   if (eval > +ValueEvalInf) eval = +ValueEvalInf;
+	if (eval < -ValueEvalInf) eval = -ValueEvalInf;
+	if (eval > +ValueEvalInf) eval = +ValueEvalInf;
+	ASSERT(eval>=-ValueEvalInf&&eval<=+ValueEvalInf);
 
-   ASSERT(eval>=-ValueEvalInf&&eval<=+ValueEvalInf);
+	// turn
 
-   // turn
+	if (COLOUR_IS_BLACK(board->turn)) eval = -eval;
+	if (!is_cut) board->pvalue = abs(eval - lazy_eval);
 
-   if (COLOUR_IS_BLACK(board->turn)) eval = -eval;
-   if (!is_cut) board->pvalue = abs(eval - lazy_eval);
+	ASSERT(!value_is_mate(eval));
 
-   ASSERT(!value_is_mate(eval));
+	// Tempo
+	int_fast32_t tempo = 10;//((10 * (256 - phase)) + (20 * phase)) / 256; 
 
-   // Tempo
-   tempo = 10;//((10 * (256 - phase)) + (20 * phase)) / 256; 
-
-   // Tempo draw bound
-   if (COLOUR_IS_WHITE(board->turn)) {
-   	if (eval > ValueDraw) {
-      		tempo = (tempo * mul[White]) / 16;
-   	} else if (eval < ValueDraw) {
-      		tempo = (tempo * mul[Black]) / 16;
-   	}
-    } else {
-   	if (eval < ValueDraw) {
-      		tempo = (tempo * mul[White]) / 16;
-   	} else if (eval > ValueDraw) {
-      		tempo = (tempo * mul[Black]) / 16;
-   	}	
-    } 
-
+   // Tempo draw bound //replace earlier?
+	if (COLOUR_IS_WHITE(board->turn)) 
+		if (eval > ValueDraw) 
+			tempo = (tempo * mul[White]) / 16;
+		else if (eval < ValueDraw) 
+			tempo = (tempo * mul[Black]) / 16;
+	else 
+		if (eval < ValueDraw) 
+			tempo = (tempo * mul[White]) / 16;
+		else if (eval > ValueDraw) 
+			tempo = (tempo * mul[Black]) / 16;
+   		
    return (eval+tempo);
 }
 
@@ -504,1340 +452,1067 @@ int_fast32_t eval(/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t be
 
 static void eval_draw(const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int_fast32_t mul[2]) {
 
-   int_fast32_t colour;
-   int_fast32_t me, opp;
-   int_fast32_t pawn, king;
-   int_fast32_t pawn_file;
-   int_fast32_t prom;
-   int_fast32_t list[7+1];
+	ASSERT(board!=nullptr);
+	ASSERT(mat_info!=nullptr);
+	ASSERT(pawn_info!=nullptr);
+	ASSERT(mul!=nullptr);
 
-   ASSERT(board!=nullptr);
-   ASSERT(mat_info!=nullptr);
-   ASSERT(pawn_info!=nullptr);
-   ASSERT(mul!=nullptr);
+	// draw patterns
+	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
 
-   // draw patterns
+		const int_fast32_t me = colour, opp = COLOUR_OPP(me);
 
-   for (colour = 0; colour < ColourNb; ++colour) {
+		// KB*P+K* draw
+		if ((mat_info->cflags[me] & MatRookPawnFlag) != 0) {
+			const int_fast32_t pawn = pawn_info->single_file[me];
+			if (pawn != SquareNone) { // all pawns on one file
+				const int_fast32_t pawn_file = SQUARE_FILE(pawn);
+				if (pawn_file == FileA || pawn_file == FileH) {
+					const int_fast32_t king = KING_POS(board,opp), prom = PAWN_PROMOTE(pawn,me);
+					if (DISTANCE(king,prom) <= 1 && !bishop_can_attack(board,prom,me))
+						mul[me] = 0;
+				}
+			}
+		}
 
-      me = colour;
-      opp = COLOUR_OPP(me);
+		// K(B)P+K+ draw
+		if ((mat_info->cflags[me] & MatBishopFlag) != 0) {
+			const int_fast32_t pawn = pawn_info->single_file[me];
+			if (pawn != SquareNone) { // all pawns on one file
+				int_fast32_t king = KING_POS(board,opp);
+				if (SQUARE_FILE(king)  == SQUARE_FILE(pawn)
+				 && PAWN_RANK(king,me) >  PAWN_RANK(pawn,me)
+				 && !bishop_can_attack(board,king,me)) 
+					mul[me] = 1; // 1/16
+			}
+		}
 
-      // KB*P+K* draw
+		// KNPK* draw
+		if ((mat_info->cflags[me] & MatKnightFlag) != 0) {
+			const int_fast32_t pawn = board->pawn[me][0], king = KING_POS(board,opp);
+			if (SQUARE_FILE(king)  == SQUARE_FILE(pawn)
+			 && PAWN_RANK(king,me) >  PAWN_RANK(pawn,me)
+			 && PAWN_RANK(pawn,me) <= Rank6) 
+				mul[me] = 1; // 1/16
+		}
+	}
 
-      if ((mat_info->cflags[me] & MatRookPawnFlag) != 0) {
+	// recognisers, only heuristic draws here!
 
-         pawn = pawn_info->single_file[me];
+	if (false) {
+	} else if (mat_info->recog == MAT_KRPKR) {
+		// KRPKR (white)
+		int_fast32_t list[7+1];
+		draw_init_list(list,board,White);
+		
+		if (draw_krpkr(list,board->turn)) {
+			mul[White] = 1; // 1/16;
+			mul[Black] = 1; // 1/16;
+		}
+	} else if (mat_info->recog == MAT_KRKRP) {
+		// KRPKR (black)
+		int_fast32_t list[7+1];
+		draw_init_list(list,board,Black);
+		if (draw_krpkr(list,COLOUR_OPP(board->turn))) {
+			mul[White] = 1; // 1/16;
+			mul[Black] = 1; // 1/16;
+		}
 
-         if (pawn != SquareNone) { // all pawns on one file
+	} else if (mat_info->recog == MAT_KBPKB) {
+		// KBPKB (white)
+		int_fast32_t list[7+1];
+		draw_init_list(list,board,White);
 
-            pawn_file = SQUARE_FILE(pawn);
-
-            if (pawn_file == FileA || pawn_file == FileH) {
-
-               king = KING_POS(board,opp);
-               prom = PAWN_PROMOTE(pawn,me);
-
-               if (DISTANCE(king,prom) <= 1 && !bishop_can_attack(board,prom,me)) {
-                  mul[me] = 0;
-               }
-            }
-         }
-      }
-
-      // K(B)P+K+ draw
-
-      if ((mat_info->cflags[me] & MatBishopFlag) != 0) {
-
-         pawn = pawn_info->single_file[me];
-
-         if (pawn != SquareNone) { // all pawns on one file
-
-            king = KING_POS(board,opp);
-
-            if (SQUARE_FILE(king)  == SQUARE_FILE(pawn)
-             && PAWN_RANK(king,me) >  PAWN_RANK(pawn,me)
-             && !bishop_can_attack(board,king,me)) {
-               mul[me] = 1; // 1/16
-            }
-         }
-      }
-
-      // KNPK* draw
-
-      if ((mat_info->cflags[me] & MatKnightFlag) != 0) {
-
-         pawn = board->pawn[me][0];
-         king = KING_POS(board,opp);
-
-         if (SQUARE_FILE(king)  == SQUARE_FILE(pawn)
-          && PAWN_RANK(king,me) >  PAWN_RANK(pawn,me)
-          && PAWN_RANK(pawn,me) <= Rank6) {
-            mul[me] = 1; // 1/16
-         }
-      }
-   }
-
-   // recognisers, only heuristic draws here!
-
-   if (false) {
-
-   } else if (mat_info->recog == MAT_KRPKR) {
-
-      // KRPKR (white)
-
-      draw_init_list(list,board,White);
-
-      if (draw_krpkr(list,board->turn)) {
-         mul[White] = 1; // 1/16;
-         mul[Black] = 1; // 1/16;
-      }
-
-   } else if (mat_info->recog == MAT_KRKRP) {
-
-      // KRPKR (black)
-
-      draw_init_list(list,board,Black);
-
-      if (draw_krpkr(list,COLOUR_OPP(board->turn))) {
-         mul[White] = 1; // 1/16;
-         mul[Black] = 1; // 1/16;
-      }
-
-   } else if (mat_info->recog == MAT_KBPKB) {
-
-      // KBPKB (white)
-
-      draw_init_list(list,board,White);
-
-      if (draw_kbpkb(list,board->turn)) {
-         mul[White] = 1; // 1/16;
-         mul[Black] = 1; // 1/16;
-      }
+		if (draw_kbpkb(list,board->turn)) {
+			mul[White] = 1; // 1/16;
+			mul[Black] = 1; // 1/16;
+		}
 
    } else if (mat_info->recog == MAT_KBKBP) {
-
-      // KBPKB (black)
-
-      draw_init_list(list,board,Black);
-
-      if (draw_kbpkb(list,COLOUR_OPP(board->turn))) {
-         mul[White] = 1; // 1/16;
-         mul[Black] = 1; // 1/16;
-      }
-   }
+		// KBPKB (black)
+		int_fast32_t list[7+1];
+		draw_init_list(list,board,Black);
+		if (draw_kbpkb(list,COLOUR_OPP(board->turn))) {
+			mul[White] = 1; // 1/16;
+			mul[Black] = 1; // 1/16;
+		}
+	}
 }
 
 // eval_piece()
 
 static void eval_piece(const board_t * board, const material_info_t * mat_info, const pawn_info_t * pawn_info, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   int_fast32_t colour;
-   int_fast32_t op[ColourNb], eg[ColourNb];
-   int_fast32_t me, opp;
-   int_fast32_t opp_flag;
-   const sq_t * ptr;
-   int_fast32_t from, to;
-   int_fast32_t piece;
-   int_fast32_t mob;
-   int_fast32_t capture;
-   int_fast32_t rook_file, king_file;
-   int_fast32_t king;
-   int_fast32_t delta;
-   int_fast32_t king_rank,piece_rank,new_mob, piece_file;
+	ASSERT(board!=nullptr);
+	ASSERT(mat_info!=nullptr);
+	ASSERT(pawn_info!=nullptr);
+	ASSERT(opening!=nullptr);
+	ASSERT(endgame!=nullptr);
 
-   ASSERT(board!=nullptr);
-   ASSERT(mat_info!=nullptr);
-   ASSERT(pawn_info!=nullptr);
-   ASSERT(opening!=nullptr);
-   ASSERT(endgame!=nullptr);
-
-   // init
-
+	// init
+	std::array<int_fast32_t, ColourNb> op, eg;
+	op[0] = op[1] = eg[0] = eg[1] = 0;
    
-   op[0] = op[1] = eg[0] = eg[1] = 0;
-   
-   // eval
+    // eval
+	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
 
-   for (colour = 0; colour < ColourNb; ++colour) {
+		const int_fast32_t me = colour, opp = COLOUR_OPP(me);
+		const int_fast32_t opp_flag = COLOUR_FLAG(opp);
+		const int_fast32_t *unit = MobUnit[me].data();
 
-      me = colour;
-      opp = COLOUR_OPP(me);
+		// piece loop
+		int_fast32_t from;
+		for (const sq_t *ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
-      opp_flag = COLOUR_FLAG(opp);
+			const int_fast32_t piece = board->square[from];
+			const int_fast32_t king = KING_POS(board,opp), king_file = SQUARE_FILE(king), king_rank = SQUARE_RANK(king);
+			const int_fast32_t piece_file = SQUARE_FILE(from), piece_rank = SQUARE_RANK(from);
+			int_fast32_t mob, capture, rook_file;
+			
+			switch (PIECE_TYPE(piece)) {
+			case Knight64:
+				// mobility
+				mob = 0;
 
-      auto unit = MobUnit[me];
+				mob += unit[board->square[from-33]];
+				mob += unit[board->square[from-31]];
+				mob += unit[board->square[from-18]];
+				mob += unit[board->square[from-14]];
+				mob += unit[board->square[from+14]];
+				mob += unit[board->square[from+18]];
+				mob += unit[board->square[from+31]];
+				mob += unit[board->square[from+33]];
 
-      // piece loop
+				op[me] += knight_mob[mob];
+				eg[me] += knight_mob[mob]; 
+				
+				op[me] += (knight_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * knight_tropism_opening));
+				eg[me] += (knight_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * knight_tropism_endgame));
 
-      for (ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
-
-         piece = board->square[from];
-
-         switch (PIECE_TYPE(piece)) {
-
-         case Knight64:
-
-            // mobility
-
-            mob = 0;
-
-            mob += unit[board->square[from-33]];
-            mob += unit[board->square[from-31]];
-            mob += unit[board->square[from-18]];
-            mob += unit[board->square[from-14]];
-            mob += unit[board->square[from+14]];
-            mob += unit[board->square[from+18]];
-            mob += unit[board->square[from+31]];
-            mob += unit[board->square[from+33]];
-
-            op[me] += knight_mob[mob];
-            eg[me] += knight_mob[mob];
-
-	    king = KING_POS(board,opp);
-	    king_file = SQUARE_FILE(king);
-            king_rank = SQUARE_RANK(king);
-	    piece_file = SQUARE_FILE(from);
-            piece_rank = SQUARE_RANK(from); 
-						
-	    op[me] += (knight_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * knight_tropism_opening));
-            eg[me] += (knight_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * knight_tropism_endgame));
-
-
-			// outpost
-			mob = 0;
-			if (me == White){
-				if (board->square[from-17] == WP)
-					mob += KnightOutpostMatrix[me][from]; 
-				if (board->square[from-15] == WP)
-					mob += KnightOutpostMatrix[me][from]; 
-			}
-			else{
-				if (board->square[from+17] == BP)
-					mob += KnightOutpostMatrix[me][from]; 
-				if (board->square[from+15] == BP)
-					mob += KnightOutpostMatrix[me][from]; 
-			} 
-
-			op[me] += mob;
-            		// eg[me] += mob; 
-
-            break;
-
-         case Bishop64:
-
-            // mobility
-
-            mob = 0;
-
-            for (to = from-17; capture=board->square[to], THROUGH(capture); to -= 17) mob += MobMove;
-            mob += unit[capture];
-
-            for (to = from-15; capture=board->square[to], THROUGH(capture); to -= 15) mob += MobMove;
-            mob += unit[capture];
-
-            for (to = from+15; capture=board->square[to], THROUGH(capture); to += 15) mob += MobMove;
-            mob += unit[capture];
-
-            for (to = from+17; capture=board->square[to], THROUGH(capture); to += 17) mob += MobMove;
-            mob += unit[capture];
-
-            op[me] += bishop_mob[mob];
-            eg[me] += bishop_mob[mob];
-
-	    king = KING_POS(board,opp);
-	    king_file = SQUARE_FILE(king);
-            king_rank = SQUARE_RANK(king);
-	    piece_file = SQUARE_FILE(from);
-            piece_rank = SQUARE_RANK(from); 
-						
-	    op[me] += (bishop_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * bishop_tropism_opening));
-            eg[me] += (bishop_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * bishop_tropism_endgame));
-
-
-	    if (SQUARE_COLOUR(from) == White) {
-		op[me] += pawns_on_bishop_colour_opening[pawn_info->wsp[me]];
-		eg[me] += pawns_on_bishop_colour_endgame[pawn_info->wsp[me]];
-	    } else {
-		if (me == White) {
-			op[me] += pawns_on_bishop_colour_opening[(board->number[WhitePawn12] - pawn_info->wsp[me])];
-			eg[me] += pawns_on_bishop_colour_endgame[(board->number[WhitePawn12] - pawn_info->wsp[me])];
-		} else {
-			op[me] += pawns_on_bishop_colour_opening[(board->number[BlackPawn12] - pawn_info->wsp[me])];
-			eg[me] += pawns_on_bishop_colour_endgame[(board->number[BlackPawn12] - pawn_info->wsp[me])];
-		}
-	    } 
-
-
-            break;
-
-         case Rook64:
-
-            // mobility
-
-            mob = 0;
-
-            for (to = from-16; capture=board->square[to], THROUGH(capture); to -= 16) mob += MobMove;
-            mob += unit[capture];
-
-            for (to = from- 1; capture=board->square[to], THROUGH(capture); to -=  1) mob += MobMove;
-            mob += unit[capture];
-
-            for (to = from+ 1; capture=board->square[to], THROUGH(capture); to +=  1) mob += MobMove;
-            mob += unit[capture];
-
-            for (to = from+16; capture=board->square[to], THROUGH(capture); to += 16) mob += MobMove;
-            mob += unit[capture];
-
-            op[me] += rook_mob_open[mob];
-            eg[me] += rook_mob_end[mob];
-
-	    king = KING_POS(board,opp);
-	    king_file = SQUARE_FILE(king);
-            king_rank = SQUARE_RANK(king);
-	    piece_file = SQUARE_FILE(from);
-            piece_rank = SQUARE_RANK(from); 
-						
-	    op[me] += (rook_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * rook_tropism_opening));
-            eg[me] += (rook_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * rook_tropism_endgame));
-
-
-            // open file
-
-
-               op[me] -= RookOpenFileOpening / 2;
-               eg[me] -= RookOpenFileEndgame / 2;
-
-               rook_file = SQUARE_FILE(from);
-
-               if (board->pawn_file[me][rook_file] == 0) { // no friendly pawn
-
-                  op[me] += RookSemiOpenFileOpening;
-                  eg[me] += RookSemiOpenFileEndgame;
-
-                  if (board->pawn_file[opp][rook_file] == 0) { // no enemy pawn
-                     op[me] += RookOpenFileOpening - RookSemiOpenFileOpening;
-                     eg[me] += RookOpenFileEndgame - RookSemiOpenFileEndgame;
-                  } else {
-			 switch (rook_file) {
-				case FileA:
-					if ((pawn_info->badpawns[opp] & BadPawnFileA) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileB:
-					if ((pawn_info->badpawns[opp] & BadPawnFileB) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileC:
-					if ((pawn_info->badpawns[opp] & BadPawnFileC) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileD:
-					if ((pawn_info->badpawns[opp] & BadPawnFileD) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileE:
-					if ((pawn_info->badpawns[opp] & BadPawnFileE) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileF:
-					if ((pawn_info->badpawns[opp] & BadPawnFileF) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileG:
-					if ((pawn_info->badpawns[opp] & BadPawnFileG) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
-
-				case FileH:
-					if ((pawn_info->badpawns[opp] & BadPawnFileH) != 0) {
-						op[me] += RookOnBadPawnFileOpening;
-						eg[me] += RookOnBadPawnFileEndgame;
-					}
-					break;
+				// outpost
+				mob = 0;
+				if (me == White)  {
+					if (board->square[from-17] == WP)
+						mob += KnightOutpostMatrix[me][from]; 
+					if (board->square[from-15] == WP)
+						mob += KnightOutpostMatrix[me][from]; 
+				} else  {
+					if (board->square[from+17] == BP)
+						mob += KnightOutpostMatrix[me][from]; 
+					if (board->square[from+15] == BP)
+						mob += KnightOutpostMatrix[me][from]; 
 				} 
-			}
 
+				op[me] += mob;
+				// eg[me] += mob; 
 
+  	          break;
 
+			case Bishop64:
 
-                  if ((mat_info->cflags[opp] & MatKingFlag) != 0) {
+				// mobility
+				mob = 0;
+  	          for (int_fast32_t to = from-17; capture=board->square[to], THROUGH(capture); to -= 17) 
+   	         	mob += MobMove;
+				mob += unit[capture];
 
-                     king = KING_POS(board,opp);
-                     king_file = SQUARE_FILE(king);
+				for (int_fast32_t to = from-15; capture=board->square[to], THROUGH(capture); to -= 15) 
+					mob += MobMove;
+				mob += unit[capture];
+	
+				for (int_fast32_t to = from+15; capture=board->square[to], THROUGH(capture); to += 15) 
+					mob += MobMove;
+				mob += unit[capture];
 
-                     delta = abs(rook_file-king_file); // file distance
+				for (int_fast32_t to = from+17; capture=board->square[to], THROUGH(capture); to += 17) 
+					mob += MobMove;
+				mob += unit[capture];
 
-                     if (delta <= 1) {
-                        op[me] += RookSemiKingFileOpening;
-                        if (delta == 0) op[me] += RookKingFileOpening - RookSemiKingFileOpening;
-                     }
-                  }
-               }
+				op[me] += bishop_mob[mob];
+				eg[me] += bishop_mob[mob];
+			
+				op[me] += (bishop_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * bishop_tropism_opening));
+				eg[me] += (bishop_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * bishop_tropism_endgame));
 
-            // 7th rank
+				if (SQUARE_COLOUR(from) == White) {
+					op[me] += pawns_on_bishop_colour_opening[pawn_info->wsp[me]];
+					eg[me] += pawns_on_bishop_colour_endgame[pawn_info->wsp[me]];
+				} else if (me == White) {
+					op[me] += pawns_on_bishop_colour_opening[(board->number[WhitePawn12] - pawn_info->wsp[me])];
+					eg[me] += pawns_on_bishop_colour_endgame[(board->number[WhitePawn12] - pawn_info->wsp[me])];
+				} else {
+					op[me] += pawns_on_bishop_colour_opening[(board->number[BlackPawn12] - pawn_info->wsp[me])];
+					eg[me] += pawns_on_bishop_colour_endgame[(board->number[BlackPawn12] - pawn_info->wsp[me])];
+				} 
 
-			if (PAWN_RANK(from,me) == Rank7) {
-               if ((pawn_info->flags[opp] & BackRankFlag) != 0 // opponent pawn on 7th rank
-                || PAWN_RANK(KING_POS(board,opp),me) == Rank8) {
-                  op[me] += Rook7thOpening;
-                  eg[me] += Rook7thEndgame;
-               }
-            } 
+				break;
 
-            break;
+			case Rook64:
 
-         case Queen64:
+				// mobility
+				mob = 0;
+	
+				for (int_fast32_t to = from-16; capture=board->square[to], THROUGH(capture); to -= 16) 
+					mob += MobMove;
+				mob += unit[capture];
 
-            // mobility
+				for (int_fast32_t to = from- 1; capture=board->square[to], THROUGH(capture); to -=  1) 
+					mob += MobMove;
+				mob += unit[capture];
 
-            mob = 0;
+				for (int_fast32_t to = from+ 1; capture=board->square[to], THROUGH(capture); to +=  1) 
+					mob += MobMove;
+				mob += unit[capture];
 
-            for (to = from-17; capture=board->square[to], THROUGH(capture); to -= 17) mob += MobMove;
-            mob += unit[capture];
+				for (int_fast32_t to = from+16; capture=board->square[to], THROUGH(capture); to += 16) 
+					mob += MobMove;
+				mob += unit[capture];
 
-            for (to = from-16; capture=board->square[to], THROUGH(capture); to -= 16) mob += MobMove;
-            mob += unit[capture];
+				op[me] += rook_mob_open[mob];
+				eg[me] += rook_mob_end[mob];
+			
+				op[me] += (rook_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * rook_tropism_opening));
+				eg[me] += (rook_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * rook_tropism_endgame));
 
-            for (to = from-15; capture=board->square[to], THROUGH(capture); to -= 15) mob += MobMove;
-            mob += unit[capture];
+	            // open file
+				op[me] -= RookOpenFileOpening / 2;
+				eg[me] -= RookOpenFileEndgame / 2;
 
-            for (to = from- 1; capture=board->square[to], THROUGH(capture); to -=  1) mob += MobMove;
-            mob += unit[capture];
+				rook_file = SQUARE_FILE(from);
+				
+				if (board->pawn_file[me][rook_file] == 0) { // no friendly pawn
+					op[me] += RookSemiOpenFileOpening;
+					eg[me] += RookSemiOpenFileEndgame;
 
-            for (to = from+ 1; capture=board->square[to], THROUGH(capture); to +=  1) mob += MobMove;
-            mob += unit[capture];
+					if (board->pawn_file[opp][rook_file] == 0) { // no enemy pawn
+						op[me] += RookOpenFileOpening - RookSemiOpenFileOpening;
+						eg[me] += RookOpenFileEndgame - RookSemiOpenFileEndgame;
+					} else {
+						//TODO: refactoring
+						switch (rook_file) {
+						case FileA:
+							if ((pawn_info->badpawns[opp] & BadPawnFileA) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
 
-            for (to = from+15; capture=board->square[to], THROUGH(capture); to += 15) mob += MobMove;
-            mob += unit[capture];
+						case FileB:
+							if ((pawn_info->badpawns[opp] & BadPawnFileB) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
 
-            for (to = from+16; capture=board->square[to], THROUGH(capture); to += 16) mob += MobMove;
-            mob += unit[capture];
+						case FileC:
+							if ((pawn_info->badpawns[opp] & BadPawnFileC) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
+	
+						case FileD:
+							if ((pawn_info->badpawns[opp] & BadPawnFileD) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
 
-            for (to = from+17; capture=board->square[to], THROUGH(capture); to += 17) mob += MobMove;
-            mob += unit[capture];
+						case FileE:
+							if ((pawn_info->badpawns[opp] & BadPawnFileE) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
 
-            op[me] += queen_mob_open[mob];
-            eg[me] += queen_mob_end[mob];
+						case FileF:
+							if ((pawn_info->badpawns[opp] & BadPawnFileF) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
 
-	    king = KING_POS(board,opp);
-	    king_file = SQUARE_FILE(king);
-            king_rank = SQUARE_RANK(king);
-	    piece_file = SQUARE_FILE(from);
-            piece_rank = SQUARE_RANK(from); 
+						case FileG:
+							if ((pawn_info->badpawns[opp] & BadPawnFileG) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
+
+						case FileH:
+							if ((pawn_info->badpawns[opp] & BadPawnFileH) != 0) {
+								op[me] += RookOnBadPawnFileOpening;
+								eg[me] += RookOnBadPawnFileEndgame;
+							}
+							break;
+						} 
+					}
+				
+					if ((mat_info->cflags[opp] & MatKingFlag) != 0) {
 						
-	    op[me] += (queen_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * queen_tropism_opening));
-            eg[me] += (queen_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * queen_tropism_endgame));
+						const int_fast32_t delta = abs(rook_file-king_file); // file distance
 
-            // 7th rank
+						if (delta <= 1) {
+							op[me] += RookSemiKingFileOpening;
+							if (delta == 0) op[me] += RookKingFileOpening - RookSemiKingFileOpening;
+						}
+					}
+				}	
 
-	    if (PAWN_RANK(from,me) == Rank7) {
-               if ((pawn_info->flags[opp] & BackRankFlag) != 0 // opponent pawn on 7th rank
-                || PAWN_RANK(KING_POS(board,opp),me) == Rank8) {
-                  op[me] += Queen7thOpening;
-                  eg[me] += Queen7thEndgame; 
-               }
-            } 
+				// 7th rank
+				if (PAWN_RANK(from,me) == Rank7) 
+					if ((pawn_info->flags[opp] & BackRankFlag) != 0 // opponent pawn on 7th rank
+					  || PAWN_RANK(KING_POS(board,opp),me) == Rank8) {
+						op[me] += Rook7thOpening;
+						eg[me] += Rook7thEndgame;
+					}
+	
+				break;
 
-            break;
-         }
-      }
-   }
+			case Queen64:
+	
+				// mobility
+				mob = 0;
 
-   // update
+				for (int_fast32_t to = from-17; capture=board->square[to], THROUGH(capture); to -= 17) 
+					mob += MobMove;
+				mob += unit[capture];
 
-   *opening += ((op[White] - op[Black]) * PieceActivityWeight) / 256;
-   *endgame += ((eg[White] - eg[Black]) * PieceActivityWeight) / 256;
+				for (int_fast32_t to = from-16; capture=board->square[to], THROUGH(capture); to -= 16) 
+					mob += MobMove;
+				mob += unit[capture];
+
+				for (int_fast32_t to = from-15; capture=board->square[to], THROUGH(capture); to -= 15) 
+					mob += MobMove;
+				mob += unit[capture];
+
+				for (int_fast32_t to = from- 1; capture=board->square[to], THROUGH(capture); to -=  1) 
+					mob += MobMove;
+				mob += unit[capture];
+
+				for (int_fast32_t to = from+ 1; capture=board->square[to], THROUGH(capture); to +=  1) 
+					mob += MobMove;
+				mob += unit[capture];
+
+				for (int_fast32_t to = from+15; capture=board->square[to], THROUGH(capture); to += 15) 
+					mob += MobMove;
+				mob += unit[capture];
+	
+				for (int_fast32_t to = from+16; capture=board->square[to], THROUGH(capture); to += 16) 
+					mob += MobMove;
+				mob += unit[capture];
+	
+				for (int_fast32_t to = from+17; capture=board->square[to], THROUGH(capture); to += 17) 
+					mob += MobMove;
+				mob += unit[capture];
+
+				op[me] += queen_mob_open[mob];
+				eg[me] += queen_mob_end[mob];
+			
+				op[me] += (queen_tropism_opening * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * queen_tropism_opening));
+				eg[me] += (queen_tropism_endgame * 8) - (((abs(king_file-piece_file) + abs(king_rank-piece_rank)) * queen_tropism_endgame));
+
+				// 7th rank
+				if (PAWN_RANK(from,me) == Rank7) 
+					if ((pawn_info->flags[opp] & BackRankFlag) != 0 // opponent pawn on 7th rank
+					  || PAWN_RANK(KING_POS(board,opp),me) == Rank8) {
+						op[me] += Queen7thOpening;
+						eg[me] += Queen7thEndgame; 
+					}
+
+				break;
+			}
+		}
+	}
+
+	// update
+
+	*opening += ((op[White] - op[Black]) * PieceActivityWeight) / 256;
+	*endgame += ((eg[White] - eg[Black]) * PieceActivityWeight) / 256;
 }
 
 // eval_king()
 
 static void eval_king(const board_t * board, const material_info_t * mat_info, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   int_fast32_t colour;
-   int_fast32_t op[ColourNb], eg[ColourNb];
-   int_fast32_t me, opp;
-   int_fast32_t from;
-   int_fast32_t penalty_1, penalty_2;
-   int_fast32_t tmp;
-   int_fast32_t penalty;
-   int_fast32_t king;
-   const sq_t * ptr;
-   int_fast32_t piece;
-   int_fast32_t attack_tot;
-   int_fast32_t piece_nb;
-   int_fast32_t king_file, king_rank;
+	ASSERT(board!=nullptr);
+	ASSERT(mat_info!=nullptr);
+	ASSERT(opening!=nullptr);
+	ASSERT(endgame!=nullptr);
 
-   ASSERT(board!=nullptr);
-   ASSERT(mat_info!=nullptr);
-   ASSERT(opening!=nullptr);
-   ASSERT(endgame!=nullptr);
-
-   // init
-
+	// init
+	std::array<int_fast32_t, ColourNb> op, eg;
+	op[0] = op[1] = eg[0] = eg[1] = 0;
    
-   op[0] = op[1] = eg[0] = eg[1] = 0;
-   
-   // white pawn shelter
+	// white pawn shelter
 
-   if ((mat_info->cflags[White] & MatKingFlag) != 0) {
-
-      /* Thomas simple pattern king safety */
-	 
-	  king_is_safe[White] = false;  
-
-	  if (KingSafety){
-		  if (board->square[G1] == WK || board->square[H1] == WK){ 
-			  if (board->square[G2] == WP && (board->square[H2] == WP || board->square[H3] == WP)){
-				  king_is_safe[White] = true;
-			  }
-			  else if (board->square[F2] == WP && board->square[G3] == WP && board->square[H2] == WP){
-				  king_is_safe[White] = true;
-			  }
-		  }
-
-		  else if (board->square[B1] == WK || board->square[A1] == WK){ 
-			  if (board->square[B2] == WP && (board->square[A2] == WP || board->square[A3] == WP)){
-				  king_is_safe[White] = true;
-			  }
-			  else if (board->square[C2] == WP && board->square[B3] == WP && board->square[A2] == WP){
-				  king_is_safe[White] = true;
-			  }
-		  } 
-	  }
+	if ((mat_info->cflags[White] & MatKingFlag) != 0) {
+		/* Thomas simple pattern king safety */
+		king_is_safe[White] = false;  
+		if (KingSafety)  
+			if (board->square[G1] == WK || board->square[H1] == WK) 
+				if (board->square[G2] == WP && (board->square[H2] == WP || board->square[H3] == WP))
+					king_is_safe[White] = true;
+				else if (board->square[F2] == WP && board->square[G3] == WP && board->square[H2] == WP)
+					king_is_safe[White] = true;
+		else if (board->square[B1] == WK || board->square[A1] == WK)
+			if (board->square[B2] == WP && (board->square[A2] == WP || board->square[A3] == WP))
+				king_is_safe[White] = true;
+			else if (board->square[C2] == WP && board->square[B3] == WP && board->square[A2] == WP)
+				king_is_safe[White] = true;		  
 	
+		if (king_is_safe[White] == false)  { 
+		
+			int_fast32_t me = White;
 
-	  if (king_is_safe[White] == false){ 
-	  
-		  me = White;
+			// king
+			int_fast32_t penalty_1 = shelter_square(board,KING_POS(board,me),me);
+			// castling
+			int_fast32_t penalty_2 = penalty_1;
 
-		  // king
+			if ((board->flags & FlagsWhiteKingCastle) != 0) {
+				const int_fast32_t tmp = shelter_square(board,G1,me);
+				if (tmp < penalty_2) penalty_2 = tmp;
+			}
 
-		  penalty_1 = shelter_square(board,KING_POS(board,me),me);
-		  
-		  // castling
+			if ((board->flags & FlagsWhiteQueenCastle) != 0) {
+				const int_fast32_t tmp = shelter_square(board,B1,me);
+				if (tmp < penalty_2) penalty_2 = tmp;
+			}
 
-          penalty_2 = penalty_1;
+			ASSERT(penalty_2>=0&&penalty_2<=penalty_1);
 
-          if ((board->flags & FlagsWhiteKingCastle) != 0) {
-             tmp = shelter_square(board,G1,me);
-             if (tmp < penalty_2) penalty_2 = tmp;
-		  }
+			// penalty
+			const int_fast32_t penalty = (penalty_1 + penalty_2) / 2;
+			ASSERT(penalty>=0);
 
-          if ((board->flags & FlagsWhiteQueenCastle) != 0) {
-             tmp = shelter_square(board,B1,me);
-             if (tmp < penalty_2) penalty_2 = tmp;
-		  }
+			op[me] -= (penalty * ShelterOpening) / 256;
+		}
+	}
 
-          ASSERT(penalty_2>=0&&penalty_2<=penalty_1);
+	// black pawn shelter
+	if ((mat_info->cflags[Black] & MatKingFlag) != 0) {
+		king_is_safe[Black] = false;
+		
+		if (KingSafety)
+			if (board->square[G8] == BK || board->square[H8] == BK)
+				if (board->square[G7] == BP && (board->square[H7] == BP || board->square[H6] == BP))
+					king_is_safe[Black] = true;
+				else if (board->square[F7] == BP && board->square[G6] == BP && board->square[H7] == BP)
+					king_is_safe[Black] = true;
+			else if (board->square[B8] == BK || board->square[A8] == BK)
+				if (board->square[B7] == BP && (board->square[A7] == BP || board->square[A6] == BP))
+					king_is_safe[Black] = true;
+				else if (board->square[C7] == BP && board->square[B6] == BP && board->square[A7] == BP)
+					king_is_safe[Black] = true;
 
-          // penalty
+		if (king_is_safe[Black] == false)  { 
+			const int_fast32_t me = Black;
+			
+			// king
+			int_fast32_t penalty_1 = shelter_square(board,KING_POS(board,me),me);
+			// castling
+			int_fast32_t penalty_2 = penalty_1;
 
-          penalty = (penalty_1 + penalty_2) / 2;
-          ASSERT(penalty>=0);
+			if ((board->flags & FlagsBlackKingCastle) != 0) {
+				const int_fast32_t tmp = shelter_square(board,G8,me);
+				if (tmp < penalty_2) penalty_2 = tmp;
+			}
 
-          op[me] -= (penalty * ShelterOpening) / 256;
-	  }
-   }
+			if ((board->flags & FlagsBlackQueenCastle) != 0) {
+				const int_fast32_t tmp = shelter_square(board,B8,me);
+				if (tmp < penalty_2) penalty_2 = tmp;
+			}
 
-   // black pawn shelter
+			ASSERT(penalty_2>=0&&penalty_2<=penalty_1);
 
-   if ((mat_info->cflags[Black] & MatKingFlag) != 0) {
+			// penalty
 
-      king_is_safe[Black] = false;
+			const int_fast32_t penalty = (penalty_1 + penalty_2) / 2;
+			ASSERT(penalty>=0);
 
-	  if (KingSafety){
+			op[me] -= (penalty * ShelterOpening) / 256;
+		}
+	}
 
-		  if (board->square[G8] == BK || board->square[H8] == BK){ 
-			  if (board->square[G7] == BP && (board->square[H7] == BP || board->square[H6] == BP)){
-				  king_is_safe[Black] = true;
-			  }
-			  else if (board->square[F7] == BP && board->square[G6] == BP && board->square[H7] == BP){
-				  king_is_safe[Black] = true;
-			  }
-		  }
+	// king attacks
 
-		  else if (board->square[B8] == BK || board->square[A8] == BK){ 
-			  if (board->square[B7] == BP && (board->square[A7] == BP || board->square[A6] == BP)){
-				  king_is_safe[Black] = true;
-			  }
-			  else if (board->square[C7] == BP && board->square[B6] == BP && board->square[A7] == BP){
-				  king_is_safe[Black] = true;
-			  }
-		  } 
-	  }
+	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
+		if ((mat_info->cflags[colour] & MatKingFlag) != 0) {
 
-	  if (king_is_safe[Black] == false){ 
-
-	      me = Black;
-
-          // king
-
-          penalty_1 = shelter_square(board,KING_POS(board,me),me);
-		  
-          // castling
-
-          penalty_2 = penalty_1;
-
-          if ((board->flags & FlagsBlackKingCastle) != 0) {
-             tmp = shelter_square(board,G8,me);
-             if (tmp < penalty_2) penalty_2 = tmp;
-		  }
-
-          if ((board->flags & FlagsBlackQueenCastle) != 0) {
-             tmp = shelter_square(board,B8,me);
-             if (tmp < penalty_2) penalty_2 = tmp;
-		  }
-
-          ASSERT(penalty_2>=0&&penalty_2<=penalty_1);
-
-          // penalty
-
-          penalty = (penalty_1 + penalty_2) / 2;
-          ASSERT(penalty>=0);
-
-          op[me] -= (penalty * ShelterOpening) / 256;
-	  }
-   }
-
-   // king attacks
-
-      for (colour = 0; colour < ColourNb; ++colour) {
-
-         if ((mat_info->cflags[colour] & MatKingFlag) != 0) {
-
-            me = colour;
-            opp = COLOUR_OPP(me);
-
-            king = KING_POS(board,me);
-	    king_file = SQUARE_FILE(king);
-	    king_rank = SQUARE_RANK(king);
+            const int_fast32_t me = colour, opp = COLOUR_OPP(me);
+            const int_fast32_t king = KING_POS(board,me), king_file = SQUARE_FILE(king), king_rank = SQUARE_RANK(king);
             
             // piece attacks
 
-            attack_tot = 0;
-            piece_nb = 0;
-			
-            for (ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
+            int_fast32_t attack_tot = 0, piece_nb = 0;
+			int_fast32_t from;
+            for (const sq_t *ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
 
-               piece = board->square[from];
+				const int_fast32_t piece = board->square[from];
+				if (piece_attack_king(board,piece,from,king)) {
+					++piece_nb;
+					attack_tot += KingAttackUnit[piece];
+				}
+/*				else  {
+					if ((abs(king_file-SQUARE_FILE(from)) + abs(king_rank-SQUARE_RANK(from))) <= 4){
+						piece_nb++;
+						attack_tot += KingAttackUnit[piece];
+					}
+				} */
+			}
 
-               if (piece_attack_king(board,piece,from,king)) {
-                  ++piece_nb;
-                  attack_tot += KingAttackUnit[piece];
-               }
-/*		       else{
-			       if ((abs(king_file-SQUARE_FILE(from)) + abs(king_rank-SQUARE_RANK(from))) <= 4){
-					   piece_nb++;
-                       attack_tot += KingAttackUnit[piece];
-				   }
-			   } */
-            }
-
-            // scoring
-
-            ASSERT(piece_nb>=0&&piece_nb<16);
+			// scoring
+			ASSERT(piece_nb>=0&&piece_nb<16);
 
 			op[colour] -= (attack_tot * KingAttackOpening * KingAttackWeight[piece_nb]) / 256;
-				
-         }
-      }
+		}
+	}
    
-   // update
-
-   *opening += (op[White] - op[Black]);
-   *endgame += (eg[White] - eg[Black]);
+	// update
+	*opening += (op[White] - op[Black]);
+	*endgame += (eg[White] - eg[Black]);
 }
 
 // eval_passer()
 
 static void eval_passer(const board_t * board, const pawn_info_t * pawn_info, int_fast32_t * opening, int_fast32_t * endgame) {
+	
+	ASSERT(board!=nullptr);
+	ASSERT(pawn_info!=nullptr);
+	ASSERT(opening!=nullptr);
+	ASSERT(endgame!=nullptr);
 
-   int_fast32_t colour;
-   int_fast32_t op[ColourNb], eg[ColourNb];
-   int_fast32_t att, def;
-   int_fast32_t bits;
-   int_fast32_t file, rank;
-   int_fast32_t sq;
-   int_fast32_t min, max;
-   int_fast32_t delta;
-   int_fast32_t white_passed_nb, black_passed_nb;
-   
-   ASSERT(board!=nullptr);
-   ASSERT(pawn_info!=nullptr);
-   ASSERT(opening!=nullptr);
-   ASSERT(endgame!=nullptr);
+	// init
+	std::array<int_fast32_t, ColourNb> op, eg;
+	op[0] = op[1] = eg[0] = eg[1] = 0;
 
-   // init
+	int_fast32_t white_passed_nb = 0, black_passed_nb = 0;
 
-   op[0] = op[1] = eg[0] = eg[1] = 0;
+	// passed pawns
+	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
 
-   white_passed_nb = 0;
-   black_passed_nb = 0;
+		int_fast32_t att = colour, def = COLOUR_OPP(att);
 
-   // passed pawns
+		for (int_fast32_t bits = pawn_info->passed_bits[att]; bits != 0; bits &= bits-1) {
 
-   for (colour = 0; colour < ColourNb; ++colour) {
+			const int_fast32_t file = BIT_FIRST(bits), rank = BIT_LAST(board->pawn_file[att][file]);
+			ASSERT(file>=FileA&&file<=FileH);
+			ASSERT(rank>=Rank2&&rank<=Rank7);
 
-      att = colour;
-      def = COLOUR_OPP(att);
+			int_fast32_t sq = SQUARE_MAKE(file,rank);
+			if (COLOUR_IS_BLACK(att)) sq = SQUARE_RANK_MIRROR(sq);
 
-      for (bits = pawn_info->passed_bits[att]; bits != 0; bits &= bits-1) {
-
-         file = BIT_FIRST(bits);
-         ASSERT(file>=FileA&&file<=FileH);
-
-         rank = BIT_LAST(board->pawn_file[att][file]);
-         ASSERT(rank>=Rank2&&rank<=Rank7);
-
-         sq = SQUARE_MAKE(file,rank);
-         if (COLOUR_IS_BLACK(att)) sq = SQUARE_RANK_MIRROR(sq);
-
-         ASSERT(PIECE_IS_PAWN(board->square[sq]));
-         ASSERT(COLOUR_IS(board->square[sq],att));
+			ASSERT(PIECE_IS_PAWN(board->square[sq]));
+			ASSERT(COLOUR_IS(board->square[sq],att));
 
 
-         // opening scoring
+			// opening scoring
+			op[att] += quad(PassedOpeningMin,PassedOpeningMax,rank);
 
-         op[att] += quad(PassedOpeningMin,PassedOpeningMax,rank);
+			// endgame scoring init
+			int_fast32_t min = PassedEndgameMin, max = PassedEndgameMax, delta = max - min;
+			ASSERT(delta>0);
 
-         // endgame scoring init
+			// "dangerous" bonus
+			if (board->piece_size[def] <= 1 // defender has no piece
+			&& (unstoppable_passer(board,sq,att) || king_passer(board,sq,att))) 
+				delta += UnstoppablePasser;
+			else if (free_passer(board,sq,att)) 
+            	delta += FreePasser;
 
-         min = PassedEndgameMin;
-         max = PassedEndgameMax;
+			// king-distance bonus
+			delta -= pawn_att_dist(sq,KING_POS(board,att),att) * AttackerDistance;
+			delta += pawn_def_dist(sq,KING_POS(board,def),att) * DefenderDistance;
 
-         delta = max - min;
-         ASSERT(delta>0);
+			// endgame scoring
+			eg[att] += min;
+			if (delta > 0) eg[att] += quad(0,delta,rank);
+		}
+	}
 
-         // "dangerous" bonus
-
-         if (board->piece_size[def] <= 1 // defender has no piece
-          && (unstoppable_passer(board,sq,att) || king_passer(board,sq,att))) {
-            delta += UnstoppablePasser;
-         } else if (free_passer(board,sq,att)) {
-            delta += FreePasser;
-         }
-
-         // king-distance bonus
-
-         delta -= pawn_att_dist(sq,KING_POS(board,att),att) * AttackerDistance;
-         delta += pawn_def_dist(sq,KING_POS(board,def),att) * DefenderDistance;
-
-         // endgame scoring
-
-         eg[att] += min;
-         if (delta > 0) eg[att] += quad(0,delta,rank);
-      }
-   }
-
-   // update
-
-   
-   *opening += ((op[White] - op[Black]) * PassedPawnWeight) / 256;
-   *endgame += ((eg[White] - eg[Black]) * PassedPawnWeight) / 256;
+	// update
+	*opening += ((op[White] - op[Black]) * PassedPawnWeight) / 256;
+	*endgame += ((eg[White] - eg[Black]) * PassedPawnWeight) / 256;
 }
 
 // eval_pattern()
 
 static void eval_pattern(const board_t * board, int_fast32_t * opening, int_fast32_t * endgame) {
 
-   ASSERT(board!=nullptr);
-   ASSERT(opening!=nullptr);
-   ASSERT(endgame!=nullptr);
+	ASSERT(board!=nullptr);
+	ASSERT(opening!=nullptr);
+	ASSERT(endgame!=nullptr);
 
-   // trapped bishop (7th rank)
+	// trapped bishop (7th rank)
 
-   if ((board->square[A7] == WB && board->square[B6] == BP)
-    || (board->square[B8] == WB && board->square[C7] == BP)) {
-      *opening -= TrappedBishop;
-      *endgame -= TrappedBishop;
+	if ((board->square[A7] == WB && board->square[B6] == BP)
+	 || (board->square[B8] == WB && board->square[C7] == BP)) {
+		*opening -= TrappedBishop;
+		*endgame -= TrappedBishop;
+	}
+
+	if ((board->square[H7] == WB && board->square[G6] == BP)
+	 || (board->square[G8] == WB && board->square[F7] == BP)) {
+		*opening -= TrappedBishop;
+		*endgame -= TrappedBishop;
    }
 
-   if ((board->square[H7] == WB && board->square[G6] == BP)
-    || (board->square[G8] == WB && board->square[F7] == BP)) {
-      *opening -= TrappedBishop;
-      *endgame -= TrappedBishop;
+	if ((board->square[A2] == BB && board->square[B3] == WP)
+	 || (board->square[B1] == BB && board->square[C2] == WP)) {
+		*opening += TrappedBishop;
+		*endgame += TrappedBishop;
    }
 
-   if ((board->square[A2] == BB && board->square[B3] == WP)
-    || (board->square[B1] == BB && board->square[C2] == WP)) {
-      *opening += TrappedBishop;
-      *endgame += TrappedBishop;
-   }
-
-   if ((board->square[H2] == BB && board->square[G3] == WP)
-    || (board->square[G1] == BB && board->square[F2] == WP)) {
-      *opening += TrappedBishop;
-      *endgame += TrappedBishop;
-   }
+	if ((board->square[H2] == BB && board->square[G3] == WP)
+	 || (board->square[G1] == BB && board->square[F2] == WP)) {
+		*opening += TrappedBishop;
+		*endgame += TrappedBishop;
+	}
 
    // trapped bishop (6th rank)
 
-   if (board->square[A6] == WB && board->square[B5] == BP) {
-      *opening -= TrappedBishop / 2;
-      *endgame -= TrappedBishop / 2;
+	if (board->square[A6] == WB && board->square[B5] == BP) {
+		*opening -= TrappedBishop / 2;
+		*endgame -= TrappedBishop / 2;
+	}
+
+	if (board->square[H6] == WB && board->square[G5] == BP) {
+		*opening -= TrappedBishop / 2;
+		*endgame -= TrappedBishop / 2;
    }
 
-   if (board->square[H6] == WB && board->square[G5] == BP) {
-      *opening -= TrappedBishop / 2;
-      *endgame -= TrappedBishop / 2;
-   }
+	if (board->square[A3] == BB && board->square[B4] == WP) {
+		*opening += TrappedBishop / 2;
+		*endgame += TrappedBishop / 2;
+	}
 
-   if (board->square[A3] == BB && board->square[B4] == WP) {
-      *opening += TrappedBishop / 2;
-      *endgame += TrappedBishop / 2;
-   }
+	if (board->square[H3] == BB && board->square[G4] == WP) {
+		*opening += TrappedBishop / 2;
+		*endgame += TrappedBishop / 2;
+	}
 
-   if (board->square[H3] == BB && board->square[G4] == WP) {
-      *opening += TrappedBishop / 2;
-      *endgame += TrappedBishop / 2;
-   }
+	// blocked bishop
+	if (board->square[D2] == WP && board->square[D3] != Empty && board->square[C1] == WB) 
+		*opening -= BlockedBishop;
 
-   // blocked bishop
+	if (board->square[E2] == WP && board->square[E3] != Empty && board->square[F1] == WB) 
+		*opening -= BlockedBishop;
 
-   if (board->square[D2] == WP && board->square[D3] != Empty && board->square[C1] == WB) {
-      *opening -= BlockedBishop;
-   }
+	if (board->square[D7] == BP && board->square[D6] != Empty && board->square[C8] == BB) 
+		*opening += BlockedBishop;
 
-   if (board->square[E2] == WP && board->square[E3] != Empty && board->square[F1] == WB) {
-      *opening -= BlockedBishop;
-   }
+	if (board->square[E7] == BP && board->square[E6] != Empty && board->square[F8] == BB) 
+		*opening += BlockedBishop;
 
-   if (board->square[D7] == BP && board->square[D6] != Empty && board->square[C8] == BB) {
-      *opening += BlockedBishop;
-   }
+	// blocked rook
+	if ((board->square[C1] == WK || board->square[B1] == WK)
+	 && (board->square[A1] == WR || board->square[A2] == WR || board->square[B1] == WR)) 
+		*opening -= BlockedRook;
 
-   if (board->square[E7] == BP && board->square[E6] != Empty && board->square[F8] == BB) {
-      *opening += BlockedBishop;
-   }
+	if ((board->square[F1] == WK || board->square[G1] == WK)
+     && (board->square[H1] == WR || board->square[H2] == WR || board->square[G1] == WR)) 
+		*opening -= BlockedRook;
 
-   // blocked rook
+	if ((board->square[C8] == BK || board->square[B8] == BK)
+	 && (board->square[A8] == BR || board->square[A7] == BR || board->square[B8] == BR)) 
+		*opening += BlockedRook;
 
-   if ((board->square[C1] == WK || board->square[B1] == WK)
-    && (board->square[A1] == WR || board->square[A2] == WR || board->square[B1] == WR)) {
-      *opening -= BlockedRook;
-   }
+	if ((board->square[F8] == BK || board->square[G8] == BK)
+	 && (board->square[H8] == BR || board->square[H7] == BR || board->square[G8] == BR)) 
+		*opening += BlockedRook;
 
-   if ((board->square[F1] == WK || board->square[G1] == WK)
-    && (board->square[H1] == WR || board->square[H2] == WR || board->square[G1] == WR)) {
-      *opening -= BlockedRook;
-   }
+	// White center pawn blocked
+	if (board->square[E2] == BP && board->square[E3] != Empty) 
+		*opening -= BlockedCenterPawn;
+	if (board->square[D2] == BP && board->square[D3] != Empty) 
+		*opening -= BlockedCenterPawn;
 
-   if ((board->square[C8] == BK || board->square[B8] == BK)
-    && (board->square[A8] == BR || board->square[A7] == BR || board->square[B8] == BR)) {
-      *opening += BlockedRook;
-   }
-
-   if ((board->square[F8] == BK || board->square[G8] == BK)
-    && (board->square[H8] == BR || board->square[H7] == BR || board->square[G8] == BR)) {
-      *opening += BlockedRook;
-   }
-
-   // White center pawn blocked
-   if (board->square[E2] == BP && board->square[E3] != Empty) {
-      *opening -= BlockedCenterPawn;
-   }
-   if (board->square[D2] == BP && board->square[D3] != Empty) {
-      *opening -= BlockedCenterPawn;
-   }
-
-   // Black center pawn blocked
-   if (board->square[E7] == BP && board->square[E6] != Empty) {
-      *opening += BlockedCenterPawn;
-   }
-   if (board->square[D7] == BP && board->square[D6] != Empty) {
-      *opening += BlockedCenterPawn;
-   }
-
+	// Black center pawn blocked
+	if (board->square[E7] == BP && board->square[E6] != Empty) 
+		*opening += BlockedCenterPawn;
+	if (board->square[D7] == BP && board->square[D6] != Empty)
+		*opening += BlockedCenterPawn;
 }
 
 // unstoppable_passer()
 
 static bool unstoppable_passer(const board_t * board, int_fast32_t pawn, int_fast32_t colour) {
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(pawn));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   int_fast32_t me, opp;
-   int_fast32_t file, rank;
-   int_fast32_t king;
-   int_fast32_t prom;
-   const sq_t * ptr;
-   int_fast32_t sq;
-   int_fast32_t dist;
+	const int_fast32_t me = colour, opp = COLOUR_OPP(me);
+	const int_fast32_t file = SQUARE_FILE(pawn);
+	int_fast32_t rank = PAWN_RANK(pawn,me);
 
-   ASSERT(board!=nullptr);
-   ASSERT(SQUARE_IS_OK(pawn));
-   ASSERT(COLOUR_IS_OK(colour));
+	const int_fast32_t king = KING_POS(board,opp);
 
-   me = colour;
-   opp = COLOUR_OPP(me);
+	// clear promotion path?
+	int_fast32_t sq;
+	for (const sq_t *ptr = &board->piece[me][0]; (sq=*ptr) != SquareNone; ++ptr) 
+		if (SQUARE_FILE(sq) == file && PAWN_RANK(sq,me) > rank) 
+			return false; // "friendly" blocker
+			
+	// init
+	if (rank == Rank2) {
+		pawn += PAWN_MOVE_INC(me);
+		++rank;
+		ASSERT(rank==PAWN_RANK(pawn,me));
+	}
 
-   file = SQUARE_FILE(pawn);
-   rank = PAWN_RANK(pawn,me);
+	ASSERT(rank>=Rank3&&rank<=Rank7);
 
-   king = KING_POS(board,opp);
+	int_fast32_t prom = PAWN_PROMOTE(pawn,me);
 
-   // clear promotion path?
+	int_fast32_t dist = DISTANCE(pawn,prom);
+	ASSERT(dist==Rank8-rank);
+	
+	if (board->turn == opp) ++dist;
+	if (DISTANCE(king,prom) > dist) return true; // not in the square
 
-   for (ptr = &board->piece[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
-      if (SQUARE_FILE(sq) == file && PAWN_RANK(sq,me) > rank) {
-         return false; // "friendly" blocker
-      }
-   }
-
-   // init
-
-   if (rank == Rank2) {
-      pawn += PAWN_MOVE_INC(me);
-      ++rank;
-      ASSERT(rank==PAWN_RANK(pawn,me));
-   }
-
-   ASSERT(rank>=Rank3&&rank<=Rank7);
-
-   prom = PAWN_PROMOTE(pawn,me);
-
-   dist = DISTANCE(pawn,prom);
-   ASSERT(dist==Rank8-rank);
-   if (board->turn == opp) ++dist;
-
-   if (DISTANCE(king,prom) > dist) return true; // not in the square
-
-   return false;
+	return false;
 }
 
 // king_passer()
 
 static bool king_passer(const board_t * board, int_fast32_t pawn, int_fast32_t colour) {
 
-   int_fast32_t me;
-   int_fast32_t king;
-   int_fast32_t file;
-   int_fast32_t prom;
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(pawn));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(board!=nullptr);
-   ASSERT(SQUARE_IS_OK(pawn));
-   ASSERT(COLOUR_IS_OK(colour));
+	const int_fast32_t me = colour;
+	const int_fast32_t king = KING_POS(board,me);
+	const int_fast32_t file = SQUARE_FILE(pawn);
+	const int_fast32_t prom = PAWN_PROMOTE(pawn,me);
 
-   me = colour;
-
-   king = KING_POS(board,me);
-   file = SQUARE_FILE(pawn);
-   prom = PAWN_PROMOTE(pawn,me);
-
-   if (DISTANCE(king,prom) <= 1
-    && DISTANCE(king,pawn) <= 1
-    && (SQUARE_FILE(king) != file
-     || (file != FileA && file != FileH))) {
-      return true;
-   }
-
-   return false;
+	if (DISTANCE(king,prom) <= 1 
+	 && DISTANCE(king,pawn) <= 1
+ 	&& (SQUARE_FILE(king) != file
+	 || (file != FileA && file != FileH)))
+		return true;
+	
+	return false;
 }
 
 // free_passer()
 
 static bool free_passer(const board_t * board, int_fast32_t pawn, int_fast32_t colour) {
 
-   int_fast32_t me, opp;
-   int_fast32_t inc;
-   int_fast32_t sq;
-   int_fast32_t move;
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(pawn));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(board!=nullptr);
-   ASSERT(SQUARE_IS_OK(pawn));
-   ASSERT(COLOUR_IS_OK(colour));
+	const int_fast32_t me = colour, opp = COLOUR_OPP(me);
+	const int_fast32_t inc = PAWN_MOVE_INC(me);
+	const int_fast32_t sq = pawn + inc;
 
-   me = colour;
-   opp = COLOUR_OPP(me);
+	ASSERT(SQUARE_IS_OK(sq));
 
-   inc = PAWN_MOVE_INC(me);
-   sq = pawn + inc;
-   ASSERT(SQUARE_IS_OK(sq));
+	if (board->square[sq] != Empty) return false;
 
-   if (board->square[sq] != Empty) return false;
+	int_fast32_t move = MOVE_MAKE(pawn,sq);
+	if (see_move(move,board) < 0) return false;
 
-   move = MOVE_MAKE(pawn,sq);
-   if (see_move(move,board) < 0) return false;
-
-   return true;
+	return true;
 }
 
 // pawn_att_dist()
 
 static int_fast32_t pawn_att_dist(int_fast32_t pawn, int_fast32_t king, int_fast32_t colour) {
 
-   int_fast32_t me;
-   int_fast32_t inc;
-   int_fast32_t target;
+	ASSERT(SQUARE_IS_OK(pawn));
+	ASSERT(SQUARE_IS_OK(king));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(SQUARE_IS_OK(pawn));
-   ASSERT(SQUARE_IS_OK(king));
-   ASSERT(COLOUR_IS_OK(colour));
+	const int_fast32_t me = colour;
+	const int_fast32_t inc = PAWN_MOVE_INC(me);
+	const int_fast32_t target = pawn + inc;
 
-   me = colour;
-   inc = PAWN_MOVE_INC(me);
-
-   target = pawn + inc;
-
-   return DISTANCE(king,target);
+	return DISTANCE(king,target);
 }
 
 // pawn_def_dist()
 
 static int_fast32_t pawn_def_dist(int_fast32_t pawn, int_fast32_t king, int_fast32_t colour) {
 
-   int_fast32_t me;
-   int_fast32_t inc;
-   int_fast32_t target;
+	ASSERT(SQUARE_IS_OK(pawn));
+	ASSERT(SQUARE_IS_OK(king));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(SQUARE_IS_OK(pawn));
-   ASSERT(SQUARE_IS_OK(king));
-   ASSERT(COLOUR_IS_OK(colour));
+	const int_fast32_t me = colour;
+	const int_fast32_t inc = PAWN_MOVE_INC(me);
+	const int_fast32_t target = pawn + inc;
 
-   me = colour;
-   inc = PAWN_MOVE_INC(me);
-
-   target = pawn + inc;
-
-   return DISTANCE(king,target);
+	return DISTANCE(king,target);
 }
 
 // draw_init_list()
 
 static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast32_t pawn_colour) {
 
-   int_fast32_t pos;
-   int_fast32_t att, def;
-   const sq_t * ptr;
-   int_fast32_t sq;
-   int_fast32_t pawn;
-   int_fast32_t i;
+	ASSERT(list!=nullptr);
+	ASSERT(board!=nullptr);
+	ASSERT(COLOUR_IS_OK(pawn_colour));
 
-   ASSERT(list!=nullptr);
-   ASSERT(board!=nullptr);
-   ASSERT(COLOUR_IS_OK(pawn_colour));
+	// init
 
-   // init
+	int_fast32_t pos = 0;
 
-   pos = 0;
+	int_fast32_t att = pawn_colour;
+	int_fast32_t def = COLOUR_OPP(att);
 
-   att = pawn_colour;
-   def = COLOUR_OPP(att);
+	ASSERT(board->pawn_size[att]==1);
+	ASSERT(board->pawn_size[def]==0);
 
-   ASSERT(board->pawn_size[att]==1);
-   ASSERT(board->pawn_size[def]==0);
+	// att
+	int_fast32_t  sq;
+	for (const sq_t *ptr = &board->piece[att][0]; (sq=*ptr) != SquareNone; ++ptr) 
+		list[pos++] = sq;
+	for (const sq_t *ptr = &board->pawn[att][0]; (sq=*ptr) != SquareNone; ++ptr) 
+		list[pos++] = sq;
 
-   // att
+	// def
+	for (const sq_t *ptr = &board->piece[def][0]; (sq=*ptr) != SquareNone; ++ptr) 
+		list[pos++] = sq;
+	for (const sq_t *ptr = &board->pawn[def][0]; (sq=*ptr) != SquareNone; ++ptr)
+		list[pos++] = sq;
 
-   for (ptr = &board->piece[att][0]; (sq=*ptr) != SquareNone; ++ptr) {
-      list[pos++] = sq;
-   }
+	// end marker
 
-   for (ptr = &board->pawn[att][0]; (sq=*ptr) != SquareNone; ++ptr) {
-      list[pos++] = sq;
-   }
+	ASSERT(pos==board->piece_nb);
 
-   // def
+	list[pos] = SquareNone;
 
-   for (ptr = &board->piece[def][0]; (sq=*ptr) != SquareNone; ++ptr) {
-      list[pos++] = sq;
-   }
-
-   for (ptr = &board->pawn[def][0]; (sq=*ptr) != SquareNone; ++ptr) {
-      list[pos++] = sq;
-   }
-
-   // end marker
-
-   ASSERT(pos==board->piece_nb);
-
-   list[pos] = SquareNone;
-
-   // file flip?
-
-   pawn = board->pawn[att][0];
-
-   if (SQUARE_FILE(pawn) >= FileE) {
-      for (i = 0; i < pos; ++i) {
-         list[i] = SQUARE_FILE_MIRROR(list[i]);
-      }
-   }
-
-   // rank flip?
-
-   if (COLOUR_IS_BLACK(pawn_colour)) {
-      for (i = 0; i < pos; ++i) {
-         list[i] = SQUARE_RANK_MIRROR(list[i]);
-      }
-   }
+	// file flip?
+	int_fast32_t pawn = board->pawn[att][0];
+	if (SQUARE_FILE(pawn) >= FileE) 
+		for (int_fast32_t i = 0; i < pos; ++i) 
+			list[i] = SQUARE_FILE_MIRROR(list[i]);
+		
+	// rank flip?
+	if (COLOUR_IS_BLACK(pawn_colour)) 
+		for (int_fast32_t i = 0; i < pos; ++i) 
+		list[i] = SQUARE_RANK_MIRROR(list[i]);
 }
 
 
 // draw_krpkr()
 
 static bool draw_krpkr(const int_fast32_t list[], int_fast32_t turn) {
+	
+	ASSERT(list!=nullptr);
+	ASSERT(COLOUR_IS_OK(turn));
 
-   int_fast32_t wk, wr, wp, bk, br;
-   int_fast32_t wp_file, wp_rank;
-   int_fast32_t bk_file, bk_rank;
-   int_fast32_t br_file, br_rank;
-   int_fast32_t prom;
+	int_fast32_t wk, wr, wp, bk, br;
+	// load
 
-   ASSERT(list!=nullptr);
-   ASSERT(COLOUR_IS_OK(turn));
+	wk = *list++;
+	ASSERT(SQUARE_IS_OK(wk));
 
-   // load
+	wr = *list++;
+	ASSERT(SQUARE_IS_OK(wr));
 
-   wk = *list++;
-   ASSERT(SQUARE_IS_OK(wk));
+	wp = *list++;
+	ASSERT(SQUARE_IS_OK(wp));
+	ASSERT(SQUARE_FILE(wp)<=FileD);
 
-   wr = *list++;
-   ASSERT(SQUARE_IS_OK(wr));
+	bk = *list++;
+	ASSERT(SQUARE_IS_OK(bk));
 
-   wp = *list++;
-   ASSERT(SQUARE_IS_OK(wp));
-   ASSERT(SQUARE_FILE(wp)<=FileD);
+	br = *list++;
+	ASSERT(SQUARE_IS_OK(br));
 
-   bk = *list++;
-   ASSERT(SQUARE_IS_OK(bk));
+	ASSERT(*list==SquareNone);
 
-   br = *list++;
-   ASSERT(SQUARE_IS_OK(br));
+	// test
+	int_fast32_t wp_file, wp_rank;
+	int_fast32_t bk_file, bk_rank;
+	int_fast32_t br_file, br_rank;
+	int_fast32_t prom;
+	
+	wp_file = SQUARE_FILE(wp);
+	wp_rank = SQUARE_RANK(wp);
 
-   ASSERT(*list==SquareNone);
+	bk_file = SQUARE_FILE(bk);
+	bk_rank = SQUARE_RANK(bk);
 
-   // test
+	br_file = SQUARE_FILE(br);
+	br_rank = SQUARE_RANK(br);
 
-   wp_file = SQUARE_FILE(wp);
-   wp_rank = SQUARE_RANK(wp);
+	prom = PAWN_PROMOTE(wp,White);
 
-   bk_file = SQUARE_FILE(bk);
-   bk_rank = SQUARE_RANK(bk);
-
-   br_file = SQUARE_FILE(br);
-   br_rank = SQUARE_RANK(br);
-
-   prom = PAWN_PROMOTE(wp,White);
-
-   if (false) {
-
-   } else if (bk == prom) {
-
-      // TODO: rook near Rank1 if wp_rank == Rank6?
-
-      if (br_file > wp_file) return true;
-
-   } else if (bk_file == wp_file && bk_rank > wp_rank) {
-
-      return true;
-
-   } else if (wr == prom && wp_rank == Rank7 && (bk == G7 || bk == H7) && br_file == wp_file) {
-
-      if (br_rank <= Rank3) {
-         if (DISTANCE(wk,wp) > 1) return true;
-      } else { // br_rank >= Rank4
-         if (DISTANCE(wk,wp) > 2) return true;
-      }
-   }
-
-   return false;
+	if (false) {}
+	else if (bk == prom)
+		// TODO: rook near Rank1 if wp_rank == Rank6?
+		if (br_file > wp_file) return true;
+	else if (bk_file == wp_file && bk_rank > wp_rank)
+		return true;
+	else if (wr == prom && wp_rank == Rank7 && (bk == G7 || bk == H7) && br_file == wp_file) 
+		if (br_rank <= Rank3) 
+			if (DISTANCE(wk,wp) > 1) return true;
+		else // br_rank >= Rank4
+			if (DISTANCE(wk,wp) > 2) return true;
+	
+	return false;
 }
 
 // draw_kbpkb()
 
 static bool draw_kbpkb(const int_fast32_t list[], int_fast32_t turn) {
 
-   int_fast32_t wk, wb, wp, bk, bb;
-   int_fast32_t inc;
-   int_fast32_t end, to;
-   int_fast32_t delta, inc_2;
-   int_fast32_t sq;
+	ASSERT(list!=nullptr);
+	ASSERT(COLOUR_IS_OK(turn));
 
-   ASSERT(list!=nullptr);
-   ASSERT(COLOUR_IS_OK(turn));
+	// load
+	int_fast32_t wk, wb, wp, bk, bb;
+	wk = *list++;
+	ASSERT(SQUARE_IS_OK(wk));
 
-   // load
+	wb = *list++;
+	ASSERT(SQUARE_IS_OK(wb));
 
-   wk = *list++;
-   ASSERT(SQUARE_IS_OK(wk));
+	wp = *list++;
+	ASSERT(SQUARE_IS_OK(wp));
+	ASSERT(SQUARE_FILE(wp)<=FileD);
 
-   wb = *list++;
-   ASSERT(SQUARE_IS_OK(wb));
+	bk = *list++;
+	ASSERT(SQUARE_IS_OK(bk));
 
-   wp = *list++;
-   ASSERT(SQUARE_IS_OK(wp));
-   ASSERT(SQUARE_FILE(wp)<=FileD);
+	bb = *list++;
+	ASSERT(SQUARE_IS_OK(bb));
 
-   bk = *list++;
-   ASSERT(SQUARE_IS_OK(bk));
+	ASSERT(*list==SquareNone);
 
-   bb = *list++;
-   ASSERT(SQUARE_IS_OK(bb));
+	// opposit colour?
 
-   ASSERT(*list==SquareNone);
+	if (SQUARE_COLOUR(wb) == SQUARE_COLOUR(bb)) return false; // TODO
 
-   // opposit colour?
+	// blocked pawn?
 
-   if (SQUARE_COLOUR(wb) == SQUARE_COLOUR(bb)) return false; // TODO
+	const int_fast32_t inc = PAWN_MOVE_INC(White);
+	int_fast32_t end = PAWN_PROMOTE(wp,White) + inc;
 
-   // blocked pawn?
+	for (int_fast32_t to = wp+inc; to != end; to += inc) {
 
-   inc = PAWN_MOVE_INC(White);
-   end = PAWN_PROMOTE(wp,White) + inc;
+		ASSERT(SQUARE_IS_OK(to));
 
-   for (to = wp+inc; to != end; to += inc) {
+		if (to == bb) return true; // direct blockade
 
-      ASSERT(SQUARE_IS_OK(to));
+		int_fast32_t delta = to - bb;
+		ASSERT(delta_is_ok(delta));
 
-      if (to == bb) return true; // direct blockade
+		if (PSEUDO_ATTACK(BB,delta)) {
 
-      delta = to - bb;
-      ASSERT(delta_is_ok(delta));
+			int_fast32_t inc_2 = DELTA_INC_ALL(delta);
+			ASSERT(inc_2!=IncNone);
 
-      if (PSEUDO_ATTACK(BB,delta)) {
+			int_fast32_t sq = bb;
+			
+			do {
+				sq += inc_2;
+				ASSERT(SQUARE_IS_OK(sq));
+				ASSERT(sq!=wk);
+				ASSERT(sq!=wb);
+				ASSERT(sq!=wp);
+				ASSERT(sq!=bb);
+				if (sq == to) return true; // indirect blockade
+			} while (sq != bk);
+		}
+	}
 
-         inc_2 = DELTA_INC_ALL(delta);
-         ASSERT(inc_2!=IncNone);
-
-         sq = bb;
-         do {
-            sq += inc_2;
-            ASSERT(SQUARE_IS_OK(sq));
-            ASSERT(sq!=wk);
-            ASSERT(sq!=wb);
-            ASSERT(sq!=wp);
-            ASSERT(sq!=bb);
-            if (sq == to) return true; // indirect blockade
-         } while (sq != bk);
-      }
-   }
-
-   return false;
+	return false;
 }
 
 // shelter_square()
 
 static int_fast32_t shelter_square(const board_t * board, int_fast32_t square, int_fast32_t colour) {
 
-   int_fast32_t penalty;
-   int_fast32_t file, rank;
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(square));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(board!=nullptr);
-   ASSERT(SQUARE_IS_OK(square));
-   ASSERT(COLOUR_IS_OK(colour));
+	int_fast32_t penalty = 0;
 
-   penalty = 0;
+	int_fast32_t file = SQUARE_FILE(square);
+	int_fast32_t rank = PAWN_RANK(square,colour);
 
-   file = SQUARE_FILE(square);
-   rank = PAWN_RANK(square,colour);
+	penalty += (shelter_file(board,file,rank,colour) * 2);
+	if (file != FileA) penalty += (shelter_file(board,file-1,rank,colour));
+	if (file != FileH) penalty += (shelter_file(board,file+1,rank,colour));
 
-   penalty += (shelter_file(board,file,rank,colour) * 2);
-   if (file != FileA) penalty += (shelter_file(board,file-1,rank,colour));
-   if (file != FileH) penalty += (shelter_file(board,file+1,rank,colour));
+	if (penalty == 0) penalty = 11; // weak back rank
 
-   if (penalty == 0) penalty = 11; // weak back rank
-
-   penalty += storm_file(board,file,colour);
-   if (file != FileA) penalty += storm_file(board,file-1,colour);
-   if (file != FileH) penalty += storm_file(board,file+1,colour);
+	penalty += storm_file(board,file,colour);
+	if (file != FileA) penalty += storm_file(board,file-1,colour);
+	if (file != FileH) penalty += storm_file(board,file+1,colour);
    
-
-   return penalty;
+	return penalty;
 }
 
 // shelter_file()
 
 static int_fast32_t shelter_file(const board_t * board, int_fast32_t file, int_fast32_t rank, int_fast32_t colour) {
 
-   int_fast32_t dist;
-   int_fast32_t penalty;
+	ASSERT(board!=nullptr);
+	ASSERT(file>=FileA&&file<=FileH);
+	ASSERT(rank>=Rank1&&rank<=Rank8);
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(board!=nullptr);
-   ASSERT(file>=FileA&&file<=FileH);
-   ASSERT(rank>=Rank1&&rank<=Rank8);
-   ASSERT(COLOUR_IS_OK(colour));
+	int_fast32_t dist = BIT_FIRST(board->pawn_file[colour][file]&BitGE[rank]);
+	ASSERT(dist>=Rank2&&dist<=Rank8);
 
-   dist = BIT_FIRST(board->pawn_file[colour][file]&BitGE[rank]);
-   ASSERT(dist>=Rank2&&dist<=Rank8);
+	dist = Rank8 - dist;
+	ASSERT(dist>=0&&dist<=6);
 
-   dist = Rank8 - dist;
-   ASSERT(dist>=0&&dist<=6);
+	int_fast32_t penalty = 36 - dist * dist;
+	ASSERT(penalty>=0&&penalty<=36);
 
-   penalty = 36 - dist * dist;
-   ASSERT(penalty>=0&&penalty<=36);
-
-   return penalty;
+	return penalty;
 }
 
 // storm_file()
 
 static int_fast32_t storm_file(const board_t * board, int_fast32_t file, int_fast32_t colour) {
 
-   int_fast32_t dist;
-   int_fast32_t penalty;
+	ASSERT(board!=nullptr);
+	ASSERT(file>=FileA&&file<=FileH);
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(board!=nullptr);
-   ASSERT(file>=FileA&&file<=FileH);
-   ASSERT(COLOUR_IS_OK(colour));
+	int_fast32_t dist = BIT_LAST(board->pawn_file[COLOUR_OPP(colour)][file]);
+	ASSERT(dist>=Rank1&&dist<=Rank7);
 
-   dist = BIT_LAST(board->pawn_file[COLOUR_OPP(colour)][file]);
-   ASSERT(dist>=Rank1&&dist<=Rank7);
+	int_fast32_t penalty = 0;
 
-   penalty = 0;
+	switch (dist) {
+	case Rank4:
+		penalty = StormOpening * 1;
+		break;
+	case Rank5:
+		penalty = StormOpening * 3;
+		break;
+	case Rank6:
+		penalty = StormOpening * 6;
+		break;
+	}
 
-   switch (dist) {
-   case Rank4:
-      penalty = StormOpening * 1;
-      break;
-   case Rank5:
-      penalty = StormOpening * 3;
-      break;
-   case Rank6:
-      penalty = StormOpening * 6;
-      break;
-   }
-
-   return penalty;
+	return penalty;
 }
 
 // bishop_can_attack()
 
 static bool bishop_can_attack(const board_t * board, int_fast32_t to, int_fast32_t colour) {
+	
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(to));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   const sq_t * ptr;
-   int_fast32_t from;
-   int_fast32_t piece;
-
-   ASSERT(board!=nullptr);
-   ASSERT(SQUARE_IS_OK(to));
-   ASSERT(COLOUR_IS_OK(colour));
-
-   for (ptr = &board->piece[colour][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
-
-      piece = board->square[from];
-
-      if (PIECE_IS_BISHOP(piece) && SQUARE_COLOUR(from) == SQUARE_COLOUR(to)) {
-         return true;
-      }
+	int_fast32_t from;
+	for (const sq_t *ptr = &board->piece[colour][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
+		int_fast32_t piece = board->square[from];
+		if (PIECE_IS_BISHOP(piece) && SQUARE_COLOUR(from) == SQUARE_COLOUR(to))
+			return true;
    }
 
    return false;

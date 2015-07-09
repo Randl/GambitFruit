@@ -22,4 +22,3 @@ extern int_fast32_t  book_move  (board_t * board);
 #endif // !defined BOOK_H
 
 // end of book.h
-

@@ -47,39 +47,39 @@ constexpr int_fast32_t StackSize = 4096;
 
 struct board_t {
 
-   int_fast32_t piece_material[ColourNb]; // Thomas
+	int_fast32_t piece_material[ColourNb]; // Thomas
      	
-   int_fast32_t square[SquareNb];
-   int_fast32_t pos[SquareNb];
+	int_fast32_t square[SquareNb];
+	int_fast32_t pos[SquareNb];
 
-   sq_t piece[ColourNb][17]; // was 32
-   int_fast32_t piece_size[ColourNb];
+	sq_t piece[ColourNb][17]; // was 32
+	int_fast32_t piece_size[ColourNb];
 
-   sq_t pawn[ColourNb][9]; // was 16
-   int_fast32_t pawn_size[ColourNb];
+	sq_t pawn[ColourNb][9]; // was 16
+	int_fast32_t pawn_size[ColourNb];
 
-   int_fast32_t piece_nb;
-   int_fast32_t number[12]; // was 16
+	int_fast32_t piece_nb;
+	int_fast32_t number[12]; // was 16
 
-   int_fast32_t pawn_file[ColourNb][FileNb];
+	int_fast32_t pawn_file[ColourNb][FileNb];
 
-   bool turn;
-   int_fast32_t flags;
-   int_fast32_t ep_square;
-   int_fast32_t ply_nb;
-   int_fast32_t sp; // TODO: MOVE ME?
+	bool turn;
+	int_fast32_t flags;
+	int_fast32_t ep_square;
+	int_fast32_t ply_nb;
+	int_fast32_t sp; // TODO: MOVE ME?
 
-   int_fast32_t cap_sq;
+	int_fast32_t cap_sq;
 
-   int_fast32_t opening;
-   int_fast32_t endgame;
-   int_fast32_t pvalue; //Ryan
+	int_fast32_t opening;
+	int_fast32_t endgame;
+	int_fast32_t pvalue; //Ryan
 
-   uint_fast64_t key;
-   uint_fast64_t pawn_key;
-   uint_fast64_t material_key;
+	uint_fast64_t key;
+	uint_fast64_t pawn_key;
+	uint_fast64_t material_key;
 
-   uint_fast64_t stack[StackSize];
+	uint_fast64_t stack[StackSize];
 };
 
 // functions

@@ -26,7 +26,7 @@ constexpr int_fast32_t ListSize = 256;
 #define LIST_VALUE(list,pos) ((list)->value[pos])
 
 // types
-
+//TODO: test vs. std structures
 struct list_t {
    int_fast32_t size;
    uint_fast16_t move[ListSize];
@@ -53,4 +53,3 @@ extern void list_filter   (list_t * list, board_t * board, move_test_t test, boo
 #endif // !defined LIST_H
 
 // end of list.h
-
