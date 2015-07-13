@@ -162,44 +162,34 @@ static int_fast32_t square_opp  (int_fast32_t square);
 
 void pst_init() {
 
-   int_fast32_t i;
-   int_fast32_t piece, sq, stage;
+	// UCI options
 
-   // UCI options
+	PieceActivityWeight = (option_get_int("Piece Activity") * 256 + 50) / 100;
+	//KingSafetyWeight    = (option_get_int("King Safety")    * 256 + 50) / 100;
+	PawnStructureWeight = (option_get_int("Pawn Structure") * 256 + 50) / 100;
+	alt_pawn_table =  option_get_bool("Alt Pawn SQT");
+	alt_knight_table =  option_get_bool("Alt Knight SQT");
+	alt_bishop_table =  option_get_bool("Alt Bishop SQT");
 
-   PieceActivityWeight = (option_get_int("Piece Activity") * 256 + 50) / 100;
-   //KingSafetyWeight    = (option_get_int("King Safety")    * 256 + 50) / 100;
-   PawnStructureWeight = (option_get_int("Pawn Structure") * 256 + 50) / 100;
-   alt_pawn_table =  option_get_bool("Alt Pawn SQT");
-   alt_knight_table =  option_get_bool("Alt Knight SQT");
-   alt_bishop_table =  option_get_bool("Alt Bishop SQT");
-
-   // init
-
-   for (piece = 0; piece < 12; ++piece) {
-      for (sq = 0; sq < 64; ++sq) {
-         for (stage = 0; stage < StageNb; ++stage) {
+	// init
+	for (int_fast32_t piece = 0; piece < 12; ++piece) 
+      for (int_fast32_t sq = 0; sq < 64; ++sq) 
+         for (int_fast32_t stage = 0; stage < StageNb; ++stage) 
             P(piece,sq,stage) = 0;
-         }
-      }
-   }
 
-   // pawns
+	// pawns
+	int_fast32_t piece = WhitePawn12;
 
-   piece = WhitePawn12;
-
-   if (alt_pawn_table) {
-		for (sq = 0; sq < 64; ++sq) {
+	if (alt_pawn_table) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_pawn_opening[sq];
 			P(piece,sq,Endgame) += alt_pawn_endgame[sq];
 		}		
-   } else {
+	} else {
 		// file
-
-		for (sq = 0; sq < 64; ++sq) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) 
 			P(piece,sq,Opening) += PawnFile[square_file(sq)] * PawnFileOpening;
-		}
-
+		
 		// centre control
 
 		P(piece,D3,Opening) += 10;
@@ -212,26 +202,23 @@ void pst_init() {
 		P(piece,E5,Opening) += 10;
    }
 
-   // weight
+	// weight
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
+		P(piece,sq,Opening) = (P(piece,sq,Opening) * PawnStructureWeight) / 256;
+		P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PawnStructureWeight) / 256;
+	}
 
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) = (P(piece,sq,Opening) * PawnStructureWeight) / 256;
-      P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PawnStructureWeight) / 256;
-   }
+	// knights
+	piece = WhiteKnight12;
 
-   // knights
-
-   piece = WhiteKnight12;
-
-   if (alt_knight_table) {
-		for (sq = 0; sq < 64; ++sq) {
+	if (alt_knight_table) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_knight[sq];
 			P(piece,sq,Endgame) += alt_knight[sq];
 		}		
-   } else {
+	} else {
 		// centre
-
-		for (sq = 0; sq < 64; ++sq) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += KnightLine[square_file(sq)] * KnightCentreOpening;
 			P(piece,sq,Opening) += KnightLine[square_rank(sq)] * KnightCentreOpening;
 			P(piece,sq,Endgame) += KnightLine[square_file(sq)] * KnightCentreEndgame;
@@ -239,42 +226,38 @@ void pst_init() {
 		}
 
 		// rank
-
-		for (sq = 0; sq < 64; ++sq) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) 
 			P(piece,sq,Opening) += KnightRank[square_rank(sq)] * KnightRankOpening;
-		}
-
+		
 		// back rank
 
-		for (sq = A1; sq <= H1; ++sq) { // HACK: only first rank
-			P(piece,sq,Opening) -= KnightBackRankOpening;
-		}
-   }
-   // "trapped"
+		for (int_fast32_t sq = A1; sq <= H1; ++sq) // HACK: only first rank
+			P(piece,sq,Opening) -= KnightBackRankOpening;		
+	}
 
-   P(piece,A8,Opening) -= KnightTrapped;
-   P(piece,H8,Opening) -= KnightTrapped;
+	// "trapped"
+	P(piece,A8,Opening) -= KnightTrapped;
+	P(piece,H8,Opening) -= KnightTrapped;
 
-   // weight
-
-   for (sq = 0; sq < 64; ++sq) {
+	// weight
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
       P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
       P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
    }
 
    // bishops
 
-   piece = WhiteBishop12;
+	piece = WhiteBishop12;
 
-   if (alt_bishop_table) {
-		for (sq = 0; sq < 64; ++sq) {
+	if (alt_bishop_table) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_bishop[sq];
 			P(piece,sq,Endgame) += alt_bishop[sq];
 		}				
-   } else {
+	} else {
+		
 		// centre
-
-		for (sq = 0; sq < 64; ++sq) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += BishopLine[square_file(sq)] * BishopCentreOpening;
 			P(piece,sq,Opening) += BishopLine[square_rank(sq)] * BishopCentreOpening;
 			P(piece,sq,Endgame) += BishopLine[square_file(sq)] * BishopCentreEndgame;
@@ -282,146 +265,120 @@ void pst_init() {
 		}
 
 		// back rank
-
-		for (sq = A1; sq <= H1; ++sq) { // HACK: only first rank
+		for (int_fast32_t sq = A1; sq <= H1; ++sq) // HACK: only first rank
 			P(piece,sq,Opening) -= BishopBackRankOpening;
-		}
 
 		// main diagonals
-
-		for (i = 0; i < 8; ++i) {
-			sq = square_make(i,i);
+		for (int_fast32_t i = 0; i < 8; ++i) {
+			int_fast32_t sq = square_make(i,i);
 			P(piece,sq,Opening) += BishopDiagonalOpening;
 			P(piece,square_opp(sq),Opening) += BishopDiagonalOpening;
 		}
 
 		// weight
-
-		for (sq = 0; sq < 64; ++sq) {
+		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
 			P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
 		}
-   }
-   // rooks
+	}
+   
+	// rooks
+	piece = WhiteRook12;
 
-   piece = WhiteRook12;
+	// file
+	for (int_fast32_t sq = 0; sq < 64; ++sq)
+		P(piece,sq,Opening) += RookFile[square_file(sq)] * RookFileOpening;
 
-   // file
+	// weight
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
+		P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
+		P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
+	}
 
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) += RookFile[square_file(sq)] * RookFileOpening;
-   }
+	// queens
+	piece = WhiteQueen12;
 
-   // weight
+	// centre
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
+		P(piece,sq,Opening) += QueenLine[square_file(sq)] * QueenCentreOpening;
+		P(piece,sq,Opening) += QueenLine[square_rank(sq)] * QueenCentreOpening;
+		P(piece,sq,Endgame) += QueenLine[square_file(sq)] * QueenCentreEndgame;
+		P(piece,sq,Endgame) += QueenLine[square_rank(sq)] * QueenCentreEndgame;
+	}
 
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
-      P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
-   }
+	// back rank
+	for (int_fast32_t sq = A1; sq <= H1; ++sq) // HACK: only first rank
+		P(piece,sq,Opening) -= QueenBackRankOpening;
 
-   // queens
+	// weight
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
+		P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
+		P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
+	}
 
-   piece = WhiteQueen12;
+	// kings
+	piece = WhiteKing12;
 
-   // centre
+	// centre
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
+		P(piece,sq,Endgame) += KingLine[square_file(sq)] * KingCentreEndgame;
+		P(piece,sq,Endgame) += KingLine[square_rank(sq)] * KingCentreEndgame;
+	}
 
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) += QueenLine[square_file(sq)] * QueenCentreOpening;
-      P(piece,sq,Opening) += QueenLine[square_rank(sq)] * QueenCentreOpening;
-      P(piece,sq,Endgame) += QueenLine[square_file(sq)] * QueenCentreEndgame;
-      P(piece,sq,Endgame) += QueenLine[square_rank(sq)] * QueenCentreEndgame;
-   }
+	// file
+	for (int_fast32_t sq = 0; sq < 64; ++sq) 
+		P(piece,sq,Opening) += KingFile[square_file(sq)] * KingFileOpening;
+   
 
-   // back rank
+	// rank
+	for (int_fast32_t sq = 0; sq < 64; ++sq) 
+		P(piece,sq,Opening) += KingRank[square_rank(sq)] * KingRankOpening;
 
-   for (sq = A1; sq <= H1; ++sq) { // HACK: only first rank
-      P(piece,sq,Opening) -= QueenBackRankOpening;
-   }
+	// weight
+	for (int_fast32_t sq = 0; sq < 64; ++sq) {
+		P(piece,sq,Opening) = (P(piece,sq,Opening) * KingSafetyWeight)    / 256;
+		P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
+	}
 
-   // weight
-
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) = (P(piece,sq,Opening) * PieceActivityWeight) / 256;
-      P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
-   }
-
-   // kings
-
-   piece = WhiteKing12;
-
-   // centre
-
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Endgame) += KingLine[square_file(sq)] * KingCentreEndgame;
-      P(piece,sq,Endgame) += KingLine[square_rank(sq)] * KingCentreEndgame;
-   }
-
-   // file
-
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) += KingFile[square_file(sq)] * KingFileOpening;
-   }
-
-   // rank
-
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) += KingRank[square_rank(sq)] * KingRankOpening;
-   }
-
-   // weight
-
-   for (sq = 0; sq < 64; ++sq) {
-      P(piece,sq,Opening) = (P(piece,sq,Opening) * KingSafetyWeight)    / 256;
-      P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
-   }
-
-   // symmetry copy for black
-
-   for (piece = 0; piece < 12; piece += 2) { // HACK
-      for (sq = 0; sq < 64; ++sq) {
-         for (stage = 0; stage < StageNb; ++stage) {
-            P(piece+1,sq,stage) = -P(piece,square_opp(sq),stage); // HACK
-         }
-      }
-   }
+	// symmetry copy for black
+	for (int_fast32_t piece = 0; piece < 12; piece += 2) // HACK
+		for (int_fast32_t sq = 0; sq < 64; ++sq) 
+			for (int_fast32_t stage = 0; stage < StageNb; ++stage) 
+				P(piece+1,sq,stage) = -P(piece,square_opp(sq),stage); // HACK       
 }
 
 // square_make()
 
 static int_fast32_t square_make(int_fast32_t file, int_fast32_t rank) {
 
-   ASSERT(file>=0&&file<8);
-   ASSERT(rank>=0&&rank<8);
+	ASSERT(file>=0&&file<8);
+	ASSERT(rank>=0&&rank<8);
 
-   return (rank << 3) | file;
+	return (rank << 3) | file;
 }
 
 // square_file()
 
 static int_fast32_t square_file(int_fast32_t square) {
 
-   ASSERT(square>=0&&square<64);
-
-   return square & 7;
+	ASSERT(square>=0&&square<64);
+	return square & 7;
 }
 
 // square_rank()
 
 static int_fast32_t square_rank(int_fast32_t square) {
 
-   ASSERT(square>=0&&square<64);
-
-   return square >> 3;
+	ASSERT(square>=0&&square<64);
+	return square >> 3;
 }
 
 // square_opp()
 
-static int_fast32_t square_opp(int_fast32_t square) {
+static int_fast32_t square_opp(int_fast32_t square) { //inline?
 
-   ASSERT(square>=0&&square<64);
-
-   return square ^ 070;
+	ASSERT(square>=0&&square<64);
+	return square ^ 070;
 }
 
 // end of pst.cpp
-

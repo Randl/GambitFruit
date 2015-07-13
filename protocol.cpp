@@ -75,599 +75,512 @@ static void load_egbb_library ();
 void loop() {
 
    // init (to help debugging)
+	Init = false;
 
-   Init = false;
+	Searching = false;
+	Infinite = false;
+	Delay = false;
 
-   Searching = false;
-   Infinite = false;
-   Delay = false;
+	search_clear();
 
-   search_clear();
+	board_from_fen(SearchInput->board,StartFen);
 
-   board_from_fen(SearchInput->board,StartFen);
-
-   // loop
-
-   while (true) loop_step();
+	// loop
+	while (true) loop_step();
 }
 
 // init()
 
 static void init() {
 
-   if (!Init) {
+	if (!Init) {
 
-      // late initialisation
+		// late initialisation
+		Init = true;
 
-      Init = true;
+		if (option_get_bool("OwnBook")) 
+			book_open(option_get_string("BookFile"));
 
-      if (option_get_bool("OwnBook")) {
-         book_open(option_get_string("BookFile"));
-      }
+		//SearchInput->multipv = option_get_int("MultiPV");
+		load_egbb_library();
 
-	  //SearchInput->multipv = option_get_int("MultiPV");
+		trans_alloc(Trans);
 
-      load_egbb_library();
+		pawn_init();
+		pawn_alloc();
 
-      trans_alloc(Trans);
+		material_init();
+		material_alloc();
 
-      pawn_init();
-      pawn_alloc();
-
-      material_init();
-      material_alloc();
-
-      pst_init();
-      eval_init();
-   }
+		pst_init();
+		eval_init();
+	}
 }
 
 // event()
 
 void event() {
-
-   while (!SearchInfo->stop && input_available()) loop_step();
+	while (!SearchInfo->stop && input_available()) loop_step();
 }
 
 // loop_step()
 
 static void loop_step() {
 
-   char string[65536];
-   // read a line
+	char string[65536];
+	// read a line
 
-   get(string,65536);
+	get(string,65536);
 
-   // parse
+	// parse
+	if (false) {
+	} else if (string_start_with(string,"debug ")) {
+	// dummy
+	} else if (string_start_with(string,"go ")) {
+		if (!Searching && !Delay) {
+			init();
+			parse_go(string);
+		} else {
+			ASSERT(false);
+		}
+	} else if (string_equal(string,"isready")) {
+		if (!Searching && !Delay) 
+			init();
+		send("readyok"); // no need to wait when searching (dixit SMK)
+	} else if (string_equal(string,"ponderhit")) {
+		if (Searching) {
+			ASSERT(Infinite);
+			SearchInput->infinite = false;
+			Infinite = false;
+		} else if (Delay) {
+			send_best_move();
+			Delay = false;
+		} else {
+			ASSERT(false);
+		}
+	} else if (string_start_with(string,"position ")) {
+		if (!Searching && !Delay) {
+			init();
+			parse_position(string);
+		} else {
+			ASSERT(false);
+		}
+	} else if (string_equal(string,"quit")) {
+		ASSERT(!Searching);
+		ASSERT(!Delay);
 
-   if (false) {
+		exit(EXIT_SUCCESS);
+	} else if (string_start_with(string,"setoption ")) {
+		if (!Searching && !Delay) {
+			parse_setoption(string);
+		} else {
+			ASSERT(false);
+		}
+	} else if (string_equal(string,"stop")) {
+		if (Searching) {
+			SearchInfo->stop = true;
+			Infinite = false;
+		} else if (Delay) {
+			send_best_move();
+			Delay = false;
+		}
+	} else if (string_equal(string,"uci")) {
+		ASSERT(!Searching);
+		ASSERT(!Delay);
 
-   } else if (string_start_with(string,"debug ")) {
+		send("id name Gambit Fruit " VERSION);
+		send("id author Ryan Benitez, Thomas Gaksch, Fabien Letouzey and Evgeniy Zheltonozhskiy");
 
-      // dummy
+		option_list();
 
-   } else if (string_start_with(string,"go ")) {
-
-      if (!Searching && !Delay) {
-         init();
-         parse_go(string);
-      } else {
-         ASSERT(false);
-      }
-
-   } else if (string_equal(string,"isready")) {
-
-      if (!Searching && !Delay) {
-         init();
-      }
-
-      send("readyok"); // no need to wait when searching (dixit SMK)
-
-   } else if (string_equal(string,"ponderhit")) {
-
-      if (Searching) {
-
-         ASSERT(Infinite);
-
-         SearchInput->infinite = false;
-         Infinite = false;
-
-      } else if (Delay) {
-
-         send_best_move();
-         Delay = false;
-
-      } else {
-
-         ASSERT(false);
-      }
-
-   } else if (string_start_with(string,"position ")) {
-
-      if (!Searching && !Delay) {
-         init();
-         parse_position(string);
-      } else {
-         ASSERT(false);
-      }
-
-   } else if (string_equal(string,"quit")) {
-
-      ASSERT(!Searching);
-      ASSERT(!Delay);
-
-      exit(EXIT_SUCCESS);
-
-   } else if (string_start_with(string,"setoption ")) {
-
-      if (!Searching && !Delay) {
-         parse_setoption(string);
-      } else {
-         ASSERT(false);
-      }
-
-   } else if (string_equal(string,"stop")) {
-
-      if (Searching) {
-
-         SearchInfo->stop = true;
-         Infinite = false;
-
-      } else if (Delay) {
-
-         send_best_move();
-         Delay = false;
-      }
-
-   } else if (string_equal(string,"uci")) {
-
-      ASSERT(!Searching);
-      ASSERT(!Delay);
-
-      send("id name Gambit Fruit " VERSION);
-      send("id author Ryan Benitez, Thomas Gaksch, Fabien Letouzey and Evgeniy Zheltonozhskiy");
-
-      option_list();
-
-      send("uciok");
-
-   } else if (string_equal(string,"ucinewgame")) {
-
-      if (!Searching && !Delay && Init) {
-         trans_clear(Trans);
-      } else {
-         ASSERT(false);
-      }
-   }
+		send("uciok");
+	} else if (string_equal(string,"ucinewgame")) {
+		if (!Searching && !Delay && Init) {
+			trans_clear(Trans);
+		} else {
+			ASSERT(false);
+		}
+	}
 }
 
 // parse_go()
 
 static void parse_go(char string[]) {
 
-   const char * ptr;
-   bool infinite, ponder;
-   int_fast32_t depth, mate, movestogo;
-   int_fast64_t nodes;
-   double binc, btime, movetime, winc, wtime;
+   
    double time, inc;
    double time_max, alloc;
 
-   // init
+	// init
+	bool infinite = false, ponder = false;
 
-   infinite = false;
-   ponder = false;
+	int_fast32_t depth = -1, mate = -1, movestogo = -1;
+	int_fast64_t nodes = -1;
 
-   depth = -1;
-   mate = -1;
-   movestogo = -1;
+	double binc = -1.0, btime = -1.0, movetime = -1.0,winc = -1.0, wtime = -1.0;
 
-   nodes = -1;
+	// parse
+	const char * ptr = strtok(string," "); // skip "go"
 
-   binc = -1.0;
-   btime = -1.0;
-   movetime = -1.0;
-   winc = -1.0;
-   wtime = -1.0;
+	for (ptr = strtok(nullptr," "); ptr != nullptr; ptr = strtok(nullptr," ")) {
+		if (false) {
+		} else if (string_equal(ptr,"binc")) {
 
-   // parse
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			binc = double(atoi(ptr)) / 1000.0;
+			ASSERT(binc>=0.0);
 
-   ptr = strtok(string," "); // skip "go"
+		} else if (string_equal(ptr,"btime")) {
 
-   for (ptr = strtok(nullptr," "); ptr != nullptr; ptr = strtok(nullptr," ")) {
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-      if (false) {
+			btime = double(atoi(ptr)) / 1000.0;
+			ASSERT(btime>=0.0);
 
-      } else if (string_equal(ptr,"binc")) {
+		} else if (string_equal(ptr,"depth")) {
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-         binc = double(atoi(ptr)) / 1000.0;
-         ASSERT(binc>=0.0);
+			depth = atoi(ptr);
+			ASSERT(depth>=0);
 
-      } else if (string_equal(ptr,"btime")) {
+		} else if (string_equal(ptr,"infinite")) {
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			infinite = true;
 
-         btime = double(atoi(ptr)) / 1000.0;
-         ASSERT(btime>=0.0);
+ 		} else if (string_equal(ptr,"mate")) {
 
-      } else if (string_equal(ptr,"depth")) {
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			mate = atoi(ptr);
+			ASSERT(mate>=0);
 
-         depth = atoi(ptr);
-         ASSERT(depth>=0);
+		} else if (string_equal(ptr,"movestogo")) {
 
-      } else if (string_equal(ptr,"infinite")) {
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-         infinite = true;
+			movestogo = atoi(ptr);
+			ASSERT(movestogo>=0);
+	
+		} else if (string_equal(ptr,"movetime")) {
 
-      } else if (string_equal(ptr,"mate")) {
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			movetime = double(atoi(ptr)) / 1000.0;
+			ASSERT(movetime>=0.0);
 
-         mate = atoi(ptr);
-         ASSERT(mate>=0);
+		} else if (string_equal(ptr,"nodes")) {
 
-      } else if (string_equal(ptr,"movestogo")) {
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			nodes = my_atoll(ptr);
+			ASSERT(nodes>=0);
 
-         movestogo = atoi(ptr);
-         ASSERT(movestogo>=0);
+		} else if (string_equal(ptr,"ponder")) {
 
-      } else if (string_equal(ptr,"movetime")) {
+			ponder = true;
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+		} else if (string_equal(ptr,"searchmoves")) {
 
-         movetime = double(atoi(ptr)) / 1000.0;
-         ASSERT(movetime>=0.0);
+			// dummy
 
-      } else if (string_equal(ptr,"nodes")) {
+		} else if (string_equal(ptr,"winc")) {
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-         nodes = my_atoll(ptr);
-         ASSERT(nodes>=0);
+			winc = double(atoi(ptr)) / 1000.0;
+			ASSERT(winc>=0.0);
 
-      } else if (string_equal(ptr,"ponder")) {
+		} else if (string_equal(ptr,"wtime")) {
 
-         ponder = true;
+			ptr = strtok(nullptr," ");
+			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
-      } else if (string_equal(ptr,"searchmoves")) {
+ 			wtime = double(atoi(ptr)) / 1000.0;
+			ASSERT(wtime>=0.0);
+		}
+	}
 
-         // dummy
+	// init
+	search_clear();
 
-      } else if (string_equal(ptr,"winc")) {
+	// depth limit
 
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
-
-         winc = double(atoi(ptr)) / 1000.0;
-         ASSERT(winc>=0.0);
-
-      } else if (string_equal(ptr,"wtime")) {
-
-         ptr = strtok(nullptr," ");
-         if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
-
-         wtime = double(atoi(ptr)) / 1000.0;
-         ASSERT(wtime>=0.0);
-      }
-   }
-
-   // init
-
-   search_clear();
-
-   // depth limit
-
-   // JAS
-   int_fast32_t option_depth = 0;
-   option_depth = option_get_int("Search Depth");
-   if (option_depth > 0) {
+	// JAS
+	int_fast32_t option_depth = 0;
+	option_depth = option_get_int("Search Depth");
+	if (option_depth > 0)
    	  depth = option_depth;
-   }
+	// JAS end
+
+	if (depth >= 0) {
+		SearchInput->depth_is_limited = true;
+		SearchInput->depth_limit = depth;
+	} else if (mate >= 0) {
+		SearchInput->depth_is_limited = true;
+		SearchInput->depth_limit = mate * 2 - 1; // HACK: move -> ply
+	}
+
+	// time limit
+
+	if (COLOUR_IS_WHITE(SearchInput->board->turn)) {
+		time = wtime;
+		inc = winc;
+	} else {
+		time = btime;	
+		inc = binc;
+	}
+
+	if (movestogo <= 0 || movestogo > 30) movestogo = 20; // HACK was 30. Why 20?
+	if (inc < 0.0) inc = 0.0;
+
+	// JAS
+	int_fast32_t option_movetime = 0;
+	option_movetime = option_get_int("Search Time");
+	if (option_movetime > 0) {
+		movetime = option_movetime;
+	}
    // JAS end
 
-   if (depth >= 0) {
-      SearchInput->depth_is_limited = true;
-      SearchInput->depth_limit = depth;
-   } else if (mate >= 0) {
-      SearchInput->depth_is_limited = true;
-      SearchInput->depth_limit = mate * 2 - 1; // HACK: move -> ply
-   }
+	if (movetime >= 0.0) {
 
-   // time limit
+		// fixed time
+		SearchInput->time_is_limited = true;
+		SearchInput->time_limit_1 = movetime * 5.0; // HACK to avoid early exit
+		SearchInput->time_limit_2 = movetime;
 
-   if (COLOUR_IS_WHITE(SearchInput->board->turn)) {
-      time = wtime;
-      inc = winc;
-   } else {
-      time = btime;
-      inc = binc;
-   }
+	} else if (time >= 0.0) {
 
-   if (movestogo <= 0 || movestogo > 30) movestogo = 20; // HACK was 30
-   if (inc < 0.0) inc = 0.0;
+		// dynamic allocation
 
-   // JAS
-   int_fast32_t option_movetime = 0;
-   option_movetime = option_get_int("Search Time");
-   if (option_movetime > 0) {
-   	  movetime = option_movetime;
-   }
-   // JAS end
+		time_max = time * 0.95 - 1.0;
+		if (time_max < 0.0) time_max = 0.0;
 
-   if (movetime >= 0.0) {
+		SearchInput->time_is_limited = true;
 
-      // fixed time
+		alloc = (time_max + inc * double(movestogo-1)) / double(movestogo);
+		alloc *= (option_get_bool("Ponder") ? PonderRatio : NormalRatio);
+		if (alloc > time_max) alloc = time_max;
+		SearchInput->time_limit_1 = alloc;
 
-      SearchInput->time_is_limited = true;
-      SearchInput->time_limit_1 = movetime * 5.0; // HACK to avoid early exit
-      SearchInput->time_limit_2 = movetime;
+		alloc = (time_max + inc * double(movestogo-1)) * 0.5;
+		if (alloc < SearchInput->time_limit_1) alloc = SearchInput->time_limit_1;
+		if (alloc > time_max) alloc = time_max;
+		SearchInput->time_limit_2 = alloc;
+	}
 
-   } else if (time >= 0.0) {
+	if (infinite || ponder) SearchInput->infinite = true;
 
-      // dynamic allocation
+	// search
+	ASSERT(!Searching);
+	ASSERT(!Delay);
 
-      time_max = time * 0.95 - 1.0;
-      if (time_max < 0.0) time_max = 0.0;
+	Searching = true;
+	Infinite = infinite || ponder;
+	Delay = false;
 
-      SearchInput->time_is_limited = true;
+	search();
+	search_update_current();
 
-      alloc = (time_max + inc * double(movestogo-1)) / double(movestogo);
-      alloc *= (option_get_bool("Ponder") ? PonderRatio : NormalRatio);
-      if (alloc > time_max) alloc = time_max;
-      SearchInput->time_limit_1 = alloc;
+	ASSERT(Searching);
+	ASSERT(!Delay);
 
-      alloc = (time_max + inc * double(movestogo-1)) * 0.5;
-      if (alloc < SearchInput->time_limit_1) alloc = SearchInput->time_limit_1;
-      if (alloc > time_max) alloc = time_max;
-      SearchInput->time_limit_2 = alloc;
-   }
+	Searching = false;
+	Delay = Infinite;
 
-   if (infinite || ponder) SearchInput->infinite = true;
-
-   // search
-
-   ASSERT(!Searching);
-   ASSERT(!Delay);
-
-   Searching = true;
-   Infinite = infinite || ponder;
-   Delay = false;
-
-   search();
-   search_update_current();
-
-   ASSERT(Searching);
-   ASSERT(!Delay);
-
-   Searching = false;
-   Delay = Infinite;
-
-   if (!Delay) send_best_move();
+	if (!Delay) send_best_move();
 }
 
 // parse_position()
 
 static void parse_position(char string[]) {
+	
+	// init
+	const char *fen = strstr(string,"fen ");
+	char *moves = strstr(string,"moves ");
 
-   const char * fen;
-   char * moves;
-   const char * ptr;
-   char move_string[256];
-   int_fast32_t move;
-   undo_t undo[1];
+	// start position
+	if (fen != nullptr) { // "fen" present
+		if (moves != nullptr) { // "moves" present
+			ASSERT(moves>fen);
+			moves[-1] = '\0'; // dirty, but so is UCI
+		}
 
-   // init
+		board_from_fen(SearchInput->board,fen+4); // CHANGE ME
 
-   fen = strstr(string,"fen ");
-   moves = strstr(string,"moves ");
+	} else {
+		// HACK: assumes startpos
+		board_from_fen(SearchInput->board,StartFen);
+	}
 
-   // start position
+	// moves
+	char move_string[256];
+	if (moves != nullptr) { // "moves" present
+		const char *ptr = moves + 6;
+		while (*ptr != '\0') {
 
-   if (fen != nullptr) { // "fen" present
+			move_string[0] = *ptr++;
+			move_string[1] = *ptr++;
+			move_string[2] = *ptr++;
+			move_string[3] = *ptr++;
 
-      if (moves != nullptr) { // "moves" present
-         ASSERT(moves>fen);
-         moves[-1] = '\0'; // dirty, but so is UCI
-      }
+			if (*ptr == '\0' || *ptr == ' ') {
+				move_string[4] = '\0';
+			} else { // promote
+				move_string[4] = *ptr++;
+				move_string[5] = '\0';
+			}
 
-      board_from_fen(SearchInput->board,fen+4); // CHANGE ME
+			undo_t *undo;
+			int_fast32_t move = move_from_string(move_string,SearchInput->board);
+			move_do(SearchInput->board,move,undo);
 
-   } else {
-
-      // HACK: assumes startpos
-
-      board_from_fen(SearchInput->board,StartFen);
-   }
-
-   // moves
-
-   if (moves != nullptr) { // "moves" present
-
-      ptr = moves + 6;
-
-      while (*ptr != '\0') {
-
-         move_string[0] = *ptr++;
-         move_string[1] = *ptr++;
-         move_string[2] = *ptr++;
-         move_string[3] = *ptr++;
-
-         if (*ptr == '\0' || *ptr == ' ') {
-            move_string[4] = '\0';
-         } else { // promote
-            move_string[4] = *ptr++;
-            move_string[5] = '\0';
-         }
-
-         move = move_from_string(move_string,SearchInput->board);
-
-         move_do(SearchInput->board,move,undo);
-
-         while (*ptr == ' ') ++ptr;
-      }
-   }
+			while (*ptr == ' ') ++ptr;
+		}
+	}
 }
 
 // parse_setoption()
 
 static void parse_setoption(char string[]) {
 
-   const char * name;
-   char * value;
+	// init
+	const char *name = strstr(string,"name ");
+	char *value = strstr(string,"value ");
 
-   // init
+	if (name == nullptr || value == nullptr || name >= value) return; // ignore buttons
 
-   name = strstr(string,"name ");
-   value = strstr(string,"value ");
+	value[-1] = '\0'; // HACK
+	name += 5;
+	value += 6;
 
-   if (name == nullptr || value == nullptr || name >= value) return; // ignore buttons
+	// update
+	option_set(name,value);
 
-   value[-1] = '\0'; // HACK
-   name += 5;
-   value += 6;
+	// update transposition-table size if needed
+	if (Init && my_string_equal(name,"Hash")) { // Init => already allocated
+		ASSERT(!Searching);
 
-   // update
+		if (option_get_int("Hash") >= 4) {
+			trans_free(Trans);
+			trans_alloc(Trans);
+		}
+	}
 
-   option_set(name,value);
-
-   // update transposition-table size if needed
-
-   if (Init && my_string_equal(name,"Hash")) { // Init => already allocated
-
-      ASSERT(!Searching);
-
-      if (option_get_int("Hash") >= 4) {
-         trans_free(Trans);
-         trans_alloc(Trans);
-      }
-   }
-
-    if (my_string_equal(name,"Bitbases Path") || my_string_equal(name,"Bitbases Cache Size"))
-        load_egbb_library();
+	if (my_string_equal(name,"Bitbases Path") || my_string_equal(name,"Bitbases Cache Size"))
+		load_egbb_library();
 }
 
 // send_best_move()
 
 static void send_best_move() {
 
-   double time, speed, cpu;
-   int_fast64_t node_nb;
-   char move_string[256];
-   char ponder_string[256];
-   int_fast32_t move;
-   mv_t * pv;
+	// info
 
-   // info
+	// HACK: should be in search.cpp
+	double time = SearchCurrent->time, speed = SearchCurrent->speed, cpu = SearchCurrent->cpu;
+	int_fast64_t node_nb = SearchCurrent->node_nb;
 
-   // HACK: should be in search.cpp
+	send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f",time*1000.0,node_nb,speed,cpu*1000.0);
 
-   time = SearchCurrent->time;
-   speed = SearchCurrent->speed;
-   cpu = SearchCurrent->cpu;
-   node_nb = SearchCurrent->node_nb;
+	trans_stats(Trans);
+	// pawn_stats();
+	// material_stats();
 
-   send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f",time*1000.0,node_nb,speed,cpu*1000.0);
+	// best move
+	int_fast32_t move = SearchBest[0].move;
+	mv_t *pv = SearchBest[0].pv;
 
-   trans_stats(Trans);
-   // pawn_stats();
-   // material_stats();
+	char move_string[256];
+	move_to_string(move,move_string,256);
 
-   // best move
-
-   move = SearchBest[0].move;
-   pv = SearchBest[0].pv;
-
-   move_to_string(move,move_string,256);
-
-   if (pv[0] == move && move_is_ok(pv[1])) {
-      move_to_string(pv[1],ponder_string,256);
-      send("bestmove %s ponder %s",move_string,ponder_string);
-   } else {
-      send("bestmove %s",move_string);
-   }
+	if (pv[0] == move && move_is_ok(pv[1])) {
+		char ponder_string[256];
+		move_to_string(pv[1],ponder_string,256);
+		send("bestmove %s ponder %s",move_string,ponder_string);
+	} else {
+		send("bestmove %s",move_string); 
+	}
 }
 
 // get()
 
 void get(char string[], int_fast32_t size) {
 
-   ASSERT(string!=nullptr);
-   ASSERT(size>=65536);
+	ASSERT(string!=nullptr);
+	ASSERT(size>=65536);
 
-   if (!my_file_read_line(stdin,string,size)) { // EOF
-      exit(EXIT_SUCCESS);
-   }
+	if (!my_file_read_line(stdin,string,size)) // EOF
+		exit(EXIT_SUCCESS);
 }
 
 // send()
 
 void send(const char format[], ...) {
+	
+	ASSERT(format!=nullptr);
+	
+	va_list arg_list;
+	char string[4096];
+	
+	va_start(arg_list,format);
+	vsprintf(string,format,arg_list);
+	va_end(arg_list);
 
-   va_list arg_list;
-   char string[4096];
-
-   ASSERT(format!=nullptr);
-
-   va_start(arg_list,format);
-   vsprintf(string,format,arg_list);
-   va_end(arg_list);
-
-   fprintf(stdout,"%s\n",string);
+	fprintf(stdout,"%s\n",string);
 }
 
 // string_equal()
 
 static bool string_equal(const char s1[], const char s2[]) {
 
-   ASSERT(s1!=nullptr);
-   ASSERT(s2!=nullptr);
+	ASSERT(s1!=nullptr);
+	ASSERT(s2!=nullptr);
 
-   return strcmp(s1,s2) == 0;
+	return strcmp(s1,s2) == 0;
 }
 
 // string_start_with()
 
 static bool string_start_with(const char s1[], const char s2[]) {
 
-   ASSERT(s1!=nullptr);
-   ASSERT(s2!=nullptr);
+	ASSERT(s1!=nullptr);
+	ASSERT(s2!=nullptr);
 
-   return strstr(s1,s2) == s1;
+	return strstr(s1,s2) == s1;
 }
 
 // Endgame Bitbases
 
 PPROBE_EGBB probe_egbb;
-int_fast32_t egbb_is_loaded;
+int_fast32_t egbb_is_loaded; //bool?
 typedef void (*PLOAD_EGBB) (const char* path, int_fast32_t cache_size, int_fast32_t load_options);
 
 static void load_egbb_library() {
     HMODULE hmod;
     PLOAD_EGBB load_egbb;
-    const char* main_path = option_get("Bitbase Path");
-    uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
 
+	const char* main_path = option_get("Bitbase Path");
+	uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
+		
     char path[256];
-    strcpy(path,main_path);
+    strcpy(path, main_path);
     strcat(path, EGBB_NAME);
+    
     if (hmod)
         FreeLibrary(hmod);
-    if(hmod = LoadLibrary(path)) {
+    if (hmod = LoadLibrary(path)) {
         load_egbb = (PLOAD_EGBB) GetProcAddress(hmod,"load_egbb_xmen");
         probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod,"probe_egbb_xmen");
+    
         load_egbb(main_path, egbb_cache_size, egbb_load_type);
         egbb_is_loaded = 1;
         printf("Bitbase loaded\n");

@@ -42,65 +42,65 @@ struct search_multipv_t {
 };
 
 struct search_param_t {
-   int_fast32_t move;
-   int_fast32_t best_move;
-   int_fast32_t threat_move;
-   bool reduced;
+	int_fast32_t move;
+	int_fast32_t best_move;
+	int_fast32_t threat_move;
+	bool reduced;
 };
 
 struct search_input_t {
-   board_t board[1];
-   list_t list[1];
-   bool infinite;
-   bool depth_is_limited;
-   int_fast32_t depth_limit;
-   int_fast32_t multipv;
-   bool time_is_limited;
-   double time_limit_1;
-   double time_limit_2;
+	board_t board[1];
+	list_t list[1];
+	bool infinite;
+	bool depth_is_limited;
+	int_fast32_t depth_limit;
+	int_fast32_t multipv;
+	bool time_is_limited;
+	double time_limit_1;
+	double time_limit_2;
 };
 
 struct search_info_t {
-   jmp_buf buf;
-   bool can_stop;
-   bool stop;
-   int_fast32_t check_nb;
-   int_fast32_t check_inc;
-   double last_time;
+	jmp_buf buf;
+	bool can_stop;
+	bool stop;
+	int_fast32_t check_nb;
+	int_fast32_t check_inc;
+	double last_time;
 };
 
 struct search_root_t {
-   list_t list[1];
-   int_fast32_t depth;
-   int_fast32_t move;
-   int_fast32_t move_pos;
-   int_fast32_t move_nb;
-   int_fast32_t last_value;
-   bool bad_1;
-   bool bad_2;
-   bool change;
-   bool easy;
-   bool flag;
+	list_t list[1];
+	int_fast32_t depth;
+	int_fast32_t move;
+	int_fast32_t move_pos;
+	int_fast32_t move_nb;
+	int_fast32_t last_value;
+	bool bad_1;
+	bool bad_2;
+	bool change;
+	bool easy;
+	bool flag;
 };
 
 struct search_best_t {
-   int_fast32_t move;
-   int_fast32_t value;
-   int_fast32_t flags;
-   int_fast32_t depth;
-   mv_t pv[HeightMax];
+	int_fast32_t move;
+	int_fast32_t value;
+	int_fast32_t flags;
+	int_fast32_t depth;
+	mv_t pv[HeightMax];
 };
 
 struct search_current_t {
-   board_t board[1];
-   my_timer_t timer[1];
-   int_fast32_t max_depth;
-   int_fast32_t max_extensions; // Thomas
-   int_fast32_t multipv;
-   int_fast64_t node_nb;
-   double time;
-   double speed;
-   double cpu;
+	board_t board[1];
+	my_timer_t timer[1];
+	int_fast32_t max_depth;
+	int_fast32_t max_extensions; // Thomas
+	int_fast32_t multipv;
+	int_fast64_t node_nb;
+	double time;
+	double speed;
+	double cpu;
 };
 
 // variables
@@ -129,4 +129,3 @@ extern void search_check          ();
 #endif // !defined SEARCH_H
 
 // end of search.h
-
