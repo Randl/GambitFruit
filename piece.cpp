@@ -25,83 +25,77 @@ std::array<const inc_t*, PieceNb> PieceInc;
 // piece_init()
 
 void piece_init() {
+	// PieceTo12[]
 
-   int_fast32_t piece, piece_12;
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+		PieceTo12[piece] = -1;
 
-   // PieceTo12[]
+	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12) 
+		PieceTo12[PieceFrom12[piece_12]] = piece_12;
+   
 
-   for (piece = 0; piece < PieceNb; ++piece) PieceTo12[piece] = -1;
+	// PieceOrder[]
 
-   for (piece_12 = 0; piece_12 < 12; ++piece_12) {
-      PieceTo12[PieceFrom12[piece_12]] = piece_12;
-   }
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+		PieceOrder[piece] = -1;
 
-   // PieceOrder[]
+	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12) 
+		PieceOrder[PieceFrom12[piece_12]] = piece_12 >> 1;
 
-   for (piece = 0; piece < PieceNb; ++piece) PieceOrder[piece] = -1;
+	// PieceInc[]
 
-   for (piece_12 = 0; piece_12 < 12; ++piece_12) {
-      PieceOrder[PieceFrom12[piece_12]] = piece_12 >> 1;
-   }
-
-   // PieceInc[]
-
-   for (piece = 0; piece < PieceNb; ++piece) {
-      PieceInc[piece] = nullptr;
-   }
-
-   PieceInc[WhiteKnight256] = KnightInc.data();
-   PieceInc[WhiteBishop256] = BishopInc.data();
-   PieceInc[WhiteRook256]   = RookInc.data();
-   PieceInc[WhiteQueen256]  = QueenInc.data();
-   PieceInc[WhiteKing256]   = KingInc.data();
-
-   PieceInc[BlackKnight256] = KnightInc.data();
-   PieceInc[BlackBishop256] = BishopInc.data();
-   PieceInc[BlackRook256]   = RookInc.data();
-   PieceInc[BlackQueen256]  = QueenInc.data();
-   PieceInc[BlackKing256]   = KingInc.data();
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+		PieceInc[piece] = nullptr;
+  
+	PieceInc[WhiteKnight256] = KnightInc.data();
+	PieceInc[WhiteBishop256] = BishopInc.data();
+	PieceInc[WhiteRook256]   = RookInc.data();
+	PieceInc[WhiteQueen256]  = QueenInc.data();
+	PieceInc[WhiteKing256]   = KingInc.data();
+	
+	PieceInc[BlackKnight256] = KnightInc.data();
+	PieceInc[BlackBishop256] = BishopInc.data();
+	PieceInc[BlackRook256]   = RookInc.data();
+	PieceInc[BlackQueen256]  = QueenInc.data();
+	PieceInc[BlackKing256]   = KingInc.data();
 }
 
 // piece_is_ok()
 
 bool piece_is_ok(int_fast32_t piece) {
 
-   if (piece < 0 || piece >= PieceNb) return false;
+	if (piece < 0 || piece >= PieceNb) return false;
+	if (PieceTo12[piece] < 0) return false;
 
-   if (PieceTo12[piece] < 0) return false;
-
-   return true;
+	return true;
 }
 
 // piece_from_12()
 
 int_fast32_t piece_from_12(int_fast32_t piece_12) {
 
-   ASSERT(piece_12>=0&&piece_12<12);
+	ASSERT(piece_12>=0&&piece_12<12);
 
-   return PieceFrom12[piece_12];
+	return PieceFrom12[piece_12];
 }
 
 // piece_to_char()
 
 int_fast32_t piece_to_char(int_fast32_t piece) {
+	
+	ASSERT(piece_is_ok(piece));
 
-   ASSERT(piece_is_ok(piece));
-
-   return PieceString[PIECE_TO_12(piece)];
+	return PieceString[PIECE_TO_12(piece)];
 }
 
 // piece_from_char()
 
 int_fast32_t piece_from_char(int_fast32_t c) {
 
-   const char *ptr;
+	const char *ptr = strchr(PieceString,c);
+	if (ptr == nullptr) return PieceNone256;
 
-   ptr = strchr(PieceString,c);
-   if (ptr == nullptr) return PieceNone256;
-
-   return piece_from_12(ptr-PieceString);
+	return piece_from_12(ptr-PieceString);
 }
 
 // end of piece.cpp

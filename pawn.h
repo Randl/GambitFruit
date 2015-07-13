@@ -35,14 +35,14 @@ constexpr int_fast32_t BadPawnFileH = 1 << 7;
 // types
 
 struct pawn_info_t {
-   uint_fast32_t lock;
-   int_fast16_t opening;
-   int_fast16_t endgame;
-   uint_fast8_t flags[ColourNb];
-   uint_fast8_t passed_bits[ColourNb];
-   uint_fast8_t single_file[ColourNb];
-   uint_fast8_t badpawns[ColourNb]; // Ryan
-   uint_fast8_t wsp[ColourNb]; // Ryan
+	uint_fast32_t lock;
+	int_fast16_t opening;
+	int_fast16_t endgame;
+	std::array<uint_fast8_t, ColourNb> flags;
+	std::array<uint_fast8_t, ColourNb> passed_bits;
+	std::array<uint_fast8_t, ColourNb> single_file;
+	std::array<uint_fast8_t, ColourNb> badpawns; // Ryan
+	std::array<uint_fast8_t, ColourNb> wsp; // Ryan
 };
 
 // variables
@@ -73,4 +73,3 @@ extern int_fast32_t  quad          (int_fast32_t y_min, int_fast32_t y_max, int_
 #endif // !defined PAWN_H
 
 // end of pawn.h
-
