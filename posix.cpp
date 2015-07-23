@@ -72,7 +72,7 @@ bool input_available() {
 			printf("info string GetConsoleMode() failed, error=%d\n",error);
 		}
 
-		if (!is_pipe) {	
+		if (!is_pipe) {
 			SetConsoleMode(stdin_h,val&~(ENABLE_MOUSE_INPUT|ENABLE_WINDOW_INPUT));
 			FlushConsoleInputBuffer(stdin_h); // no idea if we can lose data doing this
 		}
@@ -103,12 +103,12 @@ bool input_available() {
 
 #else // assume POSIX
 
-	fd_set *set;
-   
+	fd_set set[1];
+
 	FD_ZERO(set);
 	FD_SET(STDIN_FILENO,set);
 
-	struct timeval *time_val;
+	struct timeval time_val[1];
 	time_val->tv_sec = 0;
 	time_val->tv_usec = 0;
 
@@ -129,8 +129,8 @@ double now_real() {
 	return double(GetTickCount()) / 1000.0;
 #else // assume POSIX
 
-	struct timeval *tv;
-	struct timezone *tz;
+	struct timeval tv[1];
+	struct timezone tz[1];
 
 	tz->tz_minuteswest = 0;
 	tz->tz_dsttime = 0; // DST_NONE not declared in linux
@@ -151,8 +151,8 @@ double now_cpu() {
 	return double(clock()) / double(CLOCKS_PER_SEC); // OK if CLOCKS_PER_SEC is small enough
 #else // assume POSIX
 
-	struct rusage *ru;
-	
+	struct rusage ru[1];
+
 	if (getrusage(RUSAGE_SELF,ru) == -1)
 		my_fatal("now_cpu(): getrusage(): %s\n",strerror(errno));
 

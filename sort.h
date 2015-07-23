@@ -55,7 +55,7 @@ extern void history_very_bad  (int_fast32_t move, const board_t * board);
 
 extern bool history_reduction(int_fast32_t move, const board_t * board);
 extern void history_tried(int_fast32_t move, const board_t * board);
-extern void history_success(int_fast32_t move, const board_t * board); 
+extern void history_success(int_fast32_t move, const board_t * board);
 
 extern void note_moves   (list_t * list, const board_t * board, int_fast32_t height, int_fast32_t trans_killer);
 

@@ -57,7 +57,7 @@ bool move_is_pseudo(int_fast32_t move, board_t * board) {
 	// move
 	if (PIECE_IS_PAWN(piece)) {
 		if (SQUARE_IS_PROMOTE(to)) return false;
-		
+
 		const int_fast32_t inc = PAWN_MOVE_INC(me), delta = to - from;
 		ASSERT(delta_is_ok(delta));
 
@@ -68,9 +68,9 @@ bool move_is_pseudo(int_fast32_t move, board_t * board) {
 
 			if (delta == (2*inc)
 			 && PAWN_RANK(from,me) == Rank2
-			 && board->square[from+inc] == Empty) 
+			 && board->square[from+inc] == Empty)
 				return true;
-         
+
 		} else {
 			// pawn capture
 			if (delta == (inc-1) || delta == (inc+1)) return true;
@@ -92,11 +92,11 @@ bool quiet_is_pseudo(int_fast32_t move, board_t * board) {
 	ASSERT(!board_is_check(board));
 
 	// special cases
-	if (MOVE_IS_CASTLE(move)) 
+	if (MOVE_IS_CASTLE(move))
 		return move_is_pseudo_debug(move,board);
-	else if (MOVE_IS_SPECIAL(move)) 
+	else if (MOVE_IS_SPECIAL(move))
 		return false;
-   
+
 
 	ASSERT((move&~07777)==0);
 
@@ -128,12 +128,12 @@ bool quiet_is_pseudo(int_fast32_t move, board_t * board) {
 		if (delta == inc) return true;
 
 		if (delta == (2*inc)
-		 && PAWN_RANK(from,me) == Rank2 
-		 && board->square[from+inc] == Empty) 
+		 && PAWN_RANK(from,me) == Rank2
+		 && board->square[from+inc] == Empty)
          return true;
-	} else if (PIECE_ATTACK(board,piece,from,to)) 
+	} else if (PIECE_ATTACK(board,piece,from,to))
 		return true;
-   
+
 	return false;
 }
 
@@ -151,7 +151,7 @@ bool pseudo_is_legal(int_fast32_t move, board_t * board) {
 
 	// slow test for en-passant captures
 	if (MOVE_IS_EN_PASSANT(move)) {
-		undo_t *undo;
+		undo_t undo[1];
 		move_do(board,move,undo);
 		bool legal = !IS_IN_CHECK(board,me);
 		move_undo(board,move,undo);
@@ -191,7 +191,7 @@ static bool move_is_pseudo_debug(int_fast32_t move, board_t * board) {
 	ASSERT(board!=nullptr);
 	ASSERT(!board_is_check(board));
 
-	list_t *list;
+	list_t list[1];
 	gen_moves(list,board);
 	return list_contain(list,move);
 }

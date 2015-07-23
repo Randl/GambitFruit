@@ -69,7 +69,7 @@ int_fast32_t see_move(int_fast32_t move, const board_t * board) {
 	piece_value += VALUE_PIECE(piece);
 
 	// clear attacker lists
-	alists_t *alists;
+	alists_t alists[1];
 	ALIST_CLEAR(alists->alist[Black]);
 	ALIST_CLEAR(alists->alist[White]);
 
@@ -221,7 +221,7 @@ static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to,
 		if (PSEUDO_ATTACK(piece,delta)) {
 			int_fast32_t inc = DELTA_INC_ALL(delta);
 			ASSERT(inc!=IncNone);
-			
+
 			int_fast32_t sq = from;
 			do {
 				sq += inc;

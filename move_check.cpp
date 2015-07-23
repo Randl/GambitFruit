@@ -61,7 +61,7 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 	// indirect checks
 	int_fast32_t from;
 	for (const sq_t *ptr = pin; (from=*ptr) != SquareNone; ++ptr) {
-		
+
 		const int_fast32_t piece = board->square[from];
 
 		ASSERT(is_pinned(board,from,opp));
@@ -89,9 +89,9 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 			}
 
 		} else if (PIECE_IS_SLIDER(piece)) {
-			
+
 			int_fast32_t inc;
-			for (const int_fast32_t *inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; ++inc_ptr) 
+			for (const int_fast32_t *inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; ++inc_ptr)
 				for (int_fast32_t to = from+inc; board->square[to] == Empty; to += inc) {
 					ASSERT(DELTA_INC_LINE(to-king)!=DELTA_INC_LINE(from-king));
 					LIST_ADD(list,MOVE_MAKE(from,to));
@@ -101,8 +101,8 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 			for (const int_fast32_t *inc_ptr = PIECE_INC(piece); (inc=*inc_ptr) != IncNone; ++inc_ptr) {
 				int_fast32_t to = from + inc;
 				if (board->square[to] == Empty)
-					if (DELTA_INC_LINE(to-king) != DELTA_INC_LINE(from-king)) 
-						LIST_ADD(list,MOVE_MAKE(from,to));          
+					if (DELTA_INC_LINE(to-king) != DELTA_INC_LINE(from-king))
+						LIST_ADD(list,MOVE_MAKE(from,to));
 			}
 		}
 	}
@@ -113,24 +113,24 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 		int_fast32_t sq;
 		const int_fast32_t piece = board->square[from_sq];
 		const int_fast32_t *inc_ptr = PIECE_INC(piece);
-		
-		for (const sq_t *ptr_2 = pin; (sq=*ptr_2) != SquareNone; ++ptr_2) 
+
+		for (const sq_t *ptr_2 = pin; (sq=*ptr_2) != SquareNone; ++ptr_2)
 			if (sq == from_sq) goto next_piece; //refactor?
-      
+
 		ASSERT(!is_pinned(board,from_sq,opp));
 
 		if (PIECE_IS_SLIDER(piece)) {
 			int_fast32_t inc;
 			for (; (inc=*inc_ptr) != IncNone; ++inc_ptr)
-				for (int_fast32_t to = from_sq+inc; board->square[to] == Empty; to += inc) 
-					if (PIECE_ATTACK(board,piece,to,king)) 
+				for (int_fast32_t to = from_sq+inc; board->square[to] == Empty; to += inc)
+					if (PIECE_ATTACK(board,piece,to,king))
 						LIST_ADD(list,MOVE_MAKE(from_sq,to));
 		} else {
 			int_fast32_t inc;
 			for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
 				const int_fast32_t to = from_sq + inc;
-				if (board->square[to] == Empty) 
-					if (PSEUDO_ATTACK(piece,king-to)) 
+				if (board->square[to] == Empty)
+					if (PSEUDO_ATTACK(piece,king-to))
 						LIST_ADD(list,MOVE_MAKE(from_sq,to));
 			}
 		}
@@ -142,7 +142,7 @@ next_piece: ;
 	const int_fast32_t inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
 	int_fast32_t to = king - (inc-1);
 	ASSERT(PSEUDO_ATTACK(pawn,king-to));
-	
+
 	int_fast32_t from_sq2 = to - inc;
 	if (board->square[from_sq2] == pawn) {
  		if (board->square[to] == Empty) {
@@ -195,14 +195,14 @@ static void add_castle_checks(list_t * list, board_t * board) {
 		if ((board->flags & FlagsWhiteKingCastle) != 0
 		  && board->square[F1] == Empty
 		  && board->square[G1] == Empty
-		  && !is_attacked(board,F1,Black)) 
+		  && !is_attacked(board,F1,Black))
 			add_check(list,MOVE_MAKE_FLAGS(E1,G1,MoveCastle),board);
 
 		if ((board->flags & FlagsWhiteQueenCastle) != 0
 		  && board->square[D1] == Empty
 		  && board->square[C1] == Empty
 		  && board->square[B1] == Empty
-		  && !is_attacked(board,D1,Black)) 
+		  && !is_attacked(board,D1,Black))
          	add_check(list,MOVE_MAKE_FLAGS(E1,C1,MoveCastle),board);
 
 	} else { // black
@@ -210,16 +210,16 @@ static void add_castle_checks(list_t * list, board_t * board) {
 		if ((board->flags & FlagsBlackKingCastle) != 0
 		  && board->square[F8] == Empty
 		  && board->square[G8] == Empty
-		  && !is_attacked(board,F8,White)) 
+		  && !is_attacked(board,F8,White))
 			add_check(list,MOVE_MAKE_FLAGS(E8,G8,MoveCastle),board);
 
 		if ((board->flags & FlagsBlackQueenCastle) != 0
 		  && board->square[D8] == Empty
 		  && board->square[C8] == Empty
 		  && board->square[B8] == Empty
-		  && !is_attacked(board,D8,White)) 
+		  && !is_attacked(board,D8,White))
 			add_check(list,MOVE_MAKE_FLAGS(E8,C8,MoveCastle),board);
-      
+
    }
 }
 
@@ -231,7 +231,7 @@ static void add_check(list_t * list, int_fast32_t move, board_t * board) {
 	ASSERT(move_is_ok(move));
 	ASSERT(board!=nullptr);
 
-	undo_t *undo;
+	undo_t undo[1];
 	move_do(board,move,undo);
 	if (IS_IN_CHECK(board,board->turn)) LIST_ADD(list,move);
 		move_undo(board,move,undo);
@@ -246,7 +246,7 @@ bool move_is_check(int_fast32_t move, board_t * board) {
 
 	// slow test for complex moves
 	if (MOVE_IS_SPECIAL(move)) {
-		undo_t *undo;
+		undo_t undo[1];
 		move_do(board,move,undo);
 		bool check = IS_IN_CHECK(board,board->turn);
 		move_undo(board,move,undo);
@@ -257,7 +257,7 @@ bool move_is_check(int_fast32_t move, board_t * board) {
 	// init
 	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board,opp);
 	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
-   
+
 	ASSERT(COLOUR_IS(piece,me));
 
 	// direct check
@@ -265,7 +265,7 @@ bool move_is_check(int_fast32_t move, board_t * board) {
 
 	// indirect check
 	if (is_pinned(board,from,opp)
-	 && DELTA_INC_LINE(king-to) != DELTA_INC_LINE(king-from)) 
+	 && DELTA_INC_LINE(king-to) != DELTA_INC_LINE(king-from))
 		return true;
 
    return false;
@@ -274,7 +274,7 @@ bool move_is_check(int_fast32_t move, board_t * board) {
 // find_pins()
 
 static void find_pins(int_fast32_t list[], const board_t * board) {
-	
+
 	ASSERT(list!=nullptr);
 	ASSERT(board!=nullptr);
 
@@ -282,7 +282,7 @@ static void find_pins(int_fast32_t list[], const board_t * board) {
 	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board,opp);
 	int_fast32_t from;
 	for (const sq_t *ptr = &board->piece[me][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
-		
+
 		const int_fast32_t piece = board->square[from], delta = king - from;
 		ASSERT(delta_is_ok(delta));
 

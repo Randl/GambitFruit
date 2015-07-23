@@ -83,7 +83,7 @@ bool trans_is_ok(const trans_t * trans) {
 	if (trans->mask == 0 || trans->mask >= trans->size) return false;
 	if (trans->date >= DateSize) return false;
 
-	for (int_fast32_t date = 0; date < DateSize; ++date) 
+	for (int_fast32_t date = 0; date < DateSize; ++date)
 		if (trans->age[date] != trans_age(trans,date)) return false;
 
    return true;
@@ -158,8 +158,8 @@ void trans_clear(trans_t * trans) {
 	ASSERT(trans!=nullptr);
 
 	trans_set_date(trans,0);
-	
-	entry_t *clear_entry;
+
+	entry_t clear_entry[1];
 	clear_entry->lock = 0;
 	clear_entry->move = MoveNone;
 	clear_entry->depth = DepthNone;
@@ -175,7 +175,7 @@ void trans_clear(trans_t * trans) {
 	entry_t *entry;
 	entry = trans->table;
 
-	for (uint_fast32_t index = 0; index < trans->size; ++index) 
+	for (uint_fast32_t index = 0; index < trans->size; ++index)
 		*entry++ = *clear_entry;
 }
 
@@ -247,11 +247,11 @@ void trans_store(trans_t * trans, uint_fast64_t key, int_fast32_t move, int_fast
 			trans->write_hit++;
 			if (entry->date != trans->date) trans->used++;
 			entry->date = trans->date;
-			
-			if (trans_endgame || depth > entry->depth) entry->depth = depth; 
+
+			if (trans_endgame || depth > entry->depth) entry->depth = depth;
 			/* if (depth > entry->depth)  entry->depth = depth; // for replacement scheme */
 			// if (move != MoveNone /* && depth >= entry->move_depth */) {
-		 
+
 			if (move != MoveNone && (trans_endgame || depth >= entry->move_depth)) {
 				entry->move_depth = depth;
 				entry->move = move;
@@ -292,9 +292,9 @@ void trans_store(trans_t * trans, uint_fast64_t key, int_fast32_t move, int_fast
 
 	if (entry->date == trans->date)
 		trans->write_collision++;
-	else 
+	else
 		trans->used++;
-   
+
 	// store
 
 	ASSERT(entry!=nullptr);
@@ -331,13 +331,13 @@ bool trans_retrieve(trans_t * trans, uint_fast64_t key, int_fast32_t * move, int
 	// probe
 	entry_t *entry = trans_entry(trans,key);
 
-	for (int_fast32_t i = 0; i < ClusterSize; ++i, ++entry) 
+	for (int_fast32_t i = 0; i < ClusterSize; ++i, ++entry)
 		if (entry->lock == KEY_LOCK(key)) {
 			// found
 			trans->read_hit++;
 			if (entry->date != trans->date) entry->date = trans->date;
 			*move = entry->move;
-	
+
 			*min_depth = entry->min_depth;
 			*max_depth = entry->max_depth;
 			*min_value = entry->min_value;
@@ -355,7 +355,7 @@ bool trans_retrieve(trans_t * trans, uint_fast64_t key, int_fast32_t * move, int
 void trans_stats(const trans_t * trans) {
 
 	ASSERT(trans_is_ok(trans));
-	
+
 	double full = double(trans->used) / double(trans->size);
 	// double hit = double(trans->read_hit) / double(trans->read_nb);
 	// double collision = double(trans->write_collision) / double(trans->write_nb);
@@ -369,9 +369,9 @@ static entry_t * trans_entry(trans_t * trans, uint_fast64_t key) {
 
 	ASSERT(trans_is_ok(trans));
 	uint_fast32_t index;
-	if (UseModulo) 
+	if (UseModulo)
 		index = KEY_INDEX(key) % (trans->mask + 1);
-	else 
+	else
 		index = KEY_INDEX(key) & trans->mask;
 
 	ASSERT(index<=trans->mask);

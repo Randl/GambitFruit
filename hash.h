@@ -25,7 +25,7 @@ constexpr int_fast32_t RandomTurn      = 780; // 1
 
 // variables
 
-extern std::array<uint_fast64_t, 16> Castle64;	
+extern std::array<uint_fast64_t, 16> Castle64;
 
 // functions
 

@@ -48,7 +48,7 @@ constexpr int_fast32_t StackSize = 4096;
 struct board_t {
 
 	int_fast32_t piece_material[ColourNb]; // Thomas
-     	
+
 	int_fast32_t square[SquareNb];
 	int_fast32_t pos[SquareNb];
 

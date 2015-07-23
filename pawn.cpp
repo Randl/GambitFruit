@@ -57,7 +57,7 @@ static constexpr std::array<int_fast32_t, 8> IsolatedOpeningOpen =	{18,19,20,22,
 static constexpr std::array<int_fast32_t, 8> IsolatedEndgame =		{18,19,20,22,22,20,19,18};
 
 static constexpr std::array<int_fast32_t, 8> BackwardOpening =		{ 6, 7, 8,10,10, 8, 7, 6};
-static constexpr std::array<int_fast32_t, 8> BackwardOpeningOpen =	{12,14,16,18,18,16,14,12}; 
+static constexpr std::array<int_fast32_t, 8> BackwardOpeningOpen =	{12,14,16,18,18,16,14,12};
 static constexpr std::array<int_fast32_t, 8> BackwardEndgame =		{ 8, 9,10,12,12,10, 9, 8};
 
 static constexpr int_fast32_t CandidateOpeningMin = 5;
@@ -89,7 +89,7 @@ std::array<int_fast32_t, 0x100> BitLast;
 std::array<int_fast32_t, 0x100> BitCount;
 std::array<int_fast32_t, 0x100> BitRev;
 
-static pawn_t *Pawn;
+static pawn_t Pawn[1];
 
 static std::array<int_fast32_t, RankNb> BitRank1;
 static std::array<int_fast32_t, RankNb> BitRank2;
@@ -192,16 +192,16 @@ void pawn_alloc() {
 	Pawn->table = (entry_t *) my_malloc(Pawn->size*sizeof(entry_t));
 
 	pawn_clear();
-   
+
 }
 
 // pawn_clear()
 
 void pawn_clear() {
 
-	if (Pawn->table != nullptr) 
+	if (Pawn->table != nullptr)
 		memset(Pawn->table,0,Pawn->size*sizeof(entry_t));
-   
+
 
 	Pawn->used = 0;
 	Pawn->read_nb = 0;
@@ -229,7 +229,7 @@ void pawn_get_info(pawn_info_t * info, const board_t * board) {
 		*info = *entry;
 		return;
 	}
-   
+
 
 	// calculation
 	pawn_comp_info(info,board);
@@ -239,11 +239,11 @@ void pawn_get_info(pawn_info_t * info, const board_t * board) {
 
 	if (entry->lock == 0) // HACK: assume free entry
 		Pawn->used++;
-	else 
+	else
 		Pawn->write_collision++;
 
 	*entry = *info;
-	entry->lock = KEY_LOCK(key); 
+	entry->lock = KEY_LOCK(key);
 }
 
 // pawn_comp_info()
@@ -261,9 +261,9 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 		std::array<int_fast32_t, FileNb> pawn_file;
 		const int_fast32_t me = colour;
 
-		for (int_fast32_t file = 0; file < FileNb; ++file) 
+		for (int_fast32_t file = 0; file < FileNb; ++file)
 			pawn_file[file] = 0;
-      
+
 		int_fast32_t sq;
 		for (const sq_t *ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
 
@@ -275,18 +275,18 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			pawn_file[file] |= BIT(rank);
 		}
 
-		for (int_fast32_t file = 0; file < FileNb; ++file) 
+		for (int_fast32_t file = 0; file < FileNb; ++file)
 			if (board->pawn_file[colour][file] != pawn_file[file]) my_fatal("board->pawn_file[][]\n");
-      
+
 	}
 #endif
 
    // init
-	
+
    std::array<int_fast32_t, ColourNb> file_bits;
    std::array<int_fast16_t, ColourNb> opening, endgame;
    std::array<uint_fast8_t, ColourNb> flags, passed_bits, single_file, wsp, badpawns;
-   
+
    opening[0] = opening[1] = endgame[0] = endgame[1] = 0;
 
    flags[0] = flags[1] = wsp[0] = wsp[1] = badpawns[0] = badpawns[1] = 0;
@@ -317,10 +317,10 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			bool backward = false, candidate = false, doubled = false, isolated = false, open = false, passed = false;
 
 			int_fast32_t t1 = board->pawn_file[me][file-1] | board->pawn_file[me][file+1], t2 = board->pawn_file[me][file] | BitRev[board->pawn_file[opp][file]];
-			
+
 			// square colour
 			if (SQUARE_COLOUR(sq) == White) ++wsp[me];
-			
+
 			// pawn duo
 			if (BIT_COUNT(BitRev[board->pawn_file[me][file+1]]&BitEQ[rank])) {
 				opening[me] += 6;
@@ -329,9 +329,9 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
          // doubled
 
-		if ((board->pawn_file[me][file] & BitLT[rank]) != 0) 
+		if ((board->pawn_file[me][file] & BitLT[rank]) != 0)
 			doubled = true;
-         
+
 
 		// isolated and backward
 
@@ -387,7 +387,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
 				n -= BIT_COUNT(BitRev[board->pawn_file[opp][file-1]]&BitGT[rank]);
 				n -= BIT_COUNT(BitRev[board->pawn_file[opp][file+1]]&BitGT[rank]);
-	
+
 				if (n >= 0) {
 
 					// safe?
@@ -416,7 +416,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			if (open) {
 				opening[me] -= IsolatedOpeningOpen[file-FileA];
 				endgame[me] -= IsolatedEndgame[file-FileA];
-				
+
 				switch (file) {
 					case FileA: badpawns[me] |= BadPawnFileA; break;
 					case FileB: badpawns[me] |= BadPawnFileB; break;
@@ -437,7 +437,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			if (open) {
 				opening[me] -= BackwardOpeningOpen[file-FileA];
 				endgame[me] -= BackwardEndgame[file-FileA];
-			
+
 				switch (file) {
 				case FileA: badpawns[me] |= BadPawnFileA; break;
 				case FileB: badpawns[me] |= BadPawnFileB; break;
@@ -503,7 +503,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			single_file[1] = SQUARE_MAKE(file,rank);
 		}
 	}
-	
+
 	info->flags[0] = flags[0];
 	info->flags[1] = flags[1];
 	info->passed_bits[0] = passed_bits[0];

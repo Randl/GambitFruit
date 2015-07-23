@@ -24,14 +24,14 @@ static uint_fast64_t hash_counter_key (int_fast32_t piece_12, int_fast32_t count
 // hash_init()
 
 void hash_init() {
-	for (int_fast32_t i = 0; i < 16; ++i) 
+	for (int_fast32_t i = 0; i < 16; ++i)
 		Castle64[i] = hash_castle_key(i);
 }
 
 // hash_key()
 
 uint_fast64_t hash_key(const board_t * board) {
-	
+
 	ASSERT(board!=nullptr);
 
 	// init
@@ -120,9 +120,9 @@ uint_fast64_t hash_castle_key(int_fast32_t flags) {
 	ASSERT((flags&~0xF)==0);
 	uint_fast64_t key = 0;
 
-	for (int_fast32_t i = 0; i < 4; ++i) 
+	for (int_fast32_t i = 0; i < 4; ++i)
 		if ((flags & (1<<i)) != 0) key ^= RANDOM_64(RandomCastle+i);
-   
+
 	return key;
 }
 

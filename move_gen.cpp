@@ -33,7 +33,7 @@ void gen_legal_moves(list_t * list, board_t * board) {
 	ASSERT(list!=nullptr);
 	ASSERT(board!=nullptr);
 
-	attack_t *attack;
+	attack_t attack[1];
 	attack_set(attack,board);
 
 	if (ATTACK_IN_CHECK(attack))
@@ -106,7 +106,7 @@ static void add_moves(list_t * list, const board_t * board) {
 	ASSERT(board!=nullptr);
 
 	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
-	
+
 	// piece moves
 	int_fast32_t from;
 	for (const sq_t* ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ++ptr) {
@@ -126,7 +126,7 @@ static void add_moves(list_t * list, const board_t * board) {
 				}
 			}
 		} else {
-			
+
 			int_fast32_t inc;
 			for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
 				const int_fast32_t to = from + inc, capture = board->square[to];
@@ -139,17 +139,17 @@ static void add_moves(list_t * list, const board_t * board) {
 
 	// pawn moves
 	const int_fast32_t inc = PAWN_MOVE_INC(me);
-	
+
 	for (const sq_t *ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
-		
+
 		int_fast32_t to = from + (inc-1);
-		if (FLAG_IS(board->square[to],opp_flag)) 
+		if (FLAG_IS(board->square[to],opp_flag))
 			add_pawn_move(list,from,to);
-      
+
 		to = from + (inc+1);
-		if (FLAG_IS(board->square[to],opp_flag)) 
+		if (FLAG_IS(board->square[to],opp_flag))
 			add_pawn_move(list,from,to);
-      
+
 		to = from + inc;
 		if (board->square[to] == Empty) {
 			add_pawn_move(list,from,to);
@@ -191,42 +191,42 @@ static void add_captures(list_t * list, const board_t * board) {
 
 			to = from - 14;
 			if (FLAG_IS(board->square[to],opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-			
+
 			to = from + 14;
 			if (FLAG_IS(board->square[to],opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-			
+
 			to = from + 18;
 			if (FLAG_IS(board->square[to],opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-			
+
 			to = from + 31;
 			if (FLAG_IS(board->square[to],opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-			
+
 			to = from + 33;
 			if (FLAG_IS(board->square[to],opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-			
+
 			break;
 
 		case Bishop64:
 
 			for (to = from-17; (capture=board->square[to]) == Empty; to -= 17);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-	
+
 			for (to = from-15; (capture=board->square[to]) == Empty; to -= 15);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
 
 			for (to = from+15; (capture=board->square[to]) == Empty; to += 15);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-	
+
 			for (to = from+17; (capture=board->square[to]) == Empty; to += 17);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-	
+
 			break;
 
 		case Rook64:
 
 			for (to = from-16; (capture=board->square[to]) == Empty; to -= 16);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-       
+
 			for (to = from-1; (capture=board->square[to]) == Empty; to -= 1);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
 
@@ -235,7 +235,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
 			for (to = from+16; (capture=board->square[to]) == Empty; to += 16);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-         
+
 			break;
 
 		case Queen64:
@@ -248,7 +248,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
 			for (to = from-15; (capture=board->square[to]) == Empty; to -= 15);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-         
+
 			for (to = from-1; (capture=board->square[to]) == Empty; to -= 1);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
 
@@ -263,7 +263,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
 			for (to = from+17; (capture=board->square[to]) == Empty; to += 17);
 			if (FLAG_IS(capture,opp_flag)) LIST_ADD(list,MOVE_MAKE(from,to));
-         
+
 			break;
 
 		case King64:
@@ -304,10 +304,10 @@ static void add_captures(list_t * list, const board_t * board) {
 	// pawn captures
 
 	if (COLOUR_IS_WHITE(me)) {
-		
+
 		int_fast32_t from, to;
 		for (const sq_t *ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr) {
-			
+
 			to = from + 15;
 			if (FLAG_IS(board->square[to],opp_flag)) add_pawn_move(list,from,to);
 
@@ -317,7 +317,7 @@ static void add_captures(list_t * list, const board_t * board) {
 			// promote
 			if (SQUARE_RANK(from) == Rank7) {
 				to = from + 16;
-				if (board->square[to] == Empty) 
+				if (board->square[to] == Empty)
 					add_promote(list,MOVE_MAKE(from,to));
 			}
 		}
@@ -336,7 +336,7 @@ static void add_captures(list_t * list, const board_t * board) {
 
 			if (SQUARE_RANK(from) == Rank2) {
 				to = from - 16;
-				if (board->square[to] == Empty) 
+				if (board->square[to] == Empty)
 					add_promote(list,MOVE_MAKE(from,to));
 			}
 		}
@@ -357,7 +357,7 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 	for (const sq_t *ptr = &board->piece[me][0]; (from=*ptr) != SquareNone; ++ptr) {
 		const int_fast32_t piece = board->square[from];
 		int_fast32_t to;
-		
+
 		switch (PIECE_TYPE(piece)) {
 
 		case Knight64:
@@ -390,69 +390,69 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 
 		case Bishop64:
 
-			for (to = from-17; board->square[to] == Empty; to -= 17) 
+			for (to = from-17; board->square[to] == Empty; to -= 17)
 				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from-15; board->square[to] == Empty; to -= 15) 
-				LIST_ADD(list,MOVE_MAKE(from,to));       
 
-			for (to = from+15; board->square[to] == Empty; to += 15) 
-				LIST_ADD(list,MOVE_MAKE(from,to));      
+			for (to = from-15; board->square[to] == Empty; to -= 15)
+				LIST_ADD(list,MOVE_MAKE(from,to));
 
-			for (to = from+17; board->square[to] == Empty; to += 17) 
+			for (to = from+15; board->square[to] == Empty; to += 15)
+				LIST_ADD(list,MOVE_MAKE(from,to));
+
+			for (to = from+17; board->square[to] == Empty; to += 17)
 				LIST_ADD(list,MOVE_MAKE(from,to));
 
 			break;
 
 		case Rook64:
 
-			for (to = from-16; board->square[to] == Empty; to -= 16) 
-				LIST_ADD(list,MOVE_MAKE(from,to));         
+			for (to = from-16; board->square[to] == Empty; to -= 16)
+				LIST_ADD(list,MOVE_MAKE(from,to));
 
-			for (to = from-1; board->square[to] == Empty; to -= 1) 
+			for (to = from-1; board->square[to] == Empty; to -= 1)
 				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from+1; board->square[to] == Empty; to += 1) 
+
+			for (to = from+1; board->square[to] == Empty; to += 1)
 				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from+16; board->square[to] == Empty; to += 16) 
-				LIST_ADD(list,MOVE_MAKE(from,to));        
+
+			for (to = from+16; board->square[to] == Empty; to += 16)
+				LIST_ADD(list,MOVE_MAKE(from,to));
 
 			break;
 
 		case Queen64:
 
-    		for (to = from-17; board->square[to] == Empty; to -= 17) 
+    		for (to = from-17; board->square[to] == Empty; to -= 17)
     			LIST_ADD(list,MOVE_MAKE(from,to));
 
-			for (to = from-16; board->square[to] == Empty; to -= 16) 
+			for (to = from-16; board->square[to] == Empty; to -= 16)
 				LIST_ADD(list,MOVE_MAKE(from,to));
 
-			for (to = from-15; board->square[to] == Empty; to -= 15) 
-				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from-1; board->square[to] == Empty; to -= 1) 
-				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from+1; board->square[to] == Empty; to += 1) 
-				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from+15; board->square[to] == Empty; to += 15) 
+			for (to = from-15; board->square[to] == Empty; to -= 15)
 				LIST_ADD(list,MOVE_MAKE(from,to));
 
-			for (to = from+16; board->square[to] == Empty; to += 16) 
+			for (to = from-1; board->square[to] == Empty; to -= 1)
 				LIST_ADD(list,MOVE_MAKE(from,to));
-         
-			for (to = from+17; board->square[to] == Empty; to += 17) 
+
+			for (to = from+1; board->square[to] == Empty; to += 1)
 				LIST_ADD(list,MOVE_MAKE(from,to));
-         
+
+			for (to = from+15; board->square[to] == Empty; to += 15)
+				LIST_ADD(list,MOVE_MAKE(from,to));
+
+			for (to = from+16; board->square[to] == Empty; to += 16)
+				LIST_ADD(list,MOVE_MAKE(from,to));
+
+			for (to = from+17; board->square[to] == Empty; to += 17)
+				LIST_ADD(list,MOVE_MAKE(from,to));
+
 			break;
 
 		case King64:
 
 			to = from - 17;
 			if (board->square[to] == Empty) LIST_ADD(list,MOVE_MAKE(from,to));
-			
+
 			to = from - 16;
 			if (board->square[to] == Empty) LIST_ADD(list,MOVE_MAKE(from,to));
 
@@ -537,12 +537,12 @@ static void add_promotes(list_t * list, const board_t * board) {
 	ASSERT(board!=nullptr);
 
 	const int_fast32_t me = board->turn, inc = PAWN_MOVE_INC(me);
-	
+
 	int_fast32_t from;
 	for (const sq_t *ptr = &board->pawn[me][0]; (from=*ptr) != SquareNone; ++ptr)
 		if (PAWN_RANK(from,me) == Rank7) {
 			const int_fast32_t to = from + inc;
-			if (board->square[to] == Empty) 
+			if (board->square[to] == Empty)
 				add_promote(list,MOVE_MAKE(from,to));
 		}
 }
@@ -589,7 +589,7 @@ static void add_castle_moves(list_t * list, const board_t * board) {
 		  && board->square[G1] == Empty
 		  && !is_attacked(board,F1,Black))
 			LIST_ADD(list,MOVE_MAKE_FLAGS(E1,G1,MoveCastle));
-      
+
 		if ((board->flags & FlagsWhiteQueenCastle) != 0
 		  && board->square[D1] == Empty
 		  && board->square[C1] == Empty
@@ -602,9 +602,9 @@ static void add_castle_moves(list_t * list, const board_t * board) {
 		if ((board->flags & FlagsBlackKingCastle) != 0
 		  && board->square[F8] == Empty
 		  && board->square[G8] == Empty
-		  && !is_attacked(board,F8,White)) 
+		  && !is_attacked(board,F8,White))
 			LIST_ADD(list,MOVE_MAKE_FLAGS(E8,G8,MoveCastle));
-     
+
 		if ((board->flags & FlagsBlackQueenCastle) != 0
 		  && board->square[D8] == Empty
 		  && board->square[C8] == Empty
@@ -629,7 +629,7 @@ void add_pawn_move(list_t * list, int_fast32_t from, int_fast32_t to) {
 		LIST_ADD(list,move|MovePromoteKnight);
 		LIST_ADD(list,move|MovePromoteRook);
 		LIST_ADD(list,move|MovePromoteBishop);
-	} else 
+	} else
 		LIST_ADD(list,move);
 }
 

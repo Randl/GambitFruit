@@ -98,7 +98,7 @@ static void init() {
 		// late initialisation
 		Init = true;
 
-		if (option_get_bool("OwnBook")) 
+		if (option_get_bool("OwnBook"))
 			book_open(option_get_string("BookFile"));
 
 		//SearchInput->multipv = option_get_int("MultiPV");
@@ -144,7 +144,7 @@ static void loop_step() {
 			ASSERT(false);
 		}
 	} else if (string_equal(string,"isready")) {
-		if (!Searching && !Delay) 
+		if (!Searching && !Delay)
 			init();
 		send("readyok"); // no need to wait when searching (dixit SMK)
 	} else if (string_equal(string,"ponderhit")) {
@@ -207,7 +207,7 @@ static void loop_step() {
 
 static void parse_go(char string[]) {
 
-   
+
    double time, inc;
    double time_max, alloc;
 
@@ -266,7 +266,7 @@ static void parse_go(char string[]) {
 
 			movestogo = atoi(ptr);
 			ASSERT(movestogo>=0);
-	
+
 		} else if (string_equal(ptr,"movetime")) {
 
 			ptr = strtok(nullptr," ");
@@ -335,7 +335,7 @@ static void parse_go(char string[]) {
 		time = wtime;
 		inc = winc;
 	} else {
-		time = btime;	
+		time = btime;
 		inc = binc;
 	}
 
@@ -402,7 +402,7 @@ static void parse_go(char string[]) {
 // parse_position()
 
 static void parse_position(char string[]) {
-	
+
 	// init
 	const char *fen = strstr(string,"fen ");
 	char *moves = strstr(string,"moves ");
@@ -439,7 +439,7 @@ static void parse_position(char string[]) {
 				move_string[5] = '\0';
 			}
 
-			undo_t *undo;
+			undo_t undo[1];
 			int_fast32_t move = move_from_string(move_string,SearchInput->board);
 			move_do(SearchInput->board,move,undo);
 
@@ -507,7 +507,7 @@ static void send_best_move() {
 		move_to_string(pv[1],ponder_string,256);
 		send("bestmove %s ponder %s",move_string,ponder_string);
 	} else {
-		send("bestmove %s",move_string); 
+		send("bestmove %s",move_string);
 	}
 }
 
@@ -525,12 +525,12 @@ void get(char string[], int_fast32_t size) {
 // send()
 
 void send(const char format[], ...) {
-	
+
 	ASSERT(format!=nullptr);
-	
+
 	va_list arg_list;
 	char string[4096];
-	
+
 	va_start(arg_list,format);
 	vsprintf(string,format,arg_list);
 	va_end(arg_list);
@@ -570,17 +570,17 @@ static void load_egbb_library() {
 
 	const char* main_path = option_get("Bitbase Path");
 	uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
-		
+
     char path[256];
     strcpy(path, main_path);
     strcat(path, EGBB_NAME);
-    
+
     if (hmod)
         FreeLibrary(hmod);
     if (hmod = LoadLibrary(path)) {
         load_egbb = (PLOAD_EGBB) GetProcAddress(hmod,"load_egbb_xmen");
         probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod,"probe_egbb_xmen");
-    
+
         load_egbb(main_path, egbb_cache_size, egbb_load_type);
         egbb_is_loaded = 1;
         printf("Bitbase loaded\n");

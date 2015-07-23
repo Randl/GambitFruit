@@ -99,8 +99,8 @@ bool my_file_read_line(FILE * file, char string[], int_fast32_t size) {
 	ASSERT(string!=nullptr);
 	ASSERT(size>0);
 
-	if (fgets(string,size,file) == nullptr) 
-		if (feof(file)) 
+	if (fgets(string,size,file) == nullptr)
+		if (feof(file))
 			return false;
 		else  // error
 			my_fatal("my_file_read_line(): fgets(): %s\n",strerror(errno));

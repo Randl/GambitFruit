@@ -172,9 +172,9 @@ void pst_init() {
 	alt_bishop_table =  option_get_bool("Alt Bishop SQT");
 
 	// init
-	for (int_fast32_t piece = 0; piece < 12; ++piece) 
-      for (int_fast32_t sq = 0; sq < 64; ++sq) 
-         for (int_fast32_t stage = 0; stage < StageNb; ++stage) 
+	for (int_fast32_t piece = 0; piece < 12; ++piece)
+      for (int_fast32_t sq = 0; sq < 64; ++sq)
+         for (int_fast32_t stage = 0; stage < StageNb; ++stage)
             P(piece,sq,stage) = 0;
 
 	// pawns
@@ -184,12 +184,12 @@ void pst_init() {
 		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_pawn_opening[sq];
 			P(piece,sq,Endgame) += alt_pawn_endgame[sq];
-		}		
+		}
 	} else {
 		// file
-		for (int_fast32_t sq = 0; sq < 64; ++sq) 
+		for (int_fast32_t sq = 0; sq < 64; ++sq)
 			P(piece,sq,Opening) += PawnFile[square_file(sq)] * PawnFileOpening;
-		
+
 		// centre control
 
 		P(piece,D3,Opening) += 10;
@@ -215,7 +215,7 @@ void pst_init() {
 		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_knight[sq];
 			P(piece,sq,Endgame) += alt_knight[sq];
-		}		
+		}
 	} else {
 		// centre
 		for (int_fast32_t sq = 0; sq < 64; ++sq) {
@@ -226,13 +226,13 @@ void pst_init() {
 		}
 
 		// rank
-		for (int_fast32_t sq = 0; sq < 64; ++sq) 
+		for (int_fast32_t sq = 0; sq < 64; ++sq)
 			P(piece,sq,Opening) += KnightRank[square_rank(sq)] * KnightRankOpening;
-		
+
 		// back rank
 
 		for (int_fast32_t sq = A1; sq <= H1; ++sq) // HACK: only first rank
-			P(piece,sq,Opening) -= KnightBackRankOpening;		
+			P(piece,sq,Opening) -= KnightBackRankOpening;
 	}
 
 	// "trapped"
@@ -253,9 +253,9 @@ void pst_init() {
 		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += alt_bishop[sq];
 			P(piece,sq,Endgame) += alt_bishop[sq];
-		}				
+		}
 	} else {
-		
+
 		// centre
 		for (int_fast32_t sq = 0; sq < 64; ++sq) {
 			P(piece,sq,Opening) += BishopLine[square_file(sq)] * BishopCentreOpening;
@@ -281,7 +281,7 @@ void pst_init() {
 			P(piece,sq,Endgame) = (P(piece,sq,Endgame) * PieceActivityWeight) / 256;
 		}
 	}
-   
+
 	// rooks
 	piece = WhiteRook12;
 
@@ -326,12 +326,12 @@ void pst_init() {
 	}
 
 	// file
-	for (int_fast32_t sq = 0; sq < 64; ++sq) 
+	for (int_fast32_t sq = 0; sq < 64; ++sq)
 		P(piece,sq,Opening) += KingFile[square_file(sq)] * KingFileOpening;
-   
+
 
 	// rank
-	for (int_fast32_t sq = 0; sq < 64; ++sq) 
+	for (int_fast32_t sq = 0; sq < 64; ++sq)
 		P(piece,sq,Opening) += KingRank[square_rank(sq)] * KingRankOpening;
 
 	// weight
@@ -342,9 +342,9 @@ void pst_init() {
 
 	// symmetry copy for black
 	for (int_fast32_t piece = 0; piece < 12; piece += 2) // HACK
-		for (int_fast32_t sq = 0; sq < 64; ++sq) 
-			for (int_fast32_t stage = 0; stage < StageNb; ++stage) 
-				P(piece+1,sq,stage) = -P(piece,square_opp(sq),stage); // HACK       
+		for (int_fast32_t sq = 0; sq < 64; ++sq)
+			for (int_fast32_t stage = 0; stage < StageNb; ++stage)
+				P(piece+1,sq,stage) = -P(piece,square_opp(sq),stage); // HACK
 }
 
 // square_make()

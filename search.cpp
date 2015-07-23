@@ -89,20 +89,20 @@ void search_clear() {
 	SearchInput->time_is_limited = false;
 	SearchInput->time_limit_1 = 0.0;
 	SearchInput->time_limit_2 = 0.0;
-	
+
 	// SearchInfo
 	SearchInfo->can_stop = false;
 	SearchInfo->stop = false;
 	SearchInfo->check_nb = 10000; // was 100000
 	SearchInfo->check_inc = 10000; // was 100000
 	SearchInfo->last_time = 0.0;
-	
+
 	// SearchBest
 	SearchBest[SearchCurrent->multipv].move = MoveNone;
-	SearchBest[SearchCurrent->multipv].value = 0; 
+	SearchBest[SearchCurrent->multipv].value = 0;
 	SearchBest[SearchCurrent->multipv].flags = SearchUnknown;
 	PV_CLEAR(SearchBest[SearchCurrent->multipv].pv);
-	
+
 	// SearchRoot
 	SearchRoot->depth = 0;
 	SearchRoot->move = MoveNone;
@@ -114,7 +114,7 @@ void search_clear() {
 	SearchRoot->change = false;
 	SearchRoot->easy = false;
 	SearchRoot->flag = false;
-	
+
 	// SearchCurrent
 	SearchCurrent->max_depth = 0;
 	SearchCurrent->node_nb = 0;
@@ -125,20 +125,20 @@ void search_clear() {
 
 // search()
 
-void search() {	
-	for (int_fast32_t i = 0; i < MultiPVMax; ++i){
+void search() {
+	for (int_fast32_t i = 0; i < MultiPVMax; ++i)  {
 		save_multipv[SearchCurrent->multipv].mate = 0;
 		save_multipv[SearchCurrent->multipv].depth = 0;
 		save_multipv[SearchCurrent->multipv].max_depth = 0;
 		save_multipv[SearchCurrent->multipv].value = 0;
 		save_multipv[SearchCurrent->multipv].time = 0;
 		save_multipv[SearchCurrent->multipv].node_nb = 0;
-		strcpy(save_multipv[SearchCurrent->multipv].pv_string,""); 
+		strcpy(save_multipv[SearchCurrent->multipv].pv_string,"");
 	}
-  
+
 	SearchInput->multipv = option_get_int("MultiPV")-1;
 	SearchCurrent->multipv = 0;
-   
+
 	ASSERT(board_is_ok(SearchInput->board));
 
 	// opening book
@@ -162,9 +162,9 @@ void search() {
 	// SearchInput
 	gen_legal_moves(SearchInput->list,SearchInput->board);
 
-	if (LIST_SIZE(SearchInput->list) < SearchInput->multipv+1) 
+	if (LIST_SIZE(SearchInput->list) < SearchInput->multipv+1)
 		SearchInput->multipv = LIST_SIZE(SearchInput->list)-1;
-   
+
 	if (LIST_SIZE(SearchInput->list) <= 1) {
 		SearchInput->depth_is_limited = true;
 		SearchInput->depth_limit = 4; // was 1
@@ -197,12 +197,12 @@ void search() {
 		trans_endgame = true;
 	else
 		trans_endgame = false;
-   
+
 	// iterative deepening
 	bool search_ready = false;
 
 	for (int_fast32_t depth = 1; depth < DepthMax; ++depth) {
-		for (SearchCurrent->multipv = 0; SearchCurrent->multipv <= SearchInput->multipv; SearchCurrent->multipv++){
+		for (SearchCurrent->multipv = 0; SearchCurrent->multipv <= SearchInput->multipv; SearchCurrent->multipv++)  {
 			if (DispDepthStart && SearchCurrent->multipv == 0) send("info depth %d",depth);
 
 			SearchCurrent->max_extensions = depth * 10;
@@ -211,22 +211,22 @@ void search() {
 
 			board_copy(SearchCurrent->board,SearchInput->board);
 
-			if (UseShortSearch && depth <= ShortSearchDepth) 
+			if (UseShortSearch && depth <= ShortSearchDepth)
 				search_full_root(SearchRoot->list,SearchCurrent->board,depth,SearchShort);
-			else 
+			else
 				search_full_root(SearchRoot->list,SearchCurrent->board,depth,SearchNormal);
 
 			search_update_current();
 
-			if (DispDepthEnd && SearchCurrent->multipv == SearchInput->multipv) 
+			if (DispDepthEnd && SearchCurrent->multipv == SearchInput->multipv)
 				send("info depth %d seldepth %d time %.0f nodes " S64_FORMAT " nps %.0f",depth,SearchCurrent->max_depth,SearchCurrent->time*1000.0,SearchCurrent->node_nb,SearchCurrent->speed);
-		  
+
 			// update search info
 			if (depth >= 1) SearchInfo->can_stop = true;
 
 			if (depth == 1
 			 && LIST_SIZE(SearchRoot->list) >= 2
-			 && LIST_VALUE(SearchRoot->list,0) >= LIST_VALUE(SearchRoot->list,1) + EasyThreshold) 
+			 && LIST_VALUE(SearchRoot->list,0) >= LIST_VALUE(SearchRoot->list,1) + EasyThreshold)
 			 	SearchRoot->easy = true;
 
 			if (depth > 1) {
@@ -239,9 +239,9 @@ void search() {
 
 			// stop search?
 			if (SearchInput->depth_is_limited && SearchCurrent->multipv >= SearchInput->multipv
-			 && depth >= SearchInput->depth_limit) 
+			 && depth >= SearchInput->depth_limit)
 			 	SearchRoot->flag = true;
-		  
+
 			if (SearchInput->time_is_limited
 			 && SearchCurrent->time * 2 >= SearchInput->time_limit_1
 			 && !SearchRoot->bad_2)
@@ -261,13 +261,13 @@ void search() {
 			 && !SearchRoot->change)
 				SearchRoot->flag = true;
 
-			if (SearchInfo->can_stop 
+			if (SearchInfo->can_stop
 			&& (SearchInfo->stop || (SearchRoot->flag && !SearchInput->infinite))) {
 				search_ready = true;
 				break;
 			}
 		}
-		
+
 		if (search_ready)
 			break;
 	}
@@ -276,7 +276,7 @@ void search() {
 // search_update_best()
 
 void search_update_best() {
-      
+
 	search_update_current();
 
 	if (DispBest) {
@@ -294,7 +294,7 @@ void search_update_best() {
 		char move_string[256], pv_string[512];
 		move_to_string(move,move_string,256);
 		pv_to_string(pv,pv_string,512);
-	
+
 		int_fast32_t mate = value_to_mate(value);
 
 		if (SearchCurrent->multipv == 0)  {
@@ -304,7 +304,7 @@ void search_update_best() {
 			save_multipv[SearchCurrent->multipv].value = value;
 			save_multipv[SearchCurrent->multipv].time = time*1000.0;
 			save_multipv[SearchCurrent->multipv].node_nb = node_nb;
-			strcpy(save_multipv[SearchCurrent->multipv].pv_string,pv_string); 
+			strcpy(save_multipv[SearchCurrent->multipv].pv_string,pv_string);
 		} else  {
 			bool found = false;
 			int_fast32_t i;
@@ -314,7 +314,7 @@ void search_update_best() {
 					break;
 				}
 			}
-			
+
 			if (found)  {
 				for (int_fast32_t z = SearchCurrent->multipv; z > i; --z)  {
 					save_multipv[z].mate = save_multipv[z-1].mate;
@@ -323,7 +323,7 @@ void search_update_best() {
 					save_multipv[z].value = save_multipv[z-1].value;
 					save_multipv[z].time = save_multipv[z-1].time;
 					save_multipv[z].node_nb = save_multipv[z-1].node_nb;
-					strcpy(save_multipv[z].pv_string,save_multipv[z-1].pv_string); 
+					strcpy(save_multipv[z].pv_string,save_multipv[z-1].pv_string);
 				}
 				save_multipv[i].mate = mate;
 				save_multipv[i].depth = depth;
@@ -331,7 +331,7 @@ void search_update_best() {
 				save_multipv[i].value = value;
 				save_multipv[i].time = time*1000.0;
 				save_multipv[i].node_nb = node_nb;
-				strcpy(save_multipv[i].pv_string,pv_string); 
+				strcpy(save_multipv[i].pv_string,pv_string);
 			} else  {
 				save_multipv[SearchCurrent->multipv].mate = mate;
 				save_multipv[SearchCurrent->multipv].depth = depth;
@@ -339,10 +339,10 @@ void search_update_best() {
 				save_multipv[SearchCurrent->multipv].value = value;
 				save_multipv[SearchCurrent->multipv].time = time*1000.0;
 				save_multipv[SearchCurrent->multipv].node_nb = node_nb;
-				strcpy(save_multipv[SearchCurrent->multipv].pv_string,pv_string); 
+				strcpy(save_multipv[SearchCurrent->multipv].pv_string,pv_string);
 			}
 		}
-		  
+
 		if (depth > 1 || (depth == 1 && SearchCurrent->multipv == SearchInput->multipv))  {
 			for (int_fast32_t i = 0; i <= SearchInput->multipv; ++i)  {
 				if (save_multipv[i].mate == 0) {
@@ -395,7 +395,7 @@ void search_update_root() {
 			double time = SearchCurrent->time;
 			int_fast64_t node_nb = SearchCurrent->node_nb;
 			char move_string[256];
-			
+
 			move_to_string(move,move_string,256);
 
 			send("info currmove %s currmovenumber %d",move_string,move_pos+1);
@@ -425,24 +425,24 @@ void search_check() {
 	event();
 
 	if (SearchInput->depth_is_limited
-	 && SearchRoot->depth > SearchInput->depth_limit) 
+	 && SearchRoot->depth > SearchInput->depth_limit)
 		SearchRoot->flag = true;
-   
+
 
 	if (SearchInput->time_is_limited
-	 && SearchCurrent->time >= SearchInput->time_limit_2) 
+	 && SearchCurrent->time >= SearchInput->time_limit_2)
 		SearchRoot->flag = true;
-   
+
 
 	if (SearchInput->time_is_limited
 	 && SearchCurrent->time >= SearchInput->time_limit_1
 	 && !SearchRoot->bad_1
 	 && !SearchRoot->bad_2
-	 && (!UseExtension || SearchRoot->move_pos == 0)) 
+	 && (!UseExtension || SearchRoot->move_pos == 0))
 		SearchRoot->flag = true;
-   
 
-	if (SearchInfo->can_stop 
+
+	if (SearchInfo->can_stop
 	&& (SearchInfo->stop || (SearchRoot->flag && !SearchInput->infinite)))
 		longjmp(SearchInfo->buf,1);
 }

@@ -19,7 +19,7 @@ std::array<bool, SquareNb> SquareIsPromote;
 void square_init() {
 
 	// SquareTo64[]
-	for (int_fast32_t sq = 0; sq < SquareNb; ++sq) 
+	for (int_fast32_t sq = 0; sq < SquareNb; ++sq)
 		SquareTo64[sq] = -1;
 
 	for (int_fast32_t sq = 0; sq < 64; ++sq)

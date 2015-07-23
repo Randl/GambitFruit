@@ -27,32 +27,32 @@ std::array<const inc_t*, PieceNb> PieceInc;
 void piece_init() {
 	// PieceTo12[]
 
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
 		PieceTo12[piece] = -1;
 
-	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12) 
+	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12)
 		PieceTo12[PieceFrom12[piece_12]] = piece_12;
-   
+
 
 	// PieceOrder[]
 
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
 		PieceOrder[piece] = -1;
 
-	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12) 
+	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12)
 		PieceOrder[PieceFrom12[piece_12]] = piece_12 >> 1;
 
 	// PieceInc[]
 
 	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
 		PieceInc[piece] = nullptr;
-  
+
 	PieceInc[WhiteKnight256] = KnightInc.data();
 	PieceInc[WhiteBishop256] = BishopInc.data();
 	PieceInc[WhiteRook256]   = RookInc.data();
 	PieceInc[WhiteQueen256]  = QueenInc.data();
 	PieceInc[WhiteKing256]   = KingInc.data();
-	
+
 	PieceInc[BlackKnight256] = KnightInc.data();
 	PieceInc[BlackBishop256] = BishopInc.data();
 	PieceInc[BlackRook256]   = RookInc.data();
@@ -82,7 +82,7 @@ int_fast32_t piece_from_12(int_fast32_t piece_12) {
 // piece_to_char()
 
 int_fast32_t piece_to_char(int_fast32_t piece) {
-	
+
 	ASSERT(piece_is_ok(piece));
 
 	return PieceString[PIECE_TO_12(piece)];

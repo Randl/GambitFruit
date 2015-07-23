@@ -80,7 +80,7 @@ static bool gen_evasions(list_t * list, const board_t * board, const attack_t * 
 	LIST_CLEAR(list);
 	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me);
 	const int_fast32_t opp_flag = COLOUR_FLAG(opp), king = KING_POS(board,me);
-	
+
 	int_fast32_t inc;
 	for (auto inc_ptr = KingInc.begin(); (inc=*inc_ptr) != IncNone; ++inc_ptr) {
 		if (inc != -attack->di[0] && inc != -attack->di[1]) { // avoid escaping along a check line

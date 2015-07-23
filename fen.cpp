@@ -112,7 +112,7 @@ void board_from_fen(board_t * board, const char fen[]) {
 
 	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
 		c = fen[++pos];
-	
+
 	int_fast32_t sq;
 	if (c == '-') { // no en-passant
 		sq = SquareNone;
@@ -132,7 +132,7 @@ void board_from_fen(board_t * board, const char fen[]) {
 		if (board->square[sq] != Empty
 		 || board->square[pawn] != PAWN_MAKE(COLOUR_OPP(board->turn))
 		 || (board->square[pawn-1] != PAWN_MAKE(board->turn)
-		 && board->square[pawn+1] != PAWN_MAKE(board->turn))) 
+		 && board->square[pawn+1] != PAWN_MAKE(board->turn)))
 		 	sq = SquareNone;
 	}
 
@@ -140,7 +140,7 @@ void board_from_fen(board_t * board, const char fen[]) {
 
 	// halfmove clock
 	board->ply_nb = 0;
-	
+
 	if (c != ' ') {
 		if (!Strict) goto update;
 		my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
@@ -185,9 +185,9 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
 			if (piece == Empty) {
 
 				int_fast32_t len = 0;
-				for (; file <= FileH && board->square[SQUARE_MAKE(file,rank)] == Empty; ++file) 
+				for (; file <= FileH && board->square[SQUARE_MAKE(file,rank)] == Empty; ++file)
 					++len;
-				
+
 				ASSERT(len>=1&&len<=8);
 				c = '0' + len;
 

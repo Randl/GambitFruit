@@ -1,5 +1,5 @@
 
-//board.cpp
+// board.cpp
 
 // includes
 
@@ -22,7 +22,7 @@
 
 // constants
 
-static constexpr bool UseSlowDebug = false;
+static const bool UseSlowDebug = false;
 
 // functions
 
@@ -30,455 +30,496 @@ static constexpr bool UseSlowDebug = false;
 
 bool board_is_ok(const board_t * board) {
 
-	if (board == nullptr) return false;
+   int sq, piece, colour;
+   int size, pos;
 
-	// optional heavy DEBUG mode
+   if (board == NULL) return false;
 
-	if (!UseSlowDebug) return true;
+   // optional heavy DEBUG mode
 
-	// squares
+   if (!UseSlowDebug) return true;
 
-   for (int_fast32_t sq = 0; sq < SquareNb; ++sq) {
+   // squares
 
-		int_fast32_t piece = board->square[sq];
-		int_fast32_t pos = board->pos[sq];
+   for (sq = 0; sq < SquareNb; sq++) {
 
-		if (SQUARE_IS_OK(sq)) {
+      piece = board->square[sq];
+      pos = board->pos[sq];
 
-			// inside square
+      if (SQUARE_IS_OK(sq)) {
 
-			if (piece == Empty) {
-				if (pos != -1) return false;
-			} else {
-  
-				if (!piece_is_ok(piece)) return false;
+         // inside square
 
-				if (!PIECE_IS_PAWN(piece)) {
+         if (piece == Empty) {
 
-					int_fast32_t colour = PIECE_COLOUR(piece);
-					if (pos < 0 || pos >= board->piece_size[colour]) return false;
-					if (board->piece[colour][pos] != sq) return false;
+            if (pos != -1) return false;
 
-				} else { // pawn
+         } else {
 
-					if (SQUARE_IS_PROMOTE(sq)) return false;
+            if (!piece_is_ok(piece)) return false;
 
-					int_fast32_t colour = PIECE_COLOUR(piece);
-					if (pos < 0 || pos >= board->pawn_size[colour]) return false;
-					if (board->pawn[colour][pos] != sq) return false;
-				}
-			}
-			
-		} else {
+            if (!PIECE_IS_PAWN(piece)) {
+
+               colour = PIECE_COLOUR(piece);
+               if (pos < 0 || pos >= board->piece_size[colour]) return false;
+               if (board->piece[colour][pos] != sq) return false;
+
+            } else { // pawn
+
+               if (SQUARE_IS_PROMOTE(sq)) return false;
+
+               colour = PIECE_COLOUR(piece);
+               if (pos < 0 || pos >= board->pawn_size[colour]) return false;
+               if (board->pawn[colour][pos] != sq) return false;
+            }
+         }
+
+      } else {
 
          // edge square
 
-			if (piece != Edge) return false;
-			if (pos != -1) return false;
+         if (piece != Edge) return false;
+         if (pos != -1) return false;
+      }
+   }
 
-		}
-	}
+   // piece lists
 
-	// piece lists
+   for (colour = 0; colour < ColourNb; colour++) {
 
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
+      // piece list
 
-		// piece list
+      size = board->piece_size[colour];
+      if (size < 1 || size > 16) return false;
 
-		int_fast32_t size = board->piece_size[colour];
-		if (size < 1 || size > 16) return false;
+      for (pos = 0; pos < size; pos++) {
 
-		for (int_fast32_t pos = 0; pos < size; ++pos) {
+         sq = board->piece[colour][pos];
+         if (!SQUARE_IS_OK(sq)) return false;
 
-			int_fast32_t sq = board->piece[colour][pos];
-			if (!SQUARE_IS_OK(sq)) return false;
+         if (board->pos[sq] != pos) return false;
 
-			if (board->pos[sq] != pos) return false;
+         piece = board->square[sq];
+         if (!COLOUR_IS(piece,colour)) return false;
+         if (pos == 0 && !PIECE_IS_KING(piece)) return false;
+         if (pos != 0 && PIECE_IS_KING(piece)) return false;
 
-			int_fast32_t piece = board->square[sq];
-			if (!COLOUR_IS(piece,colour)) return false;
-			if (pos == 0 && !PIECE_IS_KING(piece)) return false;
-			if (pos != 0 && PIECE_IS_KING(piece)) return false;
+         if (pos != 0 && PIECE_ORDER(piece) > PIECE_ORDER(board->square[board->piece[colour][pos-1]])) {
+            return false;
+         }
+      }
 
-			if (pos != 0 && PIECE_ORDER(piece) > PIECE_ORDER(board->square[board->piece[colour][pos-1]])) 
-				return false;
-         
-		}
+      sq = board->piece[colour][size];
+      if (sq != SquareNone) return false;
 
-		int_fast32_t sq = board->piece[colour][size];
-		if (sq != SquareNone) return false;
+      // pawn list
 
-		// pawn list
+      size = board->pawn_size[colour];
+      if (size < 0 || size > 8) return false;
 
-		size = board->pawn_size[colour];
-		if (size < 0 || size > 8) return false;
+      for (pos = 0; pos < size; pos++) {
 
-		for (int_fast32_t pos = 0; pos < size; ++pos) {
+         sq = board->pawn[colour][pos];
+         if (!SQUARE_IS_OK(sq)) return false;
+         if (SQUARE_IS_PROMOTE(sq)) return false;
 
-			sq = board->pawn[colour][pos];
-			if (!SQUARE_IS_OK(sq)) return false;
-			if (SQUARE_IS_PROMOTE(sq)) return false;
+         if (board->pos[sq] != pos) return false;
 
-			if (board->pos[sq] != pos) return false;
+         piece = board->square[sq];
+         if (!COLOUR_IS(piece,colour)) return false;
+         if (!PIECE_IS_PAWN(piece)) return false;
+      }
 
-			int_fast32_t piece = board->square[sq];
-			if (!COLOUR_IS(piece,colour)) return false;
-			if (!PIECE_IS_PAWN(piece)) return false;
-		}
+      sq = board->pawn[colour][size];
+      if (sq != SquareNone) return false;
 
-		sq = board->pawn[colour][size];
-		if (sq != SquareNone) return false;
+      // piece total
 
-		// piece total
+      if (board->piece_size[colour] + board->pawn_size[colour] > 16) return false;
+   }
 
-		if (board->piece_size[colour] + board->pawn_size[colour] > 16) return false;
-	}
+   // material
 
-	// material
+   if (board->piece_nb != board->piece_size[White] + board->pawn_size[White]
+                        + board->piece_size[Black] + board->pawn_size[Black]) {
+      return false;
+   }
 
-	if (board->piece_nb != board->piece_size[White] + board->pawn_size[White]
-                         + board->piece_size[Black] + board->pawn_size[Black]) 
-		return false;
+   if (board->number[WhitePawn12] != board->pawn_size[White]) return false;
+   if (board->number[BlackPawn12] != board->pawn_size[Black]) return false;
+   if (board->number[WhiteKing12] != 1) return false;
+   if (board->number[BlackKing12] != 1) return false;
 
-	if (board->number[WhitePawn12] != board->pawn_size[White]) return false;
-	if (board->number[BlackPawn12] != board->pawn_size[Black]) return false;
-	if (board->number[WhiteKing12] != 1) return false;
-	if (board->number[BlackKing12] != 1) return false;
+   // misc
 
-	// misc
+   if (!COLOUR_IS_OK(board->turn)) return false;
 
-	if (!COLOUR_IS_OK(board->turn)) return false;
+   if (board->ply_nb < 0) return false;
+   if (board->sp < board->ply_nb) return false;
 
-	if (board->ply_nb < 0) return false;
-	if (board->sp < board->ply_nb) return false;
+   if (board->cap_sq != SquareNone && !SQUARE_IS_OK(board->cap_sq)) return false;
 
-	if (board->cap_sq != SquareNone && !SQUARE_IS_OK(board->cap_sq)) return false;
+   if (board->opening != board_opening(board)) return false;
+   if (board->endgame != board_endgame(board)) return false;
+   if (board->key != hash_key(board)) return false;
+   if (board->pawn_key != hash_pawn_key(board)) return false;
+   if (board->material_key != hash_material_key(board)) return false;
 
-	if (board->opening != board_opening(board)) return false;
-	if (board->endgame != board_endgame(board)) return false;
-	if (board->key != hash_key(board)) return false;
-	if (board->pawn_key != hash_pawn_key(board)) return false;
-	if (board->material_key != hash_material_key(board)) return false;
-
-	return true;
+   return true;
 }
 
 // board_clear()
 
 void board_clear(board_t * board) {
 
-	ASSERT(board!=nullptr);
+   int sq, sq_64;
 
-	// edge squares
+   ASSERT(board!=NULL);
 
-	for (int_fast32_t sq = 0; sq < SquareNb; ++sq) 
-		board->square[sq] = Edge;
+   // edge squares
+
+   for (sq = 0; sq < SquareNb; sq++) {
+      board->square[sq] = Edge;
+   }
 
    // empty squares
 
-	for (int_fast32_t sq_64 = 0; sq_64 < 64; ++sq_64) {
-		int_fast32_t sq = SQUARE_FROM_64(sq_64);
-		board->square[sq] = Empty;
-	}
+   for (sq_64 = 0; sq_64 < 64; sq_64++) {
+      sq = SQUARE_FROM_64(sq_64);
+      board->square[sq] = Empty;
+   }
 
-	// misc
+   // misc
 
-	board->turn = ColourNone;
-	board->flags = FlagsNone;
-	board->ep_square = SquareNone;
-	board->ply_nb = 0;
+   board->turn = ColourNone;
+   board->flags = FlagsNone;
+   board->ep_square = SquareNone;
+   board->ply_nb = 0;
 }
 
 // board_copy()
 
 void board_copy(board_t * dst, const board_t * src) {
 
-	ASSERT(dst!=nullptr);
-	ASSERT(board_is_ok(src));
-	
-	*dst = *src;
+   ASSERT(dst!=NULL);
+   ASSERT(board_is_ok(src));
+
+   *dst = *src;
 }
 
 // board_init_list()
 
 void board_init_list(board_t * board) {
 
-   ASSERT(board!=nullptr);
+   int sq_64, sq, piece;
+   int colour, pos;
+   int i, size;
+   int square;
+   int order;
+   int file;
+
+   ASSERT(board!=NULL);
 
    // init
 
-	for (int_fast32_t sq = 0; sq < SquareNb; ++sq)
-		board->pos[sq] = -1;
+   for (sq = 0; sq < SquareNb; sq++) {
+      board->pos[sq] = -1;
+   }
 
-	board->piece_nb = 0;
-	for (int_fast32_t piece = 0; piece < 12; ++piece) board->number[piece] = 0;
+   board->piece_nb = 0;
+   for (piece = 0; piece < 12; piece++) board->number[piece] = 0;
 
-	// piece lists
+   // piece lists
 
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
+   for (colour = 0; colour < ColourNb; colour++) {
 
-		// piece list
+      // piece list
 
-		int_fast32_t pos = 0;
-		board->piece_material[colour] = 0; // Thomas
+      pos = 0;
+	  board->piece_material[colour] = 0; // Thomas
       
-		for (int_fast32_t sq_64 = 0; sq_64 < 64; ++sq_64) {
+      for (sq_64 = 0; sq_64 < 64; sq_64++) {
 
-			int_fast32_t sq = SQUARE_FROM_64(sq_64);
-			int_fast32_t piece = board->square[sq];
-			if (piece != Empty && !piece_is_ok(piece)) my_fatal("board_init_list(): illegal position\n");
+         sq = SQUARE_FROM_64(sq_64);
+         piece = board->square[sq];
+         if (piece != Empty && !piece_is_ok(piece)) my_fatal("board_init_list(): illegal position\n");
 
-			if (COLOUR_IS(piece,colour) && !PIECE_IS_PAWN(piece)) {
+         if (COLOUR_IS(piece,colour) && !PIECE_IS_PAWN(piece)) {
 
-				if (pos >= 16) my_fatal("board_init_list(): illegal position\n");
-				ASSERT(pos>=0&&pos<16);
+            if (pos >= 16) my_fatal("board_init_list(): illegal position\n");
+            ASSERT(pos>=0&&pos<16);
 
-				board->pos[sq] = pos;
-				board->piece[colour][pos] = sq;
-				++pos;
+            board->pos[sq] = pos;
+            board->piece[colour][pos] = sq;
+            pos++;
 
-				board->piece_nb++;
-				board->number[PIECE_TO_12(piece)]++;
+            board->piece_nb++;
+            board->number[PIECE_TO_12(piece)]++;
 
-				if (piece != WK && piece != BK) // Thomas
-					board->piece_material[colour] += VALUE_PIECE(piece);
-			}
-		}
+			if (piece != WK && piece != BK) // Thomas
+				board->piece_material[colour] += VALUE_PIECE(piece);
+         }
+      }
 
-		if (board->number[COLOUR_IS_WHITE(colour)?WhiteKing12:BlackKing12] != 1) my_fatal("board_init_list(): illegal position\n");
-		if (board->number[WhiteBishop12] >= 10) printf("illegal position!\n");	
+      if (board->number[COLOUR_IS_WHITE(colour)?WhiteKing12:BlackKing12] != 1) my_fatal("board_init_list(): illegal position\n");
+	  if (board->number[WhiteBishop12] >= 10) printf("illegal position!\n");	
 
-		ASSERT(pos>=1&&pos<=16);
-		board->piece[colour][pos] = SquareNone;
-		board->piece_size[colour] = pos;
+      ASSERT(pos>=1&&pos<=16);
+      board->piece[colour][pos] = SquareNone;
+      board->piece_size[colour] = pos;
 
-		// MV sort
+      // MV sort
 
-		int_fast32_t size = board->piece_size[colour];
+      size = board->piece_size[colour];
 
-		for (int_fast32_t i = 1; i < size; ++i) {
+      for (i = 1; i < size; i++) {
 
-			int_fast32_t square = board->piece[colour][i];
-			int_fast32_t piece = board->square[square];
-			int_fast32_t order = PIECE_ORDER(piece);
-			
-			int_fast32_t sq;
-			for (int_fast32_t pos = i; pos > 0 && order > PIECE_ORDER(board->square[(sq=board->piece[colour][pos-1])]); --pos) {
-				ASSERT(pos>0&&pos<size);
-				board->piece[colour][pos] = sq;
-				ASSERT(board->pos[sq]==pos-1);
-				board->pos[sq] = pos;
-			}
+         square = board->piece[colour][i];
+         piece = board->square[square];
+         order = PIECE_ORDER(piece);
 
-			ASSERT(pos>=0&&pos<size);
-			board->piece[colour][pos] = square;
-			ASSERT(board->pos[square]==i);
-			board->pos[square] = pos;
-		}
+         for (pos = i; pos > 0 && order > PIECE_ORDER(board->square[(sq=board->piece[colour][pos-1])]); pos--) {
+            ASSERT(pos>0&&pos<size);
+            board->piece[colour][pos] = sq;
+            ASSERT(board->pos[sq]==pos-1);
+            board->pos[sq] = pos;
+         }
 
-		// debug
+         ASSERT(pos>=0&&pos<size);
+         board->piece[colour][pos] = square;
+         ASSERT(board->pos[square]==i);
+         board->pos[square] = pos;
+      }
 
-		if (DEBUG) {
+      // debug
 
-			for (int_fast32_t i = 0; i < board->piece_size[colour]; ++i) {
+      if (DEBUG) {
 
-				int_fast32_t sq = board->piece[colour][i];
-				ASSERT(board->pos[sq]==i);
+         for (i = 0; i < board->piece_size[colour]; i++) {
 
-				if (i == 0) { // king
-					ASSERT(PIECE_IS_KING(board->square[sq]));
-				} else {
-					ASSERT(!PIECE_IS_KING(board->square[sq]));
-					ASSERT(PIECE_ORDER(board->square[board->piece[colour][i]])<=PIECE_ORDER(board->square[board->piece[colour][i-1]]));
-				}
-			}
-		}
+            sq = board->piece[colour][i];
+            ASSERT(board->pos[sq]==i);
 
-		// pawn list
+            if (i == 0) { // king
+               ASSERT(PIECE_IS_KING(board->square[sq]));
+            } else {
+               ASSERT(!PIECE_IS_KING(board->square[sq]));
+               ASSERT(PIECE_ORDER(board->square[board->piece[colour][i]])<=PIECE_ORDER(board->square[board->piece[colour][i-1]]));
+            }
+         }
+      }
 
-		for (int_fast32_t file = 0; file < FileNb; ++file) 
-			board->pawn_file[colour][file] = 0;
+      // pawn list
 
-		int_fast32_t pawn_pos = 0;
+      for (file = 0; file < FileNb; file++) {
+         board->pawn_file[colour][file] = 0;
+      }
 
-		for (int_fast32_t sq_64 = 0; sq_64 < 64; ++sq_64) {
+      pos = 0;
 
-			int_fast32_t sq = SQUARE_FROM_64(sq_64);
-			int_fast32_t piece = board->square[sq];
+      for (sq_64 = 0; sq_64 < 64; sq_64++) {
 
-			if (COLOUR_IS(piece,colour) && PIECE_IS_PAWN(piece)) {
+         sq = SQUARE_FROM_64(sq_64);
+         piece = board->square[sq];
 
-				if (pos >= 8 || SQUARE_IS_PROMOTE(sq)) my_fatal("board_init_list(): illegal position\n");
-					ASSERT(pawn_pos>=0&&pawn_pos<8);
-	
-					board->pos[sq] = pawn_pos;
-					board->pawn[colour][pawn_pos] = sq;
-					++pos;
-	
-					board->piece_nb++;
-					board->number[PIECE_TO_12(piece)]++;
-					board->pawn_file[colour][SQUARE_FILE(sq)] |= BIT(PAWN_RANK(sq,colour));
-				
-					board->piece_material[colour] += VALUE_PIECE(piece); // Thomas
-			}
-		}
-	
-		ASSERT(pawn_pos>=0&&pawn_pos<=8);
-		board->pawn[colour][pawn_pos] = SquareNone;
-		board->pawn_size[colour] = pawn_pos;
+         if (COLOUR_IS(piece,colour) && PIECE_IS_PAWN(piece)) {
 
-		if (board->piece_size[colour] + board->pawn_size[colour] > 16) my_fatal("board_init_list(): illegal position\n");
-	}
+            if (pos >= 8 || SQUARE_IS_PROMOTE(sq)) my_fatal("board_init_list(): illegal position\n");
+            ASSERT(pos>=0&&pos<8);
 
-	// last square
-	board->cap_sq = SquareNone;
+            board->pos[sq] = pos;
+            board->pawn[colour][pos] = sq;
+            pos++;
 
-	// PST
-	board->opening = board_opening(board);
-	board->endgame = board_endgame(board);
+            board->piece_nb++;
+            board->number[PIECE_TO_12(piece)]++;
+            board->pawn_file[colour][SQUARE_FILE(sq)] |= BIT(PAWN_RANK(sq,colour));
 
-	// hash key
+			board->piece_material[colour] += VALUE_PIECE(piece); // Thomas
+         }
+      }
 
-	for (int_fast32_t i = 0; i < board->ply_nb; ++i) board->stack[i] = 0; // HACK
-	board->sp = board->ply_nb;
+      ASSERT(pos>=0&&pos<=8);
+      board->pawn[colour][pos] = SquareNone;
+      board->pawn_size[colour] = pos;
 
-	board->key = hash_key(board);
-	board->pawn_key = hash_pawn_key(board);
-	board->material_key = hash_material_key(board);
+      if (board->piece_size[colour] + board->pawn_size[colour] > 16) my_fatal("board_init_list(): illegal position\n");
+   }
 
-	// legality
-	if (!board_is_legal(board)) my_fatal("board_init_list(): illegal position\n");
+   // last square
 
-	// debug
-	ASSERT(board_is_ok(board));
+   board->cap_sq = SquareNone;
+
+   // PST
+
+   board->opening = board_opening(board);
+   board->endgame = board_endgame(board);
+
+   // hash key
+
+   for (i = 0; i < board->ply_nb; i++) board->stack[i] = 0; // HACK
+   board->sp = board->ply_nb;
+
+   board->key = hash_key(board);
+   board->pawn_key = hash_pawn_key(board);
+   board->material_key = hash_material_key(board);
+
+   // legality
+
+   if (!board_is_legal(board)) my_fatal("board_init_list(): illegal position\n");
+
+   // debug
+
+   ASSERT(board_is_ok(board));
 }
 
 // board_is_legal()
 
 bool board_is_legal(const board_t * board) {
-	ASSERT(board!=nullptr);
-	return !IS_IN_CHECK(board,COLOUR_OPP(board->turn));
+
+   ASSERT(board!=NULL);
+
+   return !IS_IN_CHECK(board,COLOUR_OPP(board->turn));
 }
 
 // board_is_check()
 
 bool board_is_check(const board_t * board) {
-	ASSERT(board!=nullptr);
-	return IS_IN_CHECK(board,board->turn);
+
+   ASSERT(board!=NULL);
+
+   return IS_IN_CHECK(board,board->turn);
 }
 
 // board_is_mate()
 
 bool board_is_mate(const board_t * board) {
 
-	attack_t *attack;
+   attack_t attack[1];
 
-	ASSERT(board!=nullptr);
+   ASSERT(board!=NULL);
 
-	attack_set(attack,board);
+   attack_set(attack,board);
 
-	if (!ATTACK_IN_CHECK(attack)) return false; // not in check => not mate
-	if (legal_evasion_exist(board,attack)) return false; // legal move => not mate
+   if (!ATTACK_IN_CHECK(attack)) return false; // not in check => not mate
+   if (legal_evasion_exist(board,attack)) return false; // legal move => not mate
 
-	return true; // in check and no legal move => mate
+   return true; // in check and no legal move => mate
 }
 
 // board_is_stalemate()
 
 bool board_is_stalemate(board_t * board) {
 
-	list_t *list;
+   list_t list[1];
+   int i, move;
 
-	ASSERT(board!=nullptr);
+   ASSERT(board!=NULL);
 
-	// init
+   // init
 
-	if (IS_IN_CHECK(board,board->turn)) return false; // in check => not stalemate
+   if (IS_IN_CHECK(board,board->turn)) return false; // in check => not stalemate
 
-	// move loop
-	
-	gen_moves(list,board);
+   // move loop
 
-	for (int_fast32_t  i = 0; i < LIST_SIZE(list); ++i) {
-		int_fast32_t move = LIST_MOVE(list,i);
-		if (pseudo_is_legal(move,board)) return false; // legal move => not stalemate
-	}
+   gen_moves(list,board);
 
-	return true; // in check and no legal move => mate
+   for (i = 0; i < LIST_SIZE(list); i++) {
+      move = LIST_MOVE(list,i);
+      if (pseudo_is_legal(move,board)) return false; // legal move => not stalemate
+   }
+
+   return true; // in check and no legal move => mate
 }
 
 // board_is_repetition()
 
 bool board_is_repetition(const board_t * board) {
-	
-	ASSERT(board!=nullptr);
 
-	// 50-move rule
+   int i, z;
+   
+   ASSERT(board!=NULL);
 
-	if (board->ply_nb >= 100) { // potential draw
+   // 50-move rule
 
-		if (board->ply_nb > 100) return true;
+   if (board->ply_nb >= 100) { // potential draw
 
-		ASSERT(board->ply_nb==100);
-		return !board_is_mate(board);
+      if (board->ply_nb > 100) return true;
+
+      ASSERT(board->ply_nb==100);
+      return !board_is_mate(board);
    }
 
    // position repetition
 
-	ASSERT(board->sp>=board->ply_nb);
-	for (int_fast32_t i = 4; i <= board->ply_nb; i += 2) 
-		if (board->stack[board->sp-i] == board->key) return true;
+   ASSERT(board->sp>=board->ply_nb);
+   //z = 0;
+   for (i = 4; i <= board->ply_nb; i += 2) {
+       if (board->stack[board->sp-i] == board->key) return true;
+	   //if (board->stack[board->sp-i] == board->key) z++;
+	   //if (z >= 2) return true; // value 2 for 3-Times Repetition
+   }
 
    return false;
 }
 
 // board_opening()
 
-int_fast32_t board_opening(const board_t * board) {
+int board_opening(const board_t * board) {
 
-	ASSERT(board!=nullptr);
+   int opening;
+   int colour;
+   const sq_t * ptr;
+   int sq, piece;
 
-	int_fast32_t opening = 0;
+   ASSERT(board!=NULL);
 
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
-		int_fast32_t sq;
-		for (const sq_t *ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			int_fast32_t piece = board->square[sq];
-			opening += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Opening);
-		}
+   opening = 0;
 
-		for (const sq_t *ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			int_fast32_t piece = board->square[sq];
-			opening += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Opening);
-		}
-	}
+   for (colour = 0; colour < ColourNb; colour++) {
 
-	return opening;
+      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+         piece = board->square[sq];
+         opening += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Opening);
+      }
+
+      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+         piece = board->square[sq];
+         opening += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Opening);
+      }
+   }
+
+   return opening;
 }
 
 // board_endgame()
 
-int_fast32_t board_endgame(const board_t * board) {
+int board_endgame(const board_t * board) {
 
-	ASSERT(board!=nullptr);
+   int endgame;
+   int colour;
+   const sq_t * ptr;
+   int sq, piece;
 
-	int_fast32_t endgame = 0;
+   ASSERT(board!=NULL);
 
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
-	
-		int_fast32_t sq;
-		for (const sq_t *ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			int_fast32_t piece = board->square[sq];
-			endgame += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Endgame);
-		}
+   endgame = 0;
 
-		for (const sq_t *ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			int_fast32_t piece = board->square[sq];
-			endgame += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Endgame);
-		}
-	}
+   for (colour = 0; colour < ColourNb; colour++) {
 
-	return endgame;
+      for (ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+         piece = board->square[sq];
+         endgame += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Endgame);
+      }
+
+      for (ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ptr++) {
+         piece = board->square[sq];
+         endgame += PST(PIECE_TO_12(piece),SQUARE_TO_64(sq),Endgame);
+      }
+   }
+
+   return endgame;
 }
 
 // end of board.cpp
+

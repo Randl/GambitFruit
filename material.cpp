@@ -127,16 +127,16 @@ void material_alloc() {
 	Material->table = (entry_t *) my_malloc(Material->size*sizeof(entry_t));
 
 	material_clear();
-   
+
 }
 
 // material_clear()
 
 void material_clear() {
 
-	if (Material->table != nullptr) 
+	if (Material->table != nullptr)
 		memset(Material->table,0,Material->size*sizeof(entry_t));
-   
+
 	Material->used = 0;
 	Material->read_nb = 0;
 	Material->read_hit = 0;
@@ -172,11 +172,11 @@ void material_get_info(material_info_t * info, const board_t * board) {
 
 	if (entry->lock == 0)  // HACK: assume free entry
 		Material->used++;
-	else 
+	else
 		Material->write_collision++;
 
 	*entry = *info;
-	entry->lock = KEY_LOCK(key);   
+	entry->lock = KEY_LOCK(key);
 }
 
 // material_comp_info()
@@ -191,7 +191,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	int_fast32_t bp, bn, bb, br, bq;
 	int_fast32_t wt, bt;
 	int_fast32_t wm, bm;
-   
+
 	wp = board->number[WhitePawn12];
 	wn = board->number[WhiteKnight12];
 	wb = board->number[WhiteBishop12];
@@ -231,7 +231,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 	// bishop endgame
 	if (wq+wr+wn == 0 && bq+br+bn == 0)  // only bishops
-		if (wb == 1 && bb == 1) 
+		if (wb == 1 && bb == 1)
 			if (wp-bp >= -2 && wp-bp <= +2)  // pawn diff <= 2
 				flags |= DrawBishopFlag;
 
@@ -259,7 +259,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			ASSERT(w_maj==0);
 			ASSERT(w_min==2);
 			// KNNK*, usually insufficient
-			if (b_tot != 0 || bp == 0) 
+			if (b_tot != 0 || bp == 0)
 				mul[White] = 0;
 			else // KNNKP+, might not be draw
 				mul[White] = 1; // 1/16
@@ -275,7 +275,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			// no more than 1 minor up, drawish
 			mul[White] = 2; // 1/8
 		}
-	
+
 	} else if (wp == 1) { // white has one pawn
 		int_fast32_t w_maj = wq * 2 + wr;
 		int_fast32_t w_min = wb + wn;
@@ -352,11 +352,11 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			ASSERT(b_maj==0);
 			ASSERT(b_min==2);
 			// KNNK*, usually insufficient
-			if (w_tot != 0 || wp == 0) 
+			if (w_tot != 0 || wp == 0)
 				mul[Black] = 0;
 			else  // KNNKP+, might not be draw
 				mul[Black] = 1; // 1/16
-         
+
 		} else if (b_tot == 2 && bb == 2 && w_tot == 1 && wn == 1) {
 			ASSERT(b_maj==0);
 			ASSERT(b_min==2);
@@ -420,7 +420,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			}
 		}
 	}
-	
+
 	// potential draw for white
 	if (wt == wb+wp && wp >= 1) cflags[White] |= MatRookPawnFlag;
 	if (wt == wb+wp && wb <= 1 && wp >= 1 && bt > bp) cflags[White] |= MatBishopFlag;
@@ -466,21 +466,21 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 	/* Thomas */
 	int_fast32_t owf,obf,ewf,ebf;
-	owf = wn*KnightOpening + wb*BishopOpening + wr*RookOpening + wq*QueenOpening; 
-	//info->pv[White] = owf;  
+	owf = wn*KnightOpening + wb*BishopOpening + wr*RookOpening + wq*QueenOpening;
+	//info->pv[White] = owf;
 	opening += owf;
 	opening += wp * PawnOpening;
 
-	obf = bn*KnightOpening + bb*BishopOpening + br*RookOpening + bq*QueenOpening; 
-	//info->pv[Black] = obf;  
+	obf = bn*KnightOpening + bb*BishopOpening + br*RookOpening + bq*QueenOpening;
+	//info->pv[Black] = obf;
 	opening -= obf;
 	opening -= bp * PawnOpening;
 
-	ewf = wn*KnightEndgame + wb*BishopEndgame + wr*RookEndgame + wq*QueenEndgame;  
+	ewf = wn*KnightEndgame + wb*BishopEndgame + wr*RookEndgame + wq*QueenEndgame;
 	endgame += wp * PawnEndgame;
 	endgame += ewf;
 
-	ebf = bn*KnightEndgame + bb*BishopEndgame + br*RookEndgame + bq*QueenEndgame; 
+	ebf = bn*KnightEndgame + bb*BishopEndgame + br*RookEndgame + bq*QueenEndgame;
 	endgame -= bp * PawnEndgame;
 	endgame -= ebf;
 
@@ -488,7 +488,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	//WhiteMinors = wn + wb;
 	//BlackMinors = bn + bb;
 	WhiteMajors = wq + wr;
-	BlackMajors = bq + br; 
+	BlackMajors = bq + br;
 
 	// Trade Bonus
 
@@ -507,7 +507,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 		endgame -= bad_trade_value;
 	}
    }*/
-   
+
 
    // bishop pair
 
@@ -553,7 +553,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	if (br) {
 		opening -= RookPawnPenalty[wp+bp] * br;
 		endgame -= RookPawnPenalty[wp+bp] * br;
-	} 
+	}
 
 	// Queen and knight are better than queen and bishop.
 	if (!wr && !br) {

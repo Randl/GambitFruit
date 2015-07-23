@@ -33,7 +33,7 @@ CXXFLAGS += -Wall -Wextra -Wshadow -Wstrict-aliasing -Weffc++
 CXXFLAGS += -O3 -fstrict-aliasing
 -flto
 CXXFLAGS += -fomit-frame-pointer
-LDFLAGS += -flto 
+LDFLAGS += -flto
 # CXXFLAGS += -ffast-math
 # CXXFLAGS += -funroll-loops
 CXXFLAGS += -march=native

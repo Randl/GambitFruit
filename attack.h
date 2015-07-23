@@ -6,7 +6,7 @@
 
 // includes
 
-#include <cstdint> 
+#include <cstdint>
 #include <array>
 #include "board.h"
 #include "util.h"
@@ -41,7 +41,7 @@ struct attack_t {
 extern std::array<int_fast32_t, DeltaNb> DeltaIncLine;
 extern std::array<int_fast32_t, DeltaNb> DeltaIncAll;
 
-extern std::array<int_fast32_t, DeltaNb> DeltaMask; 
+extern std::array<int_fast32_t, DeltaNb> DeltaMask;
 extern std::array<int_fast32_t, IncNb> IncMask;
 
 // functions

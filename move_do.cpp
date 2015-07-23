@@ -31,8 +31,8 @@ static void square_move  (board_t * board, int_fast32_t from, int_fast32_t to, i
 // move_do_init()
 
 void move_do_init() {
-	
-	for (int_fast32_t sq = 0; sq < SquareNb; ++sq) 
+
+	for (int_fast32_t sq = 0; sq < SquareNb; ++sq)
 		CastleMask[sq] = 0xF;
 
 	CastleMask[E1] &= ~FlagsWhiteKingCastle;
@@ -88,7 +88,7 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
 	// update castling rights
 	const int_fast32_t old_flags = board->flags, new_flags = old_flags & CastleMask[from] & CastleMask[to];
-	
+
 	board->flags = new_flags;
 	board->key ^= Castle64[new_flags^old_flags]; // HACK
 
@@ -122,10 +122,10 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 	// remove the captured piece
 	int_fast32_t square = to;
 	if (MOVE_IS_EN_PASSANT(move)) square = SQUARE_EP_DUAL(square);
-	
+
 	const int_fast32_t capture=board->square[square];
 	if (capture != Empty) {
-		
+
 		ASSERT(COLOUR_IS(capture,opp));
 		ASSERT(!PIECE_IS_KING(capture));
 
@@ -152,7 +152,7 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 		// insert the promote piece in MV order
 		int_fast32_t pos;
 		for (pos = board->piece_size[me]; pos > 0 && piece > board->square[board->piece[me][pos-1]]; --pos); // HACK
-         
+
 		square_set(board,to,piece,pos,true);
 		board->cap_sq = to;
 
@@ -165,15 +165,15 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 	if (MOVE_IS_CASTLE(move)) {
 
 		int_fast32_t rook = Rook64 | COLOUR_FLAG(me); // HACK
-		if (to == G1) 
+		if (to == G1)
 			square_move(board,H1,F1,rook,true);
-		else if (to == C1) 
+		else if (to == C1)
 			square_move(board,A1,D1,rook,true);
-		else if (to == G8) 
+		else if (to == G8)
 			square_move(board,H8,F8,rook,true);
-		else if (to == C8) 
+		else if (to == C8)
 			square_move(board,A8,D8,rook,true);
-		else 
+		else
 			ASSERT(false);
 	}
 
@@ -184,7 +184,7 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 // move_undo()
 
 void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
-	
+
 	ASSERT(board!=nullptr);
 	ASSERT(move_is_ok(move));
 	ASSERT(undo!=nullptr);
@@ -197,16 +197,16 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 	// castle
 	if (MOVE_IS_CASTLE(move)) {
 		const int_fast32_t rook = Rook64 | COLOUR_FLAG(me); // HACK
-		
-		if (to == G1) 
+
+		if (to == G1)
 			square_move(board,F1,H1,rook,false);
-		else if (to == C1) 
+		else if (to == C1)
 			square_move(board,D1,A1,rook,false);
-		else if (to == G8) 
+		else if (to == G8)
 			square_move(board,F8,H8,rook,false);
-		else if (to == C8) 
+		else if (to == C8)
 			square_move(board,D8,A8,rook,false);
-		else 
+		else
 			ASSERT(false);
 	}
 
@@ -223,14 +223,14 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 		square_set(board,from,piece,pos,false);
 
 	} else {
-		// normal move 
+		// normal move
 		square_move(board,to,from,piece,false);
 	}
 
 	// put the captured piece back
 	if (undo->capture)
 	square_set(board,undo->capture_square,undo->capture_piece,undo->capture_pos,false);
-   
+
 	// update board info
 	board->turn = undo->turn;
 	board->flags = undo->flags;
@@ -347,7 +347,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 		// stable swap
 		ASSERT(pos>=0&&pos<size);
 		ASSERT(board->pos[square]==pos);
-		
+
 		board->pos[square] = -1;
 		for (int_fast32_t i = pos; i < size-1; ++i) {
 			const int_fast32_t sq = board->piece[colour][i+1];
@@ -400,8 +400,8 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 	ASSERT(board->number[piece_12]>0);
 	board->number[piece_12]--;
 
-	board->piece_material[colour] -= VALUE_PIECE(piece);  // Thomas 
-   
+	board->piece_material[colour] -= VALUE_PIECE(piece);  // Thomas
+
 	// update
 	if (update) {
 
@@ -502,8 +502,8 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 	ASSERT(board->number[piece_12]<9);
 	board->number[piece_12]++;
 
-	board->piece_material[colour] += VALUE_PIECE(piece);  // Thomas 
-   
+	board->piece_material[colour] += VALUE_PIECE(piece);  // Thomas
+
 	// update
 	if (update) {
 
@@ -579,7 +579,7 @@ static void square_move(board_t * board, int_fast32_t from, int_fast32_t to, int
 
 		// hash key
 		const int_fast32_t piece_index = RandomPiece + (piece_12^1) * 64; // HACK: ^1 for PolyGlot book
-		
+
 		uint_fast64_t hash_xor = RANDOM_64(piece_index+to_64) ^ RANDOM_64(piece_index+from_64);
 		board->key ^= hash_xor;
 		if (PIECE_IS_PAWN(piece)) board->pawn_key ^= hash_xor;

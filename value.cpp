@@ -19,7 +19,7 @@ std::array<int_fast32_t, PieceNb> ValuePiece;
 void value_init() {
 
 	// ValuePiece[]
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece) 
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
 		ValuePiece[piece] = -1;
 
 	ValuePiece[Empty] = 0; // needed?
@@ -29,7 +29,7 @@ void value_init() {
 	ValuePiece[WN] = ValueKnight;
 	ValuePiece[WB] = ValueBishop;
 	ValuePiece[WR] = ValueRook;
-	ValuePiece[WQ] = ValueQueen;	
+	ValuePiece[WQ] = ValueQueen;
 	ValuePiece[WK] = ValueKing;
 
 	ValuePiece[BP] = ValuePawn;
@@ -79,11 +79,11 @@ int_fast32_t value_to_trans(int_fast32_t value, int_fast32_t height) {
 	ASSERT(value_is_ok(value));
 	ASSERT(height_is_ok(height));
 
-	if (value < -ValueEvalInf) 
+	if (value < -ValueEvalInf)
 		value -= height;
 	else if (value > +ValueEvalInf)
 		value += height;
-   
+
 	ASSERT(value_is_ok(value));
 
 	return value;
@@ -96,11 +96,11 @@ int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height) {
 	ASSERT(value_is_ok(value));
 	ASSERT(height_is_ok(height));
 
-	if (value < -ValueEvalInf) 
+	if (value < -ValueEvalInf)
 		value += height;
    else if (value > +ValueEvalInf)
       value -= height;
-   
+
 	ASSERT(value_is_ok(value));
 	return value;
 }

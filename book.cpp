@@ -83,8 +83,8 @@ int_fast32_t book_move(board_t * board) {
 		int_fast32_t best_score = 0;
 
 		for (int_fast32_t pos = find_pos(board->key); pos < BookSize; ++pos) {
-			
-			entry_t *entry;
+
+			entry_t entry[1];
 			read_entry(entry,pos);
 			if (entry->key != board->key) break;
 
@@ -102,7 +102,7 @@ int_fast32_t book_move(board_t * board) {
 		if (best_move != MoveNone) {
 
 			// convert PolyGlot move into Fruit move; TODO: handle promotes
-			list_t *list;
+			list_t list[1];
 			gen_legal_moves(list,board);
 
 			for (int_fast32_t i = 0; i < list->size; ++i) {
@@ -125,17 +125,17 @@ static int_fast32_t find_pos(uint_fast64_t key) {
 
 	ASSERT(left<=right);
 
-	entry_t *entry;
+	entry_t entry[1];
 	while (left < right) {
 
 		int_fast32_t mid = (left + right) / 2;
 		ASSERT(mid>=left&&mid<right);
-		
+
 		read_entry(entry,mid);
 
-		if (key <= entry->key) 
+		if (key <= entry->key)
 			right = mid;
-		else 
+		else
 			left = mid+1;
 	}
 
@@ -178,12 +178,12 @@ static uint_fast64_t read_integer(FILE * file, int_fast32_t size) {
 
 		int_fast32_t b = fgetc(file);
 
-		if (b == EOF) 
-			if (feof(file)) 
+		if (b == EOF)
+			if (feof(file))
 				my_fatal("read_integer(): fgetc(): EOF reached\n");
 			else // error
 				my_fatal("read_integer(): fgetc(): %s\n",strerror(errno));
-         
+
 		ASSERT(b>=0&&b<256);
 		n = (n << 8) | b;
 	}

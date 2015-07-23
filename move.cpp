@@ -36,13 +36,13 @@ bool move_is_ok(int_fast32_t move) {
 // move_promote()
 
 int_fast32_t move_promote(int_fast32_t move) {
-	
+
 	ASSERT(move_is_ok(move));
 	ASSERT(MOVE_IS_PROMOTE(move));
 
 	int_fast32_t code = (move >> 12) & 3, piece = PromotePiece[code];
 
-	if (SQUARE_RANK(MOVE_TO(move)) == Rank8) 
+	if (SQUARE_RANK(MOVE_TO(move)) == Rank8)
 		piece |= WhiteFlag;
 	else {
 		ASSERT(SQUARE_RANK(MOVE_TO(move))==Rank1);
@@ -98,9 +98,9 @@ int_fast32_t move_capture(int_fast32_t move, const board_t * board) {
 	ASSERT(move_is_ok(move));
 	ASSERT(board!=nullptr);
 
-	if (MOVE_IS_EN_PASSANT(move)) 
+	if (MOVE_IS_EN_PASSANT(move))
 		return PAWN_OPP(board->square[MOVE_FROM(move)]);
-   
+
 	return board->square[MOVE_TO(move)];
 }
 
@@ -188,11 +188,11 @@ int_fast32_t move_from_string(const char string[], const board_t * board) {
 	const int_fast32_t piece = board->square[from];
 
 	if (PIECE_IS_PAWN(piece)) {
-		if (to == board->ep_square) 
+		if (to == board->ep_square)
 			move |= MoveEnPassant;
 	} else if (PIECE_IS_KING(piece)) {
 		const int_fast32_t delta = to - from;
-		if (delta == +2 || delta == -2) 
+		if (delta == +2 || delta == -2)
 			move |= MoveCastle;
 	}
 	return move;

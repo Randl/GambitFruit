@@ -58,7 +58,7 @@ static option_t Option[] = {
 	{ "Futility Margin",  true, "100",   "spin",  "min 0 max 500", nullptr },
 	{ "Extended Futility Margin",  true, "300",   "spin",  "min 0 max 900", nullptr },
 	{ "Futility Pruning Depth",     true, "3",         "spin",  "min 1 max 6", nullptr },
-   
+
 	{ "Delta Pruning", true, "true", "check", "", nullptr },
 	{ "Delta Margin",  true, "50",    "spin",  "min 0 max 500", nullptr },
 
@@ -104,7 +104,7 @@ static option_t Option[] = {
 	{ "Queen Knight combo", 	true, "15", "spin", "min 0 max 1000", nullptr },
 	{ "Rook Bishop combo",	true, "15", "spin", "min 0 max 1000", nullptr },
 
-	{ "Bad Trade Value",  true, "50",    "spin",  "min 0 max 1000", nullptr }, 
+	{ "Bad Trade Value",  true, "50",    "spin",  "min 0 max 1000", nullptr },
 
 	{ "Contempt Factor",	true, "0", "spin", "min -1000 max 1000", nullptr },
 
@@ -128,11 +128,11 @@ void option_init() {
 // option_list()
 
 void option_list() {
-	for (option_t *opt = &Option[0]; opt->var != nullptr; ++opt) 
-		if (opt->declare) 
-			if (opt->extra != nullptr && *opt->extra != '\0') 
+	for (option_t *opt = &Option[0]; opt->var != nullptr; ++opt)
+		if (opt->declare)
+			if (opt->extra != nullptr && *opt->extra != '\0')
 				send("option name %s type %s default %s %s",opt->var,opt->type,opt->val,opt->extra);
-			else 
+			else
 				send("option name %s type %s default %s",opt->var,opt->type,opt->val);
 }
 
@@ -153,7 +153,7 @@ bool option_set(const char var[], const char val[]) {
 // option_get()
 
 const char * option_get(const char var[]) {
-	
+
 	ASSERT(var!=nullptr);
 
 	option_t *opt = option_find(var);

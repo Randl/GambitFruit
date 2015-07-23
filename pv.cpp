@@ -67,7 +67,7 @@ bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size) {
 	int_fast32_t move;
 	while ((move = *pv++) != MoveNone) {
 		if (pos != 0) string[pos++] = ' ';
-	
+
 		move_to_string(move,&string[pos],size-pos);
 		pos += strlen(&string[pos]);
 	}

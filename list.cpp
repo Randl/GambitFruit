@@ -58,7 +58,7 @@ void list_copy(list_t * dst, const list_t * src) {
 // list_sort()
 
 void list_sort(list_t * list) {
-	
+
 	ASSERT(list_is_ok(list));
 
 	// init
@@ -98,7 +98,7 @@ bool list_contain(const list_t * list, int_fast32_t move) {
 	ASSERT(list_is_ok(list));
 	ASSERT(move_is_ok(move));
 
-	for (int_fast32_t i = 0; i < list->size; ++i) 
+	for (int_fast32_t i = 0; i < list->size; ++i)
 		if (list->move[i] == move) return true;
 
 	return false;
@@ -129,7 +129,7 @@ void list_filter(list_t * list, board_t * board, move_test_t test, bool keep) {
 	int_fast32_t pos = 0;
 
 	for (int_fast32_t i = 0; i < LIST_SIZE(list); ++i) {
-	
+
 		ASSERT(pos>=0&&pos<=i);
 
 		const int_fast32_t move = LIST_MOVE(list,i), value = LIST_VALUE(list,i);
