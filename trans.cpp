@@ -31,28 +31,28 @@ static constexpr int_fast32_t DepthNone = -128;
 struct entry_t {
 	uint_fast32_t lock;
 	uint_fast16_t move;
+	int_fast16_t  min_value;
+	int_fast16_t  max_value;
 	int_fast8_t depth;
 	uint_fast8_t date;
 	int_fast8_t move_depth;
 	uint_fast8_t flags;
 	int_fast8_t min_depth;
 	int_fast8_t max_depth;
-	int_fast16_t  min_value;
-	int_fast16_t  max_value;
 };
 
 struct trans { // HACK: typedef'ed in trans.h
+	int_fast64_t read_nb;
+	int_fast64_t read_hit;
+	int_fast64_t write_nb;
+	int_fast64_t write_hit;
+	int_fast64_t write_collision;
 	entry_t * table;
 	uint_fast32_t size;
 	uint_fast32_t mask;
 	int_fast32_t date;
 	int_fast32_t age[DateSize];
 	uint_fast32_t used;
-	int_fast64_t read_nb;
-	int_fast64_t read_hit;
-	int_fast64_t write_nb;
-	int_fast64_t write_hit;
-	int_fast64_t write_collision;
 };
 
 // variables

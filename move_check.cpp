@@ -120,15 +120,13 @@ static void add_quiet_checks(list_t * list, const board_t * board) {
 		ASSERT(!is_pinned(board,from_sq,opp));
 
 		if (PIECE_IS_SLIDER(piece)) {
-			int_fast32_t inc;
-			for (; (inc=*inc_ptr) != IncNone; ++inc_ptr)
-				for (int_fast32_t to = from_sq+inc; board->square[to] == Empty; to += inc)
+			for (; *inc_ptr != IncNone; ++inc_ptr)
+				for (int_fast32_t to = from_sq+*inc_ptr; board->square[to] == Empty; to += *inc_ptr)
 					if (PIECE_ATTACK(board,piece,to,king))
 						LIST_ADD(list,MOVE_MAKE(from_sq,to));
 		} else {
-			int_fast32_t inc;
-			for (; (inc=*inc_ptr) != IncNone; ++inc_ptr) {
-				const int_fast32_t to = from_sq + inc;
+			for (; *inc_ptr != IncNone; ++inc_ptr) {
+				const int_fast32_t to = from_sq + *inc_ptr;
 				if (board->square[to] == Empty)
 					if (PSEUDO_ATTACK(piece,king-to))
 						LIST_ADD(list,MOVE_MAKE(from_sq,to));

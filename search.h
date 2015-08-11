@@ -31,14 +31,13 @@ constexpr int_fast32_t SearchExact   = 3;
 // types
 
 struct search_multipv_t {
-   int_fast32_t mate;
-   int_fast32_t depth;
-   int_fast32_t max_depth;
-   int_fast32_t value;
-   double time;
-   int_fast64_t node_nb;
-   char pv_string[512];
-
+	double time;
+	int_fast64_t node_nb;
+	char pv_string[512];
+	int_fast32_t mate;
+	int_fast32_t depth;
+	int_fast32_t max_depth;
+	int_fast32_t value;
 };
 
 struct search_param_t {
@@ -49,24 +48,25 @@ struct search_param_t {
 };
 
 struct search_input_t {
+	double time_limit_1;
+	double time_limit_2;
 	board_t board[1];
 	list_t list[1];
-	bool infinite;
-	bool depth_is_limited;
 	int_fast32_t depth_limit;
 	int_fast32_t multipv;
 	bool time_is_limited;
-	double time_limit_1;
-	double time_limit_2;
+	bool infinite;
+	bool depth_is_limited;
 };
 
 struct search_info_t {
+	double last_time;
 	jmp_buf buf;
-	bool can_stop;
-	bool stop;
 	int_fast32_t check_nb;
 	int_fast32_t check_inc;
-	double last_time;
+	bool can_stop;
+	bool stop;
+	
 };
 
 struct search_root_t {
@@ -84,23 +84,23 @@ struct search_root_t {
 };
 
 struct search_best_t {
+	mv_t pv[HeightMax];
 	int_fast32_t move;
 	int_fast32_t value;
 	int_fast32_t flags;
 	int_fast32_t depth;
-	mv_t pv[HeightMax];
 };
 
 struct search_current_t {
+	double time;
+	double speed;
+	double cpu;
+	int_fast64_t node_nb;
 	board_t board[1];
 	my_timer_t timer[1];
 	int_fast32_t max_depth;
 	int_fast32_t max_extensions; // Thomas
 	int_fast32_t multipv;
-	int_fast64_t node_nb;
-	double time;
-	double speed;
-	double cpu;
 };
 
 // variables

@@ -33,7 +33,7 @@ int main(int argc, char * argv[]) {
 	util_init();
 	my_random_init(); // for opening book
 
-	printf("Gambit Fruit based on Fruit 2.1 and Toga by Ryan Benitez, Thomas Gaksch and Fabien Letouzey\n Edit by Evgeniy Zheltonozhskiy\n");
+	printf("Gambit Fruit based on Fruit 2.1 and Toga by Ryan Benitez, Thomas Gaksch and Fabien Letouzey\nEdit by Evgeniy Zheltonozhskiy\n");
 
    // early initialisation (the rest is done after UCI options are parsed in protocol.cpp)
 

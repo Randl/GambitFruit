@@ -14,7 +14,9 @@
 
 struct undo_t {
 
-	bool capture;
+	uint_fast64_t key;
+	uint_fast64_t pawn_key;
+	uint_fast64_t material_key;
 
 	int_fast32_t capture_square;
 	int_fast32_t capture_piece;
@@ -32,9 +34,7 @@ struct undo_t {
 	int_fast32_t opening;
 	int_fast32_t endgame;
 
-	uint_fast64_t key;
-	uint_fast64_t pawn_key;
-	uint_fast64_t material_key;
+	bool capture;
 };
 
 // functions

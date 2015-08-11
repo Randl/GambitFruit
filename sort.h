@@ -20,6 +20,10 @@ typedef struct {
 
 
 struct sort_t {
+	board_t *board;
+	const attack_t *attack;
+	list_t list[1];
+	list_t bad[1];
 	int_fast32_t depth;
 	int_fast32_t height;
 	int_fast32_t trans_killer;
@@ -31,10 +35,6 @@ struct sort_t {
 	int_fast32_t test;
 	int_fast32_t pos;
 	int_fast32_t value;
-	board_t *board;
-	const attack_t *attack;
-	list_t list[1];
-	list_t bad[1];
 };
 
 // functions

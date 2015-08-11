@@ -24,14 +24,14 @@ static constexpr uint_fast32_t TableSize = 16384; // 256kB
 typedef pawn_info_t entry_t;
 
 struct pawn_t {
-	entry_t * table;
-	uint_fast32_t size;
-	uint_fast32_t mask;
-	uint_fast32_t used;
 	int_fast64_t read_nb;
 	int_fast64_t read_hit;
 	int_fast64_t write_nb;
 	int_fast64_t write_collision;
+	entry_t * table;
+	uint_fast32_t size;
+	uint_fast32_t mask;
+	uint_fast32_t used;
 };
 
 // constants and variables

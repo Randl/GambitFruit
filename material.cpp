@@ -61,14 +61,14 @@ static constexpr std::array<int_fast32_t, 17> RookPawnPenalty = { 15,15,13,11,9,
 typedef material_info_t entry_t;
 
 struct material_t {
-   entry_t * table;
-   uint_fast32_t size;
-   uint_fast32_t mask;
-   uint_fast32_t used;
    int_fast64_t read_nb;
    int_fast64_t read_hit;
    int_fast64_t write_nb;
    int_fast64_t write_collision;
+   entry_t * table;
+   uint_fast32_t size;
+   uint_fast32_t mask;
+   uint_fast32_t used;
 };
 
 // variables

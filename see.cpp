@@ -19,8 +19,8 @@
 // types
 
 struct alist_t {
-	int_fast32_t size;
 	int_fast32_t square[15];
+	int_fast32_t size;
 };
 
 struct alists_t {

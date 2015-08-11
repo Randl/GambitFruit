@@ -47,6 +47,12 @@ constexpr int_fast32_t StackSize = 4096;
 
 struct board_t {
 
+	uint_fast64_t key;
+	uint_fast64_t pawn_key;
+	uint_fast64_t material_key;
+
+	uint_fast64_t stack[StackSize];
+
 	int_fast32_t piece_material[ColourNb]; // Thomas
 
 	int_fast32_t square[SquareNb];
@@ -58,12 +64,12 @@ struct board_t {
 	sq_t pawn[ColourNb][9]; // was 16
 	int_fast32_t pawn_size[ColourNb];
 
-	int_fast32_t piece_nb;
 	int_fast32_t number[12]; // was 16
 
 	int_fast32_t pawn_file[ColourNb][FileNb];
 
-	bool turn;
+	int_fast32_t piece_nb;
+
 	int_fast32_t flags;
 	int_fast32_t ep_square;
 	int_fast32_t ply_nb;
@@ -75,32 +81,28 @@ struct board_t {
 	int_fast32_t endgame;
 	int_fast32_t pvalue; //Ryan
 
-	uint_fast64_t key;
-	uint_fast64_t pawn_key;
-	uint_fast64_t material_key;
-
-	uint_fast64_t stack[StackSize];
+	bool turn;
 };
 
 // functions
 
-extern bool board_is_ok         (const board_t * board);
+extern bool board_is_ok         (const board_t *board);
 
-extern void board_clear         (board_t * board);
-extern void board_copy          (board_t * dst, const board_t * src);
+extern void board_clear         (board_t *board);
+extern void board_copy          (board_t *dst, const board_t *src);
 
-extern void board_init_list     (board_t * board);
+extern void board_init_list     (board_t *board);
 
-extern bool board_is_legal      (const board_t * board);
-extern bool board_is_check      (const board_t * board);
-extern bool board_is_mate       (const board_t * board);
-extern bool board_is_stalemate  (board_t * board);
+extern bool board_is_legal      (const board_t *board);
+extern bool board_is_check      (const board_t *board);
+extern bool board_is_mate       (const board_t *board);
+extern bool board_is_stalemate  (board_t *board);
 
-extern bool board_is_repetition (const board_t * board);
+extern bool board_is_repetition (const board_t *board);
 
-extern int_fast32_t  board_material      (const board_t * board);
-extern int_fast32_t  board_opening       (const board_t * board);
-extern int_fast32_t  board_endgame       (const board_t * board);
+extern int_fast32_t  board_material      (const board_t *board);
+extern int_fast32_t  board_opening       (const board_t *board);
+extern int_fast32_t  board_endgame       (const board_t *board);
 
 #endif // !defined BOARD_H
 

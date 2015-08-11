@@ -28,9 +28,9 @@ constexpr int_fast32_t ListSize = 256;
 // types
 //TODO: test vs. std structures
 struct list_t {
-   int_fast32_t size;
    uint_fast16_t move[ListSize];
    int_fast16_t value[ListSize];
+   int_fast32_t size;
 };
 
 typedef bool (*move_test_t) (int_fast32_t move, board_t * board);
