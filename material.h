@@ -40,14 +40,14 @@ constexpr int_fast32_t MatBitbaseFlag  = 1 << 4;
 // types
 
 struct material_info_t {
+	uint_fast8_t cflags[ColourNb];
+	uint_fast8_t mul[ColourNb];
 	uint_fast32_t lock;
 	int_fast16_t phase;
 	int_fast16_t opening;
 	int_fast16_t endgame;
 	uint_fast8_t recog;
 	uint_fast8_t flags;
-	uint_fast8_t cflags[ColourNb];
-	uint_fast8_t mul[ColourNb];
 	//int_fast32_t pv[ColourNb]; /* Material without pawn and king */
 };
 

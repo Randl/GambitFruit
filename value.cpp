@@ -56,7 +56,7 @@ bool range_is_ok(int_fast32_t min, int_fast32_t max) {
 	if (!value_is_ok(min)) return false;
 	if (!value_is_ok(max)) return false;
 
-	if (min >= max) return false; // alpha-beta-like ranges cannot be null
+	if (min >= max) return false; // alpha-beta-like ranges cannot be nullptr
 
 	return true;
 }

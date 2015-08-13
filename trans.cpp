@@ -11,10 +11,7 @@
 #include "util.h"
 #include "value.h"
 
-// macros
 
-#define MIN(a,b) ((a)<=(b)?(a):(b))
-#define MAX(a,b) ((a)>=(b)?(a):(b))
 
 // constants
 
@@ -48,10 +45,10 @@ struct trans { // HACK: typedef'ed in trans.h
 	int_fast64_t write_hit;
 	int_fast64_t write_collision;
 	entry_t * table;
+	int_fast32_t age[DateSize];
 	uint_fast32_t size;
 	uint_fast32_t mask;
 	int_fast32_t date;
-	int_fast32_t age[DateSize];
 	uint_fast32_t used;
 };
 
@@ -132,6 +129,7 @@ void trans_alloc(trans_t * trans) {
 	trans->mask = size - 1;
 
 	trans->table = (entry_t *) my_malloc(trans->size*sizeof(entry_t));
+//	trans->table = new entry_t[trans->size];
 
 	trans_clear(trans);
 

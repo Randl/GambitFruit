@@ -190,6 +190,7 @@ void pawn_alloc() {
 	Pawn->size = TableSize;
 	Pawn->mask = TableSize - 1;
 	Pawn->table = (entry_t *) my_malloc(Pawn->size*sizeof(entry_t));
+//    Pawn->table = new entry_t[Pawn->size];
 
 	pawn_clear();
 

@@ -38,7 +38,7 @@ uint_fast64_t hash_key(const board_t * board) {
 	uint_fast64_t key = 0;
 
 	// pieces
-	for (uint_fast32_t colour = 0; colour < ColourNb; ++colour) {
+	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 		uint_fast32_t sq;
 		for (const sq_t *ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
 			const uint_fast32_t piece = board->square[sq];

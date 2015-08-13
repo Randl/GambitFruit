@@ -550,10 +550,10 @@ void note_moves(list_t * list, const board_t * board, int_fast32_t height, int_f
 	ASSERT(height_is_ok(height));
 	ASSERT(trans_killer==MoveNone||move_is_ok(trans_killer));
 
-	const int_fast32_t size = LIST_SIZE(list);
+	const int_fast16_t size = LIST_SIZE(list);
 
 	if (size >= 2)
-		for (int_fast32_t i = 0; i < size; ++i) {
+		for (int_fast16_t i = 0; i < size; ++i) {
 			const int_fast32_t move = LIST_MOVE(list,i);
 			list->value[i] = move_value(move,board,height,trans_killer);
 		}

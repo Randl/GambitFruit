@@ -77,7 +77,7 @@ BitBases
 
 typedef int (*PPROBE_EGBB) (int player, int* piece, int* square);
 extern PPROBE_EGBB probe_egbb;
-extern int egbb_is_loaded;
+extern bool egbb_is_loaded;
 /*
 end BitBases
 */

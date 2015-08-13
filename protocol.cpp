@@ -561,7 +561,7 @@ static bool string_start_with(const char s1[], const char s2[]) {
 // Endgame Bitbases
 
 PPROBE_EGBB probe_egbb;
-int_fast32_t egbb_is_loaded; //bool?
+bool egbb_is_loaded; //bool?
 typedef void (*PLOAD_EGBB) (const char* path, int_fast32_t cache_size, int_fast32_t load_options);
 
 static void load_egbb_library() {
@@ -582,15 +582,15 @@ static void load_egbb_library() {
         probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod,"probe_egbb_xmen");
 
         load_egbb(main_path, egbb_cache_size, egbb_load_type);
-        egbb_is_loaded = 1;
+        egbb_is_loaded = true;
         printf("Bitbase loaded\n");
     } else {
-        egbb_is_loaded = 0;
+        egbb_is_loaded = false;
         printf("Bitbase not loaded\n");
     }
 }
 
 // end of Endgame Bitbases
-
+//TODO: bitbases.h
 
 // end of protocol.cpp

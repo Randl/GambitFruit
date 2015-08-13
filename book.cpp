@@ -178,11 +178,12 @@ static uint_fast64_t read_integer(FILE * file, int_fast32_t size) {
 
 		int_fast32_t b = fgetc(file);
 
-		if (b == EOF)
+		if (b == EOF)  {
 			if (feof(file))
 				my_fatal("read_integer(): fgetc(): EOF reached\n");
 			else // error
 				my_fatal("read_integer(): fgetc(): %s\n",strerror(errno));
+		}
 
 		ASSERT(b>=0&&b<256);
 		n = (n << 8) | b;

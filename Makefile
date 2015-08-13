@@ -25,19 +25,12 @@ LDFLAGS  = -lm
 # C++
 
 CXXFLAGS += -fno-exceptions -fno-rtti
--std=c++14
-CXXFLAGS += -Wall -Wextra -Wshadow -Wstrict-aliasing -Weffc++
 
 # optimisation
 
 CXXFLAGS += -O3 -fstrict-aliasing
--flto
 CXXFLAGS += -fomit-frame-pointer
-LDFLAGS += -flto
-# CXXFLAGS += -ffast-math
-# CXXFLAGS += -funroll-loops
-CXXFLAGS += -march=native
-# CXXFLAGS += -march= westmere sandybridge ivybridge haswell broadwell i386 # SELECT ME
+# CXXFLAGS += -march=athlon-xp # SELECT ME
 
 # strip
 

@@ -252,9 +252,9 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 	ASSERT(board_is_legal(board));
 }
 
-// move_do_null()
+// move_do_nullptr()
 
-void move_do_null(board_t * board, undo_t * undo) {
+void move_do_nullptr(board_t * board, undo_t * undo) {
 
 	ASSERT(board!=nullptr);
 	ASSERT(undo!=nullptr);
@@ -284,7 +284,7 @@ void move_do_null(board_t * board, undo_t * undo) {
 	}
 
 	// update move number
-	board->ply_nb = 0; // HACK: null move is considered as a conversion
+	board->ply_nb = 0; // HACK: nullptr move is considered as a conversion
 
 	// update last square
 	board->cap_sq = SquareNone;
@@ -293,9 +293,9 @@ void move_do_null(board_t * board, undo_t * undo) {
 	ASSERT(board_is_ok(board));
 }
 
-// move_undo_null()
+// move_undo_nullptr()
 
-void move_undo_null(board_t * board, const undo_t * undo) {
+void move_undo_nullptr(board_t * board, const undo_t * undo) {
 
 	ASSERT(board!=nullptr);
 	ASSERT(undo!=nullptr);

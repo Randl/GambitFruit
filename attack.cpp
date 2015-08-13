@@ -216,7 +216,7 @@ static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t targe
 
 bool is_attacked(const board_t * board, int_fast32_t to, int_fast32_t colour) {
 
-	ASSERT(board!=NULL);
+	ASSERT(board!=nullptr);
 	ASSERT(SQUARE_IS_OK(to));
 	ASSERT(COLOUR_IS_OK(colour));
 
@@ -280,7 +280,7 @@ bool line_is_empty(const board_t * board, int_fast32_t from, int_fast32_t to) {
 bool is_pinned(const board_t * board, int_fast32_t square, int_fast32_t colour) {
 
 
-	ASSERT(board!=NULL);
+	ASSERT(board!=nullptr);
 	ASSERT(SQUARE_IS_OK(square));
 	ASSERT(COLOUR_IS_OK(colour));
 
@@ -306,7 +306,7 @@ bool is_pinned(const board_t * board, int_fast32_t square, int_fast32_t colour) 
 
 bool attack_is_ok(const attack_t * attack) {
 
-	if (attack == NULL) return false;
+	if (attack == nullptr) return false;
 
 	// checks
 
@@ -328,8 +328,8 @@ bool attack_is_ok(const attack_t * attack) {
 
 void attack_set(attack_t * attack, const board_t * board) {
 
-	ASSERT(attack!=NULL);
-	ASSERT(board!=NULL);
+	ASSERT(attack!=nullptr);
+	ASSERT(board!=nullptr);
 
 	// init
 
@@ -402,7 +402,7 @@ void attack_set(attack_t * attack, const board_t * board) {
 
 bool piece_attack_king(const board_t * board, int_fast32_t piece, int_fast32_t from, int_fast32_t king) {
 
-	ASSERT(board!=NULL);
+	ASSERT(board!=nullptr);
 	ASSERT(piece_is_ok(piece));
 	ASSERT(SQUARE_IS_OK(from));
 	ASSERT(SQUARE_IS_OK(king));

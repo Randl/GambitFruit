@@ -30,7 +30,7 @@ static const bool UseSlowDebug = false;
 
 bool board_is_ok(const board_t * board) {
 
-    if (board == NULL) return false;
+    if (board == nullptr) return false;
 
     // optional heavy DEBUG mode
     if (!UseSlowDebug) return true;
@@ -149,7 +149,7 @@ bool board_is_ok(const board_t * board) {
 
 void board_clear(board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
 
     // edge squares
     for (int_fast32_t sq = 0; sq < SquareNb; sq++) {
@@ -173,7 +173,7 @@ void board_clear(board_t * board) {
 
 void board_copy(board_t * dst, const board_t * src) {
 
-   ASSERT(dst!=NULL);
+   ASSERT(dst!=nullptr);
    ASSERT(board_is_ok(src));
 
    *dst = *src;
@@ -183,173 +183,151 @@ void board_copy(board_t * dst, const board_t * src) {
 
 void board_init_list(board_t * board) {
 
-   int sq_64, sq, piece;
-   int colour, pos;
-   int i, size;
-   int square;
-   int order;
-   int file;
+    ASSERT(board!=nullptr);
 
-   ASSERT(board!=NULL);
+    // init
+    for (int_fast32_t sq = 0; sq < SquareNb; ++sq)
+        board->pos[sq] = -1;
 
-   // init
+    board->piece_nb = 0;
+    for (int_fast32_t piece = 0; piece < 12; piece++)
+        board->number[piece] = 0;
 
-   for (sq = 0; sq < SquareNb; sq++) {
-      board->pos[sq] = -1;
-   }
+    // piece lists
+    for (int_fast32_t colour = 0; colour < ColourNb; colour++) {
 
-   board->piece_nb = 0;
-   for (piece = 0; piece < 12; piece++) board->number[piece] = 0;
+        // piece list
+        int_fast32_t pos = 0;
+        board->piece_material[colour] = 0; // Thomas
 
-   // piece lists
+        for (int_fast32_t sq_64 = 0; sq_64 < 64; sq_64++) {
 
-   for (colour = 0; colour < ColourNb; colour++) {
+            int_fast32_t sq = SQUARE_FROM_64(sq_64), piece = board->square[sq];
+            if (piece != Empty && !piece_is_ok(piece)) my_fatal("board_init_list(): illegal position\n");
 
-      // piece list
+            if (COLOUR_IS(piece,colour) && !PIECE_IS_PAWN(piece)) {
 
-      pos = 0;
-	  board->piece_material[colour] = 0; // Thomas
+                if (pos >= 16) my_fatal("board_init_list(): illegal position\n");
+                ASSERT(pos>=0&&pos<16);
 
-      for (sq_64 = 0; sq_64 < 64; sq_64++) {
+                board->pos[sq] = pos;
+                board->piece[colour][pos] = sq;
+                ++pos;
 
-         sq = SQUARE_FROM_64(sq_64);
-         piece = board->square[sq];
-         if (piece != Empty && !piece_is_ok(piece)) my_fatal("board_init_list(): illegal position\n");
+                board->piece_nb++;
+                board->number[PIECE_TO_12(piece)]++;
 
-         if (COLOUR_IS(piece,colour) && !PIECE_IS_PAWN(piece)) {
-
-            if (pos >= 16) my_fatal("board_init_list(): illegal position\n");
-            ASSERT(pos>=0&&pos<16);
-
-            board->pos[sq] = pos;
-            board->piece[colour][pos] = sq;
-            pos++;
-
-            board->piece_nb++;
-            board->number[PIECE_TO_12(piece)]++;
-
-			if (piece != WK && piece != BK) // Thomas
-				board->piece_material[colour] += VALUE_PIECE(piece);
-         }
-      }
-
-      if (board->number[COLOUR_IS_WHITE(colour)?WhiteKing12:BlackKing12] != 1) my_fatal("board_init_list(): illegal position\n");
-	  if (board->number[WhiteBishop12] >= 10) printf("illegal position!\n");
-
-      ASSERT(pos>=1&&pos<=16);
-      board->piece[colour][pos] = SquareNone;
-      board->piece_size[colour] = pos;
-
-      // MV sort
-
-      size = board->piece_size[colour];
-
-      for (i = 1; i < size; i++) {
-
-         square = board->piece[colour][i];
-         piece = board->square[square];
-         order = PIECE_ORDER(piece);
-
-         for (pos = i; pos > 0 && order > PIECE_ORDER(board->square[(sq=board->piece[colour][pos-1])]); pos--) {
-            ASSERT(pos>0&&pos<size);
-            board->piece[colour][pos] = sq;
-            ASSERT(board->pos[sq]==pos-1);
-            board->pos[sq] = pos;
-         }
-
-         ASSERT(pos>=0&&pos<size);
-         board->piece[colour][pos] = square;
-         ASSERT(board->pos[square]==i);
-         board->pos[square] = pos;
-      }
-
-      // debug
-
-      if (DEBUG) {
-
-         for (i = 0; i < board->piece_size[colour]; i++) {
-
-            sq = board->piece[colour][i];
-            ASSERT(board->pos[sq]==i);
-
-            if (i == 0) { // king
-               ASSERT(PIECE_IS_KING(board->square[sq]));
-            } else {
-               ASSERT(!PIECE_IS_KING(board->square[sq]));
-               ASSERT(PIECE_ORDER(board->square[board->piece[colour][i]])<=PIECE_ORDER(board->square[board->piece[colour][i-1]]));
+                if (piece != WK && piece != BK) // Thomas
+                    board->piece_material[colour] += VALUE_PIECE(piece);
             }
-         }
-      }
+        }
 
-      // pawn list
+        if (board->number[COLOUR_IS_WHITE(colour)?WhiteKing12:BlackKing12] != 1) my_fatal("board_init_list(): illegal position\n");
+        if (board->number[WhiteBishop12] >= 10) printf("illegal position!\n");
 
-      for (file = 0; file < FileNb; file++) {
-         board->pawn_file[colour][file] = 0;
-      }
+        ASSERT(pos>=1&&pos<=16);
+        board->piece[colour][pos] = SquareNone;
+        board->piece_size[colour] = pos;
 
-      pos = 0;
+        // MV sort
+        int_fast32_t size = board->piece_size[colour];
 
-      for (sq_64 = 0; sq_64 < 64; sq_64++) {
+        for (int_fast32_t i = 1; i < size; i++) {
 
-         sq = SQUARE_FROM_64(sq_64);
-         piece = board->square[sq];
+            int_fast32_t square = board->piece[colour][i], piece = board->square[square], order = PIECE_ORDER(piece);
 
-         if (COLOUR_IS(piece,colour) && PIECE_IS_PAWN(piece)) {
+            int_fast32_t sq = 0;
+            for (pos = i; pos > 0 && order > PIECE_ORDER(board->square[(sq=board->piece[colour][pos-1])]); pos--) {
+                ASSERT(pos>0&&pos<size);
+                board->piece[colour][pos] = sq;
+                ASSERT(board->pos[sq]==pos-1);
+                board->pos[sq] = pos;
+            }
 
-            if (pos >= 8 || SQUARE_IS_PROMOTE(sq)) my_fatal("board_init_list(): illegal position\n");
-            ASSERT(pos>=0&&pos<8);
+            ASSERT(pos>=0&&pos<size);
+            board->piece[colour][pos] = square;
+            ASSERT(board->pos[square]==i);
+            board->pos[square] = pos;
+        }
 
-            board->pos[sq] = pos;
-            board->pawn[colour][pos] = sq;
-            pos++;
+        // debug
+        if (DEBUG) {
 
-            board->piece_nb++;
-            board->number[PIECE_TO_12(piece)]++;
-            board->pawn_file[colour][SQUARE_FILE(sq)] |= BIT(PAWN_RANK(sq,colour));
+            for (int_fast32_t i = 0; i < board->piece_size[colour]; i++) {
+                int_fast32_t sq = board->piece[colour][i];
+                ASSERT(board->pos[sq]==i);
 
-			board->piece_material[colour] += VALUE_PIECE(piece); // Thomas
-         }
-      }
+                if (i == 0) { // king
+                    ASSERT(PIECE_IS_KING(board->square[sq]));
+                } else {
+                    ASSERT(!PIECE_IS_KING(board->square[sq]));
+                    ASSERT(PIECE_ORDER(board->square[board->piece[colour][i]])<=PIECE_ORDER(board->square[board->piece[colour][i-1]]));
+                }
+            }
+        }
 
-      ASSERT(pos>=0&&pos<=8);
-      board->pawn[colour][pos] = SquareNone;
-      board->pawn_size[colour] = pos;
+        // pawn list
 
-      if (board->piece_size[colour] + board->pawn_size[colour] > 16) my_fatal("board_init_list(): illegal position\n");
-   }
+        for (int_fast32_t file = 0; file < FileNb; file++)
+            board->pawn_file[colour][file] = 0;
 
-   // last square
+        pos = 0;
 
-   board->cap_sq = SquareNone;
+        for (int_fast32_t sq_64 = 0; sq_64 < 64; sq_64++) {
 
-   // PST
+            int_fast32_t sq = SQUARE_FROM_64(sq_64), piece = board->square[sq];
 
-   board->opening = board_opening(board);
-   board->endgame = board_endgame(board);
+            if (COLOUR_IS(piece,colour) && PIECE_IS_PAWN(piece)) {
 
-   // hash key
+                if (pos >= 8 || SQUARE_IS_PROMOTE(sq)) my_fatal("board_init_list(): illegal position\n");
+                ASSERT(pos>=0&&pos<8);
 
-   for (i = 0; i < board->ply_nb; i++) board->stack[i] = 0; // HACK
-   board->sp = board->ply_nb;
+                board->pos[sq] = pos;
+                board->pawn[colour][pos] = sq;
+                ++pos;
 
-   board->key = hash_key(board);
-   board->pawn_key = hash_pawn_key(board);
-   board->material_key = hash_material_key(board);
+                board->piece_nb++;
+                board->number[PIECE_TO_12(piece)]++;
+                board->pawn_file[colour][SQUARE_FILE(sq)] |= BIT(PAWN_RANK(sq,colour));
 
-   // legality
+                board->piece_material[colour] += VALUE_PIECE(piece); // Thomas
+            }
+        }
 
-   if (!board_is_legal(board)) my_fatal("board_init_list(): illegal position\n");
+        ASSERT(pos>=0&&pos<=8);
+        board->pawn[colour][pos] = SquareNone;
+        board->pawn_size[colour] = pos;
 
-   // debug
+        if (board->piece_size[colour] + board->pawn_size[colour] > 16) my_fatal("board_init_list(): illegal position\n");
+    }
 
-   ASSERT(board_is_ok(board));
+    // last square
+    board->cap_sq = SquareNone;
+
+    // PST
+    board->opening = board_opening(board);
+    board->endgame = board_endgame(board);
+
+    // hash key
+    for (int_fast32_t i = 0; i < board->ply_nb; i++) board->stack[i] = 0; // HACK
+    board->sp = board->ply_nb;
+
+    board->key = hash_key(board);
+    board->pawn_key = hash_pawn_key(board);
+    board->material_key = hash_material_key(board);
+
+    // legality
+    if (!board_is_legal(board)) my_fatal("board_init_list(): illegal position\n");
+
+    // debug
+    ASSERT(board_is_ok(board));
 }
 
 // board_is_legal()
 
 bool board_is_legal(const board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
     return !IS_IN_CHECK(board,COLOUR_OPP(board->turn));
 }
 
@@ -357,7 +335,7 @@ bool board_is_legal(const board_t * board) {
 
 bool board_is_check(const board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
     return IS_IN_CHECK(board,board->turn);
 }
 
@@ -365,7 +343,7 @@ bool board_is_check(const board_t * board) {
 
 bool board_is_mate(const board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
 
     attack_t attack[1];
     attack_set(attack,board);
@@ -380,7 +358,7 @@ bool board_is_mate(const board_t * board) {
 
 bool board_is_stalemate(board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
 
     // init
     if (IS_IN_CHECK(board,board->turn)) return false; // in check => not stalemate
@@ -401,38 +379,32 @@ bool board_is_stalemate(board_t * board) {
 
 bool board_is_repetition(const board_t * board) {
 
-   int i, z;
+    ASSERT(board!=nullptr);
 
-   ASSERT(board!=NULL);
-
-   // 50-move rule
-
-   if (board->ply_nb >= 100) { // potential draw
-
-      if (board->ply_nb > 100) return true;
-
-      ASSERT(board->ply_nb==100);
-      return !board_is_mate(board);
-   }
+    // 50-move rule
+    if (board->ply_nb >= 100) { // potential draw
+        if (board->ply_nb > 100) return true;
+        ASSERT(board->ply_nb==100);
+        return !board_is_mate(board);
+    }
 
    // position repetition
-
-   ASSERT(board->sp>=board->ply_nb);
+    ASSERT(board->sp>=board->ply_nb);
    //z = 0;
-   for (i = 4; i <= board->ply_nb; i += 2) {
-       if (board->stack[board->sp-i] == board->key) return true;
-	   //if (board->stack[board->sp-i] == board->key) z++;
-	   //if (z >= 2) return true; // value 2 for 3-Times Repetition
-   }
+    for (int_fast32_t i = 4; i <= board->ply_nb; i += 2) {
+        if (board->stack[board->sp-i] == board->key) return true;
+        //if (board->stack[board->sp-i] == board->key) z++;
+        //if (z >= 2) return true; // value 2 for 3-Times Repetition
+    }
 
-   return false;
+    return false;
 }
 
 // board_opening()
 
 int board_opening(const board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
 
     int_fast32_t opening = 0;
 
@@ -456,7 +428,7 @@ int board_opening(const board_t * board) {
 
 int board_endgame(const board_t * board) {
 
-    ASSERT(board!=NULL);
+    ASSERT(board!=nullptr);
     int_fast32_t endgame = 0;
 
     for (int_fast32_t colour = 0; colour < ColourNb; colour++) {

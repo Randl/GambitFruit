@@ -56,23 +56,21 @@ struct board_t {
 	int_fast32_t piece_material[ColourNb]; // Thomas
 
 	int_fast32_t square[SquareNb];
-	int_fast32_t pos[SquareNb];
+	int_fast8_t pos[SquareNb];
 
 	sq_t piece[ColourNb][17]; // was 32
-	int_fast32_t piece_size[ColourNb];
+	int_fast8_t piece_size[ColourNb];
 
 	sq_t pawn[ColourNb][9]; // was 16
-	int_fast32_t pawn_size[ColourNb];
+	int_fast8_t pawn_size[ColourNb];
 
 	int_fast32_t number[12]; // was 16
 
-	int_fast32_t pawn_file[ColourNb][FileNb];
+	int_fast8_t pawn_file[ColourNb][FileNb];
 
-	int_fast32_t piece_nb;
 
 	int_fast32_t flags;
 	int_fast32_t ep_square;
-	int_fast32_t ply_nb;
 	int_fast32_t sp; // TODO: MOVE ME?
 
 	int_fast32_t cap_sq;
@@ -80,6 +78,9 @@ struct board_t {
 	int_fast32_t opening;
 	int_fast32_t endgame;
 	int_fast32_t pvalue; //Ryan
+
+	int_fast16_t ply_nb;
+	int_fast8_t piece_nb;
 
 	bool turn;
 };

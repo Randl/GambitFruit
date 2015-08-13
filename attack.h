@@ -31,9 +31,9 @@
 // types
 
 struct attack_t {
-	int_fast32_t dn;
 	int_fast32_t ds[2+1];
 	int_fast32_t di[2+1];
+	int_fast32_t dn;
 };
 
 // variables

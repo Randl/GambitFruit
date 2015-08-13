@@ -12,7 +12,7 @@
 
 // constants
 
-constexpr int_fast32_t ListSize = 256;
+constexpr int_fast16_t ListSize = 256;
 
 // macros
 
@@ -30,7 +30,7 @@ constexpr int_fast32_t ListSize = 256;
 struct list_t {
    uint_fast16_t move[ListSize];
    int_fast16_t value[ListSize];
-   int_fast32_t size;
+   int_fast16_t size;
 };
 
 typedef bool (*move_test_t) (int_fast32_t move, board_t * board);

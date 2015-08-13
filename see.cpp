@@ -20,7 +20,7 @@
 
 struct alist_t {
 	int_fast32_t square[15];
-	int_fast32_t size;
+	int_fast8_t size;
 };
 
 struct alists_t {
@@ -214,19 +214,18 @@ static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to,
 	ASSERT(COLOUR_IS_OK(colour));
 
 	// piece attacks
-	int_fast32_t from;
-	for (const sq_t *ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ++ptr) {
-		int_fast32_t piece = board->square[from], delta = to - from;
+	for (const sq_t *ptr = &board->piece[colour][0]; *ptr != SquareNone; ++ptr) {
+		const int_fast32_t piece = board->square[*ptr], delta = to - *ptr;
 
 		if (PSEUDO_ATTACK(piece,delta)) {
 			int_fast32_t inc = DELTA_INC_ALL(delta);
 			ASSERT(inc!=IncNone);
 
-			int_fast32_t sq = from;
+			int_fast32_t sq = *ptr;
 			do {
 				sq += inc;
 				if (sq == to) { // attack
-					alist_add(alist,from,board);
+					alist_add(alist,*ptr,board);
 					break;
 				}
 			} while (board->square[sq] == Empty);
@@ -234,8 +233,7 @@ static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to,
 	}
 
 	// pawn attacks
-	int_fast32_t inc = PAWN_MOVE_INC(colour), pawn = PAWN_MAKE(colour);
-	from = to - (inc-1);
+	int_fast32_t inc = PAWN_MOVE_INC(colour), pawn = PAWN_MAKE(colour), from = to - (inc-1);
 
 	if (board->square[from] == pawn) alist_add(alist,from,board);
 	from = to - (inc+1);

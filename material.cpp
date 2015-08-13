@@ -30,8 +30,6 @@ static constexpr int_fast32_t TotalPhase = PawnPhase * 16 + KnightPhase * 4 + Bi
 
 // constants and variables
 
-#define ABS(x) ((x)<0?-(x):(x))
-
 //static /* const */ int_fast32_t MaterialWeight = 256; // 100%
 
 static /*const*/ int_fast32_t PawnOpening   = 80; // was 100
@@ -125,7 +123,7 @@ void material_alloc() {
 	Material->size = TableSize;
 	Material->mask = TableSize - 1;
 	Material->table = (entry_t *) my_malloc(Material->size*sizeof(entry_t));
-
+//    Material->table = new entry_t[Material->size];
 	material_clear();
 
 }

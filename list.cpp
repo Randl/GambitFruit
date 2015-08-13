@@ -62,15 +62,14 @@ void list_sort(list_t * list) {
 	ASSERT(list_is_ok(list));
 
 	// init
-
-	const int_fast32_t size = list->size;
+	const int_fast16_t size = list->size;
 	list->value[size] = -32768; // HACK: sentinel
 
-   // insert sort (stable)
+   // insert sort (stable) TODO: better sort?
 
-	for (int_fast32_t i = size-2; i >= 0; --i) {
+	for (int_fast16_t i = size-2; i >= 0; --i) {
 		const int_fast32_t move = list->move[i], value = list->value[i];
-		int_fast32_t j;
+		int_fast16_t j;
 		for (j = i; value < list->value[j+1]; ++j) {
 			list->move[j] = list->move[j+1];
 			list->value[j] = list->value[j+1];
@@ -83,7 +82,6 @@ void list_sort(list_t * list) {
 	}
 
 	// debug
-
 	if (DEBUG) {
 		for (int_fast32_t i = 0; i < size-1; ++i) {
 			ASSERT(list->value[i]>=list->value[i+1]);
