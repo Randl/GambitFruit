@@ -29,15 +29,15 @@ struct alists_t {
 
 // prototypes
 
-static int_fast32_t  see_rec       (alists_t * alists, const board_t * board, int_fast32_t colour, int_fast32_t to, int_fast32_t piece_value);
+static int_fast32_t  see_rec       (alists_t * alists, const board_t * board, int_fast8_t colour, int_fast32_t to, int_fast32_t piece_value);
 
-static void alist_build   (alist_t * alist, const board_t * board, int_fast32_t to, int_fast32_t colour);
+static void alist_build   (alist_t * alist, const board_t * board, int_fast32_t to, int_fast8_t colour);
 static void alists_hidden (alists_t * alists, const board_t * board, int_fast32_t from, int_fast32_t to);
 
 static void alist_clear   (alist_t * alist);
 static void alist_add     (alist_t * alist, int_fast32_t square, const board_t * board);
 static void alist_remove  (alist_t * alist, int_fast32_t pos);
-static int_fast32_t  alist_pop     (alist_t * alist, const board_t * board);
+static int_fast32_t  alist_pop     (alist_t * alist);
 
 // functions
 
@@ -119,7 +119,7 @@ int_fast32_t see_move(int_fast32_t move, const board_t * board) {
 
 // see_square()
 /*
-int_fast32_t see_square(const board_t * board, int_fast32_t to, int_fast32_t colour) {
+int_fast32_t see_square(const board_t * board, int_fast32_t to, int_fast8_t colour) {
 
    int_fast32_t att, def;
    alists_t alists[1];
@@ -166,7 +166,7 @@ int_fast32_t see_square(const board_t * board, int_fast32_t to, int_fast32_t col
 */
 // see_rec()
 
-static int_fast32_t see_rec(alists_t * alists, const board_t * board, int_fast32_t colour, int_fast32_t to, int_fast32_t piece_value) {
+static int_fast32_t see_rec(alists_t * alists, const board_t * board, int_fast8_t colour, int_fast32_t to, int_fast32_t piece_value) {
 
 	ASSERT(alists!=nullptr);
 	ASSERT(board!=nullptr);
@@ -175,7 +175,7 @@ static int_fast32_t see_rec(alists_t * alists, const board_t * board, int_fast32
 	ASSERT(piece_value>0);
 
 	// find the least valuable attacker
-	int_fast32_t from = alist_pop(alists->alist[colour],board);
+	int_fast32_t from = alist_pop(alists->alist[colour]);
 	if (from == SquareNone) return 0; // no more attackers
 
 	// find hidden attackers
@@ -206,7 +206,7 @@ static int_fast32_t see_rec(alists_t * alists, const board_t * board, int_fast32
 
 // alist_build()
 
-static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to, int_fast32_t colour) {
+static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to, int_fast8_t colour) {
 
 	ASSERT(alist!=nullptr);
 	ASSERT(board!=nullptr);
@@ -316,7 +316,7 @@ static void alist_remove(alist_t * alist, int_fast32_t pos) {
 
 // alist_pop()
 
-static int_fast32_t alist_pop(alist_t * alist, const board_t * board) {
+static int_fast32_t alist_pop(alist_t * alist) {
 
 	ASSERT(alist!=nullptr);
 	ASSERT(board!=nullptr);

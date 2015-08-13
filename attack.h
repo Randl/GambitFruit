@@ -48,11 +48,11 @@ extern std::array<int_fast32_t, IncNb> IncMask;
 
 extern void attack_init   ();
 
-extern bool is_attacked   (const board_t * board, int_fast32_t to, int_fast32_t colour);
+extern bool is_attacked   (const board_t * board, int_fast32_t to, int_fast8_t colour);
 
 extern bool line_is_empty (const board_t * board, int_fast32_t from, int_fast32_t to);
 
-extern bool is_pinned     (const board_t * board, int_fast32_t square, int_fast32_t colour);
+extern bool is_pinned     (const board_t * board, int_fast32_t square, int_fast8_t colour);
 
 extern bool attack_is_ok  (const attack_t * attack);
 extern void attack_set    (attack_t * attack, const board_t * board);

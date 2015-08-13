@@ -257,7 +257,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
    // pawn_file[]
 
 #if DEBUG
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
+	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
 		std::array<int_fast32_t, FileNb> pawn_file;
 		const int_fast32_t me = colour;
@@ -297,7 +297,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
    // features and scoring
 
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
+	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
 		const int_fast32_t me = colour, opp = COLOUR_OPP(me);
 		int_fast32_t  sq;
@@ -315,7 +315,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			if (rank == Rank2) flags[me] |= BackRankFlag;
 
 			// features
-			bool backward = false, candidate = false, doubled = false, isolated = false, open = false, passed = false;
+			bool backward = false, candidate = false, doubled = false, isolated = false, open = false;// passed = false;
 
 			int_fast32_t t1 = board->pawn_file[me][file-1] | board->pawn_file[me][file+1], t2 = board->pawn_file[me][file] | BitRev[board->pawn_file[opp][file]];
 
@@ -374,7 +374,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 
 			if (((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitGT[rank]) == 0) {
 
-				passed = true;
+				//passed = true;
 				passed_bits[me] |= BIT(file);
 
 			} else {

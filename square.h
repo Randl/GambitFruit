@@ -84,7 +84,7 @@ constexpr int_fast32_t Light = 1;
 
 // types
 
-typedef int_fast32_t sq_t; //uint_fast8_t
+typedef uint_fast16_t sq_t; //uint_fast8_t
 
 // "constants"
 

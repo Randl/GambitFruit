@@ -129,11 +129,12 @@ void option_init() {
 
 void option_list() {
 	for (option_t *opt = &Option[0]; opt->var != nullptr; ++opt)
-		if (opt->declare)
+		if (opt->declare)  {
 			if (opt->extra != nullptr && *opt->extra != '\0')
 				send("option name %s type %s default %s %s",opt->var,opt->type,opt->val,opt->extra);
 			else
 				send("option name %s type %s default %s",opt->var,opt->type,opt->val);
+		}
 }
 
 // option_set()

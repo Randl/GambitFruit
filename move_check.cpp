@@ -23,7 +23,7 @@ static void add_castle_checks     (list_t * list, board_t * board);
 
 static void add_check             (list_t * list, int_fast32_t move, board_t * board);
 
-static void find_pins             (int_fast32_t list[], const board_t * board);
+static void find_pins             (uint_fast16_t list[], const board_t * board);
 
 // functions
 
@@ -53,7 +53,7 @@ static void add_quiet_checks(list_t * list, const board_t * board)  {
     // init
     const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board,opp);
 
-    int_fast32_t pin[8+1];
+    uint_fast16_t pin[8+1];
     find_pins(pin,board);
 
     // indirect checks
@@ -280,7 +280,7 @@ bool move_is_check(int_fast32_t move, board_t * board)  {
 
 // find_pins()
 
-static void find_pins(int_fast32_t list[], const board_t * board)  {
+static void find_pins(uint_fast16_t list[], const board_t * board)  {
 
     ASSERT(list!=nullptr);
     ASSERT(board!=nullptr);

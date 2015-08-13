@@ -11,10 +11,10 @@
 
 // constants
 
-constexpr int_fast32_t ColourNone = -1;
-constexpr int_fast32_t White = 0;
-constexpr int_fast32_t Black = 1;
-constexpr int_fast32_t ColourNb = 2;
+constexpr int_fast8_t ColourNone = -1;
+constexpr int_fast8_t White = 0;
+constexpr int_fast8_t Black = 1;
+constexpr int_fast8_t ColourNb = 2;
 
 constexpr int_fast32_t WhiteFlag = 1 << White;
 constexpr int_fast32_t BlackFlag = 1 << Black;

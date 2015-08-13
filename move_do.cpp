@@ -173,8 +173,9 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 			square_move(board,H8,F8,rook,true);
 		else if (to == C8)
 			square_move(board,A8,D8,rook,true);
-		else
+		else  {
 			ASSERT(false);
+		}
 	}
 
 	// debug
@@ -206,8 +207,9 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 			square_move(board,F8,H8,rook,false);
 		else if (to == C8)
 			square_move(board,D8,A8,rook,false);
-		else
+		else  {
 			ASSERT(false);
+		}
 	}
 
 	// move the piece backward
@@ -331,7 +333,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 	ASSERT(pos>=0);
 
 	const int_fast32_t piece_12 = PIECE_TO_12(piece);
-	const int_fast32_t colour = PIECE_COLOUR(piece);
+	const int_fast8_t colour = PIECE_COLOUR(piece);
 
 	// square
 	ASSERT(board->square[square]==piece);
@@ -535,7 +537,7 @@ static void square_move(board_t * board, int_fast32_t from, int_fast32_t to, int
 	ASSERT(update==true||update==false);
 
 	// init
-	const int_fast32_t colour = PIECE_COLOUR(piece), pos = board->pos[from];
+	const int_fast8_t colour = PIECE_COLOUR(piece), pos = board->pos[from];
 	ASSERT(pos>=0);
 
 	// from

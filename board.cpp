@@ -49,13 +49,13 @@ bool board_is_ok(const board_t * board) {
                 if (!piece_is_ok(piece)) return false;
                 if (!PIECE_IS_PAWN(piece)) {
 
-                    const int_fast32_t colour = PIECE_COLOUR(piece);
+                    const int_fast8_t colour = PIECE_COLOUR(piece);
                     if (pos < 0 || pos >= board->piece_size[colour]) return false;
                     if (board->piece[colour][pos] != sq) return false;
                 } else { // pawn
                     if (SQUARE_IS_PROMOTE(sq)) return false;
 
-                    const int_fast32_t colour = PIECE_COLOUR(piece);
+                    const int_fast8_t colour = PIECE_COLOUR(piece);
                     if (pos < 0 || pos >= board->pawn_size[colour]) return false;
                     if (board->pawn[colour][pos] != sq) return false;
                 }
@@ -70,7 +70,7 @@ bool board_is_ok(const board_t * board) {
     }
 
     // piece lists
-    for (int_fast32_t colour = 0; colour < ColourNb; colour++) {
+    for (int_fast8_t colour = 0; colour < ColourNb; colour++) {
 
         // piece list
         int_fast32_t size = board->piece_size[colour];
@@ -194,7 +194,7 @@ void board_init_list(board_t * board) {
         board->number[piece] = 0;
 
     // piece lists
-    for (int_fast32_t colour = 0; colour < ColourNb; colour++) {
+    for (int_fast8_t colour = 0; colour < ColourNb; colour++) {
 
         // piece list
         int_fast32_t pos = 0;
@@ -408,7 +408,7 @@ int board_opening(const board_t * board) {
 
     int_fast32_t opening = 0;
 
-    for (int_fast32_t colour = 0; colour < ColourNb; colour++) {
+    for (int_fast8_t colour = 0; colour < ColourNb; colour++) {
 
         for (const sq_t *ptr = &board->piece[colour][0]; *ptr != SquareNone; ptr++) {
             int_fast32_t piece = board->square[*ptr];
@@ -431,7 +431,7 @@ int board_endgame(const board_t * board) {
     ASSERT(board!=nullptr);
     int_fast32_t endgame = 0;
 
-    for (int_fast32_t colour = 0; colour < ColourNb; colour++) {
+    for (int_fast8_t colour = 0; colour < ColourNb; colour++) {
 
         for (const sq_t *ptr = &board->piece[colour][0]; *ptr != SquareNone; ++ptr) {
             int_fast32_t piece = board->square[*ptr];

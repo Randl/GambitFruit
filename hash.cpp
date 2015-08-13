@@ -74,7 +74,7 @@ uint_fast64_t hash_pawn_key(const board_t * board) {
 	uint_fast64_t key = 0;
 
 	// pawns
-	for (int_fast32_t colour = 0; colour < ColourNb; ++colour) {
+	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 		int_fast32_t sq;
 		for (const sq_t *ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
 			const int_fast32_t piece = board->square[sq];
@@ -137,7 +137,7 @@ uint_fast64_t hash_ep_key(int_fast32_t square) {
 
 // hash_turn_key()
 
-uint_fast64_t hash_turn_key(int_fast32_t colour) {
+uint_fast64_t hash_turn_key(int_fast8_t colour) {
 
 	ASSERT(COLOUR_IS_OK(colour));
 

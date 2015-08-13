@@ -1,7 +1,9 @@
 
 # files
 
-EXE = gfruit
+BUILDDIR  = obj/
+TARGETDIR = bin/
+EXE       = gfruit
 
 OBJS = attack.o board.o book.o eval.o fen.o hash.o list.o main.o material.o \
        move.o move_check.o move_do.o move_evasion.o move_gen.o move_legal.o \
@@ -11,10 +13,12 @@ OBJS = attack.o board.o book.o eval.o fen.o hash.o list.o main.o material.o \
 
 # rules
 
-all: $(EXE) .depend
+Debug: $(EXE)
 
 clean:
-	$(RM) *.o .depend gmon.out
+	$(RM) -r $(OBJDIR) .depend gmon.out
+
+remake: clean all
 
 # general
 
@@ -24,25 +28,27 @@ LDFLAGS  = -lm
 
 # C++
 
-CXXFLAGS += -fno-exceptions -fno-rtti
+CXXFLAGS += -fno-exceptions -fno-rtti -std=c++14
+CXXFLAGS += -Wall -Wextra -Wshadow -Wstrict-aliasing -Weffc++
 
 # optimisation
 
-CXXFLAGS += -O3 -fstrict-aliasing
+CXXFLAGS += -O3 -fstrict-aliasing -flto
 CXXFLAGS += -fomit-frame-pointer
-# CXXFLAGS += -march=athlon-xp # SELECT ME
+LDFLAGS += -flto
+# CXXFLAGS += -ffast-math -funroll-loops
+CXXFLAGS += -march=native
+# CXXFLAGS += -march= westmere sandybridge ivybridge haswell broadwell i386 # SELECT ME
 
 # strip
 
 LDFLAGS += -s
 
-# dependencies
+$(OBJDIR)/%.o: %.c
+	$(CXX) -c -o $@ $< $(CPPFLAGS)
 
-$(EXE): $(OBJS)
-	$(CXX) $(LDFLAGS) -o $@ $(OBJS)
 
-.depend:
-	$(CXX) -MM $(OBJS:.o=.cpp) > $@
+$(EXE): $(OBJ)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(CPPFLAGS)
 
-include .depend
-
+.PHONY: clean

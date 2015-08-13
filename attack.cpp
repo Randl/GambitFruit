@@ -214,7 +214,7 @@ static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t targe
 
 // is_attacked()
 
-bool is_attacked(const board_t * board, int_fast32_t to, int_fast32_t colour) {
+bool is_attacked(const board_t * board, int_fast32_t to, int_fast8_t colour) {
 
 	ASSERT(board!=nullptr);
 	ASSERT(SQUARE_IS_OK(to));
@@ -277,7 +277,7 @@ bool line_is_empty(const board_t * board, int_fast32_t from, int_fast32_t to) {
 
 // is_pinned()
 
-bool is_pinned(const board_t * board, int_fast32_t square, int_fast32_t colour) {
+bool is_pinned(const board_t * board, int_fast32_t square, int_fast8_t colour) {
 
 
 	ASSERT(board!=nullptr);

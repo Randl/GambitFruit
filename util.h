@@ -75,7 +75,7 @@ BitBases
 #define _BPAWN    12
 #define _NOTFOUND 99999
 
-typedef int (*PPROBE_EGBB) (int player, int* piece, int* square);
+typedef int_fast32_t (*PPROBE_EGBB) (int player, int* piece, int* square);
 extern PPROBE_EGBB probe_egbb;
 extern bool egbb_is_loaded;
 /*
@@ -87,18 +87,18 @@ end BitBases
 extern void   util_init             ();
 
 extern void   my_random_init        ();
-extern int    my_random             (int n);
+extern int_fast32_t    my_random             (int n);
 
 extern int_fast64_t my_atoll              (const char string[]);
 
-extern int    my_round              (double x);
+extern int_fast32_t    my_round              (double x);
 
 extern void * my_malloc             (int size);
 extern void   my_free               (void * address);
 
 extern void   my_fatal              (const char format[], ...);
 
-extern bool   my_file_read_line     (FILE * file, char string[], int size);
+extern bool   my_file_read_line     (FILE * file, char string[], int_fast32_t size);
 
 extern bool   my_string_empty       (const char string[]);
 extern bool   my_string_equal       (const char string_1[], const char string_2[]);

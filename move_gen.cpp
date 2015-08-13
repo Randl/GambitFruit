@@ -323,7 +323,7 @@ static void add_captures(list_t * list, const board_t * board) {
 		}
 	} else { // black
 
-		int_fast32_t *ptr, to;
+		int_fast32_t to;
 		for (const sq_t *ptr = &board->pawn[me][0]; *ptr != SquareNone; ++ptr) {
 
 			to = *ptr - 17;

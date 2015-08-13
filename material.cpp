@@ -482,7 +482,8 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	endgame -= bp * PawnEndgame;
 	endgame -= ebf;
 
-	int_fast32_t WhiteMinors,BlackMinors,WhiteMajors,BlackMajors;
+	//int_fast8_t WhiteMinors,BlackMinors;
+	int_fast8_t WhiteMajors,BlackMajors;
 	//WhiteMinors = wn + wb;
 	//BlackMinors = bn + bb;
 	WhiteMajors = wq + wr;
