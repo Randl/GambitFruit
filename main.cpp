@@ -28,37 +28,36 @@
 
 int main(int argc, char * argv[]) {
 
-   // init
+	// init
 
-   util_init();
-   my_random_init(); // for opening book
+	util_init();
+	my_random_init(); // for opening book
 
-   printf("Gambit Fruit based on Fruit 2.1 and Toga by Ryan Benitez, Thomas Gaksch and Fabien Letouzey\n Edit by Evgeniy Zheltonozhskiy\n");
+	printf("Gambit Fruit based on Fruit 2.1 and Toga by Ryan Benitez, Thomas Gaksch and Fabien Letouzey\nEdit by Evgeniy Zheltonozhskiy\n");
 
    // early initialisation (the rest is done after UCI options are parsed in protocol.cpp)
 
-   option_init();
+	option_init();
 
-   square_init();
-   piece_init();
-   pawn_init_bit();
-   value_init();
-   vector_init();
-   attack_init();
-   move_do_init();
+	square_init();
+	piece_init();
+	pawn_init_bit();
+	value_init();
+	vector_init();
+	attack_init();
+	move_do_init();
 
-   random_init();
-   hash_init();
+	random_init();
+	hash_init();
 
-   trans_init(Trans);
-   book_init();
+	trans_init(Trans);
+	book_init();
 
-   // loop
-   loop();
+	// loop
+	loop();
 
-   return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }
 
 
 // end of main.cpp
-

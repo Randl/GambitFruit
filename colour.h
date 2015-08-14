@@ -6,17 +6,18 @@
 
 // includes
 
+#include <cstdint>
 #include "util.h"
 
 // constants
 
-const int ColourNone = -1;
-const int White = 0;
-const int Black = 1;
-const int ColourNb = 2;
+constexpr int_fast8_t ColourNone = -1;
+constexpr int_fast8_t White = 0;
+constexpr int_fast8_t Black = 1;
+constexpr int_fast8_t ColourNb = 2;
 
-const int WhiteFlag = 1 << White;
-const int BlackFlag = 1 << Black;
+constexpr int_fast32_t WhiteFlag = 1 << White;
+constexpr int_fast32_t BlackFlag = 1 << Black;
 
 // macros
 
@@ -34,4 +35,3 @@ const int BlackFlag = 1 << Black;
 #endif // !defined COLOUR_H
 
 // end of colour.h
-

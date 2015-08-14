@@ -6,13 +6,14 @@
 
 // includes
 
+#include <array>
 #include "util.h"
 
 // constants
 
-const int Opening = 0;
-const int Endgame = 1;
-const int StageNb = 2;
+constexpr int_fast32_t Opening = 0;
+constexpr int_fast32_t Endgame = 1;
+constexpr int_fast32_t StageNb = 2;
 
 // macros
 
@@ -20,7 +21,7 @@ const int StageNb = 2;
 
 // variables
 
-extern sint16 Pst[12][64][StageNb];
+extern std::array<std::array<std::array<int_fast16_t, StageNb>, 64>, 12> Pst;
 
 // functions
 

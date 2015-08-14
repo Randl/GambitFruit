@@ -10,7 +10,7 @@
 
 // variables
 
-int ValuePiece[PieceNb];
+std::array<int_fast32_t, PieceNb> ValuePiece;
 
 // functions
 
@@ -18,123 +18,109 @@ int ValuePiece[PieceNb];
 
 void value_init() {
 
-   int piece;
+	// ValuePiece[]
+	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+		ValuePiece[piece] = -1;
 
-   // ValuePiece[]
+	ValuePiece[Empty] = 0; // needed?
+	ValuePiece[Edge]  = 0; // needed?
 
-   for (piece = 0; piece < PieceNb; piece++) ValuePiece[piece] = -1;
+	ValuePiece[WP] = ValuePawn;
+	ValuePiece[WN] = ValueKnight;
+	ValuePiece[WB] = ValueBishop;
+	ValuePiece[WR] = ValueRook;
+	ValuePiece[WQ] = ValueQueen;
+	ValuePiece[WK] = ValueKing;
 
-   ValuePiece[Empty] = 0; // needed?
-   ValuePiece[Edge]  = 0; // needed?
-
-   ValuePiece[WP] = ValuePawn;
-   ValuePiece[WN] = ValueKnight;
-   ValuePiece[WB] = ValueBishop;
-   ValuePiece[WR] = ValueRook;
-   ValuePiece[WQ] = ValueQueen;
-   ValuePiece[WK] = ValueKing;
-
-   ValuePiece[BP] = ValuePawn;
-   ValuePiece[BN] = ValueKnight;
-   ValuePiece[BB] = ValueBishop;
-   ValuePiece[BR] = ValueRook;
-   ValuePiece[BQ] = ValueQueen;
-   ValuePiece[BK] = ValueKing;
+	ValuePiece[BP] = ValuePawn;
+	ValuePiece[BN] = ValueKnight;
+	ValuePiece[BB] = ValueBishop;
+	ValuePiece[BR] = ValueRook;
+	ValuePiece[BQ] = ValueQueen;
+	ValuePiece[BK] = ValueKing;
 }
 
 // value_is_ok()
 
-bool value_is_ok(int value) {
+bool value_is_ok(int_fast32_t value) {
 
-   if (value < -ValueInf || value > +ValueInf) return false;
+	if (value < -ValueInf || value > +ValueInf) return false;
 
-   return true;
+	return true;
 }
 
 // range_is_ok()
 
-bool range_is_ok(int min, int max) {
+bool range_is_ok(int_fast32_t min, int_fast32_t max) {
 
-   if (!value_is_ok(min)) return false;
-   if (!value_is_ok(max)) return false;
+	if (!value_is_ok(min)) return false;
+	if (!value_is_ok(max)) return false;
 
-   if (min >= max) return false; // alpha-beta-like ranges cannot be null
+	if (min >= max) return false; // alpha-beta-like ranges cannot be null
 
-   return true;
+	return true;
 }
 
 // value_is_mate()
 
-bool value_is_mate(int value) {
+bool value_is_mate(int_fast32_t value) {
 
-   ASSERT(value_is_ok(value));
+	ASSERT(value_is_ok(value));
 
-   if (value < -ValueEvalInf || value > +ValueEvalInf) return true;
+	if (value < -ValueEvalInf || value > +ValueEvalInf) return true;
 
-   return false;
+	return false;
 }
 
 // value_to_trans()
 
-int value_to_trans(int value, int height) {
+int_fast32_t value_to_trans(int_fast32_t value, int_fast32_t height) {
 
-   ASSERT(value_is_ok(value));
-   ASSERT(height_is_ok(height));
+	ASSERT(value_is_ok(value));
+	ASSERT(height_is_ok(height));
 
-   if (value < -ValueEvalInf) {
-      value -= height;
-   } else if (value > +ValueEvalInf) {
-      value += height;
-   }
+	if (value < -ValueEvalInf)
+		value -= height;
+	else if (value > +ValueEvalInf)
+		value += height;
 
-   ASSERT(value_is_ok(value));
+	ASSERT(value_is_ok(value));
 
-   return value;
+	return value;
 }
 
 // value_from_trans()
 
-int value_from_trans(int value, int height) {
+int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height) {
 
-   ASSERT(value_is_ok(value));
-   ASSERT(height_is_ok(height));
+	ASSERT(value_is_ok(value));
+	ASSERT(height_is_ok(height));
 
-   if (value < -ValueEvalInf) {
-      value += height;
-   } else if (value > +ValueEvalInf) {
+	if (value < -ValueEvalInf)
+		value += height;
+   else if (value > +ValueEvalInf)
       value -= height;
-   }
 
-   ASSERT(value_is_ok(value));
-
-   return value;
+	ASSERT(value_is_ok(value));
+	return value;
 }
 
 // value_to_mate()
 
-int value_to_mate(int value) {
+int_fast32_t value_to_mate(int_fast32_t value) {
 
-   int dist;
+	ASSERT(value_is_ok(value));
 
-   ASSERT(value_is_ok(value));
-
-   if (value < -ValueEvalInf) {
-
-      dist = (ValueMate + value) / 2;
-      ASSERT(dist>0);
-
-      return -dist;
-
-   } else if (value > +ValueEvalInf) {
-
-      dist = (ValueMate - value + 1) / 2;
-      ASSERT(dist>0);
-
-      return +dist;
-   }
-
-   return 0;
+	if (value < -ValueEvalInf) {
+		const int_fast32_t dist = (ValueMate + value) / 2;
+		ASSERT(dist>0);
+		return -dist;
+	} else if (value > +ValueEvalInf) {
+		const int_fast32_t dist = (ValueMate - value + 1) / 2;
+		ASSERT(dist>0);
+		return +dist;
+	}
+	return 0;
 }
 
 // end of value.cpp
-

@@ -6,6 +6,8 @@
 
 // includes
 
+#include <cstdint>
+#include <array>
 #include "board.h"
 #include "util.h"
 #include "vector.h"
@@ -29,35 +31,34 @@
 // types
 
 struct attack_t {
-   int dn;
-   int ds[2+1];
-   int di[2+1];
+	int_fast32_t ds[2+1];
+	int_fast32_t di[2+1];
+	int_fast32_t dn;
 };
 
 // variables
 
-extern int DeltaIncLine[DeltaNb];
-extern int DeltaIncAll[DeltaNb];
+extern std::array<int_fast32_t, DeltaNb> DeltaIncLine;
+extern std::array<int_fast32_t, DeltaNb> DeltaIncAll;
 
-extern int DeltaMask[DeltaNb];
-extern int IncMask[IncNb];
+extern std::array<int_fast32_t, DeltaNb> DeltaMask;
+extern std::array<int_fast32_t, IncNb> IncMask;
 
 // functions
 
 extern void attack_init   ();
 
-extern bool is_attacked   (const board_t * board, int to, int colour);
+extern bool is_attacked   (const board_t * board, int_fast32_t to, int_fast8_t colour);
 
-extern bool line_is_empty (const board_t * board, int from, int to);
+extern bool line_is_empty (const board_t * board, int_fast32_t from, int_fast32_t to);
 
-extern bool is_pinned     (const board_t * board, int square, int colour);
+extern bool is_pinned     (const board_t * board, int_fast32_t square, int_fast8_t colour);
 
 extern bool attack_is_ok  (const attack_t * attack);
 extern void attack_set    (attack_t * attack, const board_t * board);
 
-extern bool piece_attack_king (const board_t * board, int piece, int from, int king);
+extern bool piece_attack_king (const board_t * board, int_fast32_t piece, int_fast32_t from, int_fast32_t king);
 
 #endif // !defined ATTACK_H
 
 // end of attack.h
-

@@ -19,145 +19,115 @@
 // types
 
 struct alist_t {
-   int size;
-   int square[15];
+	int_fast32_t square[15];
+	int_fast8_t size;
 };
 
 struct alists_t {
-   alist_t alist[ColourNb][1];
+	alist_t alist[ColourNb][1];
 };
 
 // prototypes
 
-static int  see_rec       (alists_t * alists, const board_t * board, int colour, int to, int piece_value);
+static int_fast32_t  see_rec       (alists_t * alists, const board_t * board, int_fast8_t colour, int_fast32_t to, int_fast32_t piece_value);
 
-static void alist_build   (alist_t * alist, const board_t * board, int to, int colour);
-static void alists_hidden (alists_t * alists, const board_t * board, int from, int to);
+static void alist_build   (alist_t * alist, const board_t * board, int_fast32_t to, int_fast8_t colour);
+static void alists_hidden (alists_t * alists, const board_t * board, int_fast32_t from, int_fast32_t to);
 
 static void alist_clear   (alist_t * alist);
-static void alist_add     (alist_t * alist, int square, const board_t * board);
-static void alist_remove  (alist_t * alist, int pos);
-static int  alist_pop     (alist_t * alist, const board_t * board);
+static void alist_add     (alist_t * alist, int_fast32_t square, const board_t * board);
+static void alist_remove  (alist_t * alist, int_fast32_t pos);
+static int_fast32_t  alist_pop     (alist_t * alist);
 
 // functions
 
 // see_move()
 
-int see_move(int move, const board_t * board) {
+int_fast32_t see_move(int_fast32_t move, const board_t * board) {
 
-   int att, def;
-   int from, to;
-   alists_t alists[1];
-   int value, piece_value;
-   int piece, capture;
-   alist_t * alist;
-   int pos;
+	ASSERT(move_is_ok(move));
+	ASSERT(board!=nullptr);
 
-   ASSERT(move_is_ok(move));
-   ASSERT(board!=NULL);
+	// init
+	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move);
 
-   // init
+	// move the piece
 
-   from = MOVE_FROM(move);
-   to = MOVE_TO(move);
+	int_fast32_t piece_value = 0, piece = board->square[from];
+	ASSERT(piece_is_ok(piece));
 
-   // move the piece
+	int_fast32_t att = PIECE_COLOUR(piece), def = COLOUR_OPP(att);
 
-   piece_value = 0;
+	// promote
+	if (MOVE_IS_PROMOTE(move)) {
+		ASSERT(PIECE_IS_PAWN(piece));
+		piece = move_promote(move);
+		ASSERT(piece_is_ok(piece));
+		ASSERT(COLOUR_IS(piece,att));
+	}
 
-   piece = board->square[from];
-   ASSERT(piece_is_ok(piece));
+	piece_value += VALUE_PIECE(piece);
 
-   att = PIECE_COLOUR(piece);
-   def = COLOUR_OPP(att);
+	// clear attacker lists
+	alists_t alists[1];
+	ALIST_CLEAR(alists->alist[Black]);
+	ALIST_CLEAR(alists->alist[White]);
 
-   // promote
+	// find hidden attackers
+	alists_hidden(alists,board,from,to);
 
-   if (MOVE_IS_PROMOTE(move)) {
-      ASSERT(PIECE_IS_PAWN(piece));
-      piece = move_promote(move);
-      ASSERT(piece_is_ok(piece));
-      ASSERT(COLOUR_IS(piece,att));
-   }
+	// capture the piece
+	int_fast32_t value = 0, capture = board->square[to];
 
-   piece_value += VALUE_PIECE(piece);
+	if (capture != Empty) {
+		ASSERT(piece_is_ok(capture));
+		ASSERT(COLOUR_IS(capture,def));
 
-   // clear attacker lists
+		value += VALUE_PIECE(capture);
+	}
 
-   ALIST_CLEAR(alists->alist[Black]);
-   ALIST_CLEAR(alists->alist[White]);
+	// promote
+	if (MOVE_IS_PROMOTE(move))
+		value += VALUE_PIECE(piece) - ValuePawn;
 
-   // find hidden attackers
+	// en-passant
+	if (MOVE_IS_EN_PASSANT(move)) {
+		ASSERT(value==0);
+		ASSERT(PIECE_IS_PAWN(board->square[SQUARE_EP_DUAL(to)]));
+		value += ValuePawn;
+		alists_hidden(alists,board,SQUARE_EP_DUAL(to),to);
+	}
 
-   alists_hidden(alists,board,from,to);
+	// build defender list
+	alist_t *alist = alists->alist[def];
+	alist_build(alist,board,to,def);
+	if (alist->size == 0) return value; // no defender => stop SEE
 
-   // capture the piece
+	// build attacker list
+	alist = alists->alist[att];
+	alist_build(alist,board,to,att);
 
-   value = 0;
+	// remove the moved piece (if it's an attacker)
+	int_fast32_t pos;
+	for (pos = 0; pos < alist->size && alist->square[pos] != from; ++pos);
+	if (pos < alist->size) alist_remove(alist,pos);
 
-   capture = board->square[to];
-
-   if (capture != Empty) {
-
-      ASSERT(piece_is_ok(capture));
-      ASSERT(COLOUR_IS(capture,def));
-
-      value += VALUE_PIECE(capture);
-   }
-
-   // promote
-
-   if (MOVE_IS_PROMOTE(move)) {
-      value += VALUE_PIECE(piece) - ValuePawn;
-   }
-
-   // en-passant
-
-   if (MOVE_IS_EN_PASSANT(move)) {
-      ASSERT(value==0);
-      ASSERT(PIECE_IS_PAWN(board->square[SQUARE_EP_DUAL(to)]));
-      value += ValuePawn;
-      alists_hidden(alists,board,SQUARE_EP_DUAL(to),to);
-   }
-
-   // build defender list
-
-   alist = alists->alist[def];
-
-   alist_build(alist,board,to,def);
-   if (alist->size == 0) return value; // no defender => stop SEE
-
-   // build attacker list
-
-   alist = alists->alist[att];
-
-   alist_build(alist,board,to,att);
-
-   // remove the moved piece (if it's an attacker)
-
-   for (pos = 0; pos < alist->size && alist->square[pos] != from; pos++)
-      ;
-
-   if (pos < alist->size) alist_remove(alist,pos);
-
-   // SEE search
-
-   value -= see_rec(alists,board,def,to,piece_value);
-
-   return value;
+	// SEE search
+	value -= see_rec(alists,board,def,to,piece_value);
+	return value;
 }
 
 // see_square()
 /*
-int see_square(const board_t * board, int to, int colour) {
+int_fast32_t see_square(const board_t * board, int_fast32_t to, int_fast8_t colour) {
 
-   int att, def;
+   int_fast32_t att, def;
    alists_t alists[1];
    alist_t * alist;
-   int piece_value;
-   int piece;
+   int_fast32_t piece_value;
+   int_fast32_t piece;
 
-   ASSERT(board!=NULL);
+   ASSERT(board!=nullptr);
    ASSERT(SQUARE_IS_OK(to));
    ASSERT(COLOUR_IS_OK(colour));
 
@@ -196,210 +166,171 @@ int see_square(const board_t * board, int to, int colour) {
 */
 // see_rec()
 
-static int see_rec(alists_t * alists, const board_t * board, int colour, int to, int piece_value) {
+static int_fast32_t see_rec(alists_t * alists, const board_t * board, int_fast8_t colour, int_fast32_t to, int_fast32_t piece_value) {
 
-   int from, piece;
-   int value;
+	ASSERT(alists!=nullptr);
+	ASSERT(board!=nullptr);
+	ASSERT(COLOUR_IS_OK(colour));
+	ASSERT(SQUARE_IS_OK(to));
+	ASSERT(piece_value>0);
 
-   ASSERT(alists!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(COLOUR_IS_OK(colour));
-   ASSERT(SQUARE_IS_OK(to));
-   ASSERT(piece_value>0);
+	// find the least valuable attacker
+	int_fast32_t from = alist_pop(alists->alist[colour]);
+	if (from == SquareNone) return 0; // no more attackers
 
-   // find the least valuable attacker
+	// find hidden attackers
+	alists_hidden(alists,board,from,to);
 
-   from = alist_pop(alists->alist[colour],board);
-   if (from == SquareNone) return 0; // no more attackers
+	// calculate the capture value
+	int_fast32_t value = +piece_value; // captured piece
+	if (value == ValueKing) return value; // do not allow an answer to a king capture
 
-   // find hidden attackers
+	int_fast32_t piece = board->square[from];
+	ASSERT(piece_is_ok(piece));
+	ASSERT(COLOUR_IS(piece,colour));
+	piece_value = VALUE_PIECE(piece);
 
-   alists_hidden(alists,board,from,to);
-
-   // calculate the capture value
-
-   value = +piece_value; // captured piece
-   if (value == ValueKing) return value; // do not allow an answer to a king capture
-
-   piece = board->square[from];
-   ASSERT(piece_is_ok(piece));
-   ASSERT(COLOUR_IS(piece,colour));
-   piece_value = VALUE_PIECE(piece);
-
-   // promote
-
-   if (piece_value == ValuePawn && SQUARE_IS_PROMOTE(to)) { // HACK: PIECE_IS_PAWN(piece)
-      ASSERT(PIECE_IS_PAWN(piece));
-      piece_value = ValueQueen;
-      value += ValueQueen - ValuePawn;
+	// promote
+	if (piece_value == ValuePawn && SQUARE_IS_PROMOTE(to)) { // HACK: PIECE_IS_PAWN(piece)
+		ASSERT(PIECE_IS_PAWN(piece));
+		piece_value = ValueQueen;
+		value += ValueQueen - ValuePawn;
    }
 
-   value -= see_rec(alists,board,COLOUR_OPP(colour),to,piece_value);
+	value -= see_rec(alists,board,COLOUR_OPP(colour),to,piece_value);
 
-   if (value < 0) value = 0;
+	if (value < 0) value = 0;
 
-   return value;
+	return value;
 }
 
 // alist_build()
 
-static void alist_build(alist_t * alist, const board_t * board, int to, int colour) {
+static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to, int_fast8_t colour) {
 
-   const sq_t * ptr;
-   int from;
-   int piece;
-   int delta;
-   int inc;
-   int sq;
-   int pawn;
+	ASSERT(alist!=nullptr);
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(to));
+	ASSERT(COLOUR_IS_OK(colour));
 
-   ASSERT(alist!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(SQUARE_IS_OK(to));
-   ASSERT(COLOUR_IS_OK(colour));
+	// piece attacks
+	for (const sq_t *ptr = &board->piece[colour][0]; *ptr != SquareNone; ++ptr) {
+		const int_fast32_t piece = board->square[*ptr], delta = to - *ptr;
 
-   // piece attacks
+		if (PSEUDO_ATTACK(piece,delta)) {
+			int_fast32_t inc = DELTA_INC_ALL(delta);
+			ASSERT(inc!=IncNone);
 
-   for (ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ptr++) {
+			int_fast32_t sq = *ptr;
+			do {
+				sq += inc;
+				if (sq == to) { // attack
+					alist_add(alist,*ptr,board);
+					break;
+				}
+			} while (board->square[sq] == Empty);
+		}
+	}
 
-      piece = board->square[from];
-      delta = to - from;
+	// pawn attacks
+	int_fast32_t inc = PAWN_MOVE_INC(colour), pawn = PAWN_MAKE(colour), from = to - (inc-1);
 
-      if (PSEUDO_ATTACK(piece,delta)) {
-
-         inc = DELTA_INC_ALL(delta);
-         ASSERT(inc!=IncNone);
-
-         sq = from;
-         do {
-            sq += inc;
-            if (sq == to) { // attack
-               alist_add(alist,from,board);
-               break;
-            }
-         } while (board->square[sq] == Empty);
-      }
-   }
-
-   // pawn attacks
-
-   inc = PAWN_MOVE_INC(colour);
-   pawn = PAWN_MAKE(colour);
-
-   from = to - (inc-1);
-   if (board->square[from] == pawn) alist_add(alist,from,board);
-
-   from = to - (inc+1);
-   if (board->square[from] == pawn) alist_add(alist,from,board);
+	if (board->square[from] == pawn) alist_add(alist,from,board);
+	from = to - (inc+1);
+	if (board->square[from] == pawn) alist_add(alist,from,board);
 }
 
 // alists_hidden()
 
-static void alists_hidden(alists_t * alists, const board_t * board, int from, int to) {
+static void alists_hidden(alists_t * alists, const board_t * board, int_fast32_t from, int_fast32_t to) {
 
-   int inc;
-   int sq, piece;
+	ASSERT(alists!=nullptr);
+	ASSERT(board!=nullptr);
+	ASSERT(SQUARE_IS_OK(from));
+	ASSERT(SQUARE_IS_OK(to));
 
-   ASSERT(alists!=NULL);
-   ASSERT(board!=NULL);
-   ASSERT(SQUARE_IS_OK(from));
-   ASSERT(SQUARE_IS_OK(to));
+	int_fast32_t inc = DELTA_INC_LINE(to-from);
 
-   inc = DELTA_INC_LINE(to-from);
+	if (inc != IncNone) { // line
 
-   if (inc != IncNone) { // line
+		int_fast32_t sq = from, piece;
+		do sq -= inc; while ((piece=board->square[sq]) == Empty);
 
-      sq = from;
-      do sq -= inc; while ((piece=board->square[sq]) == Empty);
+		if (SLIDER_ATTACK(piece,inc)) {
 
-      if (SLIDER_ATTACK(piece,inc)) {
+			ASSERT(piece_is_ok(piece));
+			ASSERT(PIECE_IS_SLIDER(piece));
 
-         ASSERT(piece_is_ok(piece));
-         ASSERT(PIECE_IS_SLIDER(piece));
-
-         alist_add(alists->alist[PIECE_COLOUR(piece)],sq,board);
-      }
-   }
+			alist_add(alists->alist[PIECE_COLOUR(piece)],sq,board);
+		}
+	}
 }
 
 // alist_clear()
 
 static void alist_clear(alist_t * alist) {
-
-   ASSERT(alist!=NULL);
-
-   alist->size = 0;
+	ASSERT(alist!=nullptr);
+	alist->size = 0;
 }
 
 // alist_add()
 
-static void alist_add(alist_t * alist, int square, const board_t * board) {
+static void alist_add(alist_t * alist, int_fast32_t square, const board_t * board) {
 
-   int piece;
-   int size, pos;
+	ASSERT(alist!=nullptr);
+	ASSERT(SQUARE_IS_OK(square));
+	ASSERT(board!=nullptr);
 
-   ASSERT(alist!=NULL);
-   ASSERT(SQUARE_IS_OK(square));
-   ASSERT(board!=NULL);
+	// insert in MV order
+	int_fast32_t piece = board->square[square], size = ++alist->size; // HACK
 
-   // insert in MV order
+	ASSERT(size>0&&size<16);
 
-   piece = board->square[square];
-   size = ++alist->size; // HACK
-   ASSERT(size>0&&size<16);
+	int_fast32_t pos;
+	for (pos = size-1; pos > 0 && piece > board->square[alist->square[pos-1]]; --pos) { // HACK
+		ASSERT(pos>0&&pos<size);
+		alist->square[pos] = alist->square[pos-1];
+	}
 
-   for (pos = size-1; pos > 0 && piece > board->square[alist->square[pos-1]]; pos--) { // HACK
-      ASSERT(pos>0&&pos<size);
-      alist->square[pos] = alist->square[pos-1];
-   }
-
-   ASSERT(pos>=0&&pos<size);
-   alist->square[pos] = square;
+	ASSERT(pos>=0&&pos<size);
+	alist->square[pos] = square;
 }
 
 // alist_remove()
 
-static void alist_remove(alist_t * alist, int pos) {
+static void alist_remove(alist_t * alist, int_fast32_t pos) {
 
-   int size, i;
+	ASSERT(alist!=nullptr);
+	ASSERT(pos>=0&&pos<alist->size);
 
-   ASSERT(alist!=NULL);
-   ASSERT(pos>=0&&pos<alist->size);
+	int_fast32_t size = alist->size--; // HACK
+	ASSERT(size>=1);
 
-   size = alist->size--; // HACK
-   ASSERT(size>=1);
+	ASSERT(pos>=0&&pos<size);
 
-   ASSERT(pos>=0&&pos<size);
-
-   for (i = pos; i < size-1; i++) {
-      ASSERT(i>=0&&i<size-1);
-      alist->square[i] = alist->square[i+1];
-   }
+	for (int_fast32_t i = pos; i < size-1; ++i) {
+		ASSERT(i>=0&&i<size-1);
+		alist->square[i] = alist->square[i+1];
+	}
 }
 
 // alist_pop()
 
-static int alist_pop(alist_t * alist, const board_t * board) {
+static int_fast32_t alist_pop(alist_t * alist) {
 
-   int sq;
-   int size;
+	ASSERT(alist!=nullptr);
+	ASSERT(board!=nullptr);
 
-   ASSERT(alist!=NULL);
-   ASSERT(board!=NULL);
+	int_fast32_t sq = SquareNone, size = alist->size;
 
-   sq = SquareNone;
+	if (size != 0) {
+		--size;
+		ASSERT(size>=0);
+		sq = alist->square[size];
+		alist->size = size;
+	}
 
-   size = alist->size;
-
-   if (size != 0) {
-      size--;
-      ASSERT(size>=0);
-      sq = alist->square[size];
-      alist->size = size;
-   }
-
-   return sq;
+	return sq;
 }
 
 // end of see.cpp
-
