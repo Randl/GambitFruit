@@ -13,7 +13,7 @@
 // constants
 
 constexpr int_fast32_t MoveNone = 0;  // HACK: a1a1 cannot be a legal move
-constexpr int_fast32_t Movenullptr = 11; // HACK: a1d2 cannot be a legal move
+constexpr int_fast32_t MoveNull = 11; // HACK: a1d2 cannot be a legal move
 
 constexpr int_fast32_t MoveNormal    = 0 << 14;
 constexpr int_fast32_t MoveCastle    = 1 << 14;
@@ -28,7 +28,7 @@ constexpr int_fast32_t MovePromoteQueen  = MovePromote | (3 << 12);
 
 constexpr int_fast32_t MoveAllFlags = 0xF << 12;
 
-const char nullptrMoveString[] = "nullptr"; // "0000" in UCI
+const char NullMoveString[] = "null"; // "0000" in UCI
 
 // macros
 

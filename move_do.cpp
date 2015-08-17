@@ -79,8 +79,8 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 	ASSERT(COLOUR_IS(piece,me));
 
 	// update key stack
-	ASSERT(board->sp<StackSize);
-	board->stack[board->sp++] = board->key;
+	ASSERT(board->stack.size()<StackSize);
+	board->stack.push_back(board->key);
 
 	// update turn
  	board->turn = opp;
@@ -151,7 +151,7 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
 		// insert the promote piece in MV order
 		int_fast32_t pos;
-		for (pos = board->piece_size[me]; pos > 0 && piece > board->square[board->piece[me][pos-1]]; --pos); // HACK
+		for (pos = board->piece[me].size(); pos > 0 && piece > board->square[board->piece[me][pos-1]]; --pos); // HACK
 
 		square_set(board,to,piece,pos,true);
 		board->cap_sq = to;
@@ -246,17 +246,17 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 	board->material_key = undo->material_key;
 
 	// update key stack
-	ASSERT(board->sp>0);
-	board->sp--;
+	ASSERT(board->stack.size()>0);
+	board->stack.pop_back();
 
 	// debug
 	ASSERT(board_is_ok(board));
 	ASSERT(board_is_legal(board));
 }
 
-// move_do_nullptr()
+// move_do_null()
 
-void move_do_nullptr(board_t * board, undo_t * undo) {
+void move_do_null(board_t * board, undo_t * undo) {
 
 	ASSERT(board!=nullptr);
 	ASSERT(undo!=nullptr);
@@ -271,8 +271,8 @@ void move_do_nullptr(board_t * board, undo_t * undo) {
 	undo->key = board->key;
 
 	// update key stack
-	ASSERT(board->sp<StackSize);
-	board->stack[board->sp++] = board->key;
+	ASSERT(board->stack.size()<StackSize);
+	board->stack.push_back(board->key);
 
 	// update turn
 	board->turn = COLOUR_OPP(board->turn);
@@ -286,7 +286,7 @@ void move_do_nullptr(board_t * board, undo_t * undo) {
 	}
 
 	// update move number
-	board->ply_nb = 0; // HACK: nullptr move is considered as a conversion
+	board->ply_nb = 0; // HACK: null move is considered as a conversion
 
 	// update last square
 	board->cap_sq = SquareNone;
@@ -295,9 +295,9 @@ void move_do_nullptr(board_t * board, undo_t * undo) {
 	ASSERT(board_is_ok(board));
 }
 
-// move_undo_nullptr()
+// move_undo_null()
 
-void move_undo_nullptr(board_t * board, const undo_t * undo) {
+void move_undo_null(board_t * board, const undo_t * undo) {
 
 	ASSERT(board!=nullptr);
 	ASSERT(undo!=nullptr);
@@ -312,8 +312,8 @@ void move_undo_nullptr(board_t * board, const undo_t * undo) {
 	board->key = undo->key;
 
 	// update key stack
-	ASSERT(board->sp>0);
-	board->sp--;
+	ASSERT(board->stack.size()>0);
+	board->stack.pop_back();
 
 	// debug
 	ASSERT(board_is_ok(board));
@@ -343,7 +343,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 	if (!PIECE_IS_PAWN(piece)) {
 
 		// init
-		int_fast32_t size = board->piece_size[colour];
+		int_fast32_t size = board->piece[colour].size();
 		ASSERT(size>=1);
 
 		// stable swap
@@ -362,13 +362,12 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 		// size
 		--size;
 
-		board->piece[colour][size] = SquareNone;
-		board->piece_size[colour] = size;
+		board->piece[colour].pop_back();
 
 	} else {
 
 		// init
-		int_fast32_t size = board->pawn_size[colour];
+		int_fast32_t size = board->pawn[colour].size();
 		ASSERT(size>=1);
 
 		// stable swap
@@ -388,8 +387,7 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 		// size
 		--size;
 
-		board->pawn[colour][size] = SquareNone;
-		board->pawn_size[colour] = size;
+		board->pawn[colour].pop_back();
 
 		// pawn "bitboard"
 		board->pawn_file[colour][SQUARE_FILE(square)] ^= BIT(PAWN_RANK(square,colour));
@@ -445,14 +443,13 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 	if (!PIECE_IS_PAWN(piece)) {
 
 		// init
-		int_fast32_t size = board->piece_size[colour];
+		int_fast32_t size = board->piece[colour].size();
 		ASSERT(size>=0);
 
 		// size
 		++size;
 
-		board->piece[colour][size] = SquareNone;
-		board->piece_size[colour] = size;
+		board->piece[colour].push_back(SquareNone);
 
 		// stable swap
 		ASSERT(pos>=0&&pos<size);
@@ -471,13 +468,12 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 	} else {
 
 		// init
-		int_fast32_t size = board->pawn_size[colour];
+		int_fast32_t size = board->pawn[colour].size();
 		ASSERT(size>=0);
 
 		// size
 		++size;
-		board->pawn[colour][size] = SquareNone;
-		board->pawn_size[colour] = size;
+		board->pawn[colour].push_back(SquareNone);
 
 		// stable swap
 		ASSERT(pos>=0&&pos<size);

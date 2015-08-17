@@ -266,9 +266,9 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			pawn_file[file] = 0;
 
 		int_fast32_t sq;
-		for (const sq_t *ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
+		for (auto sq = board->pawn[me].begin(); sq != board->pawn[me].end(); ++sq) {
 
-			int_fast32_t file = SQUARE_FILE(sq), rank = PAWN_RANK(sq,me);
+			int_fast32_t file = SQUARE_FILE(*sq), rank = PAWN_RANK(*sq,me);
 
 			ASSERT(file>=FileA&&file<=FileH);
 			ASSERT(rank>=Rank2&&rank<=Rank7);
@@ -300,11 +300,11 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
 		const int_fast32_t me = colour, opp = COLOUR_OPP(me);
-		int_fast32_t  sq;
-		for (const sq_t *ptr = &board->pawn[me][0]; (sq=*ptr) != SquareNone; ++ptr) {
+
+		for (auto sq = board->pawn[me].begin(); sq != board->pawn[me].end(); ++sq) {
 
 			// init
-			int_fast32_t file = SQUARE_FILE(sq), rank = PAWN_RANK(sq,me);
+			int_fast32_t file = SQUARE_FILE(*sq), rank = PAWN_RANK(*sq,me);
 
 			ASSERT(file>=FileA&&file<=FileH);
 			ASSERT(rank>=Rank2&&rank<=Rank7);
@@ -320,7 +320,7 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 			int_fast32_t t1 = board->pawn_file[me][file-1] | board->pawn_file[me][file+1], t2 = board->pawn_file[me][file] | BitRev[board->pawn_file[opp][file]];
 
 			// square colour
-			if (SQUARE_COLOUR(sq) == White) ++wsp[me];
+			if (SQUARE_COLOUR(*sq) == White) ++wsp[me];
 
 			// pawn duo
 			if (BIT_COUNT(BitRev[board->pawn_file[me][file+1]]&BitEQ[rank])) {
@@ -328,146 +328,146 @@ static void pawn_comp_info(pawn_info_t * info, const board_t * board) {
 				endgame[me] += 6;
 			}
 
-         // doubled
+            // doubled
 
-		if ((board->pawn_file[me][file] & BitLT[rank]) != 0)
-			doubled = true;
+            if ((board->pawn_file[me][file] & BitLT[rank]) != 0)
+                doubled = true;
 
 
-		// isolated and backward
+            // isolated and backward
 
-		if (t1 == 0) {
+            if (t1 == 0) {
 
-            isolated = true;
+                isolated = true;
 
-		} else if ((t1 & BitLE[rank]) == 0) {
+            } else if ((t1 & BitLE[rank]) == 0) {
 
-			backward = true;
+                backward = true;
 
-			// really backward?
+                // really backward?
 
-			if ((t1 & BitRank1[rank]) != 0) {
+                if ((t1 & BitRank1[rank]) != 0) {
 
-				ASSERT(rank+2<=Rank8);
+                    ASSERT(rank+2<=Rank8);
 
-				if (((t2 & BitRank1[rank])
-				  | ((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitRank2[rank])) == 0) {
-					backward = false;
-				}
+                    if (((t2 & BitRank1[rank])
+                      | ((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitRank2[rank])) == 0) {
+                        backward = false;
+                    }
 
-			} else if (rank == Rank2 && ((t1 & BitEQ[rank+2]) != 0)) {
+                } else if (rank == Rank2 && ((t1 & BitEQ[rank+2]) != 0)) {
 
-				ASSERT(rank+3<=Rank8);
+                    ASSERT(rank+3<=Rank8);
 
-				if (((t2 & BitRank2[rank])
-				 | ((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitRank3[rank])) == 0) {
-					backward = false;
-				}
-			}
-		}
+                    if (((t2 & BitRank2[rank])
+                     | ((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitRank3[rank])) == 0) {
+                        backward = false;
+                    }
+                }
+            }
 
-		// open, candidate and passed
+            // open, candidate and passed
 
-		if ((t2 & BitGT[rank]) == 0) {
+            if ((t2 & BitGT[rank]) == 0) {
 
-			open = true;
+                open = true;
 
-			if (((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitGT[rank]) == 0) {
+                if (((BitRev[board->pawn_file[opp][file-1]] | BitRev[board->pawn_file[opp][file+1]]) & BitGT[rank]) == 0) {
 
-				//passed = true;
-				passed_bits[me] |= BIT(file);
+                    //passed = true;
+                    passed_bits[me] |= BIT(file);
 
-			} else {
+                } else {
 
-				// candidate?
+                    // candidate?
 
-				int_fast32_t n = 0;
+                    int_fast32_t n = 0;
 
-				n += BIT_COUNT(board->pawn_file[me][file-1]&BitLE[rank]);
-				n += BIT_COUNT(board->pawn_file[me][file+1]&BitLE[rank]);
+                    n += BIT_COUNT(board->pawn_file[me][file-1]&BitLE[rank]);
+                    n += BIT_COUNT(board->pawn_file[me][file+1]&BitLE[rank]);
 
-				n -= BIT_COUNT(BitRev[board->pawn_file[opp][file-1]]&BitGT[rank]);
-				n -= BIT_COUNT(BitRev[board->pawn_file[opp][file+1]]&BitGT[rank]);
+                    n -= BIT_COUNT(BitRev[board->pawn_file[opp][file-1]]&BitGT[rank]);
+                    n -= BIT_COUNT(BitRev[board->pawn_file[opp][file+1]]&BitGT[rank]);
 
-				if (n >= 0) {
+                    if (n >= 0) {
 
-					// safe?
+                        // safe?
 
-					int_fast32_t n2 = 0;
+                        int_fast32_t n2 = 0;
 
-					n2 += BIT_COUNT(board->pawn_file[me][file-1]&BitEQ[rank-1]);
-					n2 += BIT_COUNT(board->pawn_file[me][file+1]&BitEQ[rank-1]);
+                        n2 += BIT_COUNT(board->pawn_file[me][file-1]&BitEQ[rank-1]);
+                        n2 += BIT_COUNT(board->pawn_file[me][file+1]&BitEQ[rank-1]);
 
-					n2 -= BIT_COUNT(BitRev[board->pawn_file[opp][file-1]]&BitEQ[rank+1]);
-					n2 -= BIT_COUNT(BitRev[board->pawn_file[opp][file+1]]&BitEQ[rank+1]);
+                        n2 -= BIT_COUNT(BitRev[board->pawn_file[opp][file-1]]&BitEQ[rank+1]);
+                        n2 -= BIT_COUNT(BitRev[board->pawn_file[opp][file+1]]&BitEQ[rank+1]);
 
-					if (n2 >= 0) candidate = true;
-				}
-			}
-		}
+                        if (n2 >= 0) candidate = true;
+                    }
+                }
+            }
 
-		// score
+            // score
 
-		if (doubled) {
-			opening[me] -= DoubledOpening[file-FileA];
-			endgame[me] -= DoubledEndgame[file-FileA];
-		}
+            if (doubled) {
+                opening[me] -= DoubledOpening[file-FileA];
+                endgame[me] -= DoubledEndgame[file-FileA];
+            }
 
-		if (isolated) {
-			if (open) {
-				opening[me] -= IsolatedOpeningOpen[file-FileA];
-				endgame[me] -= IsolatedEndgame[file-FileA];
+            if (isolated) {
+                if (open) {
+                    opening[me] -= IsolatedOpeningOpen[file-FileA];
+                    endgame[me] -= IsolatedEndgame[file-FileA];
 
-				switch (file) {
-					case FileA: badpawns[me] |= BadPawnFileA; break;
-					case FileB: badpawns[me] |= BadPawnFileB; break;
-					case FileC: badpawns[me] |= BadPawnFileC; break;
-					case FileD: badpawns[me] |= BadPawnFileD; break;
-					case FileE: badpawns[me] |= BadPawnFileE; break;
-					case FileF: badpawns[me] |= BadPawnFileF; break;
-					case FileG: badpawns[me] |= BadPawnFileG; break;
-					case FileH: badpawns[me] |= BadPawnFileH; break;
-					}
-			} else {
-				opening[me] -= IsolatedOpening[file-FileA];
-				endgame[me] -= IsolatedEndgame[file-FileA];
-			}
-		}
+                    switch (file) {
+                        case FileA: badpawns[me] |= BadPawnFileA; break;
+                        case FileB: badpawns[me] |= BadPawnFileB; break;
+                        case FileC: badpawns[me] |= BadPawnFileC; break;
+                        case FileD: badpawns[me] |= BadPawnFileD; break;
+                        case FileE: badpawns[me] |= BadPawnFileE; break;
+                        case FileF: badpawns[me] |= BadPawnFileF; break;
+                        case FileG: badpawns[me] |= BadPawnFileG; break;
+                        case FileH: badpawns[me] |= BadPawnFileH; break;
+                        }
+                } else {
+                    opening[me] -= IsolatedOpening[file-FileA];
+                    endgame[me] -= IsolatedEndgame[file-FileA];
+                }
+            }
 
-		if (backward) {
-			if (open) {
-				opening[me] -= BackwardOpeningOpen[file-FileA];
-				endgame[me] -= BackwardEndgame[file-FileA];
+            if (backward) {
+                if (open) {
+                    opening[me] -= BackwardOpeningOpen[file-FileA];
+                    endgame[me] -= BackwardEndgame[file-FileA];
 
-				switch (file) {
-				case FileA: badpawns[me] |= BadPawnFileA; break;
-				case FileB: badpawns[me] |= BadPawnFileB; break;
-				case FileC: badpawns[me] |= BadPawnFileC; break;
-				case FileD: badpawns[me] |= BadPawnFileD; break;
-				case FileE: badpawns[me] |= BadPawnFileE; break;
-				case FileF: badpawns[me] |= BadPawnFileF; break;
-				case FileG: badpawns[me] |= BadPawnFileG; break;
-				case FileH: badpawns[me] |= BadPawnFileH; break;
-				}
-			} else {
-				opening[me] -= BackwardOpening[file-FileA];
-				endgame[me] -= BackwardEndgame[file-FileA];
-			}
-		}
+                    switch (file) {
+                    case FileA: badpawns[me] |= BadPawnFileA; break;
+                    case FileB: badpawns[me] |= BadPawnFileB; break;
+                    case FileC: badpawns[me] |= BadPawnFileC; break;
+                    case FileD: badpawns[me] |= BadPawnFileD; break;
+                    case FileE: badpawns[me] |= BadPawnFileE; break;
+                    case FileF: badpawns[me] |= BadPawnFileF; break;
+                    case FileG: badpawns[me] |= BadPawnFileG; break;
+                    case FileH: badpawns[me] |= BadPawnFileH; break;
+                    }
+                } else {
+                    opening[me] -= BackwardOpening[file-FileA];
+                    endgame[me] -= BackwardEndgame[file-FileA];
+                }
+            }
 
-		if (candidate) {
-			opening[me] += quad(CandidateOpeningMin,CandidateOpeningMax,rank);
-			endgame[me] += quad(CandidateEndgameMin,CandidateEndgameMax,rank);
-		}
+            if (candidate) {
+                opening[me] += quad(CandidateOpeningMin,CandidateOpeningMax,rank);
+                endgame[me] += quad(CandidateEndgameMin,CandidateEndgameMax,rank);
+            }
 
-		// this was moved to the dynamic evaluation
+            // this was moved to the dynamic evaluation
 
-/*
-		if (passed) {
-			opening[me] += quad(PassedOpeningMin,PassedOpeningMax,rank);
-			endgame[me] += quad(PassedEndgameMin,PassedEndgameMax,rank);
-		}
-*/
+    /*
+            if (passed) {
+                opening[me] += quad(PassedOpeningMin,PassedOpeningMax,rank);
+                endgame[me] += quad(PassedEndgameMin,PassedEndgameMax,rank);
+            }
+    */
 		}
 	}
 

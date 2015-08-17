@@ -214,7 +214,7 @@ static void alist_build(alist_t * alist, const board_t * board, int_fast32_t to,
 	ASSERT(COLOUR_IS_OK(colour));
 
 	// piece attacks
-	for (const sq_t *ptr = &board->piece[colour][0]; *ptr != SquareNone; ++ptr) {
+	for (auto ptr = board->piece[colour].begin(); ptr != board->piece[colour].end(); ++ptr) {
 		const int_fast32_t piece = board->square[*ptr], delta = to - *ptr;
 
 		if (PSEUDO_ATTACK(piece,delta)) {

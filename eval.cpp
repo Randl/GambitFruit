@@ -361,7 +361,7 @@ int_fast32_t eval(/*const*/ board_t * board, int_fast32_t alpha, int_fast32_t be
     if (COLOUR_IS_BLACK(board->turn)) lazy_eval = -lazy_eval;
 
 	/* lazy Cutoff */
-    if (do_le && !in_check && board->piece_size[White] > 2 && board->piece_size[Black] > 2)  {
+    if (do_le && !in_check && board->piece[White].size() > 2 && board->piece[Black].size() > 2)  {
 
         ASSERT(eval>=-ValueEvalInf&&eval<=+ValueEvalInf);
 
@@ -585,7 +585,7 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
 		const int_fast32_t *unit = MobUnit[me];
 
 		// piece loop
-		for (const sq_t *from = &board->piece[me][1]; *from != SquareNone; ++from)  { // HACK: no king
+		for (auto from = board->piece[me].begin() + 1; from != board->piece[me].end(); ++from)  { // HACK: no king
 
 			const int_fast16_t piece = board->square[*from];
 			int_fast32_t mob;
@@ -977,7 +977,7 @@ static void eval_king(const board_t * board, const material_info_t * mat_info, i
 
                 // piece attacks
                 int_fast16_t attack_tot = 0, piece_nb = 0;
-                for (const sq_t *from = &board->piece[opp][1]; *from != SquareNone; ++from)  { // HACK: no king
+                for (auto from = board->piece[opp].begin() + 1; from != board->piece[opp].end(); ++from)  { // HACK: no king
 
 				const int_fast16_t piece = board->square[*from];
 
@@ -1048,7 +1048,7 @@ static void eval_passer(const board_t * board, const pawn_info_t * pawn_info, in
             ASSERT(delta>0);
 
             // "dangerous" bonus
-            if (board->piece_size[def] <= 1 // defender has no piece
+            if (board->piece[def].size() <= 1 // defender has no piece
             && (unstoppable_passer(board,sq,att) || king_passer(board,sq,att)))  {
                 delta += UnstoppablePasser;
             } else if (free_passer(board,sq,att))  {
@@ -1198,7 +1198,7 @@ static bool unstoppable_passer(const board_t * board, int_fast32_t pawn, int_fas
     int_fast8_t rank = PAWN_RANK(pawn,me);
 	// clear promotion path?
 
-	for (const sq_t *sq = &board->piece[me][0]; *sq != SquareNone; ++sq)  {
+	for (auto sq = board->piece[me].begin(); sq != board->piece[me].end(); ++sq)  {
         if (SQUARE_FILE(*sq) == file && PAWN_RANK(*sq,me) > rank)  {
             return false; // "friendly" blocker
         }
@@ -1308,23 +1308,22 @@ static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast3
 	ASSERT(board->pawn_size[def]==0);
 
     int_fast32_t pos = 0;
-	// att
 
-	for (const sq_t *sq = &board->piece[att][0]; *sq != SquareNone; ++sq)  {
+	// att
+	for (auto sq = board->piece[att].begin(); sq != board->piece[att].end(); ++sq)  {
         list[pos++] = *sq;
 	}
 
-	for (const sq_t *sq = &board->pawn[att][0]; *sq != SquareNone; ++sq)  {
+	for (auto sq = board->pawn[att].begin(); sq != board->pawn[att].end(); ++sq)  {
         list[pos++] = *sq;
 	}
 
 	// def
-
-	for (const sq_t *sq = &board->piece[def][0]; *sq != SquareNone; ++sq)  {
+	for (auto sq = board->piece[def].begin(); sq != board->piece[def].end(); ++sq)  {
         list[pos++] = *sq;
 	}
 
-	for (const sq_t *sq = &board->pawn[def][0]; *sq != SquareNone; ++sq)  {
+	for (auto sq = board->pawn[def].begin(); sq != board->pawn[def].end(); ++sq)  {
         list[pos++] = *sq;
 	}
 
@@ -1550,7 +1549,7 @@ static bool bishop_can_attack(const board_t * board, int_fast32_t to, int_fast8_
 	ASSERT(SQUARE_IS_OK(to));
 	ASSERT(COLOUR_IS_OK(colour));
 
-	for (const sq_t *from = &board->piece[colour][1]; *from != SquareNone; ++from)  { // HACK: no king
+	for (auto from = board->piece[colour].begin() + 1; from != board->piece[colour].end(); ++from)  { // HACK: no king
         int_fast8_t piece = board->square[*from];
         if (PIECE_IS_BISHOP(piece) && SQUARE_COLOUR(*from) == SQUARE_COLOUR(to))
             return true;

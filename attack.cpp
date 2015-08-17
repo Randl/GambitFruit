@@ -229,19 +229,17 @@ bool is_attacked(const board_t * board, int_fast32_t to, int_fast8_t colour) {
 	if (board->square[to-(inc+1)] == pawn) return true;
 
 	// piece attack
+	for (auto from = board->piece[colour].begin(); from != board->piece[colour].end(); ++from) {
 
-	int_fast32_t from;
-	for (const sq_t * ptr = &board->piece[colour][0]; (from=*ptr) != SquareNone; ++ptr) {
-
-		const int_fast32_t piece = board->square[from];
-		const int_fast32_t delta = to - from;
+		const int_fast32_t piece = board->square[*from];
+		const int_fast32_t delta = to - *from;
 
 		if (PSEUDO_ATTACK(piece,delta)) {
 
 			const int_fast32_t inc = DELTA_INC_ALL(delta);
 			ASSERT(inc!=IncNone);
 
-			int_fast32_t sq = from;
+			int_fast32_t sq = *from;
 			do {
 				sq += inc;
 				if (sq == to) return true;
@@ -359,13 +357,12 @@ void attack_set(attack_t * attack, const board_t * board) {
    		attack->dn++;
    	}
 	}
-   // piece attacks
-	int_fast32_t from;
-	for (const sq_t * ptr = &board->piece[opp][1]; (from=*ptr) != SquareNone; ++ptr) { // HACK: no king
+    // piece attacks
+	for (auto from = board->piece[opp].begin() + 1; from != board->piece[opp].end(); ++from) { // HACK: no king
 
-		const int_fast32_t piece = board->square[from];
+		const int_fast32_t piece = board->square[*from];
 
-		const int_fast32_t delta = to - from;
+		const int_fast32_t delta = to - *from;
 		ASSERT(delta_is_ok(delta));
 
 		if (PSEUDO_ATTACK(piece,delta)) {
@@ -379,13 +376,13 @@ void attack_set(attack_t * attack, const board_t * board) {
 				inc = DELTA_INC_LINE(delta);
 				ASSERT(inc!=IncNone);
 
-            	int_fast32_t sq = from;
+            	int_fast32_t sq = *from;
             	do sq += inc; while (board->square[sq] == Empty);
 
             	if (sq != to) continue; // blocker => next attacker
 			}
 
-			attack->ds[attack->dn] = from;
+			attack->ds[attack->dn] = *from;
 			attack->di[attack->dn] = -inc; // HACK
 			attack->dn++;
 		}

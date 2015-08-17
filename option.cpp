@@ -42,8 +42,8 @@ static option_t Option[] = {
 	{ "Bitbase Path", true, "C:/egbb", "string", "", nullptr },
 	{ "Bitbase Cache Size", true, "16", "spin",  "min 4 max 1024", nullptr },
 
-	{ "nullptrMove Pruning",       true, "Always", "combo", "var Always var Fail High var Never", nullptr },
-	{ "nullptrMove Reduction",     true, "3",         "spin",  "min 1 max 4", nullptr },
+	{ "Null Move Pruning",       true, "Always", "combo", "var Always var Fail High var Never", nullptr },
+	{ "Null Move Reduction",     true, "3",         "spin",  "min 1 max 4", nullptr },
 	{ "Verification Search",    true, "Always",   "combo", "var Always var Endgame var Never", nullptr },
 	{ "Verification Reduction", true, "5",         "spin",  "min 1 max 6", nullptr },
 

@@ -35,12 +35,12 @@ int_fast32_t ValueDraw;
 
 static constexpr int_fast32_t TransDepth = 1;
 
-// nullptr move
+// null move
 
-static /* const */ bool Usenullptr = true;
-static /* const */ bool UsenullptrEval = true; // true
-static constexpr int_fast32_t nullptrDepth = 2;
-static /* const */ int_fast32_t nullptrReduction = 3;
+static /* const */ bool UseNull = true;
+static /* const */ bool UseNullEval = true; // true
+static constexpr int_fast32_t NullDepth = 2;
+static /* const */ int_fast32_t NullReduction = 3;
 
 static /* const */ bool UseVer = true;
 static /* const */ bool UseVerEndgame = true; // true
@@ -104,13 +104,13 @@ static constexpr int_fast32_t NodeCut = +1;
 static int_fast32_t  full_root            (list_t * list, board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, int_fast32_t search_type);
 
 static int_fast32_t  full_search          (board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, mv_t pv[], int_fast32_t node_type);
-static int_fast32_t  full_no_nullptr         (board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, mv_t pv[], int_fast32_t node_type, int_fast32_t trans_move, int_fast32_t * best_move);
+static int_fast32_t  full_no_null         (board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, mv_t pv[], int_fast32_t node_type, int_fast32_t trans_move, int_fast32_t * best_move);
 
 static int_fast32_t  full_quiescence      (board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, mv_t pv[]);
 
 static int_fast32_t  full_new_depth       (int_fast32_t depth, int_fast32_t move, board_t * board, bool single_reply, bool in_pv, int_fast32_t height);
 
-static bool do_nullptr              (const board_t * board);
+static bool do_null              (const board_t * board);
 static bool do_ver               (const board_t * board);
 
 static void pv_fill              (const mv_t pv[], board_t * board);
@@ -132,26 +132,26 @@ void search_full_init(list_t * list, board_t * board) {
 	// draw value
 	ValueDraw = option_get_int("Contempt Factor");
 
-	// nullptr-move options
-	const char *string = option_get_string("nullptrMove Pruning");
+	// null-move options
+	const char *string = option_get_string("Null Move Pruning");
 
 	if (false) {
 	} else if (my_string_equal(string,"Always")) {
-		Usenullptr = true;
-		UsenullptrEval = false;
+		UseNull = true;
+		UseNullEval = false;
 	} else if (my_string_equal(string,"Fail High")) {
-		Usenullptr = true;
-		UsenullptrEval = true;
+		UseNull = true;
+		UseNullEval = true;
 	} else if (my_string_equal(string,"Never")) {
-		Usenullptr = false;
-		UsenullptrEval = false;
+		UseNull = false;
+		UseNullEval = false;
 	} else {
 		ASSERT(false);
-		Usenullptr = true;
-		UsenullptrEval = true;
+		UseNull = true;
+		UseNullEval = true;
 	}
 
-	nullptrReduction = option_get_int("nullptrMove Reduction");
+	NullReduction = option_get_int("Null Move Reduction");
 
 	string = option_get_string("Verification Search");
 
@@ -487,19 +487,19 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
 	int_fast32_t opt_value;
 	std::array<mv_t, 256> played;
 
-	// nullptr-move pruning
-	if (Usenullptr && depth >= nullptrDepth && node_type != NodePV) {
+	// null-move pruning
+	if (UseNull && depth >= NullDepth && node_type != NodePV) {
 		if (!in_check
 		 && !value_is_mate(beta)
-		 && do_nullptr(board)
-		 && (!UsenullptrEval || depth <= nullptrReduction+1 || eval(board,alpha, beta, false, in_check) >= beta)) {
+		 && do_null(board)
+		 && (!UseNullEval || depth <= NullReduction+1 || eval(board,alpha, beta, false, in_check) >= beta)) {
 
-			// nullptr-move search
-			int_fast32_t new_depth = depth - nullptrReduction - 1;
+			// null-move search
+			int_fast32_t new_depth = depth - NullReduction - 1;
 
-			move_do_nullptr(board,undo);
+			move_do_null(board,undo);
 			value = -full_search(board,-beta,-beta+1,new_depth,height+1,new_pv,NODE_OPP(node_type));
-			move_undo_nullptr(board,undo);
+			move_undo_null(board,undo);
 
 			// verification search
 			if (UseVer && depth > VerReduction) {
@@ -508,7 +508,7 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
 					ASSERT(new_depth>0);
 
 					int_fast32_t move;
-					value = full_no_nullptr(board,alpha,beta,new_depth,height,new_pv,NodeCut,trans_move,&move);
+					value = full_no_null(board,alpha,beta,new_depth,height,new_pv,NodeCut,trans_move,&move);
 
 					if (value >= beta) {
 						ASSERT(move==new_pv[0]);
@@ -528,7 +528,7 @@ static int_fast32_t full_search(board_t * board, int_fast32_t alpha, int_fast32_
 				if (value > +ValueEvalInf) value = +ValueEvalInf; // do not return unproven mates
 					ASSERT(!value_is_mate(value));
 
-					// pv_cat(pv,new_pv,Movenullptr);
+					// pv_cat(pv,new_pv,MoveNull);
 					best_move = MoveNone;
 					best_value = value;
 					goto cut;
@@ -787,9 +787,9 @@ cut: //refactor?
 	return best_value;
 }
 
-// full_no_nullptr()
+// full_no_null()
 
-static int_fast32_t full_no_nullptr(board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, mv_t pv[], int_fast32_t node_type, int_fast32_t trans_move, int_fast32_t * best_move) {
+static int_fast32_t full_no_null(board_t * board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth, int_fast32_t height, mv_t pv[], int_fast32_t node_type, int_fast32_t trans_move, int_fast32_t * best_move) {
 
 	ASSERT(board!=nullptr);
 	ASSERT(range_is_ok(alpha,beta));
@@ -1063,13 +1063,13 @@ static int_fast32_t full_new_depth(int_fast32_t depth, int_fast32_t move, board_
 	return new_depth;
 }
 
-// do_nullptr()
+// do_null()
 
-static bool do_nullptr(const board_t * board) {
+static bool do_null(const board_t * board) {
 
 	ASSERT(board!=nullptr);
-	// use nullptr move if the side-to-move has at least one piece
-	return board->piece_size[board->turn] >= 2; // king + one piece
+	// use null move if the side-to-move has at least one piece
+	return board->piece[board->turn].size() >= 2; // king + one piece
 }
 
 // do_ver()
@@ -1078,7 +1078,7 @@ static bool do_ver(const board_t * board) {
 
 	ASSERT(board!=nullptr);
 	// use verification if the side-to-move has at most one piece
-	return board->piece_size[board->turn] <= 3; // king + one piece was 2
+	return board->piece[board->turn].size() <= 3; // king + one piece was 2
 }
 
 // pv_fill()
@@ -1090,7 +1090,7 @@ static void pv_fill(const mv_t pv[], board_t * board) {
 
 	const int_fast32_t move = *pv;
 
-	if (move != MoveNone && move != Movenullptr) {
+	if (move != MoveNone && move != MoveNull) {
 
 		undo_t undo[1];
 		move_do(board,move,undo);
@@ -1158,7 +1158,7 @@ static bool simple_stalemate(const board_t * board) {
 
 	// lone king?
 	const int_fast32_t me = board->turn;
-	if (board->piece_size[me] != 1 || board->pawn_size[me] != 0) return false; // no
+	if (board->piece[me].size() != 1 || board->pawn[me].size() != 0) return false; // no
 
 	// king in a corner?
 	const int_fast32_t king = KING_POS(board,me);

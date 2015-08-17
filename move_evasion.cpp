@@ -226,7 +226,7 @@ static bool add_piece_moves(list_t * list, const board_t * board, int_fast32_t t
 
     const int_fast32_t me = board->turn;
 
-    for (const sq_t *ptr = &board->piece[me][1]; *ptr != SquareNone; ++ptr)  { // HACK: no king
+    for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr)  { // HACK: no king
 
         const int_fast32_t piece = board->square[*ptr];
 

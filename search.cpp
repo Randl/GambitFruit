@@ -193,7 +193,7 @@ void search() {
 	search_full_init(SearchRoot->list,SearchCurrent->board);
 
 	// analyze game for evaluation
-	if (SearchCurrent->board->piece_size[White] < 3 && SearchCurrent->board->piece_size[Black] < 3)
+	if (SearchCurrent->board->piece[White].size() < 3 && SearchCurrent->board->piece[Black].size() < 3)
 		trans_endgame = true;
 	else
 		trans_endgame = false;

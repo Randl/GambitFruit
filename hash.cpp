@@ -39,15 +39,14 @@ uint_fast64_t hash_key(const board_t * board) {
 
 	// pieces
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
-		uint_fast32_t sq;
-		for (const sq_t *ptr = &board->piece[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			const uint_fast32_t piece = board->square[sq];
-			key ^= hash_piece_key(piece,sq);
+		for (auto sq = board->piece[colour].begin(); sq != board->piece[colour].end(); ++sq) {
+			const uint_fast32_t piece = board->square[*sq];
+			key ^= hash_piece_key(piece,*sq);
 		}
 
-		for (const sq_t *ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			const uint_fast32_t piece = board->square[sq];
-			key ^= hash_piece_key(piece,sq);
+		for (auto sq = board->pawn[colour].begin(); sq != board->pawn[colour].end(); ++sq) {
+			const uint_fast32_t piece = board->square[*sq];
+			key ^= hash_piece_key(piece,*sq);
 		}
 	}
 
@@ -75,10 +74,9 @@ uint_fast64_t hash_pawn_key(const board_t * board) {
 
 	// pawns
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
-		int_fast32_t sq;
-		for (const sq_t *ptr = &board->pawn[colour][0]; (sq=*ptr) != SquareNone; ++ptr) {
-			const int_fast32_t piece = board->square[sq];
-			key ^= hash_piece_key(piece,sq);
+		for (auto sq = board->pawn[colour].begin(); sq != board->pawn[colour].end(); ++sq) {
+			const int_fast32_t piece = board->square[*sq];
+			key ^= hash_piece_key(piece,*sq);
 		}
 	}
 

@@ -104,7 +104,7 @@ static void add_quiet_checks(list_t * list, const board_t * board)  {
     }
 
     // piece direct checks
-    for (const sq_t *ptr = &board->piece[me][1]; *ptr != SquareNone; ++ptr)  { // HACK: no king
+    for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr)  { // HACK: no king
 
         const inc_t *inc_ptr;
         int_fast32_t piece;
@@ -288,7 +288,7 @@ static void find_pins(uint_fast16_t list[], const board_t * board)  {
     // init
     const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board,opp);
 
-    for (const sq_t *ptr = &board->piece[me][1]; *ptr != SquareNone; ++ptr)  { // HACK: no king
+    for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr)  { // HACK: no king
 
         const int_fast32_t piece = board->square[*ptr], delta = king - *ptr;
         ASSERT(delta_is_ok(delta));

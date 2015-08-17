@@ -28,7 +28,7 @@ bool move_is_ok(int_fast32_t move) {
 
 	if (move < 0 || move >= 65536) return false;
 	if (move == MoveNone) return false;
-	if (move == Movenullptr) return false;
+	if (move == MoveNull) return false;
 
 	return true;
 }
@@ -108,16 +108,16 @@ int_fast32_t move_capture(int_fast32_t move, const board_t * board) {
 
 bool move_to_string(int_fast32_t move, char string[], int_fast32_t size) {
 
-	ASSERT(move==Movenullptr||move_is_ok(move));
+	ASSERT(move==MoveNull||move_is_ok(move));
 	ASSERT(string!=nullptr);
 	ASSERT(size>=6);
 
 	if (size < 6) return false;
 
-	// nullptr move
+	// null move
 
-	if (move == Movenullptr) {
-		strcpy(string,nullptrMoveString);
+	if (move == MoveNull) {
+		strcpy(string,NullMoveString);
 		return true;
 	}
 

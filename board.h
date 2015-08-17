@@ -7,6 +7,7 @@
 // includes
 
 #include <cstdint>
+#include <vector>
 #include "colour.h"
 #include "piece.h"
 #include "square.h"
@@ -51,27 +52,23 @@ struct board_t {
 	uint_fast64_t pawn_key;
 	uint_fast64_t material_key;
 
-	uint_fast64_t stack[StackSize];
+	std::vector<uint_fast64_t> stack;
 
-	int_fast32_t piece_material[ColourNb]; // Thomas
+	std::array<int_fast16_t, ColourNb> piece_material; // Thomas
 
-	int_fast32_t square[SquareNb];
-	int_fast8_t pos[SquareNb];
+	std::array<int_fast32_t, SquareNb> square;
+	std::array<int_fast8_t, SquareNb> pos;
 
-	sq_t piece[ColourNb][17]; // was 32
-	int_fast8_t piece_size[ColourNb];
+	std::array<std::vector<sq_t>, ColourNb> piece;
+	std::array<std::vector<sq_t>, ColourNb> pawn;
 
-	sq_t pawn[ColourNb][9]; // was 16
-	int_fast8_t pawn_size[ColourNb];
+	std::array<int_fast32_t,12> number; // was 16
 
-	int_fast32_t number[12]; // was 16
-
-	int_fast8_t pawn_file[ColourNb][FileNb];
+	std::array<std::array<int_fast8_t, FileNb>, ColourNb> pawn_file;
 
 
 	int_fast32_t flags;
 	int_fast32_t ep_square;
-	int_fast32_t sp; // TODO: MOVE ME?
 
 	int_fast32_t cap_sq;
 
