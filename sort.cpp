@@ -22,7 +22,7 @@
 
 // constants
 
-static constexpr int_fast32_t KillerNb = 2;
+static constexpr int_fast8_t KillerNb = 2;
 
 static constexpr int_fast32_t HistorySize = 12 * 64;
 static constexpr int_fast32_t HistoryMax = 16384;
@@ -33,7 +33,7 @@ static constexpr int_fast32_t KillerScore  =     +4;
 static constexpr int_fast32_t HistoryScore = -24000;
 static constexpr int_fast32_t BadScore     = -28000;
 
-static constexpr int_fast32_t CODE_SIZE = 256;
+static constexpr int_fast16_t CODE_SIZE = 256;
 
 // macros
 
@@ -197,7 +197,7 @@ void sort_init(sort_t * sort, board_t * board, const attack_t * attack, int_fast
 
 		gen_legal_evasions(sort->list,sort->board,sort->attack);
 		note_moves(sort->list,sort->board,sort->height,sort->trans_killer);
-		list_sort(sort->list);
+		sort->list->sort();
 
 		sort->gen = PosLegalEvasion + 1;
 		sort->test = TEST_NONE;
@@ -279,14 +279,14 @@ int_fast32_t sort_next(sort_t * sort) {
 		} else if (gen == GEN_GOOD_CAPTURE) {
 			gen_captures(sort->list,sort->board);
 			note_mvv_lva(sort->list,sort->board);
-			list_sort(sort->list);
+			sort->list->sort();
 
 			LIST_CLEAR(sort->bad);
 
 			sort->test = TEST_GOOD_CAPTURE;
 
 		} else if (gen == GEN_BAD_CAPTURE) {
-			list_copy(sort->list,sort->bad);
+			*sort->list=sort->bad;
 			sort->test = TEST_BAD_CAPTURE;
 		} else if (gen == GEN_KILLER) {
 			LIST_CLEAR(sort->list);
@@ -299,7 +299,7 @@ int_fast32_t sort_next(sort_t * sort) {
 		} else if (gen == GEN_QUIET) {
 			gen_quiet_moves(sort->list,sort->board);
 			note_quiet_moves(sort->list,sort->board);
-			list_sort(sort->list);
+			sort->list->sort();
 
 			sort->test = TEST_QUIET;
 		} else {
@@ -380,13 +380,13 @@ int_fast32_t sort_next_qs(sort_t * sort) {
 		} else if (gen == GEN_EVASION_QS) {
 			gen_pseudo_evasions(sort->list,sort->board,sort->attack);
 			note_moves_simple(sort->list,sort->board);
-			list_sort(sort->list);
+			sort->list->sort();
 
 			sort->test = TEST_LEGAL;
 		} else if (gen == GEN_CAPTURE_QS) {
 			gen_captures(sort->list,sort->board);
 			note_mvv_lva(sort->list,sort->board);
-			list_sort(sort->list);
+			sort->list->sort();
 
 			sort->test = TEST_CAPTURE_QS;
 		} else if (gen == GEN_CHECK_QS) {
@@ -545,7 +545,7 @@ bool history_reduction(int_fast32_t move, const board_t * board) {
 
 void note_moves(list_t * list, const board_t * board, int_fast32_t height, int_fast32_t trans_killer) {
 
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 	ASSERT(board!=nullptr);
 	ASSERT(height_is_ok(height));
 	ASSERT(trans_killer==MoveNone||move_is_ok(trans_killer));
@@ -555,7 +555,7 @@ void note_moves(list_t * list, const board_t * board, int_fast32_t height, int_f
 	if (size >= 2)
 		for (int_fast16_t i = 0; i < size; ++i) {
 			const int_fast32_t move = LIST_MOVE(list,i);
-			list->value[i] = move_value(move,board,height,trans_killer);
+			list->moves[i].value = move_value(move,board,height,trans_killer);
 		}
 }
 
@@ -563,7 +563,7 @@ void note_moves(list_t * list, const board_t * board, int_fast32_t height, int_f
 
 static void note_captures(list_t * list, const board_t * board) {
 
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 	ASSERT(board!=nullptr);
 
 	const int_fast32_t size = LIST_SIZE(list);
@@ -571,7 +571,7 @@ static void note_captures(list_t * list, const board_t * board) {
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
 			const int_fast32_t move = LIST_MOVE(list,i);
-			list->value[i] = capture_value(move,board);
+			list->moves[i].value = capture_value(move,board);
 		}
 }
 
@@ -579,7 +579,7 @@ static void note_captures(list_t * list, const board_t * board) {
 
 static void note_quiet_moves(list_t * list, const board_t * board) {
 
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 	ASSERT(board!=nullptr);
 
 	const int_fast32_t size = LIST_SIZE(list);
@@ -587,7 +587,7 @@ static void note_quiet_moves(list_t * list, const board_t * board) {
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
 			const int_fast32_t move = LIST_MOVE(list,i);
-			list->value[i] = quiet_move_value(move,board);
+			list->moves[i].value = quiet_move_value(move,board);
 		}
 }
 
@@ -595,7 +595,7 @@ static void note_quiet_moves(list_t * list, const board_t * board) {
 
 static void note_moves_simple(list_t * list, const board_t * board) {
 
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 	ASSERT(board!=nullptr);
 
 	const int_fast32_t size = LIST_SIZE(list);
@@ -603,7 +603,7 @@ static void note_moves_simple(list_t * list, const board_t * board) {
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
 			const int_fast32_t move = LIST_MOVE(list,i);
-			list->value[i] = move_value_simple(move,board);
+			list->moves[i].value = move_value_simple(move,board);
 		}
 }
 
@@ -611,7 +611,7 @@ static void note_moves_simple(list_t * list, const board_t * board) {
 
 static void note_mvv_lva(list_t * list, const board_t * board) {
 
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 	ASSERT(board!=nullptr);
 
 	const int_fast32_t size = LIST_SIZE(list);
@@ -619,7 +619,7 @@ static void note_mvv_lva(list_t * list, const board_t * board) {
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
 			const int_fast32_t move = LIST_MOVE(list,i);
-			list->value[i] = mvv_lva(move,board);
+			list->moves[i].value = mvv_lva(move,board);
       }
 }
 

@@ -60,7 +60,7 @@ bool input_available() {
 
 		if (UseDebug && (stdin_h == nullptr || stdin_h == INVALID_HANDLE_VALUE)) {
 			error = GetLastError();
-			printf("info string GetStdHandle() failed, error=%d\n",error);
+			printf("info string GetStdHandle() failed, error=%lu\n",error);
 		}
 
 		is_pipe = !GetConsoleMode(stdin_h,&val); // HACK: assumes pipe on failure
@@ -69,7 +69,7 @@ bool input_available() {
 
 		if (UseDebug && is_pipe) { // GetConsoleMode() failed, everybody assumes pipe then
 			error = GetLastError();
-			printf("info string GetConsoleMode() failed, error=%d\n",error);
+			printf("info string GetConsoleMode() failed, error=%lu\n",error);
 		}
 
 		if (!is_pipe) {
@@ -85,14 +85,14 @@ bool input_available() {
 		if (!PeekNamedPipe(stdin_h,nullptr,0,nullptr,&val,nullptr)) {
 			if (UseDebug) { // PeekNamedPipe() failed, everybody assumes EOF then
 				error = GetLastError();
-				printf("info string PeekNamedPipe() failed, error=%d\n",error);
+				printf("info string PeekNamedPipe() failed, error=%lu\n",error);
 			}
 			return true; // HACK: assumes EOF on failure
 		}
 
-		if (UseDebug && val < 0) printf("info string PeekNamedPipe(): val=%d\n",val);
+		//if (UseDebug && val < 0) printf("info string PeekNamedPipe(): val=%lu\n",val); //DWORD is unsigned
 
-		return val > 0; // != 0???
+		return val != 0;
 
 	} else {
 		GetNumberOfConsoleInputEvents(stdin_h,&val);

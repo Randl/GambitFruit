@@ -12,12 +12,12 @@
 
 // constants
 
-constexpr int_fast32_t ValuePawn   = 100;   // was 100
-constexpr int_fast32_t ValueKnight = 325;   // was 300
-constexpr int_fast32_t ValueBishop = 325;   // was 300
-constexpr int_fast32_t ValueRook   = 500;   // was 500
-constexpr int_fast32_t ValueQueen  = 1000;  // was 900
-constexpr int_fast32_t ValueKing   = 10000; // was 10000
+constexpr int_fast16_t ValuePawn   = 100;   // was 100
+constexpr int_fast16_t ValueKnight = 325;   // was 300
+constexpr int_fast16_t ValueBishop = 325;   // was 300
+constexpr int_fast16_t ValueRook   = 500;   // was 500
+constexpr int_fast16_t ValueQueen  = 1000;  // was 900
+constexpr int_fast16_t ValueKing   = 10000; // was 10000
 
 constexpr int_fast32_t ValueNone    = -32767;
 /*const*/ extern int_fast32_t ValueDraw;

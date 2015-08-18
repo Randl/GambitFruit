@@ -40,11 +40,11 @@ void gen_legal_moves(list_t * list, board_t * board) {
 		gen_legal_evasions(list,board,attack);
 	else {
 		gen_moves(list,board);
-		list_filter(list,board,&pseudo_is_legal,true);
+		list->filter(board,&pseudo_is_legal,true);
    }
 
 	// debug
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 }
 
 // gen_moves()
@@ -62,7 +62,7 @@ void gen_moves(list_t * list, const board_t * board) {
 	add_castle_moves(list,board);
 
 	// debug
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 }
 
 // gen_captures()
@@ -78,7 +78,7 @@ void gen_captures(list_t * list, const board_t * board) {
 	add_en_passant_captures(list,board);
 
 	// debug
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 }
 
 // gen_quiet_moves()
@@ -95,7 +95,7 @@ void gen_quiet_moves(list_t * list, const board_t * board) {
 	add_castle_moves(list,board);
 
 	// debug
-	ASSERT(list_is_ok(list));
+	ASSERT(list->is_ok());
 }
 
 // add_moves()
@@ -304,9 +304,8 @@ static void add_captures(list_t * list, const board_t * board) {
 
 	if (COLOUR_IS_WHITE(me)) {
 
-		int_fast32_t to;
 		for (auto ptr = board->pawn[me].begin(); ptr != board->pawn[me].end(); ++ptr) {
-
+            int_fast32_t to;
 			to = *ptr + 15;
 			if (FLAG_IS(board->square[to],opp_flag)) add_pawn_move(list,*ptr,to);
 
@@ -322,9 +321,9 @@ static void add_captures(list_t * list, const board_t * board) {
 		}
 	} else { // black
 
-		int_fast32_t to;
-		for (auto ptr = board->pawn[me].begin(); ptr != board->pawn[me].end(); ++ptr) {
 
+		for (auto ptr = board->pawn[me].begin(); ptr != board->pawn[me].end(); ++ptr) {
+            int_fast32_t to;
 			to = *ptr - 17;
 			if (FLAG_IS(board->square[to],opp_flag)) add_pawn_move(list,*ptr,to);
 
@@ -505,7 +504,6 @@ static void add_quiet_moves(list_t * list, const board_t * board) {
 		}
    } else { // black
 
-		int_fast32_t from;
 		for (auto from = board->pawn[me].begin(); from != board->pawn[me].end(); ++from) {
 
 			// non promotes

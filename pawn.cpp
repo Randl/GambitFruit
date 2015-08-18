@@ -49,21 +49,21 @@ static const int_fast32_t BackwardOpening = 8;
 static const int_fast32_t BackwardOpeningOpen = 16;
 static const int_fast32_t BackwardEndgame = 10;
 */
-static constexpr std::array<int_fast32_t, 8> DoubledOpening = {10,10,10,12,12,10,10,10};
-static constexpr std::array<int_fast32_t, 8> DoubledEndgame = {18,18,18,20,20,18,18,18};
+static constexpr std::array<int_fast8_t, 8> DoubledOpening = {10,10,10,12,12,10,10,10};
+static constexpr std::array<int_fast8_t, 8> DoubledEndgame = {18,18,18,20,20,18,18,18};
 
-static constexpr std::array<int_fast32_t, 8> IsolatedOpening =		{ 8, 9,10,12,12,10, 9, 8};
-static constexpr std::array<int_fast32_t, 8> IsolatedOpeningOpen =	{18,19,20,22,22,20,19,18};
-static constexpr std::array<int_fast32_t, 8> IsolatedEndgame =		{18,19,20,22,22,20,19,18};
+static constexpr std::array<int_fast8_t, 8> IsolatedOpening =		{ 8, 9,10,12,12,10, 9, 8};
+static constexpr std::array<int_fast8_t, 8> IsolatedOpeningOpen =	{18,19,20,22,22,20,19,18};
+static constexpr std::array<int_fast8_t, 8> IsolatedEndgame =		{18,19,20,22,22,20,19,18};
 
-static constexpr std::array<int_fast32_t, 8> BackwardOpening =		{ 6, 7, 8,10,10, 8, 7, 6};
-static constexpr std::array<int_fast32_t, 8> BackwardOpeningOpen =	{12,14,16,18,18,16,14,12};
-static constexpr std::array<int_fast32_t, 8> BackwardEndgame =		{ 8, 9,10,12,12,10, 9, 8};
+static constexpr std::array<int_fast8_t, 8> BackwardOpening =		{ 6, 7, 8,10,10, 8, 7, 6};
+static constexpr std::array<int_fast8_t, 8> BackwardOpeningOpen =	{12,14,16,18,18,16,14,12};
+static constexpr std::array<int_fast8_t, 8> BackwardEndgame =		{ 8, 9,10,12,12,10, 9, 8};
 
-static constexpr int_fast32_t CandidateOpeningMin = 5;
-static constexpr int_fast32_t CandidateOpeningMax = 55;
-static constexpr int_fast32_t CandidateEndgameMin = 10;
-static constexpr int_fast32_t CandidateEndgameMax = 110;
+static constexpr int_fast8_t CandidateOpeningMin = 5;
+static constexpr int_fast16_t CandidateOpeningMax = 55;
+static constexpr int_fast8_t CandidateEndgameMin = 10;
+static constexpr int_fast16_t CandidateEndgameMax = 110;
 
 // this was moved to eval.cpp
 

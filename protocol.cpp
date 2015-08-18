@@ -422,8 +422,8 @@ static void parse_position(char string[]) {
 	}
 
 	// moves
-	char move_string[256];
 	if (moves != nullptr) { // "moves" present
+        char move_string[256];
 		const char *ptr = moves + 6;
 		while (*ptr != '\0') {
 
@@ -566,7 +566,6 @@ typedef void (*PLOAD_EGBB) (const char* path, int_fast32_t cache_size, int_fast3
 
 static void load_egbb_library() {
     HMODULE hmod;
-    PLOAD_EGBB load_egbb;
 
 	const char* main_path = option_get("Bitbase Path");
 	uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
@@ -578,7 +577,7 @@ static void load_egbb_library() {
     if (hmod)
         FreeLibrary(hmod);
     if (hmod = LoadLibrary(path)) {
-        load_egbb = (PLOAD_EGBB) GetProcAddress(hmod,"load_egbb_xmen");
+        PLOAD_EGBB load_egbb = (PLOAD_EGBB) GetProcAddress(hmod,"load_egbb_xmen");
         probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod,"probe_egbb_xmen");
 
         load_egbb(main_path, egbb_cache_size, egbb_load_type);

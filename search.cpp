@@ -31,7 +31,7 @@
 static constexpr bool UseCpuTime = false; // false
 
 static constexpr bool UseShortSearch = true;
-static constexpr int_fast32_t ShortSearchDepth = 1;
+static constexpr int_fast8_t ShortSearchDepth = 1;
 
 static constexpr bool DispBest = true; // true
 static constexpr bool DispDepthStart = true; // true
@@ -39,12 +39,12 @@ static constexpr bool DispDepthEnd = true; // true
 static constexpr bool DispRoot = true; // true
 static constexpr bool DispStat = true; // true
 
-static constexpr int_fast32_t EasyThreshold = 150;
+static constexpr int_fast16_t EasyThreshold = 150;
 static constexpr double EasyRatio = 0.20;
 
 static constexpr double EarlyRatio = 0.60;
 
-static constexpr int_fast32_t BadThreshold = 50; // 50
+static constexpr int_fast16_t BadThreshold = 50; // 50
 static constexpr bool UseExtension = true;
 
 // variables
@@ -179,7 +179,7 @@ void search() {
 	}
 
 	// SearchRoot
-	list_copy(SearchRoot->list,SearchInput->list);
+	*SearchRoot->list=SearchInput->list;
 
 	// SearchCurrent
 	board_copy(SearchCurrent->board,SearchInput->board);
@@ -391,9 +391,9 @@ void search_update_root() {
 		search_update_current();
 
 		if (SearchCurrent->time >= 1.0) {
-			const int_fast32_t move = SearchRoot->move, move_pos = SearchRoot->move_pos, move_nb = SearchRoot->move_nb;
-			double time = SearchCurrent->time;
-			int_fast64_t node_nb = SearchCurrent->node_nb;
+			const int_fast32_t move = SearchRoot->move, move_pos = SearchRoot->move_pos;//, move_nb = SearchRoot->move_nb;
+			//double time = SearchCurrent->time;
+			//int_fast64_t node_nb = SearchCurrent->node_nb;
 			char move_string[256];
 
 			move_to_string(move,move_string,256);

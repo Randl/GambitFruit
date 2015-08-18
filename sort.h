@@ -13,10 +13,10 @@
 
 // types
 
-typedef struct {
+struct fail_high_stats_t {
 	uint_fast64_t tried;
 	uint_fast64_t success;
-} fail_high_stats_t;
+};
 
 
 struct sort_t {

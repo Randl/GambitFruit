@@ -17,11 +17,11 @@
 
 static constexpr bool UseModulo = false;
 
-static constexpr int_fast32_t DateSize = 16;
+static constexpr uint_fast8_t DateSize = 16;
 
-static constexpr int_fast32_t ClusterSize = 4; // TODO: unsigned?
+static constexpr uint_fast8_t ClusterSize = 4; // TODO: unsigned?
 
-static constexpr int_fast32_t DepthNone = -128;
+static constexpr int_fast16_t DepthNone = -128;
 
 // types
 

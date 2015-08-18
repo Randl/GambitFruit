@@ -32,13 +32,13 @@ constexpr int_fast32_t BR = BlackRook256;
 constexpr int_fast32_t BQ = BlackQueen256;
 constexpr int_fast32_t BK = BlackKing256;
 
-constexpr int_fast32_t FlagsNone = 0;
-constexpr int_fast32_t FlagsWhiteKingCastle  = 1 << 0;
-constexpr int_fast32_t FlagsWhiteQueenCastle = 1 << 1;
-constexpr int_fast32_t FlagsBlackKingCastle  = 1 << 2;
-constexpr int_fast32_t FlagsBlackQueenCastle = 1 << 3;
+constexpr int_fast8_t FlagsNone = 0;
+constexpr int_fast8_t FlagsWhiteKingCastle  = 1 << 0;
+constexpr int_fast8_t FlagsWhiteQueenCastle = 1 << 1;
+constexpr int_fast8_t FlagsBlackKingCastle  = 1 << 2;
+constexpr int_fast8_t FlagsBlackQueenCastle = 1 << 3;
 
-constexpr int_fast32_t StackSize = 4096;
+constexpr uint_fast16_t StackSize = 4096;
 
 // macros
 

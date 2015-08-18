@@ -19,7 +19,7 @@
 // types
 
 struct alist_t {
-	int_fast32_t square[15];
+	std::array<int_fast32_t, 15> square;
 	int_fast8_t size;
 };
 

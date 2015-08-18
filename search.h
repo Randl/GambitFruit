@@ -15,18 +15,18 @@
 
 // constants
 
-constexpr int_fast32_t MultiPVMax = 10;
+constexpr int_fast8_t MultiPVMax = 10;
 
-constexpr int_fast32_t DepthMax = 64;
-constexpr int_fast32_t HeightMax = 256;
+constexpr int_fast16_t DepthMax = 64;
+constexpr int_fast16_t HeightMax = 256;
 
-constexpr int_fast32_t SearchNormal = 0;
-constexpr int_fast32_t SearchShort  = 1;
+constexpr int_fast8_t SearchNormal = 0;
+constexpr int_fast8_t SearchShort  = 1;
 
-constexpr int_fast32_t SearchUnknown = 0;
-constexpr int_fast32_t SearchUpper   = 1;
-constexpr int_fast32_t SearchLower   = 2;
-constexpr int_fast32_t SearchExact   = 3;
+constexpr int_fast8_t SearchUnknown = 0;
+constexpr int_fast8_t SearchUpper   = 1;
+constexpr int_fast8_t SearchLower   = 2;
+constexpr int_fast8_t SearchExact   = 3;
 
 // types
 
@@ -66,7 +66,7 @@ struct search_info_t {
 	int_fast32_t check_inc;
 	bool can_stop;
 	bool stop;
-	
+
 };
 
 struct search_root_t {

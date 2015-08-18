@@ -37,7 +37,7 @@ bool move_is_pseudo(int_fast32_t move, board_t * board) {
 	ASSERT((move&~07777)==0);
 
 	// init
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(board->turn);
+	const int_fast8_t me = board->turn;//, opp = COLOUR_OPP(board->turn);
 
 	// from
 	const int_fast32_t from = MOVE_FROM(move);
@@ -101,7 +101,7 @@ bool quiet_is_pseudo(int_fast32_t move, board_t * board) {
 	ASSERT((move&~07777)==0);
 
 	// init
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(board->turn);
+	const int_fast8_t me = board->turn;// opp = COLOUR_OPP(board->turn);
 
 	// from
 	const int_fast32_t from = MOVE_FROM(move);
@@ -193,7 +193,7 @@ static bool move_is_pseudo_debug(int_fast32_t move, board_t * board) {
 
 	list_t list[1];
 	gen_moves(list,board);
-	return list_contain(list,move);
+	return list->contains(move);
 }
 
 // end of move_legal.cpp

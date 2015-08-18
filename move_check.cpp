@@ -41,7 +41,7 @@ void gen_quiet_checks(list_t * list, board_t * board)  {
     add_castle_checks(list,board);
 
     // debug
-    ASSERT(list_is_ok(list));
+    ASSERT(list->is_ok());
 }
 
 // add_quiet_checks()

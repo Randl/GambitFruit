@@ -11,7 +11,7 @@
 
 // constants
 
-constexpr int_fast32_t RandomNb = 781;
+constexpr int_fast16_t RandomNb = 781;
 
 // macros
 

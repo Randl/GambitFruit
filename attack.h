@@ -31,8 +31,8 @@
 // types
 
 struct attack_t {
-	int_fast32_t ds[2+1];
-	int_fast32_t di[2+1];
+	std::array<int_fast32_t, 2+1> ds;
+	std::array<int_fast32_t, 2+1> di;
 	int_fast32_t dn;
 };
 

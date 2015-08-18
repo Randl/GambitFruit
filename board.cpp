@@ -36,7 +36,7 @@ bool board_is_ok(const board_t * board) {
     if (!UseSlowDebug) return true;
 
     // squares
-    for (int_fast32_t sq = 0; sq < SquareNb; sq++) {
+    for (uint_fast16_t sq = 0; sq < SquareNb; sq++) {
 
         int_fast32_t piece = board->square[sq], pos = board->pos[sq];
 
@@ -297,7 +297,7 @@ void board_init_list(board_t * board) {
         ASSERT(pos>=0&&pos<=8);
 
         if (board->piece[colour].size() + board->pawn[colour].size() > 16)
-            printf("%d %d\n",  board->piece[colour].size(), board->pawn[colour].size());
+            printf("%u %u\n",  board->piece[colour].size(), board->pawn[colour].size());
         if (board->piece[colour].size() + board->pawn[colour].size() > 16)
             my_fatal("board_init_list(): illegal position. %d\n", __LINE__);
     }
@@ -368,7 +368,7 @@ bool board_is_stalemate(board_t * board) {
     gen_moves(list,board);
 
     for (int_fast32_t i = 0; i < LIST_SIZE(list); i++) {
-        int_fast32_t move = LIST_MOVE(list,i);
+        uint_fast16_t move = LIST_MOVE(list,i);
         if (pseudo_is_legal(move,board)) return false; // legal move => not stalemate
     }
 

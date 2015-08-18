@@ -34,7 +34,7 @@ void gen_legal_evasions(list_t * list, const board_t * board, const attack_t * a
     gen_evasions(list,board,attack,true,false);
 
     // debug
-    ASSERT(list_is_ok(list));
+    ASSERT(list->is_ok());
 }
 
 // gen_pseudo_evasions()
@@ -48,7 +48,7 @@ void gen_pseudo_evasions(list_t * list, const board_t * board, const attack_t * 
     gen_evasions(list,board,attack,false,false);
 
     // debug
-    ASSERT(list_is_ok(list));
+    ASSERT(list->is_ok());
 }
 
 // legal_evasion_exist()

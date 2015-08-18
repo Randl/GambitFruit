@@ -40,8 +40,8 @@ constexpr int_fast32_t MatBitbaseFlag  = 1 << 4;
 // types
 
 struct material_info_t {
-	uint_fast8_t cflags[ColourNb];
-	uint_fast8_t mul[ColourNb];
+	std::array<uint_fast8_t, ColourNb> cflags;
+	std::array<uint_fast8_t, ColourNb> mul;
 	uint_fast32_t lock;
 	int_fast16_t phase;
 	int_fast16_t opening;

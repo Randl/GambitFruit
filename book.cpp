@@ -106,7 +106,7 @@ int_fast32_t book_move(board_t * board) {
 			gen_legal_moves(list,board);
 
 			for (int_fast32_t i = 0; i < list->size; ++i) {
-				int_fast32_t move = list->move[i];
+				int_fast32_t move = list->moves[i].move;
 				if ((move & 07777) == best_move) return move;
 			}
 		}

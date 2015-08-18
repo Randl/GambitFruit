@@ -176,8 +176,8 @@ static int_fast32_t  pawn_def_dist		(int_fast32_t pawn, int_fast32_t king, int_f
 
 static void draw_init_list		(int_fast32_t list[], const board_t * board, int_fast32_t pawn_colour);
 
-static bool draw_krpkr			(const int_fast32_t list[], int_fast32_t turn);
-static bool draw_kbpkb			(const int_fast32_t list[], int_fast32_t turn);
+static bool draw_krpkr			(const int_fast32_t list[]);
+static bool draw_kbpkb			(const int_fast32_t list[]);
 
 static int_fast32_t  shelter_square		(const board_t * board, int_fast32_t square, int_fast8_t colour);
 static int_fast8_t  shelter_file		 (const board_t * board, int_fast32_t file, int_fast32_t rank, int_fast8_t colour);
@@ -522,7 +522,7 @@ static void eval_draw(const board_t * board, const material_info_t * mat_info, c
 		// KRPKR (white)
 		draw_init_list(list,board,White);
 
-		if (draw_krpkr(list,board->turn))  {
+		if (draw_krpkr(list))  {
             mul[White] = 1; // 1/16;
             mul[Black] = 1; // 1/16;
 		}
@@ -533,7 +533,7 @@ static void eval_draw(const board_t * board, const material_info_t * mat_info, c
 		// KRPKR (black)
 		draw_init_list(list,board,Black);
 
-		if (draw_krpkr(list,COLOUR_OPP(board->turn)))  {
+		if (draw_krpkr(list))  {
             mul[White] = 1; // 1/16;
             mul[Black] = 1; // 1/16;
 		}
@@ -544,7 +544,7 @@ static void eval_draw(const board_t * board, const material_info_t * mat_info, c
 		// KBPKB (white)
 		draw_init_list(list,board,White);
 
-		if (draw_kbpkb(list,board->turn))  {
+		if (draw_kbpkb(list))  {
             mul[White] = 1; // 1/16;
             mul[Black] = 1; // 1/16;
 		}
@@ -555,7 +555,7 @@ static void eval_draw(const board_t * board, const material_info_t * mat_info, c
 		// KBPKB (black)
 		draw_init_list(list,board,Black);
 
-		if (draw_kbpkb(list,COLOUR_OPP(board->turn)))  {
+		if (draw_kbpkb(list))  {
             mul[White] = 1; // 1/16;
             mul[Black] = 1; // 1/16;
 		}
@@ -589,7 +589,7 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
 
 			const int_fast16_t piece = board->square[*from];
 			int_fast32_t mob;
-			int_fast16_t out_mob, capture, delta;
+			int_fast16_t out_mob, capture;
 
 			const int_fast16_t king = KING_POS(board,opp);
 			const int_fast8_t king_file = SQUARE_FILE(king), king_rank = SQUARE_RANK(king);
@@ -713,68 +713,17 @@ static void eval_piece(const board_t * board, const material_info_t * mat_info, 
 						op[me] += RookOpenFileOpening - RookSemiOpenFileOpening;
 						eg[me] += RookOpenFileEndgame - RookSemiOpenFileEndgame;
 					} else {
-						switch (piece_file)  {//TODO: refactoring
-						case FileA:
-							if ((pawn_info->badpawns[opp] & BadPawnFileA) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
 
-						case FileB:
-							if ((pawn_info->badpawns[opp] & BadPawnFileB) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-
-						case FileC:
-							if ((pawn_info->badpawns[opp] & BadPawnFileC) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-
-						case FileD:
-							if ((pawn_info->badpawns[opp] & BadPawnFileD) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-
-						case FileE:
-							if ((pawn_info->badpawns[opp] & BadPawnFileE) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-
-						case FileF:
-							if ((pawn_info->badpawns[opp] & BadPawnFileF) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-
-						case FileG:
-							if ((pawn_info->badpawns[opp] & BadPawnFileG) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-
-						case FileH:
-							if ((pawn_info->badpawns[opp] & BadPawnFileH) != 0)  {
-								op[me] += RookOnBadPawnFileOpening;
-								eg[me] += RookOnBadPawnFileEndgame;
-							}
-							break;
-						}
+					    const int_fast32_t BadPawnFile = 1 << (piece_file - FileA); // HACK: see BadPawnFileA and FileA
+					    if ((pawn_info->badpawns[opp] & BadPawnFile) != 0)  {
+							op[me] += RookOnBadPawnFileOpening;
+							eg[me] += RookOnBadPawnFileEndgame;
+                        }
 					}
 
 					if ((mat_info->cflags[opp] & MatKingFlag) != 0)  {
 
-						delta = abs(piece_file-king_file); // file distance
+						int_fast16_t delta = abs(piece_file-king_file); // file distance
 
 						if (delta <= 1)  {
 							op[me] += RookSemiKingFileOpening;
@@ -1354,7 +1303,7 @@ static void draw_init_list(int_fast32_t list[], const board_t * board, int_fast3
 
 // draw_krpkr()
 
-static bool draw_krpkr(const int_fast32_t list[], int_fast32_t turn)  {
+static bool draw_krpkr(const int_fast32_t list[])  {
 
 	ASSERT(list!=NULL);
 	ASSERT(COLOUR_IS_OK(turn));
@@ -1406,7 +1355,7 @@ static bool draw_krpkr(const int_fast32_t list[], int_fast32_t turn)  {
 
 // draw_kbpkb()
 
-static bool draw_kbpkb(const int_fast32_t list[], int_fast32_t turn)  {
+static bool draw_kbpkb(const int_fast32_t list[])  {
 
 	ASSERT(list!=NULL);
 	ASSERT(COLOUR_IS_OK(turn));

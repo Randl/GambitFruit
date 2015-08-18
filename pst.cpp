@@ -88,59 +88,59 @@ static bool alt_pawn_table = false;
 static bool alt_knight_table = false;
 static bool alt_bishop_table = false;
 
-static constexpr int_fast32_t PawnFileOpening = 5;
-static constexpr int_fast32_t KnightCentreOpening = 5;
-static constexpr int_fast32_t KnightCentreEndgame = 5;
-static constexpr int_fast32_t KnightRankOpening = 5;
-static constexpr int_fast32_t KnightBackRankOpening = 0;
-static constexpr int_fast32_t KnightTrapped = 100;
-static constexpr int_fast32_t BishopCentreOpening = 2;
-static constexpr int_fast32_t BishopCentreEndgame = 3;
-static constexpr int_fast32_t BishopBackRankOpening = 10;
-static constexpr int_fast32_t BishopDiagonalOpening = 4;
-static constexpr int_fast32_t RookFileOpening = 3;
-static constexpr int_fast32_t QueenCentreOpening = 0;
-static constexpr int_fast32_t QueenCentreEndgame = 4;
-static constexpr int_fast32_t QueenBackRankOpening = 5;
-static constexpr int_fast32_t KingCentreEndgame = 12;
-static constexpr int_fast32_t KingFileOpening = 10;
-static constexpr int_fast32_t KingRankOpening = 10;
+static constexpr int_fast8_t PawnFileOpening = 5;
+static constexpr int_fast8_t KnightCentreOpening = 5;
+static constexpr int_fast8_t KnightCentreEndgame = 5;
+static constexpr int_fast8_t KnightRankOpening = 5;
+static constexpr int_fast8_t KnightBackRankOpening = 0;
+static constexpr int_fast16_t KnightTrapped = 100;
+static constexpr int_fast8_t BishopCentreOpening = 2;
+static constexpr int_fast8_t BishopCentreEndgame = 3;
+static constexpr int_fast8_t BishopBackRankOpening = 10;
+static constexpr int_fast8_t BishopDiagonalOpening = 4;
+static constexpr int_fast8_t RookFileOpening = 3;
+static constexpr int_fast8_t QueenCentreOpening = 0;
+static constexpr int_fast8_t QueenCentreEndgame = 4;
+static constexpr int_fast8_t QueenBackRankOpening = 5;
+static constexpr int_fast8_t KingCentreEndgame = 12;
+static constexpr int_fast8_t KingFileOpening = 10;
+static constexpr int_fast8_t KingRankOpening = 10;
 
 // "constants"
 
-static constexpr std::array<int_fast32_t, 8> PawnFile = {
+static constexpr std::array<int_fast8_t, 8> PawnFile = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr std::array<int_fast32_t, 8> KnightLine = {
+static constexpr std::array<int_fast8_t, 8> KnightLine = {
    -4, -2, +0, +1, +1, +0, -2, -4,
 };
 
-static constexpr std::array<int_fast32_t, 8> KnightRank = {
+static constexpr std::array<int_fast8_t, 8> KnightRank = {
    -2, -1, +0, +1, +2, +3, +2, +1,
 };
 
-static constexpr std::array<int_fast32_t, 8> BishopLine = {
+static constexpr std::array<int_fast8_t, 8> BishopLine = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr std::array<int_fast32_t, 8> RookFile = {
+static constexpr std::array<int_fast8_t, 8> RookFile = {
    -2, -1, +0, +1, +1, +0, -1, -2,
 };
 
-static constexpr std::array<int_fast32_t, 8> QueenLine = {
+static constexpr std::array<int_fast8_t, 8> QueenLine = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr std::array<int_fast32_t, 8> KingLine = {
+static constexpr std::array<int_fast8_t, 8> KingLine = {
    -3, -1, +0, +1, +1, +0, -1, -3,
 };
 
-static constexpr std::array<int_fast32_t, 8> KingFile = {
+static constexpr std::array<int_fast8_t, 8> KingFile = {
    +3, +4, +2, +0, +0, +2, +4, +3,
 };
 
-static constexpr std::array<int_fast32_t, 8> KingRank = {
+static constexpr std::array<int_fast8_t, 8> KingRank = {
    +1, +0, -2, -3, -4, -5, -6, -7,
 };
 

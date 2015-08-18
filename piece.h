@@ -12,52 +12,52 @@
 
 // constants
 
-constexpr int_fast32_t WhitePawnFlag = 1 << 2;
-constexpr int_fast32_t BlackPawnFlag = 1 << 3;
-constexpr int_fast32_t KnightFlag    = 1 << 4;
-constexpr int_fast32_t BishopFlag    = 1 << 5;
-constexpr int_fast32_t RookFlag      = 1 << 6;
-constexpr int_fast32_t KingFlag      = 1 << 7;
+constexpr int_fast16_t WhitePawnFlag = 1 << 2;
+constexpr int_fast16_t BlackPawnFlag = 1 << 3;
+constexpr int_fast16_t KnightFlag    = 1 << 4;
+constexpr int_fast16_t BishopFlag    = 1 << 5;
+constexpr int_fast16_t RookFlag      = 1 << 6;
+constexpr int_fast16_t KingFlag      = 1 << 7;
 
-constexpr int_fast32_t PawnFlags  = WhitePawnFlag | BlackPawnFlag;
-constexpr int_fast32_t QueenFlags = BishopFlag | RookFlag;
+constexpr int_fast16_t PawnFlags  = WhitePawnFlag | BlackPawnFlag;
+constexpr int_fast16_t QueenFlags = BishopFlag | RookFlag;
 
-constexpr int_fast32_t PieceNone64 = 0;
-constexpr int_fast32_t WhitePawn64 = WhitePawnFlag;
-constexpr int_fast32_t BlackPawn64 = BlackPawnFlag;
-constexpr int_fast32_t Knight64    = KnightFlag;
-constexpr int_fast32_t Bishop64    = BishopFlag;
-constexpr int_fast32_t Rook64      = RookFlag;
-constexpr int_fast32_t Queen64     = QueenFlags;
-constexpr int_fast32_t King64      = KingFlag;
+constexpr int_fast16_t PieceNone64 = 0;
+constexpr int_fast16_t WhitePawn64 = WhitePawnFlag;
+constexpr int_fast16_t BlackPawn64 = BlackPawnFlag;
+constexpr int_fast16_t Knight64    = KnightFlag;
+constexpr int_fast16_t Bishop64    = BishopFlag;
+constexpr int_fast16_t Rook64      = RookFlag;
+constexpr int_fast16_t Queen64     = QueenFlags;
+constexpr int_fast16_t King64      = KingFlag;
 
-constexpr int_fast32_t PieceNone256   = 0;
-constexpr int_fast32_t WhitePawn256   = WhitePawn64 | WhiteFlag;
-constexpr int_fast32_t BlackPawn256   = BlackPawn64 | BlackFlag;
-constexpr int_fast32_t WhiteKnight256 = Knight64    | WhiteFlag;
-constexpr int_fast32_t BlackKnight256 = Knight64    | BlackFlag;
-constexpr int_fast32_t WhiteBishop256 = Bishop64    | WhiteFlag;
-constexpr int_fast32_t BlackBishop256 = Bishop64    | BlackFlag;
-constexpr int_fast32_t WhiteRook256   = Rook64      | WhiteFlag;
-constexpr int_fast32_t BlackRook256   = Rook64      | BlackFlag;
-constexpr int_fast32_t WhiteQueen256  = Queen64     | WhiteFlag;
-constexpr int_fast32_t BlackQueen256  = Queen64     | BlackFlag;
-constexpr int_fast32_t WhiteKing256   = King64      | WhiteFlag;
-constexpr int_fast32_t BlackKing256   = King64      | BlackFlag;
-constexpr int_fast32_t PieceNb        = 256;
+constexpr int_fast16_t PieceNone256   = 0;
+constexpr int_fast16_t WhitePawn256   = WhitePawn64 | WhiteFlag;
+constexpr int_fast16_t BlackPawn256   = BlackPawn64 | BlackFlag;
+constexpr int_fast16_t WhiteKnight256 = Knight64    | WhiteFlag;
+constexpr int_fast16_t BlackKnight256 = Knight64    | BlackFlag;
+constexpr int_fast16_t WhiteBishop256 = Bishop64    | WhiteFlag;
+constexpr int_fast16_t BlackBishop256 = Bishop64    | BlackFlag;
+constexpr int_fast16_t WhiteRook256   = Rook64      | WhiteFlag;
+constexpr int_fast16_t BlackRook256   = Rook64      | BlackFlag;
+constexpr int_fast16_t WhiteQueen256  = Queen64     | WhiteFlag;
+constexpr int_fast16_t BlackQueen256  = Queen64     | BlackFlag;
+constexpr int_fast16_t WhiteKing256   = King64      | WhiteFlag;
+constexpr int_fast16_t BlackKing256   = King64      | BlackFlag;
+constexpr int_fast16_t PieceNb        = 256;
 
-constexpr int_fast32_t WhitePawn12   =  0;
-constexpr int_fast32_t BlackPawn12   =  1;
-constexpr int_fast32_t WhiteKnight12 =  2;
-constexpr int_fast32_t BlackKnight12 =  3;
-constexpr int_fast32_t WhiteBishop12 =  4;
-constexpr int_fast32_t BlackBishop12 =  5;
-constexpr int_fast32_t WhiteRook12   =  6;
-constexpr int_fast32_t BlackRook12   =  7;
-constexpr int_fast32_t WhiteQueen12  =  8;
-constexpr int_fast32_t BlackQueen12  =  9;
-constexpr int_fast32_t WhiteKing12   = 10;
-constexpr int_fast32_t BlackKing12   = 11;
+constexpr int_fast8_t WhitePawn12   =  0;
+constexpr int_fast8_t BlackPawn12   =  1;
+constexpr int_fast8_t WhiteKnight12 =  2;
+constexpr int_fast8_t BlackKnight12 =  3;
+constexpr int_fast8_t WhiteBishop12 =  4;
+constexpr int_fast8_t BlackBishop12 =  5;
+constexpr int_fast8_t WhiteRook12   =  6;
+constexpr int_fast8_t BlackRook12   =  7;
+constexpr int_fast8_t WhiteQueen12  =  8;
+constexpr int_fast8_t BlackQueen12  =  9;
+constexpr int_fast8_t WhiteKing12   = 10;
+constexpr int_fast8_t BlackKing12   = 11;
 
 // macros
 
