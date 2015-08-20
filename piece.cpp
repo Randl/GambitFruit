@@ -1,4 +1,3 @@
-
 // piece.cpp
 
 // includes
@@ -7,18 +6,17 @@
 
 #include "colour.h"
 #include "piece.h"
-#include "util.h"
 
 // "constants"
 
-static const char PieceString[12+1] = "PpNnBbRrQqKk";
+static const char PieceString[12 + 1] = "PpNnBbRrQqKk";
 
 // variables
 
 std::array<int_fast32_t, PieceNb> PieceTo12;
 std::array<int_fast32_t, PieceNb> PieceOrder;
 
-std::array<const inc_t*, PieceNb> PieceInc;
+std::array<const inc_t *, PieceNb> PieceInc;
 
 // functions
 
@@ -74,7 +72,7 @@ bool piece_is_ok(int_fast32_t piece) {
 
 int_fast32_t piece_from_12(int_fast32_t piece_12) {
 
-	ASSERT(piece_12>=0&&piece_12<12);
+	ASSERT(piece_12 >= 0 && piece_12 < 12);
 
 	return PieceFrom12[piece_12];
 }
@@ -92,10 +90,10 @@ int_fast32_t piece_to_char(int_fast32_t piece) {
 
 int_fast32_t piece_from_char(int_fast32_t c) {
 
-	const char *ptr = strchr(PieceString,c);
+	const char *ptr = strchr(PieceString, c);
 	if (ptr == nullptr) return PieceNone256;
 
-	return piece_from_12(ptr-PieceString);
+	return piece_from_12(ptr - PieceString);
 }
 
 // end of piece.cpp

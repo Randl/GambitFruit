@@ -1,4 +1,3 @@
-
 // pv.h
 
 #ifndef PV_H
@@ -16,12 +15,12 @@
 
 // functions
 
-extern bool pv_is_ok     (const mv_t pv[]);
+extern bool pv_is_ok(const mv_t pv[]);
 
-extern void pv_copy      (mv_t dst[], const mv_t src[]);
-extern void pv_cat       (mv_t dst[], const mv_t src[], int_fast32_t move);
+extern void pv_copy(mv_t dst[], const mv_t src[]);
+extern void pv_cat(mv_t dst[], const mv_t src[], int_fast32_t move);
 
-extern bool pv_to_string (const mv_t pv[], char string[], int_fast32_t size);
+extern bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size);
 
 #endif // !defined PV_H
 

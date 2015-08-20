@@ -1,11 +1,9 @@
-
 // value.cpp
 
 // includes
 
 #include "piece.h"
 #include "search.h"
-#include "util.h"
 #include "value.h"
 
 // variables
@@ -98,8 +96,8 @@ int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height) {
 
 	if (value < -ValueEvalInf)
 		value += height;
-   else if (value > +ValueEvalInf)
-      value -= height;
+	else if (value > +ValueEvalInf)
+		value -= height;
 
 	ASSERT(value_is_ok(value));
 	return value;
@@ -113,11 +111,11 @@ int_fast32_t value_to_mate(int_fast32_t value) {
 
 	if (value < -ValueEvalInf) {
 		const int_fast32_t dist = (ValueMate + value) / 2;
-		ASSERT(dist>0);
+		ASSERT(dist > 0);
 		return -dist;
 	} else if (value > +ValueEvalInf) {
 		const int_fast32_t dist = (ValueMate - value + 1) / 2;
-		ASSERT(dist>0);
+		ASSERT(dist > 0);
 		return +dist;
 	}
 	return 0;

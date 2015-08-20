@@ -1,4 +1,3 @@
-
 // move_check.h
 
 #ifndef MOVE_CHECK_H
@@ -12,9 +11,9 @@
 
 // functions
 
-extern void gen_quiet_checks (list_t * list, board_t * board);
+extern void gen_quiet_checks(list_t *list, board_t *board);
 
-extern bool move_is_check    (int move, board_t * board);
+extern bool move_is_check(int move, board_t *board);
 
 #endif // !defined MOVE_CHECK_H
 

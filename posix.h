@@ -1,4 +1,3 @@
-
 // posix.h
 
 #ifndef POSIX_H
@@ -10,10 +9,10 @@
 
 // functions
 
-extern bool   input_available ();
+extern bool input_available();
 
-extern double now_real        ();
-extern double now_cpu         ();
+extern double now_real();
+extern double now_cpu();
 
 #endif // !defined POSIX_H
 

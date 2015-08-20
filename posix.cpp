@@ -1,16 +1,15 @@
-
 // posix.cpp
 
 // includes
 
 #include <cerrno>
 #include <cstdio> // REMOVE ME?
-#include <cstdlib>
-#include <cstring>
 #include <ctime>
 
 #if defined(_WIN32) || defined(_WIN64)
+
 #  include <windows.h>
+
 #else // assume POSIX
 #  include <sys/resource.h>
 // #  include <sys/select.h>
@@ -20,7 +19,6 @@
 #endif
 
 #include "posix.h"
-#include "util.h"
 
 // constants
 
@@ -47,7 +45,7 @@ bool input_available() {
 	// val = 0; // needed to make the compiler happy?
 
 	// have a look at the "local" buffer first, *this time before init (no idea if it helps)*
-	if (UseDebug && !init) printf("info string init=%d stdin->_cnt=%d\n",int(init),stdin->_cnt);
+	if (UseDebug && !init) printf("info string init=%d stdin->_cnt=%d\n", int(init), stdin->_cnt);
 	if (stdin->_cnt > 0) return true; // HACK: assumes FILE internals
 
 	// input init (only done once)
@@ -60,20 +58,20 @@ bool input_available() {
 
 		if (UseDebug && (stdin_h == nullptr || stdin_h == INVALID_HANDLE_VALUE)) {
 			error = GetLastError();
-			printf("info string GetStdHandle() failed, error=%lu\n",error);
+			printf("info string GetStdHandle() failed, error=%lu\n", error);
 		}
 
-		is_pipe = !GetConsoleMode(stdin_h,&val); // HACK: assumes pipe on failure
+		is_pipe = !GetConsoleMode(stdin_h, &val); // HACK: assumes pipe on failure
 
-		if (UseDebug) printf("info string init=%d is_pipe=%d\n",int(init),int(is_pipe));
+		if (UseDebug) printf("info string init=%d is_pipe=%d\n", int(init), int(is_pipe));
 
 		if (UseDebug && is_pipe) { // GetConsoleMode() failed, everybody assumes pipe then
 			error = GetLastError();
-			printf("info string GetConsoleMode() failed, error=%lu\n",error);
+			printf("info string GetConsoleMode() failed, error=%lu\n", error);
 		}
 
 		if (!is_pipe) {
-			SetConsoleMode(stdin_h,val&~(ENABLE_MOUSE_INPUT|ENABLE_WINDOW_INPUT));
+			SetConsoleMode(stdin_h, val & ~(ENABLE_MOUSE_INPUT | ENABLE_WINDOW_INPUT));
 			FlushConsoleInputBuffer(stdin_h); // no idea if we can lose data doing this
 		}
 	}
@@ -82,10 +80,10 @@ bool input_available() {
 	// does this code work at all for pipes?
 
 	if (is_pipe) {
-		if (!PeekNamedPipe(stdin_h,nullptr,0,nullptr,&val,nullptr)) {
+		if (!PeekNamedPipe(stdin_h, nullptr, 0, nullptr, &val, nullptr)) {
 			if (UseDebug) { // PeekNamedPipe() failed, everybody assumes EOF then
 				error = GetLastError();
-				printf("info string PeekNamedPipe() failed, error=%lu\n",error);
+				printf("info string PeekNamedPipe() failed, error=%lu\n", error);
 			}
 			return true; // HACK: assumes EOF on failure
 		}
@@ -95,7 +93,7 @@ bool input_available() {
 		return val != 0;
 
 	} else {
-		GetNumberOfConsoleInputEvents(stdin_h,&val);
+		GetNumberOfConsoleInputEvents(stdin_h, &val);
 		return val > 1; // no idea why 1
 	}
 

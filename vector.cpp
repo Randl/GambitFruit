@@ -1,11 +1,8 @@
-
 // vector.cpp
 
 // includes
 
 #include "piece.h"
-#include "square.h"
-#include "util.h"
 #include "vector.h"
 
 // variables
@@ -34,7 +31,7 @@ void vector_init() {
 			if (tmp < 0) tmp = -tmp;
 			if (tmp > dist) dist = tmp;
 
-			Distance[DeltaOffset+delta] = dist;
+			Distance[DeltaOffset + delta] = dist;
 		}
 }
 

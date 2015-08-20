@@ -1,4 +1,3 @@
-
 // util.h
 
 #ifndef UTIL_H
@@ -54,7 +53,7 @@ struct my_timer_t {
 	double start_cpu;
 	double elapsed_real;
 	double elapsed_cpu;
-	bool running;
+		bool running;
 };
 
 /*
@@ -75,45 +74,45 @@ BitBases
 #define _BPAWN    12
 #define _NOTFOUND 99999
 
-typedef int_fast32_t (*PPROBE_EGBB) (int player, int* piece, int* square);
+typedef int_fast32_t (*PPROBE_EGBB)(int player, int *piece, int *square);
 extern PPROBE_EGBB probe_egbb;
-extern bool egbb_is_loaded;
+extern bool          egbb_is_loaded;
 /*
 end BitBases
 */
 
 // functions
 
-extern void   util_init             ();
+extern void util_init();
 
-extern void   my_random_init        ();
-extern int_fast32_t    my_random             (int n);
+extern void         my_random_init();
+extern int_fast32_t my_random(int n);
 
-extern int_fast64_t my_atoll              (const char string[]);
+extern int_fast64_t my_atoll(const char string[]);
 
-extern int_fast32_t    my_round              (double x);
+extern int_fast32_t my_round(double x);
 
-extern void * my_malloc             (int size);
-extern void   my_free               (void * address);
+extern void *my_malloc(int size);
+extern void my_free(void *address);
 
-extern void   my_fatal              (const char format[], ...);
+extern void my_fatal(const char format[], ...);
 
-extern bool   my_file_read_line     (FILE * file, char string[], int_fast32_t size);
+extern bool my_file_read_line(FILE *file, char string[], int_fast32_t size);
 
-extern bool   my_string_empty       (const char string[]);
-extern bool   my_string_equal       (const char string_1[], const char string_2[]);
-extern char * my_strdup             (const char string[]);
+extern bool my_string_empty(const char string[]);
+extern bool my_string_equal(const char string_1[], const char string_2[]);
+extern char *my_strdup(const char string[]);
 
-extern void   my_string_clear       (const char * * variable);
-extern void   my_string_set         (const char * * variable, const char string[]);
+extern void my_string_clear(const char **variable);
+extern void my_string_set(const char **variable, const char string[]);
 
-extern void   my_timer_reset        (my_timer_t * timer);
-extern void   my_timer_start        (my_timer_t * timer);
-extern void   my_timer_stop         (my_timer_t * timer);
+extern void my_timer_reset(my_timer_t *timer);
+extern void my_timer_start(my_timer_t *timer);
+extern void my_timer_stop(my_timer_t *timer);
 
-extern double my_timer_elapsed_real (const my_timer_t * timer);
-extern double my_timer_elapsed_cpu  (const my_timer_t * timer);
-extern double my_timer_cpu_usage    (const my_timer_t * timer);
+extern double my_timer_elapsed_real(const my_timer_t *timer);
+extern double my_timer_elapsed_cpu(const my_timer_t *timer);
+extern double my_timer_cpu_usage(const my_timer_t *timer);
 
 #endif // !defined UTIL_H
 

@@ -1,4 +1,3 @@
-
 // sort.h
 
 #ifndef SORT_H
@@ -22,8 +21,8 @@ struct fail_high_stats_t {
 struct sort_t {
 	board_t *board;
 	const attack_t *attack;
-	list_t list[1];
-	list_t bad[1];
+	list_t  list[1];
+	list_t  bad[1];
 	int_fast32_t depth;
 	int_fast32_t height;
 	int_fast32_t trans_killer;
@@ -39,25 +38,27 @@ struct sort_t {
 
 // functions
 
-extern void sort_init    ();
+extern void sort_init();
 
-extern void sort_init    (sort_t * sort, board_t * board, const attack_t * attack, int_fast32_t depth, int_fast32_t height, int_fast32_t trans_killer);
-extern int_fast32_t  sort_next    (sort_t * sort);
+extern void         sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_t depth,
+							  int_fast32_t height,
+							  int_fast32_t trans_killer);
+extern int_fast32_t sort_next(sort_t *sort);
 
-extern void sort_init_qs (sort_t * sort, board_t * board, const attack_t * attack, bool check);
-extern int_fast32_t  sort_next_qs (sort_t * sort);
+extern void         sort_init_qs(sort_t *sort, board_t *board, const attack_t *attack, bool check);
+extern int_fast32_t sort_next_qs(sort_t *sort);
 
-extern void good_move    (int_fast32_t move, const board_t * board, int_fast32_t depth, int_fast32_t height);
+extern void good_move(int_fast32_t move, const board_t *board, int_fast32_t depth, int_fast32_t height);
 
-extern void history_good (int_fast32_t move, const board_t * board);
-extern void history_bad  (int_fast32_t move, const board_t * board);
-extern void history_very_bad  (int_fast32_t move, const board_t * board);
+extern void history_good(int_fast32_t move, const board_t *board);
+extern void history_bad(int_fast32_t move, const board_t *board);
+extern void history_very_bad(int_fast32_t move, const board_t *board);
 
-extern bool history_reduction(int_fast32_t move, const board_t * board);
-extern void history_tried(int_fast32_t move, const board_t * board);
-extern void history_success(int_fast32_t move, const board_t * board);
+extern bool history_reduction(int_fast32_t move, const board_t *board);
+extern void history_tried(int_fast32_t move, const board_t *board);
+extern void history_success(int_fast32_t move, const board_t *board);
 
-extern void note_moves   (list_t * list, const board_t * board, int_fast32_t height, int_fast32_t trans_killer);
+extern void note_moves(list_t *list, const board_t *board, int_fast32_t height, int_fast32_t trans_killer);
 
 #endif // !defined SORT_H
 

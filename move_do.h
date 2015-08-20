@@ -1,4 +1,3 @@
-
 // move_do.h
 
 #ifndef MOVE_DO_H
@@ -39,13 +38,13 @@ struct undo_t {
 
 // functions
 
-extern void move_do_init   ();
+extern void move_do_init();
 
-extern void move_do        (board_t * board, int_fast32_t move, undo_t * undo);
-extern void move_undo      (board_t * board, int_fast32_t move, const undo_t * undo);
+extern void move_do(board_t *board, int_fast32_t move, undo_t *undo);
+extern void move_undo(board_t *board, int_fast32_t move, const undo_t *undo);
 
-extern void move_do_null   (board_t * board, undo_t * undo);
-extern void move_undo_null (board_t * board, const undo_t * undo);
+extern void move_do_null(board_t *board, undo_t *undo);
+extern void move_undo_null(board_t *board, const undo_t *undo);
 
 #endif // !defined MOVE_DO_H
 

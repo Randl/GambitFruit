@@ -1,4 +1,3 @@
-
 // protocol.cpp
 
 // includes
@@ -15,26 +14,25 @@
 #include "material.h"
 #include "move.h"
 #include "move_do.h"
-#include "move_legal.h"
 #include "option.h"
 #include "pawn.h"
 #include "posix.h"
 #include "protocol.h"
 #include "pst.h"
 #include "search.h"
-#include "search_full.h"
 #include "trans.h"
-#include "util.h"
 
 // constants
 #if defined (_WIN32) || defined(_WIN64)
-    #include <windows.h>
-    #define EGBB_NAME "egbbdll.dll"
+
+#include <windows.h>
+
+#define EGBB_NAME "egbbdll.dll"
 #else
-    #define EGBB_NAME "egbbso.so"
-    #define HMODULE void*
-    #define LoadLibrary(x) dlopen(x,RTLD_LAZY)
-    #define GetProcAddress dlsym
+#define EGBB_NAME "egbbso.so"
+#define HMODULE void*
+#define LoadLibrary(x) dlopen(x,RTLD_LAZY)
+#define GetProcAddress dlsym
 #endif
 
 #define VERSION "1.0 Beta 5.0"
@@ -50,31 +48,33 @@ static bool Searching; // search in progress?
 static bool Infinite; // infinite or ponder mode?
 static bool Delay; // postpone "bestmove" in infinite/ponder mode?
 
-enum {LOAD_NONE,LOAD_4MEN,SMART_LOAD, LOAD_5MEN};
+enum {
+	LOAD_NONE, LOAD_4MEN, SMART_LOAD, LOAD_5MEN
+};
 static int_fast32_t egbb_load_type = LOAD_4MEN;
 
 // prototypes
 
-static void init              ();
-static void loop_step         ();
+static void init();
+static void loop_step();
 
-static void parse_go          (char string[]);
-static void parse_position    (char string[]);
-static void parse_setoption   (char string[]);
+static void parse_go(char string[]);
+static void parse_position(char string[]);
+static void parse_setoption(char string[]);
 
-static void send_best_move    ();
+static void send_best_move();
 
-static bool string_equal      (const char s1[], const char s2[]);
-static bool string_start_with (const char s1[], const char s2[]);
+static bool string_equal(const char s1[], const char s2[]);
+static bool string_start_with(const char s1[], const char s2[]);
 
-static void load_egbb_library ();
+static void load_egbb_library();
 // functions
 
 // loop()
 
 void loop() {
 
-   // init (to help debugging)
+	// init (to help debugging)
 	Init = false;
 
 	Searching = false;
@@ -83,7 +83,7 @@ void loop() {
 
 	search_clear();
 
-	board_from_fen(SearchInput->board,StartFen);
+	board_from_fen(SearchInput->board, StartFen);
 
 	// loop
 	while (true) loop_step();
@@ -130,24 +130,24 @@ static void loop_step() {
 	char string[65536];
 	// read a line
 
-	get(string,65536);
+	get(string, 65536);
 
 	// parse
 	if (false) {
-	} else if (string_start_with(string,"debug ")) {
-	// dummy
-	} else if (string_start_with(string,"go ")) {
+	} else if (string_start_with(string, "debug ")) {
+		// dummy
+	} else if (string_start_with(string, "go ")) {
 		if (!Searching && !Delay) {
 			init();
 			parse_go(string);
 		} else {
 			ASSERT(false);
 		}
-	} else if (string_equal(string,"isready")) {
+	} else if (string_equal(string, "isready")) {
 		if (!Searching && !Delay)
 			init();
 		send("readyok"); // no need to wait when searching (dixit SMK)
-	} else if (string_equal(string,"ponderhit")) {
+	} else if (string_equal(string, "ponderhit")) {
 		if (Searching) {
 			ASSERT(Infinite);
 			SearchInput->infinite = false;
@@ -158,25 +158,25 @@ static void loop_step() {
 		} else {
 			ASSERT(false);
 		}
-	} else if (string_start_with(string,"position ")) {
+	} else if (string_start_with(string, "position ")) {
 		if (!Searching && !Delay) {
 			init();
 			parse_position(string);
 		} else {
 			ASSERT(false);
 		}
-	} else if (string_equal(string,"quit")) {
+	} else if (string_equal(string, "quit")) {
 		ASSERT(!Searching);
 		ASSERT(!Delay);
 
 		exit(EXIT_SUCCESS);
-	} else if (string_start_with(string,"setoption ")) {
+	} else if (string_start_with(string, "setoption ")) {
 		if (!Searching && !Delay) {
 			parse_setoption(string);
 		} else {
 			ASSERT(false);
 		}
-	} else if (string_equal(string,"stop")) {
+	} else if (string_equal(string, "stop")) {
 		if (Searching) {
 			SearchInfo->stop = true;
 			Infinite = false;
@@ -184,7 +184,7 @@ static void loop_step() {
 			send_best_move();
 			Delay = false;
 		}
-	} else if (string_equal(string,"uci")) {
+	} else if (string_equal(string, "uci")) {
 		ASSERT(!Searching);
 		ASSERT(!Delay);
 
@@ -194,7 +194,7 @@ static void loop_step() {
 		option_list();
 
 		send("uciok");
-	} else if (string_equal(string,"ucinewgame")) {
+	} else if (string_equal(string, "ucinewgame")) {
 		if (!Searching && !Delay && Init) {
 			trans_clear(Trans);
 		} else {
@@ -207,9 +207,8 @@ static void loop_step() {
 
 static void parse_go(char string[]) {
 
-
-   double time, inc;
-   double time_max, alloc;
+	double time, inc;
+	double time_max, alloc;
 
 	// init
 	bool infinite = false, ponder = false;
@@ -217,95 +216,95 @@ static void parse_go(char string[]) {
 	int_fast32_t depth = -1, mate = -1, movestogo = -1;
 	int_fast64_t nodes = -1;
 
-	double binc = -1.0, btime = -1.0, movetime = -1.0,winc = -1.0, wtime = -1.0;
+	double binc = -1.0, btime = -1.0, movetime = -1.0, winc = -1.0, wtime = -1.0;
 
 	// parse
-	const char * ptr = strtok(string," "); // skip "go"
+	const char *ptr = strtok(string, " "); // skip "go"
 
-	for (ptr = strtok(nullptr," "); ptr != nullptr; ptr = strtok(nullptr," ")) {
+	for (ptr = strtok(nullptr, " "); ptr != nullptr; ptr = strtok(nullptr, " ")) {
 		if (false) {
-		} else if (string_equal(ptr,"binc")) {
+		} else if (string_equal(ptr, "binc")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 			binc = double(atoi(ptr)) / 1000.0;
-			ASSERT(binc>=0.0);
+			ASSERT(binc >= 0.0);
 
-		} else if (string_equal(ptr,"btime")) {
+		} else if (string_equal(ptr, "btime")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			btime = double(atoi(ptr)) / 1000.0;
-			ASSERT(btime>=0.0);
+			ASSERT(btime >= 0.0);
 
-		} else if (string_equal(ptr,"depth")) {
+		} else if (string_equal(ptr, "depth")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			depth = atoi(ptr);
-			ASSERT(depth>=0);
+			ASSERT(depth >= 0);
 
-		} else if (string_equal(ptr,"infinite")) {
+		} else if (string_equal(ptr, "infinite")) {
 
 			infinite = true;
 
- 		} else if (string_equal(ptr,"mate")) {
+		} else if (string_equal(ptr, "mate")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			mate = atoi(ptr);
-			ASSERT(mate>=0);
+			ASSERT(mate >= 0);
 
-		} else if (string_equal(ptr,"movestogo")) {
+		} else if (string_equal(ptr, "movestogo")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			movestogo = atoi(ptr);
-			ASSERT(movestogo>=0);
+			ASSERT(movestogo >= 0);
 
-		} else if (string_equal(ptr,"movetime")) {
+		} else if (string_equal(ptr, "movetime")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			movetime = double(atoi(ptr)) / 1000.0;
-			ASSERT(movetime>=0.0);
+			ASSERT(movetime >= 0.0);
 
-		} else if (string_equal(ptr,"nodes")) {
+		} else if (string_equal(ptr, "nodes")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			nodes = my_atoll(ptr);
-			ASSERT(nodes>=0);
+			ASSERT(nodes >= 0);
 
-		} else if (string_equal(ptr,"ponder")) {
+		} else if (string_equal(ptr, "ponder")) {
 
 			ponder = true;
 
-		} else if (string_equal(ptr,"searchmoves")) {
+		} else if (string_equal(ptr, "searchmoves")) {
 
 			// dummy
 
-		} else if (string_equal(ptr,"winc")) {
+		} else if (string_equal(ptr, "winc")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
 			winc = double(atoi(ptr)) / 1000.0;
-			ASSERT(winc>=0.0);
+			ASSERT(winc >= 0.0);
 
-		} else if (string_equal(ptr,"wtime")) {
+		} else if (string_equal(ptr, "wtime")) {
 
-			ptr = strtok(nullptr," ");
+			ptr = strtok(nullptr, " ");
 			if (ptr == nullptr) my_fatal("parse_go(): missing argument\n");
 
- 			wtime = double(atoi(ptr)) / 1000.0;
-			ASSERT(wtime>=0.0);
+			wtime = double(atoi(ptr)) / 1000.0;
+			ASSERT(wtime >= 0.0);
 		}
 	}
 
@@ -318,7 +317,7 @@ static void parse_go(char string[]) {
 	int_fast32_t option_depth = 0;
 	option_depth = option_get_int("Search Depth");
 	if (option_depth > 0)
-   	  depth = option_depth;
+		depth                                            = option_depth;
 	// JAS end
 
 	if (depth >= 0) {
@@ -340,7 +339,7 @@ static void parse_go(char string[]) {
 	}
 
 	if (movestogo <= 0 || movestogo > 30) movestogo = 20; // HACK was 30. Why 20?
-	if (inc < 0.0) inc = 0.0;
+	if (inc < 0.0) inc                                   = 0.0;
 
 	// JAS
 	int_fast32_t option_movetime = 0;
@@ -348,7 +347,7 @@ static void parse_go(char string[]) {
 	if (option_movetime > 0) {
 		movetime = option_movetime;
 	}
-   // JAS end
+	// JAS end
 
 	if (movetime >= 0.0) {
 
@@ -366,12 +365,12 @@ static void parse_go(char string[]) {
 
 		SearchInput->time_is_limited = true;
 
-		alloc = (time_max + inc * double(movestogo-1)) / double(movestogo);
+		alloc = (time_max + inc * double(movestogo - 1)) / double(movestogo);
 		alloc *= (option_get_bool("Ponder") ? PonderRatio : NormalRatio);
 		if (alloc > time_max) alloc = time_max;
 		SearchInput->time_limit_1 = alloc;
 
-		alloc = (time_max + inc * double(movestogo-1)) * 0.5;
+		alloc = (time_max + inc * double(movestogo - 1)) * 0.5;
 		if (alloc < SearchInput->time_limit_1) alloc = SearchInput->time_limit_1;
 		if (alloc > time_max) alloc = time_max;
 		SearchInput->time_limit_2 = alloc;
@@ -384,8 +383,8 @@ static void parse_go(char string[]) {
 	ASSERT(!Delay);
 
 	Searching = true;
-	Infinite = infinite || ponder;
-	Delay = false;
+	Infinite                                             = infinite || ponder;
+	Delay                                                = false;
 
 	search();
 	search_update_current();
@@ -394,7 +393,7 @@ static void parse_go(char string[]) {
 	ASSERT(!Delay);
 
 	Searching = false;
-	Delay = Infinite;
+	Delay                                                = Infinite;
 
 	if (!Delay) send_best_move();
 }
@@ -404,33 +403,33 @@ static void parse_go(char string[]) {
 static void parse_position(char string[]) {
 
 	// init
-	const char *fen = strstr(string,"fen ");
-	char *moves = strstr(string,"moves ");
+	const char *fen   = strstr(string, "fen ");
+	char       *moves = strstr(string, "moves ");
 
 	// start position
 	if (fen != nullptr) { // "fen" present
 		if (moves != nullptr) { // "moves" present
-			ASSERT(moves>fen);
+			ASSERT(moves > fen);
 			moves[-1] = '\0'; // dirty, but so is UCI
 		}
 
-		board_from_fen(SearchInput->board,fen+4); // CHANGE ME
+		board_from_fen(SearchInput->board, fen + 4); // CHANGE ME
 
 	} else {
 		// HACK: assumes startpos
-		board_from_fen(SearchInput->board,StartFen);
+		board_from_fen(SearchInput->board, StartFen);
 	}
 
 	// moves
 	if (moves != nullptr) { // "moves" present
-        char move_string[256];
+		char move_string[256];
 		const char *ptr = moves + 6;
 		while (*ptr != '\0') {
 
-			move_string[0] = *ptr++;
-			move_string[1] = *ptr++;
-			move_string[2] = *ptr++;
-			move_string[3] = *ptr++;
+			move_string[0]    = *ptr++;
+			move_string[1]    = *ptr++;
+			move_string[2]    = *ptr++;
+			move_string[3]    = *ptr++;
 
 			if (*ptr == '\0' || *ptr == ' ') {
 				move_string[4] = '\0';
@@ -439,9 +438,9 @@ static void parse_position(char string[]) {
 				move_string[5] = '\0';
 			}
 
-			undo_t undo[1];
-			int_fast32_t move = move_from_string(move_string,SearchInput->board);
-			move_do(SearchInput->board,move,undo);
+			undo_t       undo[1];
+			int_fast32_t move = move_from_string(move_string, SearchInput->board);
+			move_do(SearchInput->board, move, undo);
 
 			while (*ptr == ' ') ++ptr;
 		}
@@ -453,8 +452,8 @@ static void parse_position(char string[]) {
 static void parse_setoption(char string[]) {
 
 	// init
-	const char *name = strstr(string,"name ");
-	char *value = strstr(string,"value ");
+	const char *name  = strstr(string, "name ");
+	char       *value = strstr(string, "value ");
 
 	if (name == nullptr || value == nullptr || name >= value) return; // ignore buttons
 
@@ -463,10 +462,10 @@ static void parse_setoption(char string[]) {
 	value += 6;
 
 	// update
-	option_set(name,value);
+	option_set(name, value);
 
 	// update transposition-table size if needed
-	if (Init && my_string_equal(name,"Hash")) { // Init => already allocated
+	if (Init && my_string_equal(name, "Hash")) { // Init => already allocated
 		ASSERT(!Searching);
 
 		if (option_get_int("Hash") >= 4) {
@@ -475,7 +474,7 @@ static void parse_setoption(char string[]) {
 		}
 	}
 
-	if (my_string_equal(name,"Bitbases Path") || my_string_equal(name,"Bitbases Cache Size"))
+	if (my_string_equal(name, "Bitbases Path") || my_string_equal(name, "Bitbases Cache Size"))
 		load_egbb_library();
 }
 
@@ -489,7 +488,7 @@ static void send_best_move() {
 	double time = SearchCurrent->time, speed = SearchCurrent->speed, cpu = SearchCurrent->cpu;
 	int_fast64_t node_nb = SearchCurrent->node_nb;
 
-	send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f",time*1000.0,node_nb,speed,cpu*1000.0);
+	send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f", time * 1000.0, node_nb, speed, cpu * 1000.0);
 
 	trans_stats(Trans);
 	// pawn_stats();
@@ -500,14 +499,14 @@ static void send_best_move() {
 	mv_t *pv = SearchBest[0].pv;
 
 	char move_string[256];
-	move_to_string(move,move_string,256);
+	move_to_string(move, move_string, 256);
 
 	if (pv[0] == move && move_is_ok(pv[1])) {
 		char ponder_string[256];
-		move_to_string(pv[1],ponder_string,256);
-		send("bestmove %s ponder %s",move_string,ponder_string);
+		move_to_string(pv[1], ponder_string, 256);
+		send("bestmove %s ponder %s", move_string, ponder_string);
 	} else {
-		send("bestmove %s",move_string);
+		send("bestmove %s", move_string);
 	}
 }
 
@@ -515,10 +514,10 @@ static void send_best_move() {
 
 void get(char string[], int_fast32_t size) {
 
-	ASSERT(string!=nullptr);
-	ASSERT(size>=65536);
+	ASSERT(string != nullptr);
+	ASSERT(size >= 65536);
 
-	if (!my_file_read_line(stdin,string,size)) // EOF
+	if (!my_file_read_line(stdin, string, size)) // EOF
 		exit(EXIT_SUCCESS);
 }
 
@@ -526,67 +525,67 @@ void get(char string[], int_fast32_t size) {
 
 void send(const char format[], ...) {
 
-	ASSERT(format!=nullptr);
+	ASSERT(format != nullptr);
 
 	va_list arg_list;
 	char string[4096];
 
-	va_start(arg_list,format);
-	vsprintf(string,format,arg_list);
+	va_start(arg_list, format);
+	vsprintf(string, format, arg_list);
 	va_end(arg_list);
 
-	fprintf(stdout,"%s\n",string);
+	fprintf(stdout, "%s\n", string);
 }
 
 // string_equal()
 
 static bool string_equal(const char s1[], const char s2[]) {
 
-	ASSERT(s1!=nullptr);
-	ASSERT(s2!=nullptr);
+	ASSERT(s1 != nullptr);
+	ASSERT(s2 != nullptr);
 
-	return strcmp(s1,s2) == 0;
+	return strcmp(s1, s2) == 0;
 }
 
 // string_start_with()
 
 static bool string_start_with(const char s1[], const char s2[]) {
 
-	ASSERT(s1!=nullptr);
-	ASSERT(s2!=nullptr);
+	ASSERT(s1 != nullptr);
+	ASSERT(s2 != nullptr);
 
-	return strstr(s1,s2) == s1;
+	return strstr(s1, s2) == s1;
 }
 
 // Endgame Bitbases
 
 PPROBE_EGBB probe_egbb;
-bool egbb_is_loaded; //bool?
-typedef void (*PLOAD_EGBB) (const char* path, int_fast32_t cache_size, int_fast32_t load_options);
+bool        egbb_is_loaded; //bool?
+typedef void (*PLOAD_EGBB)(const char *path, int_fast32_t cache_size, int_fast32_t load_options);
 
 static void load_egbb_library() {
-    HMODULE hmod;
+	HMODULE hmod;
 
-	const char* main_path = option_get("Bitbase Path");
+	const char *main_path = option_get("Bitbase Path");
 	uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
 
-    char path[256];
-    strcpy(path, main_path);
-    strcat(path, EGBB_NAME);
+	char path[256];
+	strcpy(path, main_path);
+	strcat(path, EGBB_NAME);
 
-    if (hmod)
-        FreeLibrary(hmod);
-    if (hmod = LoadLibrary(path)) {
-        PLOAD_EGBB load_egbb = (PLOAD_EGBB) GetProcAddress(hmod,"load_egbb_xmen");
-        probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod,"probe_egbb_xmen");
+	if (hmod)
+		FreeLibrary(hmod);
+	if (hmod = LoadLibrary(path)) {
+		PLOAD_EGBB load_egbb = (PLOAD_EGBB) GetProcAddress(hmod, "load_egbb_xmen");
+		probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod, "probe_egbb_xmen");
 
-        load_egbb(main_path, egbb_cache_size, egbb_load_type);
-        egbb_is_loaded = true;
-        printf("Bitbase loaded\n");
-    } else {
-        egbb_is_loaded = false;
-        printf("Bitbase not loaded\n");
-    }
+		load_egbb(main_path, egbb_cache_size, egbb_load_type);
+		egbb_is_loaded = true;
+		printf("Bitbase loaded\n");
+	} else {
+		egbb_is_loaded = false;
+		printf("Bitbase not loaded\n");
+	}
 }
 
 // end of Endgame Bitbases

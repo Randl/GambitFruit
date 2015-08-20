@@ -1,19 +1,14 @@
-
 // move_do.cpp
 
 // includes
 #include <array>
 #include "attack.h"
-#include "board.h"
-#include "colour.h"
 #include "hash.h"
 #include "move.h"
 #include "move_do.h"
 #include "pawn.h" // TODO: bit.h
-#include "piece.h"
 #include "pst.h"
 #include "random.h"
-#include "util.h"
 #include "value.h"
 
 // variables
@@ -22,9 +17,9 @@ static std::array<int_fast32_t, SquareNb> CastleMask;
 
 // prototypes
 
-static void square_clear (board_t * board, int_fast32_t square, int_fast32_t piece, bool update);
-static void square_set   (board_t * board, int_fast32_t square, int_fast32_t piece, int_fast32_t pos, bool update);
-static void square_move  (board_t * board, int_fast32_t from, int_fast32_t to, int_fast32_t piece, bool update);
+static void square_clear(board_t *board, int_fast32_t square, int_fast32_t piece, bool update);
+static void square_set(board_t *board, int_fast32_t square, int_fast32_t piece, int_fast32_t pos, bool update);
+static void square_move(board_t *board, int_fast32_t from, int_fast32_t to, int_fast32_t piece, bool update);
 
 // functions
 
@@ -50,52 +45,52 @@ void move_do_init() {
 
 // move_do()
 
-void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
+void move_do(board_t *board, int_fast32_t move, undo_t *undo) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 	ASSERT(move_is_ok(move));
-	ASSERT(undo!=nullptr);
+	ASSERT(undo != nullptr);
 
 	ASSERT(board_is_legal(board));
 
 	// initialise undo
-	undo->capture = false;
-	undo->turn = board->turn;
-	undo->flags = board->flags;
-	undo->ep_square = board->ep_square;
-	undo->ply_nb = board->ply_nb;
-	undo->cap_sq = board->cap_sq;
-	undo->opening = board->opening;
-	undo->endgame = board->endgame;
-	undo->key = board->key;
-	undo->pawn_key = board->pawn_key;
-	undo->material_key = board->material_key;
+	undo->capture                               = false;
+	undo->turn                                  = board->turn;
+	undo->flags                                 = board->flags;
+	undo->ep_square                             = board->ep_square;
+	undo->ply_nb                                = board->ply_nb;
+	undo->cap_sq                                = board->cap_sq;
+	undo->opening                               = board->opening;
+	undo->endgame                               = board->endgame;
+	undo->key                                   = board->key;
+	undo->pawn_key                              = board->pawn_key;
+	undo->material_key                          = board->material_key;
 
 	// init
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me);
-	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move);
-	int_fast32_t piece = board->square[from];
+	const int_fast32_t me    = board->turn, opp = COLOUR_OPP(me);
+	const int_fast32_t from  = MOVE_FROM(move), to = MOVE_TO(move);
+	int_fast32_t       piece = board->square[from];
 
-	ASSERT(COLOUR_IS(piece,me));
+	ASSERT(COLOUR_IS(piece, me));
 
 	// update key stack
-	ASSERT(board->stack.size()<StackSize);
+	ASSERT(board->stack.size() < StackSize);
 	board->stack.push_back(board->key);
 
 	// update turn
- 	board->turn = opp;
- 	board->key ^= RANDOM_64(RandomTurn);
+	board->turn = opp;
+	board->key ^= RANDOM_64(RandomTurn);
 
 	// update castling rights
 	const int_fast32_t old_flags = board->flags, new_flags = old_flags & CastleMask[from] & CastleMask[to];
 
 	board->flags = new_flags;
-	board->key ^= Castle64[new_flags^old_flags]; // HACK
+	board->key ^= Castle64[new_flags ^ old_flags]; // HACK
 
 	// update en-passant square
-	const int_fast32_t sq=board->ep_square;
+	const int_fast32_t sq = board->ep_square;
 	if (sq != SquareNone) {
-		board->key ^= RANDOM_64(RandomEnPassant+SQUARE_FILE(sq)-FileA);
+		board->key ^= RANDOM_64(RandomEnPassant + SQUARE_FILE(sq) - FileA);
 		board->ep_square = SquareNone;
 	}
 
@@ -105,9 +100,9 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
 		if (delta == +32 || delta == -32) {
 			const int_fast32_t pawn = PAWN_MAKE(opp);
-			if (board->square[to-1] == pawn || board->square[to+1] == pawn) {
+			if (board->square[to - 1] == pawn || board->square[to + 1] == pawn) {
 				board->ep_square = (from + to) / 2;
-				board->key ^= RANDOM_64(RandomEnPassant+SQUARE_FILE(to)-FileA);
+				board->key ^= RANDOM_64(RandomEnPassant + SQUARE_FILE(to) - FileA);
 			}
 		}
 	}
@@ -123,18 +118,18 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 	int_fast32_t square = to;
 	if (MOVE_IS_EN_PASSANT(move)) square = SQUARE_EP_DUAL(square);
 
-	const int_fast32_t capture=board->square[square];
+	const int_fast32_t capture = board->square[square];
 	if (capture != Empty) {
 
-		ASSERT(COLOUR_IS(capture,opp));
+		ASSERT(COLOUR_IS(capture, opp));
 		ASSERT(!PIECE_IS_KING(capture));
 
-		undo->capture = true;
+		undo->capture     = true;
 		undo->capture_square = square;
 		undo->capture_piece = capture;
 		undo->capture_pos = board->pos[square];
 
-		square_clear(board,square,capture,true);
+		square_clear(board, square, capture, true);
 
 		board->ply_nb = 0; // conversion
 		board->cap_sq = to;
@@ -145,20 +140,20 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
 		// promote
 		undo->pawn_pos = board->pos[from];
-		square_clear(board,from,piece,true);
+		square_clear(board, from, piece, true);
 
 		piece = move_promote(move);
 
 		// insert the promote piece in MV order
 		int_fast32_t pos;
-		for (pos = board->piece[me].size(); pos > 0 && piece > board->square[board->piece[me][pos-1]]; --pos); // HACK
+		for (pos = board->piece[me].size(); pos > 0 && piece > board->square[board->piece[me][pos - 1]]; --pos); // HACK
 
-		square_set(board,to,piece,pos,true);
+		square_set(board, to, piece, pos, true);
 		board->cap_sq = to;
 
 	} else {
 		// normal move
-		square_move(board,from,to,piece,true);
+		square_move(board, from, to, piece, true);
 	}
 
 	// move the rook in case of castling
@@ -166,14 +161,14 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
 		int_fast32_t rook = Rook64 | COLOUR_FLAG(me); // HACK
 		if (to == G1)
-			square_move(board,H1,F1,rook,true);
+			square_move(board, H1, F1, rook, true);
 		else if (to == C1)
-			square_move(board,A1,D1,rook,true);
+			square_move(board, A1, D1, rook, true);
 		else if (to == G8)
-			square_move(board,H8,F8,rook,true);
+			square_move(board, H8, F8, rook, true);
 		else if (to == C8)
-			square_move(board,A8,D8,rook,true);
-		else  {
+			square_move(board, A8, D8, rook, true);
+		else {
 			ASSERT(false);
 		}
 	}
@@ -184,30 +179,30 @@ void move_do(board_t * board, int_fast32_t move, undo_t * undo) {
 
 // move_undo()
 
-void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
+void move_undo(board_t *board, int_fast32_t move, const undo_t *undo) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 	ASSERT(move_is_ok(move));
-	ASSERT(undo!=nullptr);
+	ASSERT(undo != nullptr);
 
 	// init
-	const int_fast32_t me = undo->turn, from = MOVE_FROM(move), to = MOVE_TO(move);
-	int_fast32_t piece = board->square[to];
-	ASSERT(COLOUR_IS(piece,me));
+	const int_fast32_t me    = undo->turn, from = MOVE_FROM(move), to = MOVE_TO(move);
+	int_fast32_t       piece = board->square[to];
+	ASSERT(COLOUR_IS(piece, me));
 
 	// castle
 	if (MOVE_IS_CASTLE(move)) {
 		const int_fast32_t rook = Rook64 | COLOUR_FLAG(me); // HACK
 
 		if (to == G1)
-			square_move(board,F1,H1,rook,false);
+			square_move(board, F1, H1, rook, false);
 		else if (to == C1)
-			square_move(board,D1,A1,rook,false);
+			square_move(board, D1, A1, rook, false);
 		else if (to == G8)
-			square_move(board,F8,H8,rook,false);
+			square_move(board, F8, H8, rook, false);
 		else if (to == C8)
-			square_move(board,D8,A8,rook,false);
-		else  {
+			square_move(board, D8, A8, rook, false);
+		else {
 			ASSERT(false);
 		}
 	}
@@ -216,37 +211,37 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 	if (MOVE_IS_PROMOTE(move)) {
 
 		// promote
-		ASSERT(piece==move_promote(move));
-		square_clear(board,to,piece,false);
+		ASSERT(piece == move_promote(move));
+		square_clear(board, to, piece, false);
 
 		piece = PAWN_MAKE(me);
 		const int_fast32_t pos = undo->pawn_pos;
 
-		square_set(board,from,piece,pos,false);
+		square_set(board, from, piece, pos, false);
 
 	} else {
 		// normal move
-		square_move(board,to,from,piece,false);
+		square_move(board, to, from, piece, false);
 	}
 
 	// put the captured piece back
 	if (undo->capture)
-	square_set(board,undo->capture_square,undo->capture_piece,undo->capture_pos,false);
+		square_set(board, undo->capture_square, undo->capture_piece, undo->capture_pos, false);
 
 	// update board info
-	board->turn = undo->turn;
-	board->flags = undo->flags;
+	board->turn     = undo->turn;
+	board->flags    = undo->flags;
 	board->ep_square = undo->ep_square;
-	board->ply_nb = undo->ply_nb;
-	board->cap_sq = undo->cap_sq;
-	board->opening = undo->opening;
-	board->endgame = undo->endgame;
-	board->key = undo->key;
+	board->ply_nb   = undo->ply_nb;
+	board->cap_sq   = undo->cap_sq;
+	board->opening  = undo->opening;
+	board->endgame  = undo->endgame;
+	board->key      = undo->key;
 	board->pawn_key = undo->pawn_key;
 	board->material_key = undo->material_key;
 
 	// update key stack
-	ASSERT(board->stack.size()>0);
+	ASSERT(board->stack.size() > 0);
 	board->stack.pop_back();
 
 	// debug
@@ -256,10 +251,10 @@ void move_undo(board_t * board, int_fast32_t move, const undo_t * undo) {
 
 // move_do_null()
 
-void move_do_null(board_t * board, undo_t * undo) {
+void move_do_null(board_t *board, undo_t *undo) {
 
-	ASSERT(board!=nullptr);
-	ASSERT(undo!=nullptr);
+	ASSERT(board != nullptr);
+	ASSERT(undo != nullptr);
 	ASSERT(board_is_legal(board));
 	ASSERT(!board_is_check(board));
 
@@ -268,10 +263,10 @@ void move_do_null(board_t * board, undo_t * undo) {
 	undo->ep_square = board->ep_square;
 	undo->ply_nb = board->ply_nb;
 	undo->cap_sq = board->cap_sq;
-	undo->key = board->key;
+	undo->key  = board->key;
 
 	// update key stack
-	ASSERT(board->stack.size()<StackSize);
+	ASSERT(board->stack.size() < StackSize);
 	board->stack.push_back(board->key);
 
 	// update turn
@@ -281,7 +276,7 @@ void move_do_null(board_t * board, undo_t * undo) {
 	// update en-passant square
 	const int_fast32_t sq = board->ep_square;
 	if (sq != SquareNone) {
-		board->key ^= RANDOM_64(RandomEnPassant+SQUARE_FILE(sq)-FileA);
+		board->key ^= RANDOM_64(RandomEnPassant + SQUARE_FILE(sq) - FileA);
 		board->ep_square = SquareNone;
 	}
 
@@ -297,10 +292,10 @@ void move_do_null(board_t * board, undo_t * undo) {
 
 // move_undo_null()
 
-void move_undo_null(board_t * board, const undo_t * undo) {
+void move_undo_null(board_t *board, const undo_t *undo) {
 
-	ASSERT(board!=nullptr);
-	ASSERT(undo!=nullptr);
+	ASSERT(board != nullptr);
+	ASSERT(undo != nullptr);
 	ASSERT(board_is_legal(board));
 	ASSERT(!board_is_check(board));
 
@@ -309,10 +304,10 @@ void move_undo_null(board_t * board, const undo_t * undo) {
 	board->ep_square = undo->ep_square;
 	board->ply_nb = undo->ply_nb;
 	board->cap_sq = undo->cap_sq;
-	board->key = undo->key;
+	board->key  = undo->key;
 
 	// update key stack
-	ASSERT(board->stack.size()>0);
+	ASSERT(board->stack.size() > 0);
 	board->stack.pop_back();
 
 	// debug
@@ -321,22 +316,22 @@ void move_undo_null(board_t * board, const undo_t * undo) {
 
 // square_clear()
 
-static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piece, bool update) {
+static void square_clear(board_t *board, int_fast32_t square, int_fast32_t piece, bool update) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(square));
 	ASSERT(piece_is_ok(piece));
-	ASSERT(update==true||update==false);
+	ASSERT(update == true || update == false);
 
 	// init
 	const int_fast32_t pos = board->pos[square];
-	ASSERT(pos>=0);
+	ASSERT(pos >= 0);
 
 	const int_fast32_t piece_12 = PIECE_TO_12(piece);
 	const int_fast8_t colour = PIECE_COLOUR(piece);
 
 	// square
-	ASSERT(board->square[square]==piece);
+	ASSERT(board->square[square] == piece);
 	board->square[square] = Empty;
 
 	// piece list
@@ -344,18 +339,18 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 
 		// init
 		int_fast32_t size = board->piece[colour].size();
-		ASSERT(size>=1);
+		ASSERT(size >= 1);
 
 		// stable swap
-		ASSERT(pos>=0&&pos<size);
-		ASSERT(board->pos[square]==pos);
+		ASSERT(pos >= 0 && pos < size);
+		ASSERT(board->pos[square] == pos);
 
 		board->pos[square] = -1;
-		for (int_fast32_t i = pos; i < size-1; ++i) {
-			const int_fast32_t sq = board->piece[colour][i+1];
+		for (int_fast32_t i = pos; i < size - 1; ++i) {
+			const int_fast32_t sq = board->piece[colour][i + 1];
 			board->piece[colour][i] = sq;
 
-			ASSERT(board->pos[sq]==i+1);
+			ASSERT(board->pos[sq] == i + 1);
 			board->pos[sq] = i;
 		}
 
@@ -368,19 +363,19 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 
 		// init
 		int_fast32_t size = board->pawn[colour].size();
-		ASSERT(size>=1);
+		ASSERT(size >= 1);
 
 		// stable swap
-		ASSERT(pos>=0&&pos<size);
-		ASSERT(board->pos[square]==pos);
+		ASSERT(pos >= 0 && pos < size);
+		ASSERT(board->pos[square] == pos);
 		board->pos[square] = -1;
 
-		for (int_fast32_t i = pos; i < size-1; ++i) {
+		for (int_fast32_t i = pos; i < size - 1; ++i) {
 
-			const int_fast32_t sq = board->pawn[colour][i+1];
+			const int_fast32_t sq = board->pawn[colour][i + 1];
 			board->pawn[colour][i] = sq;
 
-			ASSERT(board->pos[sq]==i+1);
+			ASSERT(board->pos[sq] == i + 1);
 			board->pos[sq] = i;
 		}
 
@@ -390,14 +385,14 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 		board->pawn[colour].pop_back();
 
 		// pawn "bitboard"
-		board->pawn_file[colour][SQUARE_FILE(square)] ^= BIT(PAWN_RANK(square,colour));
+		board->pawn_file[colour][SQUARE_FILE(square)] ^= BIT(PAWN_RANK(square, colour));
 	}
 
 	// material
-	ASSERT(board->piece_nb>0);
+	ASSERT(board->piece_nb > 0);
 	board->piece_nb--;
 
-	ASSERT(board->number[piece_12]>0);
+	ASSERT(board->number[piece_12] > 0);
 	board->number[piece_12]--;
 
 	board->piece_material[colour] -= VALUE_PIECE(piece);  // Thomas
@@ -409,34 +404,34 @@ static void square_clear(board_t * board, int_fast32_t square, int_fast32_t piec
 		const int_fast32_t sq_64 = SQUARE_TO_64(square);
 
 		// PST
-		board->opening -= PST(piece_12,sq_64,Opening);
-		board->endgame -= PST(piece_12,sq_64,Endgame);
+		board->opening -= PST(piece_12, sq_64, Opening);
+		board->endgame -= PST(piece_12, sq_64, Endgame);
 
 		// hash key
-		uint_fast64_t hash_xor = RANDOM_64(RandomPiece+(piece_12^1)*64+sq_64); // HACK: ^1 for PolyGlot book
+		uint_fast64_t hash_xor = RANDOM_64(RandomPiece + (piece_12 ^ 1) * 64 + sq_64); // HACK: ^1 for PolyGlot book
 		board->key ^= hash_xor;
 
 		if (PIECE_IS_PAWN(piece)) board->pawn_key ^= hash_xor;
 		// material key
-		board->material_key ^= RANDOM_64(piece_12*16+board->number[piece_12]);
+		board->material_key ^= RANDOM_64(piece_12 * 16 + board->number[piece_12]);
 	}
 }
 
 // square_set()
 
-static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece, int_fast32_t pos, bool update) {
+static void square_set(board_t *board, int_fast32_t square, int_fast32_t piece, int_fast32_t pos, bool update) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(square));
 	ASSERT(piece_is_ok(piece));
-	ASSERT(pos>=0);
-	ASSERT(update==true||update==false);
+	ASSERT(pos >= 0);
+	ASSERT(update == true || update == false);
 
 	// init
 	const int_fast32_t piece_12 = PIECE_TO_12(piece), colour = PIECE_COLOUR(piece);
 
 	// square
-	ASSERT(board->square[square]==Empty);
+	ASSERT(board->square[square] == Empty);
 	board->square[square] = piece;
 
 	// piece list
@@ -444,7 +439,7 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 
 		// init
 		int_fast32_t size = board->piece[colour].size();
-		ASSERT(size>=0);
+		ASSERT(size >= 0);
 
 		// size
 		++size;
@@ -452,52 +447,52 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 		board->piece[colour].push_back(SquareNone);
 
 		// stable swap
-		ASSERT(pos>=0&&pos<size);
-		for (int_fast32_t i = size-1; i > pos; --i) {
-			const int_fast32_t sq = board->piece[colour][i-1];
+		ASSERT(pos >= 0 && pos < size);
+		for (int_fast32_t i = size - 1; i > pos; --i) {
+			const int_fast32_t sq = board->piece[colour][i - 1];
 			board->piece[colour][i] = sq;
 
-			ASSERT(board->pos[sq]==i-1);
+			ASSERT(board->pos[sq] == i - 1);
 			board->pos[sq] = i;
 		}
 
 		board->piece[colour][pos] = square;
-		ASSERT(board->pos[square]==-1);
+		ASSERT(board->pos[square] == -1);
 		board->pos[square] = pos;
 
 	} else {
 
 		// init
 		int_fast32_t size = board->pawn[colour].size();
-		ASSERT(size>=0);
+		ASSERT(size >= 0);
 
 		// size
 		++size;
 		board->pawn[colour].push_back(SquareNone);
 
 		// stable swap
-		ASSERT(pos>=0&&pos<size);
-		for (int_fast32_t i = size-1; i > pos; --i) {
-			const int_fast32_t sq = board->pawn[colour][i-1];
+		ASSERT(pos >= 0 && pos < size);
+		for (int_fast32_t i = size - 1; i > pos; --i) {
+			const int_fast32_t sq = board->pawn[colour][i - 1];
 			board->pawn[colour][i] = sq;
 
-			ASSERT(board->pos[sq]==i-1);
+			ASSERT(board->pos[sq] == i - 1);
 			board->pos[sq] = i;
 		}
 
 		board->pawn[colour][pos] = square;
-		ASSERT(board->pos[square]==-1);
+		ASSERT(board->pos[square] == -1);
 		board->pos[square] = pos;
 
 		// pawn "bitboard"
-		board->pawn_file[colour][SQUARE_FILE(square)] ^= BIT(PAWN_RANK(square,colour));
+		board->pawn_file[colour][SQUARE_FILE(square)] ^= BIT(PAWN_RANK(square, colour));
 	}
 
 	// material
-	ASSERT(board->piece_nb<32);
+	ASSERT(board->piece_nb < 32);
 	board->piece_nb++;;
 
-	ASSERT(board->number[piece_12]<9);
+	ASSERT(board->number[piece_12] < 9);
 	board->number[piece_12]++;
 
 	board->piece_material[colour] += VALUE_PIECE(piece);  // Thomas
@@ -509,59 +504,59 @@ static void square_set(board_t * board, int_fast32_t square, int_fast32_t piece,
 		const int_fast32_t sq_64 = SQUARE_TO_64(square);
 
 		// PST
-		board->opening += PST(piece_12,sq_64,Opening);
-		board->endgame += PST(piece_12,sq_64,Endgame);
+		board->opening += PST(piece_12, sq_64, Opening);
+		board->endgame += PST(piece_12, sq_64, Endgame);
 
 		// hash key
-		uint_fast64_t hash_xor = RANDOM_64(RandomPiece+(piece_12^1)*64+sq_64); // HACK: ^1 for PolyGlot book
+		uint_fast64_t hash_xor = RANDOM_64(RandomPiece + (piece_12 ^ 1) * 64 + sq_64); // HACK: ^1 for PolyGlot book
 		board->key ^= hash_xor;
 		if (PIECE_IS_PAWN(piece)) board->pawn_key ^= hash_xor;
 
 		// material key
-		board->material_key ^= RANDOM_64(piece_12*16+(board->number[piece_12]-1));
+		board->material_key ^= RANDOM_64(piece_12 * 16 + (board->number[piece_12] - 1));
 	}
 }
 
 // square_move()
 
-static void square_move(board_t * board, int_fast32_t from, int_fast32_t to, int_fast32_t piece, bool update) {
+static void square_move(board_t *board, int_fast32_t from, int_fast32_t to, int_fast32_t piece, bool update) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(from));
 	ASSERT(SQUARE_IS_OK(to));
 	ASSERT(piece_is_ok(piece));
-	ASSERT(update==true||update==false);
+	ASSERT(update == true || update == false);
 
 	// init
 	const int_fast8_t colour = PIECE_COLOUR(piece), pos = board->pos[from];
-	ASSERT(pos>=0);
+	ASSERT(pos >= 0);
 
 	// from
-	ASSERT(board->square[from]==piece);
+	ASSERT(board->square[from] == piece);
 	board->square[from] = Empty;
 
-	ASSERT(board->pos[from]==pos);
+	ASSERT(board->pos[from] == pos);
 	board->pos[from] = -1; // not needed
 
 	// to
-	ASSERT(board->square[to]==Empty);
+	ASSERT(board->square[to] == Empty);
 	board->square[to] = piece;
 
-	ASSERT(board->pos[to]==-1);
+	ASSERT(board->pos[to] == -1);
 	board->pos[to] = pos;
 
 	// piece list
 	if (!PIECE_IS_PAWN(piece)) {
-		ASSERT(board->piece[colour][pos]==from);
+		ASSERT(board->piece[colour][pos] == from);
 		board->piece[colour][pos] = to;
 	} else {
 
-		ASSERT(board->pawn[colour][pos]==from);
+		ASSERT(board->pawn[colour][pos] == from);
 		board->pawn[colour][pos] = to;
 
 		// pawn "bitboard"
-		board->pawn_file[colour][SQUARE_FILE(from)] ^= BIT(PAWN_RANK(from,colour));
-		board->pawn_file[colour][SQUARE_FILE(to)]   ^= BIT(PAWN_RANK(to,colour));
+		board->pawn_file[colour][SQUARE_FILE(from)] ^= BIT(PAWN_RANK(from, colour));
+		board->pawn_file[colour][SQUARE_FILE(to)] ^= BIT(PAWN_RANK(to, colour));
 	}
 
 	// update
@@ -572,13 +567,13 @@ static void square_move(board_t * board, int_fast32_t from, int_fast32_t to, int
 		const int_fast32_t from_64 = SQUARE_TO_64(from), to_64 = SQUARE_TO_64(to), piece_12 = PIECE_TO_12(piece);
 
 		// PST
-		board->opening += PST(piece_12,to_64,Opening) - PST(piece_12,from_64,Opening);
-		board->endgame += PST(piece_12,to_64,Endgame) - PST(piece_12,from_64,Endgame);
+		board->opening += PST(piece_12, to_64, Opening) - PST(piece_12, from_64, Opening);
+		board->endgame += PST(piece_12, to_64, Endgame) - PST(piece_12, from_64, Endgame);
 
 		// hash key
-		const int_fast32_t piece_index = RandomPiece + (piece_12^1) * 64; // HACK: ^1 for PolyGlot book
+		const int_fast32_t piece_index = RandomPiece + (piece_12 ^ 1) * 64; // HACK: ^1 for PolyGlot book
 
-		uint_fast64_t hash_xor = RANDOM_64(piece_index+to_64) ^ RANDOM_64(piece_index+from_64);
+		uint_fast64_t hash_xor = RANDOM_64(piece_index + to_64) ^RANDOM_64(piece_index + from_64);
 		board->key ^= hash_xor;
 		if (PIECE_IS_PAWN(piece)) board->pawn_key ^= hash_xor;
 	}

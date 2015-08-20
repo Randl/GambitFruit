@@ -1,4 +1,3 @@
-
 // list.cpp
 
 // includes
@@ -6,8 +5,6 @@
 #include "board.h"
 #include "list.h"
 #include "move.h"
-#include "util.h"
-#include "value.h"
 
 // constants
 
@@ -17,7 +14,7 @@ static constexpr bool UseStrict = true;
 
 // list_t::is_ok()
 
-bool list_t::is_ok() const{
+bool list_t::is_ok() const {
 
 	//if (list == nullptr) return false;
 	if (size < 0 || size >= ListSize) return false;
@@ -30,18 +27,18 @@ bool list_t::is_ok() const{
 void list_t::remove(uint_fast16_t pos) {
 
 	ASSERT(is_ok());
-	ASSERT(pos>=0&&pos<size);
+	ASSERT(pos >= 0 && pos < size);
 
-	for (int_fast32_t i = pos; i < size-1; ++i) {
-		moves[i].move = moves[i+1].move;
-		moves[i].value = moves[i+1].value;
+	for (int_fast32_t i = pos; i < size - 1; ++i) {
+		moves[i].move  = moves[i + 1].move;
+		moves[i].value = moves[i + 1].value;
 	}
 
 	size--;
 }
 
 
-list_t::list_t (const list_t& src)  {
+list_t::list_t(const list_t &src) {
 	ASSERT(src.is_ok());
 
 	size = src.size;
@@ -52,7 +49,7 @@ list_t::list_t (const list_t& src)  {
 	}
 }
 
-list_t::list_t (const list_t* src)  {
+list_t::list_t(const list_t *src) {
 	ASSERT(src->is_ok());
 
 	size = src->size;
@@ -63,7 +60,7 @@ list_t::list_t (const list_t* src)  {
 	}
 }
 
-list_t& list_t::operator=(const list_t& src)  {
+list_t &list_t::operator=(const list_t &src) {
 	ASSERT(src.is_ok());
 
 	size = src.size;
@@ -85,17 +82,17 @@ void list_t::sort() {
 	// init
 	moves[size].value = -32768; // HACK: sentinel
 
-   // insert sort (stable) TODO: better sort?
+	// insert sort (stable) TODO: better sort?
 
-	for (int_fast16_t i = size-2; i >= 0; --i) {
+	for (int_fast16_t i = size - 2; i >= 0; --i) {
 		const int_fast32_t move = moves[i].move, value = moves[i].value;
 		int_fast16_t j;
-		for (j = i; value < moves[j+1].value; ++j) {
-			moves[j].move = moves[j+1].move;
-			moves[j].value = moves[j+1].value;
+		for (j = i; value < moves[j + 1].value; ++j) {
+			moves[j].move  = moves[j + 1].move;
+			moves[j].value = moves[j + 1].value;
 		}
 
-		ASSERT(j<size);
+		ASSERT(j < size);
 
 		moves[j].move = move;
 		moves[j].value = value;
@@ -103,8 +100,8 @@ void list_t::sort() {
 
 	// debug
 	if (DEBUG) {
-		for (int_fast32_t i = 0; i < size-1; ++i) {
-			ASSERT(moves[i].value>=moves[i+1].value);
+		for (int_fast32_t i = 0; i < size - 1; ++i) {
+			ASSERT(moves[i].value >= moves[i + 1].value);
 		}
 	}
 }
@@ -137,29 +134,29 @@ void list_t::note() {
 
 // list_t::filter()
 
-void list_t::filter(board_t * board, move_test_t test, bool keep) {
+void list_t::filter(board_t *board, move_test_t test, bool keep) {
 
-	ASSERT(board!=nullptr);
-	ASSERT(test!=nullptr);
-	ASSERT(keep==true||keep==false);
+	ASSERT(board != nullptr);
+	ASSERT(test != nullptr);
+	ASSERT(keep == true || keep == false);
 
 	int_fast32_t pos = 0;
 
 	for (int_fast32_t i = 0; i < size; ++i) {
 
-		ASSERT(pos>=0&&pos<=i);
+		ASSERT(pos >= 0 && pos <= i);
 
-		const uint_fast16_t move = moves[i].move;
-		const int_fast16_t value = moves[i].value;
+		const uint_fast16_t move  = moves[i].move;
+		const int_fast16_t  value = moves[i].value;
 
-		if ((*test)(move,board) == keep) {
+		if ((*test)(move, board) == keep) {
 			moves[pos].move = move;
 			moves[pos].value = value;
 			++pos;
 		}
-   }
+	}
 
-	ASSERT(pos>=0&&pos<=size);
+	ASSERT(pos >= 0 && pos <= size);
 	size = pos;
 
 	// debug

@@ -1,4 +1,3 @@
-
 // material.h
 
 #ifndef MATERIAL_H
@@ -28,8 +27,8 @@ enum mat_dummy_t {
 	MAT_NB
 };
 
-constexpr int_fast32_t DrawNodeFlag    = 1 << 0;
-constexpr int_fast32_t DrawBishopFlag  = 1 << 1;
+constexpr int_fast32_t DrawNodeFlag   = 1 << 0;
+constexpr int_fast32_t DrawBishopFlag = 1 << 1;
 
 constexpr int_fast32_t MatRookPawnFlag = 1 << 0;
 constexpr int_fast32_t MatBishopFlag   = 1 << 1;
@@ -53,12 +52,12 @@ struct material_info_t {
 
 // functions
 
-extern void material_init     ();
+extern void material_init();
 
-extern void material_alloc    ();
-extern void material_clear    ();
+extern void material_alloc();
+extern void material_clear();
 
-extern void material_get_info (material_info_t * info, const board_t * board);
+extern void material_get_info(material_info_t *info, const board_t *board);
 
 #endif // !defined MATERIAL_H
 

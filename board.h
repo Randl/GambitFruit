@@ -1,4 +1,3 @@
-
 // board.h
 
 #ifndef BOARD_H
@@ -42,7 +41,7 @@ constexpr uint_fast16_t StackSize = 4096;
 
 // macros
 
-#define KING_POS(board,colour) ((board)->piece[colour][0])
+#define KING_POS(board, colour) ((board)->piece[colour][0])
 
 // types
 
@@ -62,7 +61,7 @@ struct board_t {
 	std::array<std::vector<sq_t>, ColourNb> piece;
 	std::array<std::vector<sq_t>, ColourNb> pawn;
 
-	std::array<int_fast32_t,12> number; // was 16
+	std::array<int_fast32_t, 12> number; // was 16
 
 	std::array<std::array<int_fast8_t, FileNb>, ColourNb> pawn_file;
 
@@ -77,30 +76,30 @@ struct board_t {
 	int_fast32_t pvalue; //Ryan
 
 	int_fast16_t ply_nb;
-	int_fast8_t piece_nb;
+	int_fast8_t                  piece_nb;
 
 	bool turn;
 };
 
 // functions
 
-extern bool board_is_ok         (const board_t *board);
+extern bool board_is_ok(const board_t *board);
 
-extern void board_clear         (board_t *board);
-extern void board_copy          (board_t *dst, const board_t *src);
+extern void board_clear(board_t *board);
+extern void board_copy(board_t *dst, const board_t *src);
 
-extern void board_init_list     (board_t *board);
+extern void board_init_list(board_t *board);
 
-extern bool board_is_legal      (const board_t *board);
-extern bool board_is_check      (const board_t *board);
-extern bool board_is_mate       (const board_t *board);
-extern bool board_is_stalemate  (board_t *board);
+extern bool board_is_legal(const board_t *board);
+extern bool board_is_check(const board_t *board);
+extern bool board_is_mate(const board_t *board);
+extern bool board_is_stalemate(board_t *board);
 
-extern bool board_is_repetition (const board_t *board);
+extern bool board_is_repetition(const board_t *board);
 
-extern int_fast32_t  board_material      (const board_t *board);
-extern int_fast32_t  board_opening       (const board_t *board);
-extern int_fast32_t  board_endgame       (const board_t *board);
+extern int_fast32_t board_material(const board_t *board);
+extern int_fast32_t board_opening(const board_t *board);
+extern int_fast32_t board_endgame(const board_t *board);
 
 #endif // !defined BOARD_H
 

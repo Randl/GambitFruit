@@ -1,4 +1,3 @@
-
 // pawn.h
 
 #ifndef PAWN_H
@@ -60,15 +59,15 @@ extern std::array<int_fast32_t, 0x100> BitRev;
 
 // functions
 
-extern void pawn_init_bit ();
-extern void pawn_init     ();
+extern void pawn_init_bit();
+extern void pawn_init();
 
-extern void pawn_alloc    ();
-extern void pawn_clear    ();
+extern void pawn_alloc();
+extern void pawn_clear();
 
-extern void pawn_get_info (pawn_info_t * info, const board_t * board);
+extern void pawn_get_info(pawn_info_t *info, const board_t *board);
 
-extern int_fast32_t  quad          (int_fast32_t y_min, int_fast32_t y_max, int_fast32_t x);
+extern int_fast32_t quad(int_fast32_t y_min, int_fast32_t y_max, int_fast32_t x);
 
 #endif // !defined PAWN_H
 

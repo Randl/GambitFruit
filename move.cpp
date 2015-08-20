@@ -1,4 +1,3 @@
-
 // move.cpp
 
 // includes
@@ -7,18 +6,11 @@
 #include <cstring>
 #include <array>
 #include "attack.h"
-#include "colour.h"
-#include "list.h"
 #include "move.h"
-#include "move_do.h"
-#include "move_gen.h"
-#include "piece.h"
-#include "square.h"
-#include "util.h"
 
 // constants
 
-static constexpr std::array<int_fast32_t, 4> PromotePiece = { Knight64, Bishop64, Rook64, Queen64 };
+static constexpr std::array<int_fast32_t, 4> PromotePiece = {Knight64, Bishop64, Rook64, Queen64};
 
 // functions
 
@@ -45,7 +37,7 @@ int_fast32_t move_promote(int_fast32_t move) {
 	if (SQUARE_RANK(MOVE_TO(move)) == Rank8)
 		piece |= WhiteFlag;
 	else {
-		ASSERT(SQUARE_RANK(MOVE_TO(move))==Rank1);
+		ASSERT(SQUARE_RANK(MOVE_TO(move)) == Rank1);
 		piece |= BlackFlag;
 	}
 
@@ -64,10 +56,10 @@ int_fast32_t move_order(int_fast32_t move) {
 
 // move_is_capture()
 
-bool move_is_capture(int_fast32_t move, const board_t * board) {
+bool move_is_capture(int_fast32_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 
 	return MOVE_IS_EN_PASSANT(move) || board->square[MOVE_TO(move)] != Empty;
 }
@@ -83,20 +75,20 @@ bool move_is_under_promote(int_fast32_t move) {
 
 // move_is_tactical()
 
-bool move_is_tactical(int_fast32_t move, const board_t * board) {
+bool move_is_tactical(int_fast32_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 
 	return (move & (1 << 15)) != 0 || board->square[MOVE_TO(move)] != Empty; // HACK
 }
 
 // move_capture()
 
-int_fast32_t move_capture(int_fast32_t move, const board_t * board) {
+int_fast32_t move_capture(int_fast32_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 
 	if (MOVE_IS_EN_PASSANT(move))
 		return PAWN_OPP(board->square[MOVE_FROM(move)]);
@@ -108,26 +100,26 @@ int_fast32_t move_capture(int_fast32_t move, const board_t * board) {
 
 bool move_to_string(int_fast32_t move, char string[], int_fast32_t size) {
 
-	ASSERT(move==MoveNull||move_is_ok(move));
-	ASSERT(string!=nullptr);
-	ASSERT(size>=6);
+	ASSERT(move == MoveNull || move_is_ok(move));
+	ASSERT(string != nullptr);
+	ASSERT(size >= 6);
 
 	if (size < 6) return false;
 
 	// null move
 
 	if (move == MoveNull) {
-		strcpy(string,NullMoveString);
+		strcpy(string, NullMoveString);
 		return true;
 	}
 
 	// normal moves
 
-	square_to_string(MOVE_FROM(move),&string[0],3);
-	square_to_string(MOVE_TO(move),&string[2],3);
-	ASSERT(strlen(string)==4);
+	square_to_string(MOVE_FROM(move), &string[0], 3);
+	square_to_string(MOVE_TO(move), &string[2], 3);
+	ASSERT(strlen(string) == 4);
 
-   // promotes
+	// promotes
 
 	if (MOVE_IS_PROMOTE(move)) {
 		string[4] = tolower(piece_to_char(move_promote(move)));
@@ -139,10 +131,10 @@ bool move_to_string(int_fast32_t move, char string[], int_fast32_t size) {
 
 // move_from_string()
 
-int_fast32_t move_from_string(const char string[], const board_t * board) {
+int_fast32_t move_from_string(const char string[], const board_t *board) {
 
-	ASSERT(string!=nullptr);
-	ASSERT(board!=nullptr);
+	ASSERT(string != nullptr);
+	ASSERT(board != nullptr);
 
 	// from
 	char tmp_string[3];
@@ -161,26 +153,26 @@ int_fast32_t move_from_string(const char string[], const board_t * board) {
 	const int_fast32_t to = square_from_string(tmp_string);
 	if (to == SquareNone) return MoveNone;
 
-	int_fast32_t move = MOVE_MAKE(from,to);
+	int_fast32_t move = MOVE_MAKE(from, to);
 
 	// promote
 	switch (string[4]) {
-	case '\0': // not a promotion
-		break;
-	case 'n':
-		move |= MovePromoteKnight;
-		break;
-	case 'b':
-		move |= MovePromoteBishop;
-		break;
-	case 'r':
-		move |= MovePromoteRook;
-		break;
-	case 'q':
-		move |= MovePromoteQueen;
-		break;
-	default:
-		return MoveNone;
+		case '\0': // not a promotion
+			break;
+		case 'n':
+			move |= MovePromoteKnight;
+			break;
+		case 'b':
+			move |= MovePromoteBishop;
+			break;
+		case 'r':
+			move |= MovePromoteRook;
+			break;
+		case 'q':
+			move |= MovePromoteQueen;
+			break;
+		default:
+			return MoveNone;
 	}
 
 	// flags

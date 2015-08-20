@@ -1,4 +1,3 @@
-
 // material.cpp
 
 // includes
@@ -6,16 +5,9 @@
 #include <cstring>
 #include <array>
 #include "board.h"
-#include "colour.h"
 #include "hash.h"
 #include "material.h"
 #include "option.h"
-#include "piece.h"
-#include "protocol.h"
-#include "square.h"
-#include "util.h"
-
-
 
 // constants
 static constexpr uint_fast16_t TableSize = 256; // 4kB
@@ -26,7 +18,8 @@ static constexpr uint_fast8_t BishopPhase = 1;
 static constexpr uint_fast8_t RookPhase   = 2;
 static constexpr uint_fast8_t QueenPhase  = 4;
 
-static constexpr int_fast16_t TotalPhase = PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
+static constexpr int_fast16_t TotalPhase      =
+								  PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
 
 // constants and variables
 
@@ -52,21 +45,22 @@ static /*const*/ int_fast32_t bad_trade_value = 50; // not used like in crafty..
 
 static int_fast32_t bitbase_pieces = 2;
 
-static constexpr std::array<int_fast8_t, 17> RookPawnPenalty = { 15,15,13,11,9,7,5,3,1,-1,-3,-5,-7,-9,-11,-13,-15 };
+static constexpr std::array<int_fast8_t, 17> RookPawnPenalty = {15, 15, 13, 11, 9, 7, 5, 3, 1, -1, -3, -5, -7, -9, -11,
+																-13, -15};
 
 // types
 
 typedef material_info_t entry_t;
 
 struct material_t {
-   int_fast64_t read_nb;
-   int_fast64_t read_hit;
-   int_fast64_t write_nb;
-   int_fast64_t write_collision;
-   entry_t * table;
-   uint_fast32_t size;
-   uint_fast32_t mask;
-   uint_fast32_t used;
+	int_fast64_t  read_nb;
+	int_fast64_t  read_hit;
+	int_fast64_t  write_nb;
+	int_fast64_t  write_collision;
+	entry_t       *table;
+	uint_fast32_t size;
+	uint_fast32_t mask;
+	uint_fast32_t used;
 };
 
 // variables
@@ -75,7 +69,7 @@ static material_t Material[1];
 
 // prototypes
 
-static void material_comp_info (material_info_t * info, const board_t * board);
+static void material_comp_info(material_info_t *info, const board_t *board);
 
 // functions
 
@@ -83,9 +77,9 @@ static void material_comp_info (material_info_t * info, const board_t * board);
 
 void material_init() {
 
-   // UCI options
+	// UCI options
 
-	bitbase_pieces =  (option_get_int("Bitbase Pieces") - 2);
+	bitbase_pieces = (option_get_int("Bitbase Pieces") - 2);
 
 	//MaterialWeight = (option_get_int("Material") * 256 + 50) / 100;
 	bad_trade_value = option_get_int("Bad Trade Value");
@@ -118,11 +112,11 @@ void material_init() {
 
 void material_alloc() {
 
-	ASSERT(sizeof(entry_t)==16);
+	ASSERT(sizeof(entry_t) == 16);
 
-	Material->size = TableSize;
-	Material->mask = TableSize - 1;
-	Material->table = (entry_t *) my_malloc(Material->size*sizeof(entry_t));
+	Material->size  = TableSize;
+	Material->mask  = TableSize - 1;
+	Material->table = (entry_t *) my_malloc(Material->size * sizeof(entry_t));
 //    Material->table = new entry_t[Material->size];
 	material_clear();
 
@@ -133,9 +127,9 @@ void material_alloc() {
 void material_clear() {
 
 	if (Material->table != nullptr)
-		memset(Material->table,0,Material->size*sizeof(entry_t));
+		memset(Material->table, 0, Material->size * sizeof(entry_t));
 
-	Material->used = 0;
+	Material->used    = 0;
 	Material->read_nb = 0;
 	Material->read_hit = 0;
 	Material->write_nb = 0;
@@ -144,16 +138,16 @@ void material_clear() {
 
 // material_get_info()
 
-void material_get_info(material_info_t * info, const board_t * board) {
+void material_get_info(material_info_t *info, const board_t *board) {
 
-	ASSERT(info!=nullptr);
-	ASSERT(board!=nullptr);
+	ASSERT(info != nullptr);
+	ASSERT(board != nullptr);
 
 	// probe
 	Material->read_nb++;
 
-	uint_fast64_t key = board->material_key;
-	entry_t *entry = &Material->table[KEY_INDEX(key)&Material->mask];
+	uint_fast64_t key    = board->material_key;
+	entry_t       *entry = &Material->table[KEY_INDEX(key) & Material->mask];
 
 	if (entry->lock == KEY_LOCK(key)) {
 		// found
@@ -163,7 +157,7 @@ void material_get_info(material_info_t * info, const board_t * board) {
 	}
 
 	// calculation
-	material_comp_info(info,board);
+	material_comp_info(info, board);
 
 	// store
 	Material->write_nb++;
@@ -179,12 +173,12 @@ void material_get_info(material_info_t * info, const board_t * board) {
 
 // material_comp_info()
 
-static void material_comp_info(material_info_t * info, const board_t * board) {
+static void material_comp_info(material_info_t *info, const board_t *board) {
 
-	ASSERT(info!=nullptr);
-	ASSERT(board!=nullptr);
+	ASSERT(info != nullptr);
+	ASSERT(board != nullptr);
 
-   // init
+	// init
 	int_fast32_t wp, wn, wb, wr, wq;
 	int_fast32_t bp, bn, bb, br, bq;
 	int_fast32_t wt, bt;
@@ -228,10 +222,9 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	cflags[0] = cflags[1] = 0;
 
 	// bishop endgame
-	if (wq+wr+wn == 0 && bq+br+bn == 0)  // only bishops
-		if (wb == 1 && bb == 1)
-			if (wp-bp >= -2 && wp-bp <= +2)  // pawn diff <= 2
-				flags |= DrawBishopFlag;
+	if (wq + wr + wn == 0 && bq + br + bn == 0)  // only bishops
+	if (wb == 1 && bb == 1) if (wp - bp >= -2 && wp - bp <= +2)  // pawn diff <= 2
+		flags |= DrawBishopFlag;
 
 	// multipliers
 	std::array<uint_fast8_t, ColourNb> mul;
@@ -249,27 +242,27 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 		if (false) {
 		} else if (w_tot == 1) {
-			ASSERT(w_maj==0);
-			ASSERT(w_min==1);
+			ASSERT(w_maj == 0);
+			ASSERT(w_min == 1);
 			// KBK* or KNK*, always insufficient
 			mul[White] = 0;
 		} else if (w_tot == 2 && wn == 2) {
-			ASSERT(w_maj==0);
-			ASSERT(w_min==2);
+			ASSERT(w_maj == 0);
+			ASSERT(w_min == 2);
 			// KNNK*, usually insufficient
 			if (b_tot != 0 || bp == 0)
 				mul[White] = 0;
 			else // KNNKP+, might not be draw
 				mul[White] = 1; // 1/16
 		} else if (w_tot == 2 && wb == 2 && b_tot == 1 && bn == 1) {
-			ASSERT(w_maj==0);
-			ASSERT(w_min==2);
-			ASSERT(b_maj==0);
-			ASSERT(b_min==1);
+			ASSERT(w_maj == 0);
+			ASSERT(w_min == 2);
+			ASSERT(b_maj == 0);
+			ASSERT(b_min == 1);
 			// KBBKN*, barely drawish (not at all?)
 			// TODO: check in TB
 			mul[White] = 8; // 1/2
-		} else if (w_tot-b_tot <= 1 && w_maj <= 2) {
+		} else if (w_tot - b_tot <= 1 && w_maj <= 2) {
 			// no more than 1 minor up, drawish
 			mul[White] = 2; // 1/8
 		}
@@ -290,17 +283,17 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			--b_tot;
 			if (false) {
 			} else if (w_tot == 1) {
-				ASSERT(w_maj==0);
-				ASSERT(w_min==1);
+				ASSERT(w_maj == 0);
+				ASSERT(w_min == 1);
 
 				// KBK* or KNK*, always insufficient
 				mul[White] = 4; // 1/4
 			} else if (w_tot == 2 && wn == 2) {
-				ASSERT(w_maj==0);
-				ASSERT(w_min==2);
+				ASSERT(w_maj == 0);
+				ASSERT(w_min == 2);
 				// KNNK*, usually insufficient
 				mul[White] = 4; // 1/4
-			} else if (w_tot-b_tot <= 1 && w_maj <= 2) {
+			} else if (w_tot - b_tot <= 1 && w_maj <= 2) {
 				// no more than 1 minor up, drawish
 				mul[White] = 8; // 1/2
 			}
@@ -311,16 +304,16 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 			if (false) {
 			} else if (w_tot == 1) {
-				ASSERT(w_maj==0);
-				ASSERT(w_min==1);
+				ASSERT(w_maj == 0);
+				ASSERT(w_min == 1);
 				// KBK* or KNK*, always insufficient
 				mul[White] = 4; // 1/4
 			} else if (w_tot == 2 && wn == 2) {
-				ASSERT(w_maj==0);
-				ASSERT(w_min==2);
+				ASSERT(w_maj == 0);
+				ASSERT(w_min == 2);
 				// KNNK*, usually insufficient
 				mul[White] = 4; // 1/4
-			} else if (w_tot-b_tot <= 1 && w_maj <= 2) {
+			} else if (w_tot - b_tot <= 1 && w_maj <= 2) {
 				// no more than 1 minor up, drawish
 				mul[White] = 8; // 1/2
 			}
@@ -341,14 +334,14 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 		if (false) {
 		} else if (b_tot == 1) {
-			ASSERT(b_maj==0);
-			ASSERT(b_min==1);
+			ASSERT(b_maj == 0);
+			ASSERT(b_min == 1);
 
 			// KBK* or KNK*, always insufficient
 			mul[Black] = 0;
 		} else if (b_tot == 2 && bn == 2) {
-			ASSERT(b_maj==0);
-			ASSERT(b_min==2);
+			ASSERT(b_maj == 0);
+			ASSERT(b_min == 2);
 			// KNNK*, usually insufficient
 			if (w_tot != 0 || wp == 0)
 				mul[Black] = 0;
@@ -356,14 +349,14 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 				mul[Black] = 1; // 1/16
 
 		} else if (b_tot == 2 && bb == 2 && w_tot == 1 && wn == 1) {
-			ASSERT(b_maj==0);
-			ASSERT(b_min==2);
-			ASSERT(w_maj==0);
-			ASSERT(w_min==1);
+			ASSERT(b_maj == 0);
+			ASSERT(b_min == 2);
+			ASSERT(w_maj == 0);
+			ASSERT(w_min == 1);
 
 			// KBBKN*, barely drawish (not at all?)
 			mul[Black] = 8; // 1/2
-		} else if (b_tot-w_tot <= 1 && b_maj <= 2) {
+		} else if (b_tot - w_tot <= 1 && b_maj <= 2) {
 			// no more than 1 minor up, drawish
 			mul[Black] = 2; // 1/8
 		}
@@ -384,16 +377,16 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			--w_tot;
 			if (false) {
 			} else if (b_tot == 1) {
-				ASSERT(b_maj==0);
-				ASSERT(b_min==1);
+				ASSERT(b_maj == 0);
+				ASSERT(b_min == 1);
 				// KBK* or KNK*, always insufficient
 				mul[Black] = 4; // 1/4
 			} else if (b_tot == 2 && bn == 2) {
-				ASSERT(b_maj==0);
-				ASSERT(b_min==2);
+				ASSERT(b_maj == 0);
+				ASSERT(b_min == 2);
 				// KNNK*, usually insufficient
 				mul[Black] = 4; // 1/4
-			} else if (b_tot-w_tot <= 1 && b_maj <= 2) {
+			} else if (b_tot - w_tot <= 1 && b_maj <= 2) {
 				// no more than 1 minor up, drawish
 				mul[Black] = 8; // 1/2
 			}
@@ -403,16 +396,16 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 			w_tot -= 2;
 			if (false) {
 			} else if (b_tot == 1) {
-				ASSERT(b_maj==0);
-				ASSERT(b_min==1);
+				ASSERT(b_maj == 0);
+				ASSERT(b_min == 1);
 				// KBK* or KNK*, always insufficient
 				mul[Black] = 4; // 1/4
 			} else if (b_tot == 2 && bn == 2) {
-				ASSERT(b_maj==0);
-				ASSERT(b_min==2);
+				ASSERT(b_maj == 0);
+				ASSERT(b_min == 2);
 				// KNNK*, usually insufficient
 				mul[Black] = 4; // 1/4
-			} else if (b_tot-w_tot <= 1 && b_maj <= 2) {
+			} else if (b_tot - w_tot <= 1 && b_maj <= 2) {
 				// no more than 1 minor up, drawish
 				mul[Black] = 8; // 1/2
 			}
@@ -420,22 +413,22 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	}
 
 	// potential draw for white
-	if (wt == wb+wp && wp >= 1) cflags[White] |= MatRookPawnFlag;
-	if (wt == wb+wp && wb <= 1 && wp >= 1 && bt > bp) cflags[White] |= MatBishopFlag;
+	if (wt == wb + wp && wp >= 1) cflags[White] |= MatRookPawnFlag;
+	if (wt == wb + wp && wb <= 1 && wp >= 1 && bt > bp) cflags[White] |= MatBishopFlag;
 
 	if (wt == 2 && wn == 1 && wp == 1 && bt > bp) cflags[White] |= MatKnightFlag;
 
 	// potential draw for black
 
-	if (bt == bb+bp && bp >= 1) cflags[Black] |= MatRookPawnFlag;
-	if (bt == bb+bp && bb <= 1 && bp >= 1 && wt > wp) cflags[Black] |= MatBishopFlag;
+	if (bt == bb + bp && bp >= 1) cflags[Black] |= MatRookPawnFlag;
+	if (bt == bb + bp && bb <= 1 && bp >= 1 && wt > wp) cflags[Black] |= MatBishopFlag;
 
 	if (bt == 2 && bn == 1 && bp == 1 && wt > wp) cflags[Black] |= MatKnightFlag;
 
 	// king safety
 
-	if (bq >= 1 && bq+br+bb+bn >= 2) cflags[White] |= MatKingFlag;
-	if (wq >= 1 && wq+wr+wb+wn >= 2) cflags[Black] |= MatKingFlag;
+	if (bq >= 1 && bq + br + bb + bn >= 2) cflags[White] |= MatKingFlag;
+	if (wq >= 1 && wq + wr + wb + wn >= 2) cflags[Black] |= MatKingFlag;
 
 	// phase (0: opening -> 256: endgame)
 	int_fast16_t phase = TotalPhase;
@@ -454,36 +447,36 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 	if (phase < 0) phase = 0;
 
-	ASSERT(phase>=0&&phase<=TotalPhase);
+	ASSERT(phase >= 0 && phase <= TotalPhase);
 	phase = (phase * 256 + (TotalPhase / 2)) / TotalPhase;
 
-	ASSERT(phase>=0&&phase<=256);
+	ASSERT(phase >= 0 && phase <= 256);
 
 	// material
-	int_fast16_t opening=0, endgame=0;
+	int_fast16_t opening = 0, endgame = 0;
 
 	/* Thomas */
-	int_fast32_t owf,obf,ewf,ebf;
-	owf = wn*KnightOpening + wb*BishopOpening + wr*RookOpening + wq*QueenOpening;
+	int_fast32_t owf, obf, ewf, ebf;
+	owf = wn * KnightOpening + wb * BishopOpening + wr * RookOpening + wq * QueenOpening;
 	//info->pv[White] = owf;
 	opening += owf;
 	opening += wp * PawnOpening;
 
-	obf = bn*KnightOpening + bb*BishopOpening + br*RookOpening + bq*QueenOpening;
+	obf = bn * KnightOpening + bb * BishopOpening + br * RookOpening + bq * QueenOpening;
 	//info->pv[Black] = obf;
 	opening -= obf;
 	opening -= bp * PawnOpening;
 
-	ewf = wn*KnightEndgame + wb*BishopEndgame + wr*RookEndgame + wq*QueenEndgame;
+	ewf = wn * KnightEndgame + wb * BishopEndgame + wr * RookEndgame + wq * QueenEndgame;
 	endgame += wp * PawnEndgame;
 	endgame += ewf;
 
-	ebf = bn*KnightEndgame + bb*BishopEndgame + br*RookEndgame + bq*QueenEndgame;
+	ebf = bn * KnightEndgame + bb * BishopEndgame + br * RookEndgame + bq * QueenEndgame;
 	endgame -= bp * PawnEndgame;
 	endgame -= ebf;
 
 	//int_fast8_t WhiteMinors,BlackMinors;
-	int_fast8_t WhiteMajors,BlackMajors;
+	int_fast8_t WhiteMajors, BlackMajors;
 	//WhiteMinors = wn + wb;
 	//BlackMinors = bn + bb;
 	WhiteMajors = wq + wr;
@@ -491,10 +484,10 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 
 	// Trade Bonus
 
-	if (wm+WhiteMajors > bm+BlackMajors+1) { // pieces over majors
+	if (wm + WhiteMajors > bm + BlackMajors + 1) { // pieces over majors
 		opening += bad_trade_value;
 		endgame += bad_trade_value;
-	} else if (bm+BlackMajors > wm+WhiteMajors+1) {
+	} else if (bm + BlackMajors > wm + WhiteMajors + 1) {
 		opening -= bad_trade_value;
 		endgame -= bad_trade_value;
 	} /*else if (WhiteMajors != BlackMajors) { // major over pawns
@@ -508,17 +501,17 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
    }*/
 
 
-   // bishop pair
+	// bishop pair
 
 	if (wb >= 2) { // HACK: assumes different colours
 		opening += BishopPairOpening;
 		endgame += BishopPairEndgame;
-   }
+	}
 
 	if (bb >= 2) { // HACK: assumes different colours
 		opening -= BishopPairOpening;
 		endgame -= BishopPairEndgame;
-   }
+	}
 
 	// two knight penalty
 	if (wn >= 2) {
@@ -535,23 +528,23 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 	if (wr >= 2) {
 		opening -= 10;
 		endgame -= 10;
-   }
+	}
 
-   if (br >= 2) {
-	   opening += 10;
-	   endgame += 10;
-   }
+	if (br >= 2) {
+		opening += 10;
+		endgame += 10;
+	}
 
 
 	// rook score adjustment for number of pawns
 	if (wr) {
-		opening += RookPawnPenalty[wp+bp] * wr;
-		endgame += RookPawnPenalty[wp+bp] * wr;
+		opening += RookPawnPenalty[wp + bp] * wr;
+		endgame += RookPawnPenalty[wp + bp] * wr;
 	}
 
 	if (br) {
-		opening -= RookPawnPenalty[wp+bp] * br;
-		endgame -= RookPawnPenalty[wp+bp] * br;
+		opening -= RookPawnPenalty[wp + bp] * br;
+		endgame -= RookPawnPenalty[wp + bp] * br;
 	}
 
 	// Queen and knight are better than queen and bishop.
@@ -578,7 +571,7 @@ static void material_comp_info(material_info_t * info, const board_t * board) {
 		}
 	}
 
-	if (wp+bp+wm+bm+WhiteMajors+BlackMajors <= bitbase_pieces) flags |= MatBitbaseFlag;
+	if (wp + bp + wm + bm + WhiteMajors + BlackMajors <= bitbase_pieces) flags |= MatBitbaseFlag;
 
 	// store info
 

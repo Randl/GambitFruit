@@ -1,4 +1,3 @@
-
 // fen.cpp
 
 // includes
@@ -8,15 +7,11 @@
 #include <cstdlib>
 
 #include "board.h"
-#include "colour.h"
 #include "fen.h"
-#include "piece.h"
-#include "square.h"
-#include "util.h"
 
 // "constants"
 
-const char * const StartFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const char *const StartFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 // variables
 
@@ -26,10 +21,10 @@ static constexpr bool Strict = false;
 
 // board_from_fen()
 
-void board_from_fen(board_t * board, const char fen[]) {
+void board_from_fen(board_t *board, const char fen[]) {
 
-	ASSERT(board!=nullptr);
-	ASSERT(fen!=nullptr);
+	ASSERT(board != nullptr);
+	ASSERT(fen != nullptr);
 
 	board_clear(board);
 
@@ -39,54 +34,54 @@ void board_from_fen(board_t * board, const char fen[]) {
 	for (int_fast32_t rank = Rank8; rank >= Rank1; --rank) {
 		for (int_fast32_t file = FileA; file <= FileH;) {
 			if (c >= '1' && c <= '8') { // empty square(s)
-				int_fast32_t len = c - '0';
-				for (int_fast32_t i = 0; i < len; ++i) {
-					if (file > FileH) my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
-					board->square[SQUARE_MAKE(file,rank)] = Empty;
+				int_fast32_t      len = c - '0';
+				for (int_fast32_t i   = 0; i < len; ++i) {
+					if (file > FileH) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
+					board->square[SQUARE_MAKE(file, rank)] = Empty;
 					++file;
 				}
 			} else { // piece
 				int_fast32_t piece = piece_from_char(c);
-				if (piece == PieceNone256) my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
-				board->square[SQUARE_MAKE(file,rank)] = piece;
+				if (piece == PieceNone256) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
+				board->square[SQUARE_MAKE(file, rank)] = piece;
 				++file;
 			}
 			c = fen[++pos];
 		}
 		if (rank > Rank1) {
-			if (c != '/') my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+			if (c != '/') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 			c = fen[++pos];
 		}
 	}
 
 	// active colour
 
-	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 	c = fen[++pos];
 
 	switch (c) {
-	case 'w':
-		board->turn = White;
-		break;
-	case 'b':
-		board->turn = Black;
-		break;
-	default:
-		my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
-		break;
+		case 'w':
+			board->turn = White;
+			break;
+		case 'b':
+			board->turn = Black;
+			break;
+		default:
+			my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
+			break;
 	}
 
 	c = fen[++pos];
 
 	// castling
-	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 	c = fen[++pos];
 
 	board->flags = FlagsNone;
 
 	if (c == '-') // no castling rights
 		c = fen[++pos];
-	else  {
+	else {
 		if (c == 'K') {
 			if (board->square[E1] == WK && board->square[H1] == WR) board->flags |= FlagsWhiteKingCastle;
 			c = fen[++pos];
@@ -105,35 +100,35 @@ void board_from_fen(board_t * board, const char fen[]) {
 		if (c == 'q') {
 			if (board->square[E8] == BK && board->square[A8] == BR) board->flags |= FlagsBlackQueenCastle;
 			c = fen[++pos];
- 		}
+		}
 	}
 
 	// en-passant
 
-	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
-		c = fen[++pos];
+	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
+	c = fen[++pos];
 
 	int_fast32_t sq;
 	if (c == '-') { // no en-passant
 		sq = SquareNone;
 		c = fen[++pos];
 	} else {
-		if (c < 'a' || c > 'h') my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+		if (c < 'a' || c > 'h') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 		int_fast32_t file = file_from_char(c);
 		c = fen[++pos];
 
-		if (c != (COLOUR_IS_WHITE(board->turn) ? '6' : '3')) my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+		if (c != (COLOUR_IS_WHITE(board->turn) ? '6' : '3')) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 		int_fast32_t rank = rank_from_char(c);
 		c = fen[++pos];
 
-		sq = SQUARE_MAKE(file,rank);
+		sq = SQUARE_MAKE(file, rank);
 		const int_fast32_t pawn = SQUARE_EP_DUAL(sq);
 
 		if (board->square[sq] != Empty
-		 || board->square[pawn] != PAWN_MAKE(COLOUR_OPP(board->turn))
-		 || (board->square[pawn-1] != PAWN_MAKE(board->turn)
-		 && board->square[pawn+1] != PAWN_MAKE(board->turn)))
-		 	sq = SquareNone;
+			|| board->square[pawn] != PAWN_MAKE(COLOUR_OPP(board->turn))
+			|| (board->square[pawn - 1] != PAWN_MAKE(board->turn)
+				&& board->square[pawn + 1] != PAWN_MAKE(board->turn)))
+			sq = SquareNone;
 	}
 
 	board->ep_square = sq;
@@ -143,30 +138,30 @@ void board_from_fen(board_t * board, const char fen[]) {
 
 	if (c != ' ') {
 		if (!Strict) goto update;
-		my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+		my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 	}
 	c = fen[++pos];
 
 	if (!isdigit(c)) {
 		if (!Strict) goto update;
-		my_fatal("board_from_fen(): bad FEN (pos=%d)\n",pos);
+		my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 	}
 
 	board->ply_nb = atoi(&fen[pos]);
 
 	// board update
 
-update:
+	update:
 	board_init_list(board);
 }
 
 // board_to_fen()
 
-bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
+bool board_to_fen(const board_t *board, char fen[], int_fast32_t size) {
 
-	ASSERT(board!=nullptr);
-	ASSERT(fen!=nullptr);
-	ASSERT(size>=92);
+	ASSERT(board != nullptr);
+	ASSERT(fen != nullptr);
+	ASSERT(size >= 92);
 
 	// init
 	if (size < 92) return false;
@@ -177,18 +172,18 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
 
 	for (int_fast32_t rank = Rank8; rank >= Rank1; --rank) {
 		for (int_fast32_t file = FileA; file <= FileH;) {
-			int_fast32_t c;
-			const int_fast32_t sq = SQUARE_MAKE(file,rank);
+			int_fast32_t       c;
+			const int_fast32_t sq = SQUARE_MAKE(file, rank);
 			const int_fast32_t piece = board->square[sq];
-			ASSERT(piece==Empty||piece_is_ok(piece));
+			ASSERT(piece == Empty || piece_is_ok(piece));
 
 			if (piece == Empty) {
 
 				int_fast32_t len = 0;
-				for (; file <= FileH && board->square[SQUARE_MAKE(file,rank)] == Empty; ++file)
+				for (; file <= FileH && board->square[SQUARE_MAKE(file, rank)] == Empty; ++file)
 					++len;
 
-				ASSERT(len>=1&&len<=8);
+				ASSERT(len >= 1 && len <= 8);
 				c = '0' + len;
 
 			} else {
@@ -200,20 +195,20 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
 		fen[pos++] = '/';
 	}
 
-	fen[pos-1] = ' '; // HACK: remove the last '/'
+	fen[pos - 1] = ' '; // HACK: remove the last '/'
 
 	// active colour
 	fen[pos++] = (COLOUR_IS_WHITE(board->turn)) ? 'w' : 'b';
 	fen[pos++] = ' ';
 
-   // castling
+	// castling
 
 	if (board->flags == FlagsNone)
 		fen[pos++] = '-';
 	else {
-		if ((board->flags & FlagsWhiteKingCastle)  != 0) fen[pos++] = 'K';
+		if ((board->flags & FlagsWhiteKingCastle) != 0) fen[pos++] = 'K';
 		if ((board->flags & FlagsWhiteQueenCastle) != 0) fen[pos++] = 'Q';
-		if ((board->flags & FlagsBlackKingCastle)  != 0) fen[pos++] = 'k';
+		if ((board->flags & FlagsBlackKingCastle) != 0) fen[pos++] = 'k';
 		if ((board->flags & FlagsBlackQueenCastle) != 0) fen[pos++] = 'q';
 	}
 
@@ -224,13 +219,13 @@ bool board_to_fen(const board_t * board, char fen[], int_fast32_t size) {
 	if (board->ep_square == SquareNone)
 		fen[pos++] = '-';
 	else
-		square_to_string(board->ep_square,&fen[pos],3);
-		pos += 2;
+		square_to_string(board->ep_square, &fen[pos], 3);
+	pos += 2;
 
 	fen[pos++] = ' ';
 
 	// halfmove clock
-	sprintf(&fen[pos],"%d 1",board->ply_nb);
+	sprintf(&fen[pos], "%d 1", board->ply_nb);
 	return true;
 }
 

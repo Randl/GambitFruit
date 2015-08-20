@@ -1,4 +1,3 @@
-
 // pv.cpp
 
 // includes
@@ -7,9 +6,7 @@
 
 #include "board.h"
 #include "move.h"
-#include "move_do.h"
 #include "pv.h"
-#include "util.h"
 
 // functions
 
@@ -35,7 +32,7 @@ bool pv_is_ok(const mv_t pv[]) {
 void pv_copy(mv_t dst[], const mv_t src[]) {
 
 	ASSERT(pv_is_ok(src));
-	ASSERT(dst!=nullptr);
+	ASSERT(dst != nullptr);
 
 	while ((*dst++ = *src++) != MoveNone);
 }
@@ -45,7 +42,7 @@ void pv_copy(mv_t dst[], const mv_t src[]) {
 void pv_cat(mv_t dst[], const mv_t src[], int_fast32_t move) {
 
 	ASSERT(pv_is_ok(src));
-	ASSERT(dst!=nullptr);
+	ASSERT(dst != nullptr);
 
 	*dst++ = move;
 	while ((*dst++ = *src++) != MoveNone);
@@ -56,8 +53,8 @@ void pv_cat(mv_t dst[], const mv_t src[], int_fast32_t move) {
 bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size) {
 
 	ASSERT(pv_is_ok(pv));
-	ASSERT(string!=nullptr);
-	ASSERT(size>=512);
+	ASSERT(string != nullptr);
+	ASSERT(size >= 512);
 
 	// init
 	if (size < 512) return false;
@@ -68,7 +65,7 @@ bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size) {
 	while ((move = *pv++) != MoveNone) {
 		if (pos != 0) string[pos++] = ' ';
 
-		move_to_string(move,&string[pos],size-pos);
+		move_to_string(move, &string[pos], size - pos);
 		pos += strlen(&string[pos]);
 	}
 

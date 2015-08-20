@@ -1,14 +1,10 @@
-
 // hash.cpp
 
 // includes
 
 #include "board.h"
 #include "hash.h"
-#include "piece.h"
 #include "random.h"
-#include "square.h"
-#include "util.h"
 
 
 // variables
@@ -17,7 +13,7 @@ std::array<uint_fast64_t, 16> Castle64;
 
 // prototypes
 
-static uint_fast64_t hash_counter_key (int_fast32_t piece_12, int_fast32_t count);
+static uint_fast64_t hash_counter_key(int_fast32_t piece_12, int_fast32_t count);
 
 // functions
 
@@ -30,9 +26,9 @@ void hash_init() {
 
 // hash_key()
 
-uint_fast64_t hash_key(const board_t * board) {
+uint_fast64_t hash_key(const board_t *board) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 
 	// init
 	uint_fast64_t key = 0;
@@ -41,12 +37,12 @@ uint_fast64_t hash_key(const board_t * board) {
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 		for (auto sq = board->piece[colour].begin(); sq != board->piece[colour].end(); ++sq) {
 			const uint_fast32_t piece = board->square[*sq];
-			key ^= hash_piece_key(piece,*sq);
+			key ^= hash_piece_key(piece, *sq);
 		}
 
 		for (auto sq = board->pawn[colour].begin(); sq != board->pawn[colour].end(); ++sq) {
 			const uint_fast32_t piece = board->square[*sq];
-			key ^= hash_piece_key(piece,*sq);
+			key ^= hash_piece_key(piece, *sq);
 		}
 	}
 
@@ -57,17 +53,17 @@ uint_fast64_t hash_key(const board_t * board) {
 	const uint_fast32_t sq = board->ep_square;
 	if (sq != SquareNone) key ^= hash_ep_key(sq);
 
-   // turn
-   key ^= hash_turn_key(board->turn);
+	// turn
+	key ^= hash_turn_key(board->turn);
 
-   return key;
+	return key;
 }
 
 // hash_pawn_key()
 
-uint_fast64_t hash_pawn_key(const board_t * board) {
+uint_fast64_t hash_pawn_key(const board_t *board) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 
 	// init
 	uint_fast64_t key = 0;
@@ -76,18 +72,18 @@ uint_fast64_t hash_pawn_key(const board_t * board) {
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 		for (auto sq = board->pawn[colour].begin(); sq != board->pawn[colour].end(); ++sq) {
 			const int_fast32_t piece = board->square[*sq];
-			key ^= hash_piece_key(piece,*sq);
+			key ^= hash_piece_key(piece, *sq);
 		}
 	}
 
-   return key;
+	return key;
 }
 
 // hash_material_key()
 
-uint_fast64_t hash_material_key(const board_t * board) {
+uint_fast64_t hash_material_key(const board_t *board) {
 
-	ASSERT(board!=nullptr);
+	ASSERT(board != nullptr);
 
 	// init
 	uint_fast64_t key = 0;
@@ -95,7 +91,7 @@ uint_fast64_t hash_material_key(const board_t * board) {
 	// counters
 	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12) {
 		const int_fast32_t count = board->number[piece_12];
-		key ^= hash_counter_key(piece_12,count);
+		key ^= hash_counter_key(piece_12, count);
 	}
 
 	return key;
@@ -108,18 +104,18 @@ uint_fast64_t hash_piece_key(int_fast32_t piece, int_fast32_t square) {
 	ASSERT(piece_is_ok(piece));
 	ASSERT(SQUARE_IS_OK(square));
 
-	return RANDOM_64(RandomPiece+(PIECE_TO_12(piece)^1)*64+SQUARE_TO_64(square)); // HACK: ^1 for PolyGlot book
+	return RANDOM_64(RandomPiece + (PIECE_TO_12(piece) ^ 1) * 64 + SQUARE_TO_64(square)); // HACK: ^1 for PolyGlot book
 }
 
 // hash_castle_key()
 
 uint_fast64_t hash_castle_key(int_fast32_t flags) {
 
-	ASSERT((flags&~0xF)==0);
+	ASSERT((flags & ~0xF) == 0);
 	uint_fast64_t key = 0;
 
 	for (int_fast32_t i = 0; i < 4; ++i)
-		if ((flags & (1<<i)) != 0) key ^= RANDOM_64(RandomCastle+i);
+		if ((flags & (1 << i)) != 0) key ^= RANDOM_64(RandomCastle + i);
 
 	return key;
 }
@@ -130,7 +126,7 @@ uint_fast64_t hash_ep_key(int_fast32_t square) {
 
 	ASSERT(SQUARE_IS_OK(square));
 
-	return RANDOM_64(RandomEnPassant+SQUARE_FILE(square)-FileA);
+	return RANDOM_64(RandomEnPassant + SQUARE_FILE(square) - FileA);
 }
 
 // hash_turn_key()
@@ -146,18 +142,18 @@ uint_fast64_t hash_turn_key(int_fast8_t colour) {
 
 static uint_fast64_t hash_counter_key(int_fast32_t piece_12, int_fast32_t count) {
 
-	ASSERT(piece_12>=0&&piece_12<12);
-	ASSERT(count>=0&&count<=10);
+	ASSERT(piece_12 >= 0 && piece_12 < 12);
+	ASSERT(count >= 0 && count <= 10);
 
-   // init
+	// init
 	uint_fast64_t key = 0;
 
 	// counter
 
-	int_fast32_t index = piece_12 * 16;
-	for (int_fast32_t i = 0; i < count; ++i) key ^= RANDOM_64(index+i);
+	int_fast32_t      index = piece_12 * 16;
+	for (int_fast32_t i     = 0; i < count; ++i) key ^= RANDOM_64(index + i);
 
-   return key;
+	return key;
 }
 
 // end of hash.cpp

@@ -1,4 +1,3 @@
-
 // value.h
 
 #ifndef VALUE_H
@@ -36,17 +35,17 @@ extern std::array<int_fast32_t, PieceNb> ValuePiece;
 
 // functions
 
-extern void value_init       ();
+extern void value_init();
 
-extern bool value_is_ok      (int_fast32_t value);
-extern bool range_is_ok      (int_fast32_t min, int_fast32_t max);
+extern bool value_is_ok(int_fast32_t value);
+extern bool range_is_ok(int_fast32_t min, int_fast32_t max);
 
-extern bool value_is_mate    (int_fast32_t value);
+extern bool value_is_mate(int_fast32_t value);
 
-extern int_fast32_t  value_to_trans   (int_fast32_t value, int_fast32_t height);
-extern int_fast32_t  value_from_trans (int_fast32_t value, int_fast32_t height);
+extern int_fast32_t value_to_trans(int_fast32_t value, int_fast32_t height);
+extern int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height);
 
-extern int_fast32_t  value_to_mate    (int_fast32_t value);
+extern int_fast32_t value_to_mate(int_fast32_t value);
 
 #endif // !defined VALUE_H
 

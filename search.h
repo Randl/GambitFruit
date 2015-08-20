@@ -1,4 +1,3 @@
-
 // search.h
 
 #ifndef SEARCH_H
@@ -54,9 +53,9 @@ struct search_input_t {
 	list_t list[1];
 	int_fast32_t depth_limit;
 	int_fast32_t multipv;
-	bool time_is_limited;
-	bool infinite;
-	bool depth_is_limited;
+	bool   time_is_limited;
+	bool   infinite;
+	bool   depth_is_limited;
 };
 
 struct search_info_t {
@@ -64,8 +63,8 @@ struct search_info_t {
 	jmp_buf buf;
 	int_fast32_t check_nb;
 	int_fast32_t check_inc;
-	bool can_stop;
-	bool stop;
+	bool   can_stop;
+	bool   stop;
 
 };
 
@@ -92,9 +91,9 @@ struct search_best_t {
 };
 
 struct search_current_t {
-	double time;
-	double speed;
-	double cpu;
+	double  time;
+	double  speed;
+	double  cpu;
 	int_fast64_t node_nb;
 	board_t board[1];
 	my_timer_t timer[1];
@@ -114,17 +113,17 @@ extern search_current_t SearchCurrent[1];
 
 // functions
 
-extern bool depth_is_ok           (int_fast32_t depth);
-extern bool height_is_ok          (int_fast32_t height);
+extern bool depth_is_ok(int_fast32_t depth);
+extern bool height_is_ok(int_fast32_t height);
 
-extern void search_clear          ();
-extern void search                ();
+extern void search_clear();
+extern void search();
 
-extern void search_update_best    ();
-extern void search_update_root    ();
-extern void search_update_current ();
+extern void search_update_best();
+extern void search_update_root();
+extern void search_update_current();
 
-extern void search_check          ();
+extern void search_check();
 
 #endif // !defined SEARCH_H
 

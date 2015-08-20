@@ -1,4 +1,3 @@
-
 // book.h
 
 #ifndef BOOK_H
@@ -12,12 +11,12 @@
 
 // functions
 
-extern void book_init  ();
+extern void book_init();
 
-extern void book_open  (const char file_name[]);
-extern void book_close ();
+extern void book_open(const char file_name[]);
+extern void book_close();
 
-extern int_fast32_t  book_move  (board_t * board);
+extern int_fast32_t book_move(board_t *board);
 
 #endif // !defined BOOK_H
 
