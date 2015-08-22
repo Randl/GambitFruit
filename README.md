@@ -22,8 +22,9 @@ TODO:
 * [Pawn chains](https://chessprogramming.wikispaces.com/Pawn+chain);
 * Custom opening book;
 * [Chess960](http://chessprogramming.wikispaces.com/Chess960) support;
-* Center control (With B as a bonus for a given square, this is B*[AT+2*OC] where AT is #attackers and OC is #occupants.)
-* Bad bishop 
+* Center control (With B as a bonus for a given square, this is B*[AT+2*OC] where AT is #attackers and OC is #occupants.);
+* Bad bishop;
+* Elephantiasis effect as suggested by Harm Geert Muller (meaning that stronger pieces lose part of their value in presence of weaker pieces);
 
 
 Thanks for everyone contributed to Gambit Fruit, Fruit 2.1, Toga, and to those who gave me ideas.
