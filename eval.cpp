@@ -835,6 +835,18 @@ static void eval_piece(const board_t *board, const material_info_t *mat_info, co
 			}
 		}
 	}
+	//TODO: If you are better no pawns in endgame is bad. More pawn is better
+	/*
+	if (op[White] > op[Black])
+		op[White] += PawnAmountBonusOpening[board->pawn[White].size()];
+	else
+		op[Black] += PawnAmountBonusOpening[board->pawn[Black].size()];
+
+	if (eg[White] > eg[Black])
+		eg[White] += PawnAmountBonusEndgame[board->pawn[White].size()];
+	else
+		eg[Black] += PawnAmountBonusEndgame[board->pawn[Black].size()];
+	*/
 
 	// update
 	*opening += ((op[White] - op[Black]) * PieceActivityWeight) / 256;

@@ -293,10 +293,6 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 
 		const int_fast8_t me = colour, opp = COLOUR_OPP(me);
 
-		//TODO: no pawns in endgame is bad. More pawn is better
-		/* opening[me] = PawnAmountBonusOpening[board->pawn.size()];
-		 * opening[me] = PawnAmountBonusEndgame[board->pawn.size()];*/
-
 		for (auto sq = board->pawn[me].begin(); sq != board->pawn[me].end(); ++sq) {
 
 			// init
