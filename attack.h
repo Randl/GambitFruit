@@ -41,7 +41,7 @@ extern std::array<int_fast32_t, DeltaNb> DeltaIncLine;
 extern std::array<int_fast32_t, DeltaNb> DeltaIncAll;
 
 extern std::array<int_fast32_t, DeltaNb> DeltaMask;
-extern std::array<int_fast32_t, IncNb> IncMask;
+extern std::array<int_fast32_t, IncNb>   IncMask;
 
 // functions
 

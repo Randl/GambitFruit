@@ -15,7 +15,7 @@
 // constants
 
 constexpr int_fast32_t Empty = 0;
-constexpr int_fast32_t Edge = Knight64; // HACK: uncoloured knight
+constexpr int_fast32_t Edge  = Knight64; // HACK: uncoloured knight
 
 constexpr int_fast32_t WP = WhitePawn256;
 constexpr int_fast32_t WN = WhiteKnight256;
@@ -31,7 +31,7 @@ constexpr int_fast32_t BR = BlackRook256;
 constexpr int_fast32_t BQ = BlackQueen256;
 constexpr int_fast32_t BK = BlackKing256;
 
-constexpr int_fast8_t FlagsNone = 0;
+constexpr int_fast8_t FlagsNone             = 0;
 constexpr int_fast8_t FlagsWhiteKingCastle  = 1 << 0;
 constexpr int_fast8_t FlagsWhiteQueenCastle = 1 << 1;
 constexpr int_fast8_t FlagsBlackKingCastle  = 1 << 2;
@@ -56,7 +56,7 @@ struct board_t {
 	std::array<int_fast16_t, ColourNb> piece_material; // Thomas
 
 	std::array<int_fast32_t, SquareNb> square;
-	std::array<int_fast8_t, SquareNb> pos;
+	std::array<int_fast8_t, SquareNb>  pos;
 
 	std::array<std::vector<sq_t>, ColourNb> piece;
 	std::array<std::vector<sq_t>, ColourNb> pawn;
@@ -76,7 +76,7 @@ struct board_t {
 	int_fast32_t pvalue; //Ryan
 
 	int_fast16_t ply_nb;
-	int_fast8_t                  piece_nb;
+	int_fast8_t  piece_nb;
 
 	bool turn;
 };

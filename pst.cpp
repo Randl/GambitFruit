@@ -80,11 +80,11 @@ static constexpr std::array<int_fast32_t, 64> alt_bishop = {
 // constants and variables
 
 static /* const */ int_fast32_t PieceActivityWeight = 256; // 100%
-static constexpr int_fast32_t                 KingSafetyWeight = 256; // 100%
+static constexpr int_fast32_t   KingSafetyWeight    = 256; // 100%
 static /* const */ int_fast32_t PawnStructureWeight = 256; // 100%
-static bool                                   alt_pawn_table = false;
-static bool                                   alt_knight_table = false;
-static bool                                   alt_bishop_table = false;
+static bool                     alt_pawn_table      = false;
+static bool                     alt_knight_table    = false;
+static bool                     alt_bishop_table    = false;
 
 static constexpr int_fast8_t  PawnFileOpening       = 5;
 static constexpr int_fast8_t  KnightCentreOpening   = 5;
@@ -165,9 +165,9 @@ void pst_init() {
 	PieceActivityWeight = (option_get_int("Piece Activity") * 256 + 50) / 100;
 	//KingSafetyWeight    = (option_get_int("King Safety")    * 256 + 50) / 100;
 	PawnStructureWeight = (option_get_int("Pawn Structure") * 256 + 50) / 100;
-	alt_pawn_table   = option_get_bool("Alt Pawn SQT");
-	alt_knight_table = option_get_bool("Alt Knight SQT");
-	alt_bishop_table = option_get_bool("Alt Bishop SQT");
+	alt_pawn_table      = option_get_bool("Alt Pawn SQT");
+	alt_knight_table    = option_get_bool("Alt Knight SQT");
+	alt_bishop_table    = option_get_bool("Alt Bishop SQT");
 
 	// init
 	for (int_fast32_t piece = 0; piece < 12; ++piece)

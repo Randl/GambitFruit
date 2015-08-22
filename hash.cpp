@@ -36,12 +36,12 @@ uint_fast64_t hash_key(const board_t *board) {
 	// pieces
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 		for (auto sq = board->piece[colour].begin(); sq != board->piece[colour].end(); ++sq) {
-			const uint_fast32_t piece = board->square[*sq];
+			const int_fast32_t piece = board->square[*sq];
 			key ^= hash_piece_key(piece, *sq);
 		}
 
 		for (auto sq = board->pawn[colour].begin(); sq != board->pawn[colour].end(); ++sq) {
-			const uint_fast32_t piece = board->square[*sq];
+			const int_fast32_t piece = board->square[*sq];
 			key ^= hash_piece_key(piece, *sq);
 		}
 	}
@@ -50,7 +50,7 @@ uint_fast64_t hash_key(const board_t *board) {
 	key ^= hash_castle_key(board->flags);
 
 	// en-passant square
-	const uint_fast32_t sq = board->ep_square;
+	const int_fast32_t sq = board->ep_square;
 	if (sq != SquareNone) key ^= hash_ep_key(sq);
 
 	// turn

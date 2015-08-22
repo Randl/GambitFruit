@@ -15,7 +15,7 @@
 
 struct alist_t {
 	std::array<int_fast32_t, 15> square;
-	int_fast8_t size;
+	int_fast8_t                  size;
 };
 
 struct alists_t {

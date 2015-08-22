@@ -58,7 +58,7 @@ int_fast32_t my_round(double x) {
 
 // my_malloc()
 
-void *my_malloc(int_fast32_t size) {
+void *my_malloc(size_t size) {
 	ASSERT(size > 0);
 
 	void *address = malloc(size);
@@ -175,11 +175,11 @@ void my_timer_reset(my_timer_t *timer) {
 
 	ASSERT(timer != nullptr);
 
-	timer->start_real = 0.0;
-	timer->start_cpu  = 0.0;
+	timer->start_real   = 0.0;
+	timer->start_cpu    = 0.0;
 	timer->elapsed_real = 0.0;
-	timer->elapsed_cpu = 0.0;
-	timer->running    = false;
+	timer->elapsed_cpu  = 0.0;
+	timer->running      = false;
 }
 
 // my_timer_start()
@@ -192,9 +192,9 @@ void my_timer_start(my_timer_t *timer) {
 	ASSERT(timer->start_cpu == 0.0);
 	ASSERT(!timer->running);
 
-	timer->running = true;
+	timer->running    = true;
 	timer->start_real = now_real();
-	timer->start_cpu = now_cpu();
+	timer->start_cpu  = now_cpu();
 }
 
 // my_timer_stop()
@@ -207,8 +207,8 @@ void my_timer_stop(my_timer_t *timer) {
 	timer->elapsed_real += now_real() - timer->start_real;
 	timer->elapsed_cpu += now_cpu() - timer->start_cpu;
 	timer->start_real = 0.0;
-	timer->start_cpu = 0.0;
-	timer->running = false;
+	timer->start_cpu  = 0.0;
+	timer->running    = false;
 }
 
 // my_timer_elapsed_real()
@@ -217,7 +217,7 @@ double my_timer_elapsed_real(const my_timer_t *timer) {
 
 	ASSERT(timer != nullptr);
 
-	double elapsed = timer->elapsed_real;
+	double elapsed             = timer->elapsed_real;
 	if (timer->running) elapsed += now_real() - timer->start_real;
 	if (elapsed < 0.0) elapsed = 0.0;
 
@@ -230,7 +230,7 @@ double my_timer_elapsed_cpu(const my_timer_t *timer) {
 
 	ASSERT(timer != nullptr);
 
-	double elapsed = timer->elapsed_cpu;
+	double elapsed             = timer->elapsed_cpu;
 	if (timer->running) elapsed += now_cpu() - timer->start_cpu;
 	if (elapsed < 0.0) elapsed = 0.0;
 
@@ -244,7 +244,7 @@ double my_timer_cpu_usage(const my_timer_t *timer) {
 	ASSERT(timer != nullptr);
 
 	double real = my_timer_elapsed_real(timer);
-	double cpu = my_timer_elapsed_cpu(timer);
+	double cpu  = my_timer_elapsed_cpu(timer);
 
 	if (real <= 0.0 || cpu <= 0.0) return 0.0;
 

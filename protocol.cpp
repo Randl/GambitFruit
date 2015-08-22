@@ -37,16 +37,16 @@
 
 #define VERSION "1.0 Beta 5.0"
 
-static const double NormalRatio = 1.0;
-static const double PonderRatio = 1.25;
+static const double NormalRatio    = 1.0;
+static const double PonderRatio    = 1.25;
 
 // variables
 
 static bool Init;
 
-static bool Searching; // search in progress?
-static bool Infinite; // infinite or ponder mode?
-static bool Delay; // postpone "bestmove" in infinite/ponder mode?
+static bool         Searching; // search in progress?
+static bool         Infinite; // infinite or ponder mode?
+static bool         Delay; // postpone "bestmove" in infinite/ponder mode?
 
 enum {
 	LOAD_NONE, LOAD_4MEN, SMART_LOAD, LOAD_5MEN
@@ -78,8 +78,8 @@ void loop() {
 	Init = false;
 
 	Searching = false;
-	Infinite = false;
-	Delay = false;
+	Infinite  = false;
+	Delay     = false;
 
 	search_clear();
 
@@ -317,29 +317,29 @@ static void parse_go(char string[]) {
 	int_fast32_t option_depth = 0;
 	option_depth = option_get_int("Search Depth");
 	if (option_depth > 0)
-		depth                                            = option_depth;
+		depth    = option_depth;
 	// JAS end
 
 	if (depth >= 0) {
 		SearchInput->depth_is_limited = true;
-		SearchInput->depth_limit = depth;
+		SearchInput->depth_limit      = depth;
 	} else if (mate >= 0) {
 		SearchInput->depth_is_limited = true;
-		SearchInput->depth_limit = mate * 2 - 1; // HACK: move -> ply
+		SearchInput->depth_limit      = mate * 2 - 1; // HACK: move -> ply
 	}
 
 	// time limit
 
 	if (COLOUR_IS_WHITE(SearchInput->board->turn)) {
 		time = wtime;
-		inc = winc;
+		inc  = winc;
 	} else {
 		time = btime;
-		inc = binc;
+		inc  = binc;
 	}
 
 	if (movestogo <= 0 || movestogo > 30) movestogo = 20; // HACK was 30. Why 20?
-	if (inc < 0.0) inc                                   = 0.0;
+	if (inc < 0.0) inc                              = 0.0;
 
 	// JAS
 	int_fast32_t option_movetime = 0;
@@ -353,8 +353,8 @@ static void parse_go(char string[]) {
 
 		// fixed time
 		SearchInput->time_is_limited = true;
-		SearchInput->time_limit_1 = movetime * 5.0; // HACK to avoid early exit
-		SearchInput->time_limit_2 = movetime;
+		SearchInput->time_limit_1    = movetime * 5.0; // HACK to avoid early exit
+		SearchInput->time_limit_2    = movetime;
 
 	} else if (time >= 0.0) {
 
@@ -372,7 +372,7 @@ static void parse_go(char string[]) {
 
 		alloc = (time_max + inc * double(movestogo - 1)) * 0.5;
 		if (alloc < SearchInput->time_limit_1) alloc = SearchInput->time_limit_1;
-		if (alloc > time_max) alloc = time_max;
+		if (alloc > time_max) alloc                  = time_max;
 		SearchInput->time_limit_2 = alloc;
 	}
 
@@ -383,8 +383,8 @@ static void parse_go(char string[]) {
 	ASSERT(!Delay);
 
 	Searching = true;
-	Infinite                                             = infinite || ponder;
-	Delay                                                = false;
+	Infinite  = infinite || ponder;
+	Delay     = false;
 
 	search();
 	search_update_current();
@@ -393,7 +393,7 @@ static void parse_go(char string[]) {
 	ASSERT(!Delay);
 
 	Searching = false;
-	Delay                                                = Infinite;
+	Delay     = Infinite;
 
 	if (!Delay) send_best_move();
 }
@@ -422,7 +422,7 @@ static void parse_position(char string[]) {
 
 	// moves
 	if (moves != nullptr) { // "moves" present
-		char move_string[256];
+		char       move_string[256];
 		const char *ptr = moves + 6;
 		while (*ptr != '\0') {
 
@@ -485,7 +485,7 @@ static void send_best_move() {
 	// info
 
 	// HACK: should be in search.cpp
-	double time = SearchCurrent->time, speed = SearchCurrent->speed, cpu = SearchCurrent->cpu;
+	double       time    = SearchCurrent->time, speed = SearchCurrent->speed, cpu = SearchCurrent->cpu;
 	int_fast64_t node_nb = SearchCurrent->node_nb;
 
 	send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f", time * 1000.0, node_nb, speed, cpu * 1000.0);
@@ -496,7 +496,7 @@ static void send_best_move() {
 
 	// best move
 	int_fast32_t move = SearchBest[0].move;
-	mv_t *pv = SearchBest[0].pv;
+	mv_t         *pv  = SearchBest[0].pv;
 
 	char move_string[256];
 	move_to_string(move, move_string, 256);
@@ -528,7 +528,7 @@ void send(const char format[], ...) {
 	ASSERT(format != nullptr);
 
 	va_list arg_list;
-	char string[4096];
+	char    string[4096];
 
 	va_start(arg_list, format);
 	vsprintf(string, format, arg_list);
@@ -566,7 +566,7 @@ typedef void (*PLOAD_EGBB)(const char *path, int_fast32_t cache_size, int_fast32
 static void load_egbb_library() {
 	HMODULE hmod;
 
-	const char *main_path = option_get("Bitbase Path");
+	const char    *main_path      = option_get("Bitbase Path");
 	uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
 
 	char path[256];

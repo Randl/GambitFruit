@@ -23,8 +23,8 @@ static constexpr int_fast32_t HistorySize = 12 * 64;
 static constexpr int_fast32_t HistoryMax  = 16384;
 
 static constexpr int_fast32_t TransScore   = +32766;
-static constexpr int_fast32_t GoodScore   = +4000;
-static constexpr int_fast32_t KillerScore = +4;
+static constexpr int_fast32_t GoodScore    = +4000;
+static constexpr int_fast32_t KillerScore  = +4;
 static constexpr int_fast32_t HistoryScore = -24000;
 static constexpr int_fast32_t BadScore     = -28000;
 
@@ -77,9 +77,9 @@ static std::array<int_fast32_t, CODE_SIZE> Code;
 static std::array<std::array<uint_fast16_t, KillerNb>, HeightMax> Killer;
 
 static std::array<fail_high_stats_t, HistorySize> FailHighStats;
-static std::array<uint_fast16_t, HistorySize> History;
-static std::array<uint_fast16_t, HistorySize> HistHit;
-static std::array<uint_fast16_t, HistorySize> HistTot;
+static std::array<uint_fast16_t, HistorySize>     History;
+static std::array<uint_fast16_t, HistorySize>     HistHit;
+static std::array<uint_fast16_t, HistorySize>     HistTot;
 
 // prototypes
 
@@ -121,7 +121,7 @@ void sort_init() {
 		HistHit[i] = 1;
 		HistTot[i] = 1;
 		FailHighStats[i].success = 1;
-		FailHighStats[i].tried = 1;
+		FailHighStats[i].tried   = 1;
 	}
 
 	// Code[]
@@ -172,15 +172,15 @@ void sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_
 	ASSERT(height_is_ok(height));
 	ASSERT(trans_killer == MoveNone || move_is_ok(trans_killer));
 
-	sort->board = board;
+	sort->board  = board;
 	sort->attack = attack;
 
-	sort->depth = depth;
+	sort->depth  = depth;
 	sort->height = height;
 
 	sort->trans_killer = trans_killer;
-	sort->killer_1 = Killer[sort->height][0];
-	sort->killer_2 = Killer[sort->height][1];
+	sort->killer_1     = Killer[sort->height][0];
+	sort->killer_2     = Killer[sort->height][1];
 	if (sort->height > 2) {
 		sort->killer_3 = Killer[sort->height - 2][0];
 		sort->killer_4 = Killer[sort->height - 2][1];
@@ -195,13 +195,13 @@ void sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_
 		note_moves(sort->list, sort->board, sort->height, sort->trans_killer);
 		sort->list->sort();
 
-		sort->gen = PosLegalEvasion + 1;
+		sort->gen  = PosLegalEvasion + 1;
 		sort->test = TEST_NONE;
 	} else { // not in check
 		LIST_CLEAR(sort->list);
 		sort->gen = PosSEE;
 	}
-	sort->pos   = 0;
+	sort->pos          = 0;
 }
 
 // sort_next()
@@ -316,7 +316,7 @@ void sort_init_qs(sort_t *sort, board_t *board, const attack_t *attack, bool che
 	ASSERT(attack != nullptr);
 	ASSERT(check == true || check == false);
 
-	sort->board = board;
+	sort->board  = board;
 	sort->attack = attack;
 
 	if (ATTACK_IN_CHECK(sort->attack))
@@ -422,7 +422,7 @@ void good_move(int_fast32_t move, const board_t *board, int_fast32_t depth, int_
 	History[index] += HISTORY_INC(depth);
 	if (History[index] >= HistoryMax)
 		for (int_fast32_t i = 0; i < HistorySize; ++i)
-			History[i] = (History[i] + 1) / 2;
+			History[i]      = (History[i] + 1) / 2;
 }
 
 // history_good()

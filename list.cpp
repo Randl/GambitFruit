@@ -44,7 +44,7 @@ list_t::list_t(const list_t &src) {
 	size = src.size;
 
 	for (int_fast32_t i = 0; i < src.size; ++i) {
-		moves[i].move = src.moves[i].move;
+		moves[i].move  = src.moves[i].move;
 		moves[i].value = src.moves[i].value;
 	}
 }
@@ -55,7 +55,7 @@ list_t::list_t(const list_t *src) {
 	size = src->size;
 
 	for (int_fast32_t i = 0; i < src->size; ++i) {
-		moves[i].move = src->moves[i].move;
+		moves[i].move  = src->moves[i].move;
 		moves[i].value = src->moves[i].value;
 	}
 }
@@ -66,7 +66,7 @@ list_t &list_t::operator=(const list_t &src) {
 	size = src.size;
 
 	for (int_fast32_t i = 0; i < src.size; ++i) {
-		moves[i].move = src.moves[i].move;
+		moves[i].move  = src.moves[i].move;
 		moves[i].value = src.moves[i].value;
 	}
 
@@ -86,7 +86,7 @@ void list_t::sort() {
 
 	for (int_fast16_t i = size - 2; i >= 0; --i) {
 		const int_fast32_t move = moves[i].move, value = moves[i].value;
-		int_fast16_t j;
+		int_fast16_t       j;
 		for (j = i; value < moves[j + 1].value; ++j) {
 			moves[j].move  = moves[j + 1].move;
 			moves[j].value = moves[j + 1].value;
@@ -94,7 +94,7 @@ void list_t::sort() {
 
 		ASSERT(j < size);
 
-		moves[j].move = move;
+		moves[j].move  = move;
 		moves[j].value = value;
 	}
 
@@ -150,7 +150,7 @@ void list_t::filter(board_t *board, move_test_t test, bool keep) {
 		const int_fast16_t  value = moves[i].value;
 
 		if ((*test)(move, board) == keep) {
-			moves[pos].move = move;
+			moves[pos].move  = move;
 			moves[pos].value = value;
 			++pos;
 		}

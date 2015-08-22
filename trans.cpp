@@ -28,25 +28,25 @@ struct entry_t {
 	uint_fast16_t move;
 	int_fast16_t  min_value;
 	int_fast16_t  max_value;
-	int_fast8_t depth;
-	uint_fast8_t date;
-	int_fast8_t move_depth;
-	uint_fast8_t flags;
-	int_fast8_t min_depth;
-	int_fast8_t max_depth;
+	int_fast8_t   depth;
+	uint_fast8_t  date;
+	int_fast8_t   move_depth;
+	uint_fast8_t  flags;
+	int_fast8_t   min_depth;
+	int_fast8_t   max_depth;
 };
 
 struct trans { // HACK: typedef'ed in trans.h
-	int_fast64_t read_nb;
-	int_fast64_t read_hit;
-	int_fast64_t write_nb;
-	int_fast64_t write_hit;
-	int_fast64_t write_collision;
-	entry_t *table;
-	int_fast32_t age[DateSize];
+	int_fast64_t  read_nb;
+	int_fast64_t  read_hit;
+	int_fast64_t  write_nb;
+	int_fast64_t  write_hit;
+	int_fast64_t  write_collision;
+	entry_t       *table;
+	int_fast32_t  age[DateSize];
 	uint_fast32_t size;
 	uint_fast32_t mask;
-	int_fast32_t date;
+	int_fast32_t  date;
 	uint_fast32_t used;
 };
 
@@ -91,8 +91,8 @@ void trans_init(trans_t *trans) {
 	ASSERT(trans != nullptr);
 	ASSERT(sizeof(entry_t) == 16);
 
-	trans->size = 0;
-	trans->mask = 0;
+	trans->size  = 0;
+	trans->mask  = 0;
 	trans->table = nullptr;
 
 	trans_set_date(trans, 0);
@@ -143,8 +143,8 @@ void trans_free(trans_t *trans) {
 	my_free(trans->table);
 
 	trans->table = nullptr;
-	trans->size = 0;
-	trans->mask = 0;
+	trans->size  = 0;
+	trans->mask  = 0;
 }
 
 // trans_clear()
@@ -156,16 +156,16 @@ void trans_clear(trans_t *trans) {
 	trans_set_date(trans, 0);
 
 	entry_t clear_entry[1];
-	clear_entry->lock  = 0;
-	clear_entry->move  = MoveNone;
-	clear_entry->depth = DepthNone;
-	clear_entry->date  = trans->date;
+	clear_entry->lock       = 0;
+	clear_entry->move       = MoveNone;
+	clear_entry->depth      = DepthNone;
+	clear_entry->date       = trans->date;
 	clear_entry->move_depth = DepthNone;
-	clear_entry->flags = 0;
-	clear_entry->min_depth = DepthNone;
-	clear_entry->max_depth = DepthNone;
-	clear_entry->min_value = -ValueInf;
-	clear_entry->max_value = +ValueInf;
+	clear_entry->flags      = 0;
+	clear_entry->min_depth  = DepthNone;
+	clear_entry->max_depth  = DepthNone;
+	clear_entry->min_value  = -ValueInf;
+	clear_entry->max_value  = +ValueInf;
 
 	ASSERT(entry_is_ok(clear_entry));
 	entry_t *entry;
@@ -195,11 +195,11 @@ static void trans_set_date(trans_t *trans, int_fast32_t date) {
 	for (date = 0; date < DateSize; ++date)
 		trans->age[date] = trans_age(trans, date);
 
-	trans->used     = 0;
-	trans->read_nb  = 0;
-	trans->read_hit = 0;
-	trans->write_nb = 0;
-	trans->write_hit = 0;
+	trans->used            = 0;
+	trans->read_nb         = 0;
+	trans->read_hit        = 0;
+	trans->write_nb        = 0;
+	trans->write_hit       = 0;
 	trans->write_collision = 0;
 }
 
@@ -251,7 +251,7 @@ void trans_store(trans_t *trans, uint_fast64_t key, int_fast32_t move, int_fast3
 
 			if (move != MoveNone && (trans_endgame || depth >= entry->move_depth)) {
 				entry->move_depth = depth;
-				entry->move = move;
+				entry->move       = move;
 			}
 
 			// if (min_value > -ValueInf /* && depth >= entry->min_depth */) {
@@ -296,12 +296,12 @@ void trans_store(trans_t *trans, uint_fast64_t key, int_fast32_t move, int_fast3
 
 	ASSERT(entry != nullptr);
 
-	entry->lock = KEY_LOCK(key);
-	entry->date = trans->date;
+	entry->lock  = KEY_LOCK(key);
+	entry->date  = trans->date;
 	entry->depth = depth;
 
 	entry->move_depth = (move != MoveNone) ? depth : DepthNone;
-	entry->move = move;
+	entry->move       = move;
 
 	entry->min_depth = (min_value > -ValueInf) ? depth : DepthNone;
 	entry->max_depth = (max_value < +ValueInf) ? depth : DepthNone;

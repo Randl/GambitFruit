@@ -44,7 +44,7 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board, opp);
+	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board, opp);
 
 	uint_fast16_t pin[8 + 1];
 	find_pins(pin, board);
@@ -255,7 +255,8 @@ bool move_is_check(int_fast32_t move, board_t *board) {
 	}
 
 	// init
-	const int_fast32_t me   = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board, opp);
+	const int_fast8_t  me   = board->turn, opp = COLOUR_OPP(me);
+	const int_fast32_t king = KING_POS(board, opp);
 	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
 	ASSERT(COLOUR_IS(piece, me));
 
@@ -279,7 +280,7 @@ static void find_pins(uint_fast16_t list[], const board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board, opp);
+	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board, opp);
 
 	for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr) { // HACK: no king
 

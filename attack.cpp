@@ -10,13 +10,13 @@ std::array<int_fast32_t, DeltaNb> DeltaIncLine;
 std::array<int_fast32_t, DeltaNb> DeltaIncAll;
 
 std::array<int_fast32_t, DeltaNb> DeltaMask;
-std::array<int_fast32_t, IncNb> IncMask;
+std::array<int_fast32_t, IncNb>   IncMask;
 
 static std::array<int_fast32_t, PieceNb> PieceCode;
 
 static std::array<std::array<int_fast32_t, 256>, 4> PieceDeltaSize; // 4kB
 static std::array<std::array<std::array<int_fast32_t, 4>, 256>, 4>
-	PieceDeltaDelta; // 16 kB
+													PieceDeltaDelta; // 16 kB
 
 // prototypes
 
@@ -32,8 +32,8 @@ void attack_init() {
 
 	for (int_fast32_t delta = 0; delta < DeltaNb; ++delta) {
 		DeltaIncLine[delta] = IncNone;
-		DeltaIncAll[delta] = IncNone;
-		DeltaMask[delta] = 0;
+		DeltaIncAll[delta]  = IncNone;
+		DeltaMask[delta]    = 0;
 	}
 
 	for (int_fast32_t inc = 0; inc < IncNb; ++inc)
@@ -216,7 +216,7 @@ bool is_attacked(const board_t *board, int_fast32_t to, int_fast8_t colour) {
 
 	// pawn attack
 
-	int_fast32_t inc = PAWN_MOVE_INC(colour);
+	int_fast32_t inc  = PAWN_MOVE_INC(colour);
 	int_fast32_t pawn = PAWN_MAKE(colour);
 
 	if (board->square[to - (inc - 1)] == pawn) return true;
@@ -276,7 +276,7 @@ bool is_pinned(const board_t *board, int_fast32_t square, int_fast8_t colour) {
 	ASSERT(COLOUR_IS_OK(colour));
 
 	const int_fast32_t from = square;
-	const int_fast32_t to = KING_POS(board, colour);
+	const int_fast32_t to   = KING_POS(board, colour);
 
 	const int_fast32_t inc = DELTA_INC_LINE(to - from);
 	if (inc == IncNone) return false; // not a line
@@ -326,14 +326,12 @@ void attack_set(attack_t *attack, const board_t *board) {
 
 	attack->dn = 0;
 
-	const int_fast32_t me = board->turn;
-	const int_fast32_t opp = COLOUR_OPP(me);
-
-	int_fast32_t to = KING_POS(board, me);
+	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me);
+	int_fast32_t      to = KING_POS(board, me);
 
 	// pawn attacks
 	{
-		int_fast32_t inc = PAWN_MOVE_INC(opp);
+		int_fast32_t inc  = PAWN_MOVE_INC(opp);
 		int_fast32_t pawn = PAWN_MAKE(opp);
 
 		int_fast32_t from = to - (inc - 1);
@@ -402,7 +400,7 @@ bool piece_attack_king(const board_t *board, int_fast32_t piece, int_fast32_t fr
 
 	if (PIECE_IS_SLIDER(piece)) {
 		int_fast32_t delta;
-		for (auto delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
+		for (auto    delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
 			 (delta = *delta_ptr) != DeltaNone; ++delta_ptr) {
 
 			ASSERT(delta_is_ok(delta));
@@ -425,7 +423,7 @@ bool piece_attack_king(const board_t *board, int_fast32_t piece, int_fast32_t fr
 	} else { // non-slider
 
 		int_fast32_t delta;
-		for (auto delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
+		for (auto    delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
 			 (delta = *delta_ptr) != DeltaNone; ++delta_ptr) {
 
 			ASSERT(delta_is_ok(delta));

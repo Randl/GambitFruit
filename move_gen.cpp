@@ -100,7 +100,7 @@ static void add_moves(list_t *list, const board_t *board) {
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
 
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
+	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
 
 	// piece moves
 	for (auto from = board->piece[me].begin(); from != board->piece[me].end(); ++from) {
@@ -165,7 +165,7 @@ static void add_captures(list_t *list, const board_t *board) {
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
 
-	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me);
+	const int_fast8_t  me       = board->turn, opp = COLOUR_OPP(me);
 	const int_fast32_t opp_flag = COLOUR_FLAG(opp);
 
 	// piece captures
@@ -343,12 +343,12 @@ static void add_quiet_moves(list_t *list, const board_t *board) {
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
 
-	const int_fast32_t me = board->turn;
+	const int_fast8_t me = board->turn;
 
 	// piece moves
 	for (auto from = board->piece[me].begin(); from != board->piece[me].end(); ++from) {
 		const int_fast32_t piece = board->square[*from];
-		int_fast32_t to;
+		int_fast32_t       to;
 
 		switch (PIECE_TYPE(piece)) {
 
@@ -526,7 +526,7 @@ static void add_promotes(list_t *list, const board_t *board) {
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
 
-	const int_fast32_t me = board->turn, inc = PAWN_MOVE_INC(me);
+	const int_fast8_t me = board->turn, inc = PAWN_MOVE_INC(me);
 
 	for (auto from = board->pawn[me].begin(); from != board->pawn[me].end(); ++from)
 		if (PAWN_RANK(*from, me) == Rank7) {
@@ -547,8 +547,8 @@ static void add_en_passant_captures(list_t *list, const board_t *board) {
 
 	if (to != SquareNone) {
 
-		const int_fast32_t me   = board->turn, inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
-		int_fast32_t       from = to - (inc - 1);
+		const int_fast8_t me   = board->turn, inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+		int_fast32_t      from = to - (inc - 1);
 
 		if (board->square[from] == pawn) {
 			ASSERT(!SQUARE_IS_PROMOTE(to));

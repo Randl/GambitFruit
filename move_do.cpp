@@ -67,7 +67,7 @@ void move_do(board_t *board, int_fast32_t move, undo_t *undo) {
 	undo->material_key                          = board->material_key;
 
 	// init
-	const int_fast32_t me    = board->turn, opp = COLOUR_OPP(me);
+	const int_fast8_t  me    = board->turn, opp = COLOUR_OPP(me);
 	const int_fast32_t from  = MOVE_FROM(move), to = MOVE_TO(move);
 	int_fast32_t       piece = board->square[from];
 
@@ -124,10 +124,10 @@ void move_do(board_t *board, int_fast32_t move, undo_t *undo) {
 		ASSERT(COLOUR_IS(capture, opp));
 		ASSERT(!PIECE_IS_KING(capture));
 
-		undo->capture     = true;
+		undo->capture        = true;
 		undo->capture_square = square;
-		undo->capture_piece = capture;
-		undo->capture_pos = board->pos[square];
+		undo->capture_piece  = capture;
+		undo->capture_pos    = board->pos[square];
 
 		square_clear(board, square, capture, true);
 
@@ -186,8 +186,8 @@ void move_undo(board_t *board, int_fast32_t move, const undo_t *undo) {
 	ASSERT(undo != nullptr);
 
 	// init
-	const int_fast32_t me    = undo->turn, from = MOVE_FROM(move), to = MOVE_TO(move);
-	int_fast32_t       piece = board->square[to];
+	const int_fast8_t me    = undo->turn, from = MOVE_FROM(move), to = MOVE_TO(move);
+	int_fast32_t      piece = board->square[to];
 	ASSERT(COLOUR_IS(piece, me));
 
 	// castle
@@ -229,15 +229,15 @@ void move_undo(board_t *board, int_fast32_t move, const undo_t *undo) {
 		square_set(board, undo->capture_square, undo->capture_piece, undo->capture_pos, false);
 
 	// update board info
-	board->turn     = undo->turn;
-	board->flags    = undo->flags;
-	board->ep_square = undo->ep_square;
-	board->ply_nb   = undo->ply_nb;
-	board->cap_sq   = undo->cap_sq;
-	board->opening  = undo->opening;
-	board->endgame  = undo->endgame;
-	board->key      = undo->key;
-	board->pawn_key = undo->pawn_key;
+	board->turn         = undo->turn;
+	board->flags        = undo->flags;
+	board->ep_square    = undo->ep_square;
+	board->ply_nb       = undo->ply_nb;
+	board->cap_sq       = undo->cap_sq;
+	board->opening      = undo->opening;
+	board->endgame      = undo->endgame;
+	board->key          = undo->key;
+	board->pawn_key     = undo->pawn_key;
 	board->material_key = undo->material_key;
 
 	// update key stack
@@ -259,11 +259,11 @@ void move_do_null(board_t *board, undo_t *undo) {
 	ASSERT(!board_is_check(board));
 
 	// initialise undo
-	undo->turn = board->turn;
+	undo->turn      = board->turn;
 	undo->ep_square = board->ep_square;
-	undo->ply_nb = board->ply_nb;
-	undo->cap_sq = board->cap_sq;
-	undo->key  = board->key;
+	undo->ply_nb    = board->ply_nb;
+	undo->cap_sq    = board->cap_sq;
+	undo->key       = board->key;
 
 	// update key stack
 	ASSERT(board->stack.size() < StackSize);
@@ -300,11 +300,11 @@ void move_undo_null(board_t *board, const undo_t *undo) {
 	ASSERT(!board_is_check(board));
 
 	// update board info
-	board->turn = undo->turn;
+	board->turn      = undo->turn;
 	board->ep_square = undo->ep_square;
-	board->ply_nb = undo->ply_nb;
-	board->cap_sq = undo->cap_sq;
-	board->key  = undo->key;
+	board->ply_nb    = undo->ply_nb;
+	board->cap_sq    = undo->cap_sq;
+	board->key       = undo->key;
 
 	// update key stack
 	ASSERT(board->stack.size() > 0);
@@ -328,7 +328,7 @@ static void square_clear(board_t *board, int_fast32_t square, int_fast32_t piece
 	ASSERT(pos >= 0);
 
 	const int_fast32_t piece_12 = PIECE_TO_12(piece);
-	const int_fast8_t colour = PIECE_COLOUR(piece);
+	const int_fast8_t  colour   = PIECE_COLOUR(piece);
 
 	// square
 	ASSERT(board->square[square] == piece);
@@ -347,7 +347,7 @@ static void square_clear(board_t *board, int_fast32_t square, int_fast32_t piece
 
 		board->pos[square] = -1;
 		for (int_fast32_t i = pos; i < size - 1; ++i) {
-			const int_fast32_t sq = board->piece[colour][i + 1];
+			const int_fast32_t sq   = board->piece[colour][i + 1];
 			board->piece[colour][i] = sq;
 
 			ASSERT(board->pos[sq] == i + 1);

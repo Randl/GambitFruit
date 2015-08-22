@@ -23,17 +23,19 @@ struct undo_t {
 
 	int_fast32_t pawn_pos;
 
-	int_fast32_t turn;
+
 	int_fast32_t flags;
 	int_fast32_t ep_square;
-	int_fast32_t ply_nb;
 
 	int_fast32_t cap_sq;
 
 	int_fast32_t opening;
 	int_fast32_t endgame;
 
+	int_fast16_t ply_nb;
+
 	bool capture;
+	bool turn;
 };
 
 // functions

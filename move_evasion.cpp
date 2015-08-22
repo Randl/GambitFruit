@@ -73,7 +73,7 @@ static bool gen_evasions(list_t *list, const board_t *board, const attack_t *att
 	// init
 	LIST_CLEAR(list);
 
-	const int_fast32_t me   = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
+	const int_fast8_t  me   = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
 	const int_fast32_t king = KING_POS(board, me);
 
 	for (const inc_t *inc_ptr = KingInc.data(); *inc_ptr != IncNone; ++inc_ptr) {
@@ -124,7 +124,7 @@ static bool add_pawn_moves(list_t *list, const board_t *board, int_fast32_t to, 
 
 	ASSERT(board->square[to] == Empty);
 
-	const int_fast32_t me = board->turn, inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+	const int_fast8_t me = board->turn, inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
 
 	int_fast32_t from = to - inc, piece = board->square[from];
 
@@ -159,7 +159,8 @@ static bool add_pawn_captures(list_t *list, const board_t *board, int_fast32_t t
 
 	ASSERT(COLOUR_IS(board->square[to], COLOUR_OPP(board->turn)));
 
-	const int_fast32_t me = board->turn, inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+	const int_fast8_t  me  = board->turn;
+	const int_fast32_t inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
 
 	int_fast32_t from = to - (inc - 1);
 	if (board->square[from] == pawn) {
@@ -219,7 +220,7 @@ static bool add_piece_moves(list_t *list, const board_t *board, int_fast32_t to,
 	ASSERT(legal == true || legal == false);
 	ASSERT(stop == true || stop == false);
 
-	const int_fast32_t me = board->turn;
+	const int_fast8_t me = board->turn;
 
 	for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr) { // HACK: no king
 

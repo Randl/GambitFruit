@@ -111,7 +111,7 @@ void board_from_fen(board_t *board, const char fen[]) {
 	int_fast32_t sq;
 	if (c == '-') { // no en-passant
 		sq = SquareNone;
-		c = fen[++pos];
+		c  = fen[++pos];
 	} else {
 		if (c < 'a' || c > 'h') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 		int_fast32_t file = file_from_char(c);
@@ -173,7 +173,7 @@ bool board_to_fen(const board_t *board, char fen[], int_fast32_t size) {
 	for (int_fast32_t rank = Rank8; rank >= Rank1; --rank) {
 		for (int_fast32_t file = FileA; file <= FileH;) {
 			int_fast32_t       c;
-			const int_fast32_t sq = SQUARE_MAKE(file, rank);
+			const int_fast32_t sq    = SQUARE_MAKE(file, rank);
 			const int_fast32_t piece = board->square[sq];
 			ASSERT(piece == Empty || piece_is_ok(piece));
 
@@ -192,7 +192,7 @@ bool board_to_fen(const board_t *board, char fen[], int_fast32_t size) {
 			}
 			fen[pos++] = c;
 		}
-		fen[pos++] = '/';
+		fen[pos++]             = '/';
 	}
 
 	fen[pos - 1] = ' '; // HACK: remove the last '/'
@@ -206,9 +206,9 @@ bool board_to_fen(const board_t *board, char fen[], int_fast32_t size) {
 	if (board->flags == FlagsNone)
 		fen[pos++] = '-';
 	else {
-		if ((board->flags & FlagsWhiteKingCastle) != 0) fen[pos++] = 'K';
+		if ((board->flags & FlagsWhiteKingCastle) != 0) fen[pos++]  = 'K';
 		if ((board->flags & FlagsWhiteQueenCastle) != 0) fen[pos++] = 'Q';
-		if ((board->flags & FlagsBlackKingCastle) != 0) fen[pos++] = 'k';
+		if ((board->flags & FlagsBlackKingCastle) != 0) fen[pos++]  = 'k';
 		if ((board->flags & FlagsBlackQueenCastle) != 0) fen[pos++] = 'q';
 	}
 

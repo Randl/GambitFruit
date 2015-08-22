@@ -18,11 +18,11 @@ static constexpr uint_fast32_t TableSize = 16384; // 256kB
 typedef pawn_info_t entry_t;
 
 struct pawn_t {
-	int_fast64_t read_nb;
-	int_fast64_t read_hit;
-	int_fast64_t write_nb;
-	int_fast64_t write_collision;
-	entry_t *table;
+	int_fast64_t  read_nb;
+	int_fast64_t  read_hit;
+	int_fast64_t  write_nb;
+	int_fast64_t  write_collision;
+	entry_t       *table;
 	uint_fast32_t size;
 	uint_fast32_t mask;
 	uint_fast32_t used;
@@ -54,9 +54,9 @@ static constexpr std::array<int_fast8_t, 8> BackwardOpening     = {6, 7, 8, 10, 
 static constexpr std::array<int_fast8_t, 8> BackwardOpeningOpen = {12, 14, 16, 18, 18, 16, 14, 12};
 static constexpr std::array<int_fast8_t, 8> BackwardEndgame     = {8, 9, 10, 12, 12, 10, 9, 8};
 
-static constexpr int_fast8_t CandidateOpeningMin = 5;
+static constexpr int_fast8_t  CandidateOpeningMin = 5;
 static constexpr int_fast16_t CandidateOpeningMax = 55;
-static constexpr int_fast8_t CandidateEndgameMin = 10;
+static constexpr int_fast8_t  CandidateEndgameMin = 10;
 static constexpr int_fast16_t CandidateEndgameMax = 110;
 
 // this was moved to eval.cpp
@@ -137,16 +137,16 @@ void pawn_init_bit() {
 		for (int_fast32_t rank = Rank1; rank <= Rank8; ++rank) {
 			if ((b & BitEQ[rank]) != 0) {
 				if (rank < first) first = rank;
-				if (rank > last) last = rank;
+				if (rank > last) last   = rank;
 				++count;
 				rev |= BitEQ[RANK_OPP(rank)];
 			}
 		}
 
 		BitFirst[b] = first;
-		BitLast[b]         = last;
+		BitLast[b]  = last;
 		BitCount[b] = count;
-		BitRev[b]          = rev;
+		BitRev[b]   = rev;
 	}
 }
 
@@ -169,8 +169,8 @@ void pawn_init() {
 
 	// pawn hash-table
 
-	Pawn->size = 0;
-	Pawn->mask = 0;
+	Pawn->size  = 0;
+	Pawn->mask  = 0;
 	Pawn->table = nullptr;
 }
 
@@ -196,10 +196,10 @@ void pawn_clear() {
 	if (Pawn->table != nullptr)
 		memset(Pawn->table, 0, Pawn->size * sizeof(entry_t));
 
-	Pawn->used    = 0;
-	Pawn->read_nb = 0;
-	Pawn->read_hit = 0;
-	Pawn->write_nb = 0;
+	Pawn->used            = 0;
+	Pawn->read_nb         = 0;
+	Pawn->read_hit        = 0;
+	Pawn->write_nb        = 0;
 	Pawn->write_collision = 0;
 }
 
@@ -252,7 +252,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
 		std::array<int_fast32_t, FileNb> pawn_file;
-		const int_fast32_t me = colour;
+		const int_fast8_t me = colour;
 
 		for (int_fast32_t file = 0; file < FileNb; ++file)
 			pawn_file[file] = 0;
@@ -291,7 +291,11 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
-		const int_fast32_t me = colour, opp = COLOUR_OPP(me);
+		const int_fast8_t me = colour, opp = COLOUR_OPP(me);
+
+		//TODO: no pawns in endgame is bad. More pawn is better
+		/* opening[me] = PawnAmountBonusOpening[board->pawn.size()];
+		 * opening[me] = PawnAmountBonusEndgame[board->pawn.size()];*/
 
 		for (auto sq = board->pawn[me].begin(); sq != board->pawn[me].end(); ++sq) {
 
@@ -509,7 +513,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 	if (bits_w != 0 && (bits_w & (bits_w - 1)) == 0) { // one set bit
 
 		const int_fast32_t file = BIT_FIRST(bits_w);
-		int_fast32_t rank = BIT_FIRST(board->pawn_file[0][file]);
+		int_fast32_t       rank = BIT_FIRST(board->pawn_file[0][file]);
 		ASSERT(rank >= Rank2);
 
 		if (((BitRev[board->pawn_file[1][file - 1]] | BitRev[board->pawn_file[1][file + 1]]) & BitGT[rank]) == 0) {
@@ -523,7 +527,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 	if (bits_b != 0 && (bits_b & (bits_b - 1)) == 0) { // one set bit
 
 		const int_fast32_t file = BIT_FIRST(bits_b);
-		int_fast32_t rank = BIT_FIRST(board->pawn_file[1][file]);
+		int_fast32_t       rank = BIT_FIRST(board->pawn_file[1][file]);
 		ASSERT(rank >= Rank2);
 
 		if (((BitRev[board->pawn_file[0][file - 1]] | BitRev[board->pawn_file[0][file + 1]]) & BitGT[rank]) == 0) {
@@ -532,16 +536,16 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 		}
 	}
 
-	info->flags[0] = flags[0];
-	info->flags[1] = flags[1];
+	info->flags[0]       = flags[0];
+	info->flags[1]       = flags[1];
 	info->passed_bits[0] = passed_bits[0];
 	info->passed_bits[1] = passed_bits[1];
 	info->single_file[0] = single_file[0];
 	info->single_file[1] = single_file[1];
-	info->badpawns[0] = badpawns[0];
-	info->badpawns[1] = badpawns[1];
-	info->wsp[0]   = wsp[0];
-	info->wsp[1]   = wsp[1];
+	info->badpawns[0]    = badpawns[0];
+	info->badpawns[1]    = badpawns[1];
+	info->wsp[0]         = wsp[0];
+	info->wsp[1]         = wsp[1];
 
 }
 

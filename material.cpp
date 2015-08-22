@@ -18,7 +18,7 @@ static constexpr uint_fast8_t BishopPhase = 1;
 static constexpr uint_fast8_t RookPhase   = 2;
 static constexpr uint_fast8_t QueenPhase  = 4;
 
-static constexpr int_fast16_t TotalPhase      =
+static constexpr int_fast16_t TotalPhase =
 								  PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
 
 // constants and variables
@@ -40,8 +40,8 @@ static /*const*/ int_fast32_t BishopPairOpening = 50;
 static /*const*/ int_fast32_t BishopPairEndgame = 50;
 
 static /*const*/ int_fast32_t Queen_Knight_combo = 15; // with no rooks
-static /*const*/ int_fast32_t Rook_Bishop_combo = 15;  // with no queens
-static /*const*/ int_fast32_t bad_trade_value = 50; // not used like in crafty... (will be for 3 minors vs queen)
+static /*const*/ int_fast32_t Rook_Bishop_combo  = 15;  // with no queens
+static /*const*/ int_fast32_t bad_trade_value    = 50; // not used like in crafty... (will be for 3 minors vs queen)
 
 static int_fast32_t bitbase_pieces = 2;
 
@@ -88,23 +88,23 @@ void material_init() {
 	BishopPairEndgame = option_get_int("Bishop Pair Endgame");
 
 	Queen_Knight_combo = option_get_int("Queen Knight combo");
-	Rook_Bishop_combo = option_get_int("Rook Bishop combo");
+	Rook_Bishop_combo  = option_get_int("Rook Bishop combo");
 
-	PawnOpening = option_get_int("Opening Pawn Value");
+	PawnOpening   = option_get_int("Opening Pawn Value");
 	KnightOpening = option_get_int("Opening Knight Value");
 	BishopOpening = option_get_int("Opening Bishop Value");
-	RookOpening = option_get_int("Opening Rook Value");
-	QueenOpening = option_get_int("Opening Queen Value");
+	RookOpening   = option_get_int("Opening Rook Value");
+	QueenOpening  = option_get_int("Opening Queen Value");
 
-	PawnEndgame = option_get_int("Endgame Pawn Value");
+	PawnEndgame   = option_get_int("Endgame Pawn Value");
 	KnightEndgame = option_get_int("Endgame Knight Value");
 	BishopEndgame = option_get_int("Endgame Bishop Value");
-	RookEndgame = option_get_int("Endgame Rook Value");
-	QueenEndgame = option_get_int("Endgame Queen Value");
+	RookEndgame   = option_get_int("Endgame Rook Value");
+	QueenEndgame  = option_get_int("Endgame Queen Value");
 
 	// material table
-	Material->size = 0;
-	Material->mask = 0;
+	Material->size  = 0;
+	Material->mask  = 0;
 	Material->table = nullptr;
 }
 
@@ -129,10 +129,10 @@ void material_clear() {
 	if (Material->table != nullptr)
 		memset(Material->table, 0, Material->size * sizeof(entry_t));
 
-	Material->used    = 0;
-	Material->read_nb = 0;
-	Material->read_hit = 0;
-	Material->write_nb = 0;
+	Material->used            = 0;
+	Material->read_nb         = 0;
+	Material->read_hit        = 0;
+	Material->write_nb        = 0;
 	Material->write_collision = 0;
 }
 
@@ -217,7 +217,7 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	}
 
 	// draw node (exact-draw recogniser)
-	uint_fast8_t flags = 0; // TODO: MOVE ME
+	uint_fast8_t                       flags = 0; // TODO: MOVE ME
 	std::array<uint_fast8_t, ColourNb> cflags;
 	cflags[0] = cflags[1] = 0;
 
@@ -579,9 +579,9 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	info->flags = flags;
 	info->cflags[0] = cflags[0];
 	info->cflags[1] = cflags[1];
-	info->mul[0] = mul[0];
-	info->mul[1] = mul[1];
-	info->phase = phase;
+	info->mul[0]    = mul[0];
+	info->mul[1]    = mul[1];
+	info->phase   = phase;
 	info->opening = opening;
 	info->endgame = endgame;
 }

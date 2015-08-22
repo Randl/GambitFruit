@@ -53,7 +53,7 @@ struct my_timer_t {
 	double start_cpu;
 	double elapsed_real;
 	double elapsed_cpu;
-		bool running;
+	bool   running;
 };
 
 /*
@@ -76,7 +76,7 @@ BitBases
 
 typedef int_fast32_t (*PPROBE_EGBB)(int player, int *piece, int *square);
 extern PPROBE_EGBB probe_egbb;
-extern bool          egbb_is_loaded;
+extern bool        egbb_is_loaded;
 /*
 end BitBases
 */
@@ -92,7 +92,7 @@ extern int_fast64_t my_atoll(const char string[]);
 
 extern int_fast32_t my_round(double x);
 
-extern void *my_malloc(int size);
+extern void *my_malloc(size_t size);
 extern void my_free(void *address);
 
 extern void my_fatal(const char format[], ...);

@@ -8,7 +8,7 @@
 // variables
 
 std::array<int_fast32_t, SquareNb> SquareTo64;
-std::array<bool, SquareNb> SquareIsPromote;
+std::array<bool, SquareNb>         SquareIsPromote;
 
 // functions
 

@@ -10,12 +10,12 @@
 
 // "constants"
 
-constexpr int_fast8_t IncNone = 0;
-constexpr int_fast8_t IncNb = 2 * 17 + 1;
+constexpr int_fast8_t IncNone   = 0;
+constexpr int_fast8_t IncNb     = 2 * 17 + 1;
 constexpr int_fast8_t IncOffset = 17;
 
-constexpr int_fast8_t  DeltaNone = 0;
-constexpr int_fast16_t DeltaNb   = 2 * 119 + 1;
+constexpr int_fast8_t  DeltaNone   = 0;
+constexpr int_fast16_t DeltaNb     = 2 * 119 + 1;
 constexpr int_fast16_t DeltaOffset = 119;
 
 // macros

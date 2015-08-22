@@ -23,7 +23,7 @@ struct entry_t {
 
 // variables
 
-static FILE *BookFile;
+static FILE         *BookFile;
 static int_fast32_t BookSize;
 
 // prototypes
@@ -76,7 +76,7 @@ int_fast32_t book_move(board_t *board) {
 
 		// draw a move according to a fixed probability distribution
 
-		int_fast32_t best_move = MoveNone;
+		int_fast32_t best_move  = MoveNone;
 		int_fast32_t best_score = 0;
 
 		for (int_fast32_t pos = find_pos(board->key); pos < BookSize; ++pos) {
@@ -85,7 +85,7 @@ int_fast32_t book_move(board_t *board) {
 			read_entry(entry, pos);
 			if (entry->key != board->key) break;
 
-			int_fast32_t move = entry->move;
+			int_fast32_t move  = entry->move;
 			int_fast32_t score = entry->count;
 
 			// pick this move?

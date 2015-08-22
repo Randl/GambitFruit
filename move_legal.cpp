@@ -139,7 +139,7 @@ bool pseudo_is_legal(int_fast32_t move, board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast32_t me = board->turn, opp = COLOUR_OPP(me);
+	const int_fast8_t me   = board->turn, opp = COLOUR_OPP(me);
 	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
 	ASSERT(COLOUR_IS(piece, me));
 

@@ -24,11 +24,11 @@ void vector_init() {
 
 			int_fast32_t dist = 0, tmp = x;
 
-			if (tmp < 0) tmp = -tmp;
+			if (tmp < 0) tmp     = -tmp;
 			if (tmp > dist) dist = tmp;
 
 			tmp = y;
-			if (tmp < 0) tmp = -tmp;
+			if (tmp < 0) tmp     = -tmp;
 			if (tmp > dist) dist = tmp;
 
 			Distance[DeltaOffset + delta] = dist;

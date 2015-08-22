@@ -19,21 +19,21 @@ struct fail_high_stats_t {
 
 
 struct sort_t {
-	board_t *board;
+	board_t        *board;
 	const attack_t *attack;
-	list_t  list[1];
-	list_t  bad[1];
-	int_fast32_t depth;
-	int_fast32_t height;
-	int_fast32_t trans_killer;
-	int_fast32_t killer_1;
-	int_fast32_t killer_2;
-	int_fast32_t killer_3;
-	int_fast32_t killer_4;
-	int_fast32_t gen;
-	int_fast32_t test;
-	int_fast32_t pos;
-	int_fast32_t value;
+	list_t         list[1];
+	list_t         bad[1];
+	int_fast32_t   depth;
+	int_fast32_t   height;
+	int_fast32_t   trans_killer;
+	int_fast32_t   killer_1;
+	int_fast32_t   killer_2;
+	int_fast32_t   killer_3;
+	int_fast32_t   killer_4;
+	int_fast32_t   gen;
+	int_fast32_t   test;
+	int_fast32_t   pos;
+	int_fast32_t   value;
 };
 
 // functions

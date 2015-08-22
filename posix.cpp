@@ -2,7 +2,6 @@
 
 // includes
 
-#include <cerrno>
 #include <cstdio> // REMOVE ME?
 #include <ctime>
 
@@ -38,9 +37,9 @@ bool input_available() {
 
 #if defined(_WIN32) || defined(_WIN64)
 
-	static bool init = false, is_pipe;
+	static bool   init = false, is_pipe;
 	static HANDLE stdin_h;
-	DWORD val, error;
+	DWORD         val, error;
 
 	// val = 0; // needed to make the compiler happy?
 

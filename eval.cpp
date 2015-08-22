@@ -71,17 +71,17 @@ const std::array<std::array<int_fast8_t, 256>, 2> KnightOutpostMatrix = {
 };
 
 static int_fast32_t lazy_eval_cutoff = 50;
-static bool                                       KingSafety          = false; // true
+static bool         KingSafety       = false; // true
 //static int_fast32_t KingSafetyMargin = 1600;
-static bool                                       king_is_safe[ColourNb];
+static bool         king_is_safe[ColourNb];
 
 static /* constexpr */ int_fast16_t PieceActivityWeight = 256; // 100%
-static /* constexpr */ int_fast16_t               ShelterOpening      = 256; // 100%
-static /* constexpr */ int_fast16_t               KingSafetyWeight    = 256; // 100%
-static /* constexpr */ int_fast16_t               PassedPawnWeight    = 256; // 100%
+static /* constexpr */ int_fast16_t ShelterOpening      = 256; // 100%
+static /* constexpr */ int_fast16_t KingSafetyWeight    = 256; // 100%
+static /* constexpr */ int_fast16_t PassedPawnWeight    = 256; // 100%
 
-static constexpr int_fast8_t MobMove = 1;
-static constexpr int_fast8_t MobAttack = 1;
+static constexpr int_fast8_t MobMove    = 1;
+static constexpr int_fast8_t MobAttack  = 1;
 static constexpr int_fast8_t MobDefense = 0;
 
 static constexpr std::array<int_fast8_t, 9>  knight_mob     = {-16, -12, -8, -4, 0, 4, 8, 12, 16};
@@ -99,12 +99,12 @@ static constexpr std::array<int_fast8_t, 27> queen_mob_end  = {-26, -24, -22, -2
 static constexpr std::array<int_fast8_t, 9> pawns_on_bishop_colour_opening = {9, 6, 3, 0, -3, -6, -9, -12, -15};
 static constexpr std::array<int_fast8_t, 9> pawns_on_bishop_colour_endgame = {12, 8, 4, 0, -4, -8, -12, -16, -20};
 
-static constexpr int_fast8_t RookSemiOpenFileOpening = 10;
-static constexpr int_fast8_t RookSemiOpenFileEndgame = 10;
-static constexpr int_fast8_t                RookOpenFileOpening            = 20;
-static constexpr int_fast8_t                RookOpenFileEndgame            = 20;
-static constexpr int_fast8_t RookSemiKingFileOpening = 10;
-static constexpr int_fast8_t                RookKingFileOpening            = 20;
+static constexpr int_fast8_t RookSemiOpenFileOpening  = 10;
+static constexpr int_fast8_t RookSemiOpenFileEndgame  = 10;
+static constexpr int_fast8_t RookOpenFileOpening      = 20;
+static constexpr int_fast8_t RookOpenFileEndgame      = 20;
+static constexpr int_fast8_t RookSemiKingFileOpening  = 10;
+static constexpr int_fast8_t RookKingFileOpening      = 20;
 static constexpr int_fast8_t RookOnBadPawnFileOpening = 8;
 static constexpr int_fast8_t RookOnBadPawnFileEndgame = 8;
 
@@ -112,34 +112,34 @@ static /* constexpr */ int_fast16_t KingAttackOpening = 20; // was 20
 
 static constexpr int_fast8_t knight_tropism_opening = 3;
 static constexpr int_fast8_t bishop_tropism_opening = 2;
-static constexpr int_fast8_t                rook_tropism_opening           = 2;
-static constexpr int_fast8_t                queen_tropism_opening          = 2;
+static constexpr int_fast8_t rook_tropism_opening   = 2;
+static constexpr int_fast8_t queen_tropism_opening  = 2;
 
 static constexpr int_fast8_t knight_tropism_endgame = 3;
 static constexpr int_fast8_t bishop_tropism_endgame = 1;
-static constexpr int_fast8_t                rook_tropism_endgame           = 1;
-static constexpr int_fast8_t                queen_tropism_endgame          = 4;
+static constexpr int_fast8_t rook_tropism_endgame   = 1;
+static constexpr int_fast8_t queen_tropism_endgame  = 4;
 
 static /* constexpr */ int_fast16_t StormOpening = 10;
 
-static constexpr int_fast8_t Rook7thOpening = 20;
-static constexpr int_fast8_t Rook7thEndgame = 40;
+static constexpr int_fast8_t Rook7thOpening  = 20;
+static constexpr int_fast8_t Rook7thEndgame  = 40;
 static constexpr int_fast8_t Queen7thOpening = 10;
 static constexpr int_fast8_t Queen7thEndgame = 20;
 
 static constexpr int_fast16_t TrappedBishop = 100;
 
-static constexpr int_fast8_t BlockedBishop = 50;
-static constexpr int_fast8_t                BlockedRook                    = 50;
+static constexpr int_fast8_t BlockedBishop     = 50;
+static constexpr int_fast8_t BlockedRook       = 50;
 static constexpr int_fast8_t BlockedCenterPawn = 10;
 
-static constexpr int_fast8_t PassedOpeningMin = 10;
-static constexpr int_fast8_t PassedOpeningMax = 70;
-static constexpr int_fast8_t PassedEndgameMin = 20;
+static constexpr int_fast8_t  PassedOpeningMin = 10;
+static constexpr int_fast8_t  PassedOpeningMax = 70;
+static constexpr int_fast8_t  PassedEndgameMin = 20;
 static constexpr int_fast16_t PassedEndgameMax = 140;
 
 static constexpr int_fast16_t UnstoppablePasser = 800;
-static constexpr int_fast8_t                FreePasser                     = 60;
+static constexpr int_fast8_t  FreePasser        = 60;
 
 static constexpr int_fast8_t AttackerDistance = 5;
 static constexpr int_fast8_t DefenderDistance = 20;
@@ -199,10 +199,10 @@ void eval_init() {
 
 	PieceActivityWeight = (option_get_int("Piece Activity") * 256 + 50) / 100;
 	//KingSafetyWeight	 = (option_get_int("King Safety")	 * 256 + 50) / 100;
-	PassedPawnWeight  = (option_get_int("Passed Pawns") * 256 + 50) / 100;
-	ShelterOpening    = (option_get_int("Pawn Shelter") * 256 + 50) / 100;
-	StormOpening      = (10 * option_get_int("Pawn Storm")) / 100;
-	KingAttackOpening = (20 * option_get_int("King Attack")) / 100;
+	PassedPawnWeight    = (option_get_int("Passed Pawns") * 256 + 50) / 100;
+	ShelterOpening      = (option_get_int("Pawn Shelter") * 256 + 50) / 100;
+	StormOpening        = (10 * option_get_int("Pawn Storm")) / 100;
+	KingAttackOpening   = (20 * option_get_int("King Attack")) / 100;
 
 	if (option_get_int("Chess Knowledge") == 500) lazy_eval_cutoff = ValueEvalInf;
 	else lazy_eval_cutoff = (50 * option_get_int("Chess Knowledge")) / 100;
@@ -286,7 +286,7 @@ int_fast32_t eval(/*const*/ board_t *board, int_fast32_t alpha, int_fast32_t bet
 		int_fast8_t       total_pieces = 2;
 		int_fast32_t      egbb_piece[MAX_PIECES], egbb_square[MAX_PIECES];
 		for (int_fast32_t i            = 0; i < MAX_PIECES; ++i) {
-			egbb_piece[i] = 0;
+			egbb_piece[i]  = 0;
 			egbb_square[i] = 0;
 		}
 		egbb_piece[0]                  = _WKING;
@@ -597,7 +597,7 @@ static void eval_piece(const board_t *board, const material_info_t *mat_info, co
 
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
-		const int_fast8_t me = colour, opp = COLOUR_OPP(me);
+		const int_fast8_t  me    = colour, opp = COLOUR_OPP(me);
 		//const int_fast32_t opp_flag = COLOUR_FLAG(opp);
 		const int_fast32_t *unit = MobUnit[me];
 
@@ -605,8 +605,8 @@ static void eval_piece(const board_t *board, const material_info_t *mat_info, co
 		for (auto from = board->piece[me].begin() + 1; from != board->piece[me].end(); ++from) { // HACK: no king
 
 			const int_fast16_t piece = board->square[*from];
-			int_fast32_t mob;
-			int_fast16_t out_mob, capture;
+			int_fast32_t       mob;
+			int_fast16_t       out_mob, capture;
 
 			const int_fast16_t king       = KING_POS(board, opp);
 			const int_fast8_t  king_file  = SQUARE_FILE(king), king_rank = SQUARE_RANK(king);
@@ -1280,7 +1280,7 @@ static int_fast32_t pawn_def_dist(int_fast32_t pawn, int_fast32_t king, int_fast
 	ASSERT(SQUARE_IS_OK(king));
 	ASSERT(COLOUR_IS_OK(colour));
 
-	const int_fast8_t inc = PAWN_MOVE_INC(colour);
+	const int_fast8_t  inc    = PAWN_MOVE_INC(colour);
 	const int_fast16_t target = pawn + inc;
 
 	return DISTANCE(king, target);

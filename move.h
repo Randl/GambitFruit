@@ -31,7 +31,7 @@ const char NullMoveString[] = "null"; // "0000" in UCI
 
 // macros
 
-#define MOVE_MAKE(from, to)             ((SQUARE_TO_64(from)<<6)|SQUARE_TO_64(to))
+#define MOVE_MAKE(from, to)              ((SQUARE_TO_64(from)<<6)|SQUARE_TO_64(to))
 #define MOVE_MAKE_FLAGS(from, to, flags) ((SQUARE_TO_64(from)<<6)|SQUARE_TO_64(to)|(flags))
 
 #define MOVE_FROM(move)                (SQUARE_FROM_64(((move)>>6)&077))

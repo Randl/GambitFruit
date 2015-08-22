@@ -44,7 +44,7 @@ void pv_cat(mv_t dst[], const mv_t src[], int_fast32_t move) {
 	ASSERT(pv_is_ok(src));
 	ASSERT(dst != nullptr);
 
-	*dst++ = move;
+	*dst++         = move;
 	while ((*dst++ = *src++) != MoveNone);
 }
 

@@ -104,7 +104,7 @@ constexpr std::array<int_fast32_t, ColourNb> PromoteRank = {0xB0, 0x40};
 // variables
 
 extern std::array<int_fast32_t, SquareNb> SquareTo64;
-extern std::array<bool, SquareNb>            SquareIsPromote;
+extern std::array<bool, SquareNb>         SquareIsPromote;
 
 // functions
 
