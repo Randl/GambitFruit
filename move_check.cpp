@@ -44,7 +44,8 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me), king = KING_POS(board, opp);
+	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me);
+	const int_fast32_t king = KING_POS(board, opp);
 
 	uint_fast16_t pin[8 + 1];
 	find_pins(pin, board);

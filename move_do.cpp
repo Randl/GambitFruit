@@ -186,7 +186,8 @@ void move_undo(board_t *board, int_fast32_t move, const undo_t *undo) {
 	ASSERT(undo != nullptr);
 
 	// init
-	const int_fast8_t me    = undo->turn, from = MOVE_FROM(move), to = MOVE_TO(move);
+	const int_fast8_t me    = undo->turn;
+	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move);
 	int_fast32_t      piece = board->square[to];
 	ASSERT(COLOUR_IS(piece, me));
 

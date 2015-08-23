@@ -179,8 +179,8 @@ static int_fast32_t pawn_def_dist(int_fast32_t pawn, int_fast32_t king, int_fast
 
 static void draw_init_list(int_fast32_t list[], const board_t *board, int_fast32_t pawn_colour);
 
-static bool draw_krpkr(const int_fast32_t list[]);
-static bool draw_kbpkb(const int_fast32_t list[]);
+static bool draw_krpkr(const int_fast32_t *list);
+static bool draw_kbpkb(const int_fast32_t *list);
 
 static int_fast32_t shelter_square(const board_t *board, int_fast32_t square, int_fast8_t colour);
 static int_fast8_t  shelter_file(const board_t *board, int_fast32_t file, int_fast32_t rank, int_fast8_t colour);
@@ -1359,7 +1359,7 @@ static void draw_init_list(int_fast32_t list[], const board_t *board, int_fast32
 
 // draw_krpkr()
 
-static bool draw_krpkr(const int_fast32_t list[]) {
+static bool draw_krpkr(const int_fast32_t *list) {
 
 	ASSERT(list != NULL);
 	ASSERT(COLOUR_IS_OK(turn));
@@ -1411,7 +1411,7 @@ static bool draw_krpkr(const int_fast32_t list[]) {
 
 // draw_kbpkb()
 
-static bool draw_kbpkb(const int_fast32_t list[]) {
+static bool draw_kbpkb(const int_fast32_t *list) {
 
 	ASSERT(list != NULL);
 	ASSERT(COLOUR_IS_OK(turn));
