@@ -13,7 +13,7 @@
 #include "see.h"
 #include "value.h"
 #include "move_gen.h"
-#include "bitbases.h"
+#include "scorpio_egbb.h"
 
 // macros
 
@@ -336,7 +336,6 @@ int_fast32_t eval(/*const*/ board_t *board, int_fast32_t alpha, bool do_le, bool
 		}
 		// end lazy cuttoff
 	}
-	{
 	// pawns
 	opening += pawn_info->opening;
 	endgame += pawn_info->endgame;

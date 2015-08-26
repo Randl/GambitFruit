@@ -81,7 +81,7 @@ void material_init() {
 
 	// UCI options
 
-	bitbase_pieces = (option_get_int("Bitbase Pieces") - 2);
+	bitbase_pieces = (option_get_int("Scorpio Bitbases Pieces"));
 
 	//MaterialWeight = (option_get_int("Material") * 256 + 50) / 100;
 	bad_trade_value = option_get_int("Bad Trade Value");

@@ -21,58 +21,59 @@ struct option_t {
 // variables
 static option_t Option[] = {
 
-	{"Hash", true, "64", "spin", "min 16 max 2048", nullptr},
+	{"Hash",                         true, "64",      "spin",   "min 16 max 2048",                             nullptr},
 
 	// JAS
 	// search X seconds for the best move, equal to "go movetime"
-	{"Search Time",              true,  "0",       "spin",   "min 0 max 3600",                     nullptr},
+	{"Search Time",                  true, "0",       "spin",   "min 0 max 3600",                              nullptr},
 	// search X plies deep, equal to "go depth"
-	{"Search Depth",             true,  "0",       "spin",   "min 0 max 20",                       nullptr},
+	{"Search Depth",                 true, "0",       "spin",   "min 0 max 20",                                nullptr},
 	// JAS end
 
-	{"Ponder",                   true,  "false",   "check",  "",                                   nullptr},
+	{"Ponder",                       true, "false",   "check",  "",                                            nullptr},
 
-	{"OwnBook",                  true,  "false",   "check",  "",                                   nullptr},
-	{"BookFile",                 true,  "",        "string", "",                                   nullptr},
-	{"MultiPV",                  true,  "1",       "spin",   "min 1 max 10",                       nullptr},
+	{"OwnBook",                      true, "false",   "check",  "",                                            nullptr},
+	{"BookFile",                     true, "",        "string", "",                                            nullptr},
+	{"MultiPV",                      true, "1",       "spin",   "min 1 max 10",                                nullptr},
 
-	{"Bitbase Pieces",           true,  "4",       "spin",   "min 3 max 6",                        nullptr},
-	{"Bitbase Path",             true,  "C:/egbb", "string", "",                                   nullptr},
-	{"Bitbase Cache Size",       true,  "16",      "spin",   "min 4 max 1024",                     nullptr},
+	{"Scorpio Bitbases Pieces",      true, "4",       "spin",   "min 3 max 6",                                 nullptr},
+	{"Scorpio Bitbases Path",        true, "C:/egbb", "string", "",                                            nullptr},
+	{"Scorpio Bitbases Cache Size",  true, "64",      "spin",   "min 4 max 1024",                              nullptr},
+	{"Load Scorpio Bitbases in RAM", true, "4-men",   "combo",  "var None var 4-men var Smart Load var 5-men", nullptr},
 
-	{"Null Move Pruning",        true,  "Always",  "combo",  "var Always var Fail High var Never", nullptr},
-	{"Null Move Reduction",      true,  "3",       "spin",   "min 1 max 4",                        nullptr},
-	{"Verification Search",      true,  "Always",  "combo",  "var Always var Endgame var Never",   nullptr},
-	{"Verification Reduction",   true,  "5",       "spin",   "min 1 max 6",                        nullptr},
+	{"Null Move Pruning",            true, "Always",  "combo",  "var Always var Fail High var Never",          nullptr},
+	{"Null Move Reduction",          true, "3",       "spin",   "min 1 max 4",                                 nullptr},
+	{"Verification Search",          true, "Always",  "combo",  "var Always var Endgame var Never",            nullptr},
+	{"Verification Reduction",       true, "5",       "spin",   "min 1 max 6",                                 nullptr},
 
-	{"History Pruning",          true,  "true",    "check",  "",                                   nullptr},
-	{"History Threshold",        true,  "70",      "spin",   "min 0 max 100",                      nullptr},
-	{"History Research on Beta", true,  "true",    "check",  "",                                   nullptr},
+	{"History Pruning",              true, "true",    "check",  "",                                            nullptr},
+	{"History Threshold",            true, "70",      "spin",   "min 0 max 100",                               nullptr},
+	{"History Research on Beta",     true, "true",    "check",  "",                                            nullptr},
 
-	{"Rebel Reductions",         true,  "true",    "check",  "",                                   nullptr},
+	{"Rebel Reductions",             true, "true",    "check",  "",                                            nullptr},
 
-	{"Futility Pruning",         true,  "true",    "check",  "",                                   nullptr},
+	{"Futility Pruning",             true, "true",    "check",  "",                                            nullptr},
 	//{ "Quick Futility eval", true, "false", "check", "", nullptr },
-	{"Futility Margin",          true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"Extended Futility Margin", true,  "300",     "spin",   "min 0 max 900",                      nullptr},
-	{"Futility Pruning Depth",   true,  "3",       "spin",   "min 1 max 6",                        nullptr},
+	{"Futility Margin",              true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"Extended Futility Margin",     true, "300",     "spin",   "min 0 max 900",                               nullptr},
+	{"Futility Pruning Depth",       true, "3",       "spin",   "min 1 max 6",                                 nullptr},
 
-	{"Delta Pruning",            true,  "true",    "check",  "",                                   nullptr},
-	{"Delta Margin",             true,  "50",      "spin",   "min 0 max 500",                      nullptr},
+	{"Delta Pruning",                true, "true",    "check",  "",                                            nullptr},
+	{"Delta Margin",                 true, "50",      "spin",   "min 0 max 500",                               nullptr},
 
-	{"Quiescence Check Plies",   true,  "1",       "spin",   "min 0 max 5",                        nullptr},
+	{"Quiescence Check Plies",       true, "1",       "spin",   "min 0 max 5",                                 nullptr},
 
-	{"Alt Pawn SQT",             true,  "false",   "check",  "",                                   nullptr},
-	{"Alt Knight SQT",           true,  "false",   "check",  "",                                   nullptr},
-	{"Alt Bishop SQT",           true,  "false",   "check",  "",                                   nullptr},
+	{"Alt Pawn SQT",                 true, "false",   "check",  "",                                            nullptr},
+	{"Alt Knight SQT",               true, "false",   "check",  "",                                            nullptr},
+	{"Alt Bishop SQT",               true, "false",   "check",  "",                                            nullptr},
 
-	{"Chess Knowledge",          true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"Piece Activity",           true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"Pawn Shelter",             true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"Pawn Storm",               true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"King Attack",              true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"Pawn Structure",           true,  "100",     "spin",   "min 0 max 500",                      nullptr},
-	{"Passed Pawns",             true,  "100",     "spin",   "min 0 max 500",                      nullptr},
+	{"Chess Knowledge",              true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"Piece Activity",               true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"Pawn Shelter",                 true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"Pawn Storm",                   true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"King Attack",                  true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"Pawn Structure",               true, "100",     "spin",   "min 0 max 500",                               nullptr},
+	{"Passed Pawns",                 true, "100",     "spin",   "min 0 max 500",                               nullptr},
 /*
 	{ "knight tropism opening",  	true, "4",    "spin",  "min 0 max 10", nullptr },
 	{ "bishop tropism opening",  	true, "2",    "spin",  "min 0 max 10", nullptr },
@@ -84,27 +85,27 @@ static option_t Option[] = {
 	{ "rook tropism endgame",  		true, "1",    "spin",  "min 0 max 10", nullptr },
 	{ "queen tropism endgame",  		true, "3",    "spin",  "min 0 max 10", nullptr },
 */
-	{"Opening Pawn Value",       true,  "70",      "spin",   "min 0 max 10000",                    nullptr},
-	{"Opening Knight Value",     true,  "325",     "spin",   "min 0 max 10000",                    nullptr},
-	{"Opening Bishop Value",     true,  "325",     "spin",   "min 0 max 10000",                    nullptr},
-	{"Opening Rook Value",       true,  "500",     "spin",   "min 0 max 10000",                    nullptr},
-	{"Opening Queen Value",      true,  "975",     "spin",   "min 0 max 10000",                    nullptr},
+	{"Opening Pawn Value",           true, "70",      "spin",   "min 0 max 10000",                             nullptr},
+	{"Opening Knight Value",         true, "325",     "spin",   "min 0 max 10000",                             nullptr},
+	{"Opening Bishop Value",         true, "325",     "spin",   "min 0 max 10000",                             nullptr},
+	{"Opening Rook Value",           true, "500",     "spin",   "min 0 max 10000",                             nullptr},
+	{"Opening Queen Value",          true, "975",     "spin",   "min 0 max 10000",                             nullptr},
 
-	{"Endgame Pawn Value",       true,  "90",      "spin",   "min 0 max 10000",                    nullptr},
-	{"Endgame Knight Value",     true,  "315",     "spin",   "min 0 max 10000",                    nullptr},
-	{"Endgame Bishop Value",     true,  "315",     "spin",   "min 0 max 10000",                    nullptr},
-	{"Endgame Rook Value",       true,  "500",     "spin",   "min 0 max 10000",                    nullptr},
-	{"Endgame Queen Value",      true,  "975",     "spin",   "min 0 max 10000",                    nullptr},
+	{"Endgame Pawn Value",           true, "90",      "spin",   "min 0 max 10000",                             nullptr},
+	{"Endgame Knight Value",         true, "315",     "spin",   "min 0 max 10000",                             nullptr},
+	{"Endgame Bishop Value",         true, "315",     "spin",   "min 0 max 10000",                             nullptr},
+	{"Endgame Rook Value",           true, "500",     "spin",   "min 0 max 10000",                             nullptr},
+	{"Endgame Queen Value",          true, "975",     "spin",   "min 0 max 10000",                             nullptr},
 
-	{"Bishop Pair Opening",      true,  "50",      "spin",   "min 0 max 1000",                     nullptr},
-	{"Bishop Pair Endgame",      true,  "70",      "spin",   "min 0 max 1000",                     nullptr},
+	{"Bishop Pair Opening",          true, "50",      "spin",   "min 0 max 1000",                              nullptr},
+	{"Bishop Pair Endgame",          true, "70",      "spin",   "min 0 max 1000",                              nullptr},
 
-	{"Queen Knight combo",       true,  "15",      "spin",   "min 0 max 1000",                     nullptr},
-	{"Rook Bishop combo",        true,  "15",      "spin",   "min 0 max 1000",                     nullptr},
+	{"Queen Knight combo",           true, "15",      "spin",   "min 0 max 1000",                              nullptr},
+	{"Rook Bishop combo",            true, "15",      "spin",   "min 0 max 1000",                              nullptr},
 
-	{"Bad Trade Value",          true,  "50",      "spin",   "min 0 max 1000",                     nullptr},
+	{"Bad Trade Value",              true, "50",      "spin",   "min 0 max 1000",                              nullptr},
 
-	{"Contempt Factor",          true,  "0",       "spin",   "min -1000 max 1000",                 nullptr},
+	{"Contempt Factor",              true, "0",       "spin",   "min -1000 max 1000",                          nullptr},
 
 
 	/*//test

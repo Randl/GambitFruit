@@ -15,7 +15,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -Wstr
 
 set(HEADERS
         attack.h
-        bitbases.h
+        scorpio_egbb.h
         board.h
         book.h
         colour.h
@@ -50,7 +50,7 @@ set(HEADERS
 
 set(SOURCE_FILES
         attack.cpp
-        bitbases.cpp
+        scorpio_egbb.cpp
         board.cpp
         book.cpp
         eval.cpp

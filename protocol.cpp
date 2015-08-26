@@ -21,39 +21,22 @@
 #include "pst.h"
 #include "search.h"
 #include "trans.h"
+#include "scorpio_egbb.h"
 
 // constants
-#if defined (_WIN32) || defined(_WIN64)
-
-#include <windows.h>
-
-#define EGBB_NAME "egbbdll.dll"
-#else
-#define EGBB_NAME "egbbso.so"
-#define HMODULE void*
-#define LoadLibrary(x) dlopen(x,RTLD_LAZY)
-#define GetProcAddress dlsym
-#endif
 
 #define VERSION "1.0 Beta 5.0"
 
-static const double NormalRatio    = 1.0;
-static const double PonderRatio    = 1.25;
+static const double NormalRatio = 1.0;
+static const double PonderRatio = 1.25;
 
 // variables
 
 static bool Init;
 
-static bool         Searching; // search in progress?
-static bool         Infinite; // infinite or ponder mode?
-static bool         Delay; // postpone "bestmove" in infinite/ponder mode?
-
-enum {
-	LOAD_NONE, LOAD_4MEN, SMART_LOAD, LOAD_5MEN
-};
-static int_fast32_t egbb_load_type = LOAD_4MEN;
-
-// prototypes
+static bool Searching; // search in progress?
+static bool Infinite; // infinite or ponder mode?
+static bool Delay; // postpone "bestmove" in infinite/ponder mode?
 
 static void init();
 static void loop_step();
@@ -67,7 +50,7 @@ static void send_best_move();
 static bool string_equal(const char s1[], const char s2[]);
 static bool string_start_with(const char s1[], const char s2[]);
 
-static void load_egbb_library();
+
 // functions
 
 // loop()
@@ -426,10 +409,10 @@ static void parse_position(char string[]) {
 		const char *ptr = moves + 6;
 		while (*ptr != '\0') {
 
-			move_string[0]    = *ptr++;
-			move_string[1]    = *ptr++;
-			move_string[2]    = *ptr++;
-			move_string[3]    = *ptr++;
+			move_string[0] = *ptr++;
+			move_string[1] = *ptr++;
+			move_string[2] = *ptr++;
+			move_string[3] = *ptr++;
 
 			if (*ptr == '\0' || *ptr == ' ') {
 				move_string[4] = '\0';
@@ -438,7 +421,7 @@ static void parse_position(char string[]) {
 				move_string[5] = '\0';
 			}
 
-			undo_t       undo[1];
+			undo_t undo[1];
 			uint_fast16_t move = move_from_string(move_string, SearchInput->board);
 			move_do(SearchInput->board, move, undo);
 
@@ -474,7 +457,8 @@ static void parse_setoption(char string[]) {
 		}
 	}
 
-	if (my_string_equal(name, "Bitbases Path") || my_string_equal(name, "Bitbases Cache Size"))
+	if (my_string_equal(name, "Scorpio Bitbases Path") || my_string_equal(name, "Scorpio Bitbases Cache Size") ||
+	    my_string_equal(name, "Load Scorpio Bitbases in RAM"))
 		load_egbb_library();
 }
 
@@ -496,7 +480,7 @@ static void send_best_move() {
 
 	// best move
 	uint_fast16_t move = SearchBest[0].move;
-	mv_t         *pv  = SearchBest[0].pv;
+	mv_t *pv = SearchBest[0].pv;
 
 	char move_string[256];
 	move_to_string(move, move_string, 256);
@@ -556,39 +540,5 @@ static bool string_start_with(const char s1[], const char s2[]) {
 
 	return strstr(s1, s2) == s1;
 }
-
-// Endgame Bitbases
-
-PPROBE_EGBB probe_egbb;
-bool        egbb_is_loaded; //bool?
-typedef void (*PLOAD_EGBB)(const char *path, int_fast32_t cache_size, int_fast32_t load_options);
-
-static void load_egbb_library() {
-	HMODULE hmod;
-
-	const char    *main_path      = option_get("Bitbase Path");
-	uint_fast32_t egbb_cache_size = option_get_int("Bitbase Cache Size") * 1024 * 1024;
-
-	char path[256];
-	strcpy(path, main_path);
-	strcat(path, EGBB_NAME);
-
-	if (hmod)
-		FreeLibrary(hmod);
-	if (hmod = LoadLibrary(path)) {
-		PLOAD_EGBB load_egbb = (PLOAD_EGBB) GetProcAddress(hmod, "load_egbb_xmen");
-		probe_egbb = (PPROBE_EGBB) GetProcAddress(hmod, "probe_egbb_xmen");
-
-		load_egbb(main_path, egbb_cache_size, egbb_load_type);
-		egbb_is_loaded = true;
-		printf("Bitbase loaded\n");
-	} else {
-		egbb_is_loaded = false;
-		printf("Bitbase not loaded\n");
-	}
-}
-
-// end of Endgame Bitbases
-//TODO: bitbases.h
 
 // end of protocol.cpp
