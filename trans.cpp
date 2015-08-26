@@ -17,7 +17,7 @@ static constexpr bool UseModulo = false;
 
 static constexpr uint_fast8_t DateSize = 16;
 
-static constexpr uint_fast8_t ClusterSize = 4; // TODO: unsigned?
+static constexpr uint_fast8_t ClusterSize = 4;
 
 static constexpr int_fast16_t DepthNone = -128;
 
@@ -42,10 +42,10 @@ struct trans { // HACK: typedef'ed in trans.h
 	int_fast64_t  write_nb;
 	int_fast64_t  write_hit;
 	int_fast64_t  write_collision;
+	uint_fast64_t size;
+	uint_fast64_t mask;
 	entry_t       *table;
 	int_fast32_t  age[DateSize];
-	uint_fast32_t size;
-	uint_fast32_t mask;
 	int_fast32_t  date;
 	uint_fast32_t used;
 };
@@ -109,11 +109,10 @@ void trans_alloc(trans_t *trans) {
 	ASSERT(trans != nullptr);
 
 	// calculate size
-	int_fast32_t target = option_get_int("Hash");
-	if (target < 4) target = 16;
+	uint_fast64_t target = option_get_int("Hash");
 	target *= 1024 * 1024;
 
-	int_fast32_t size;
+	uint_fast64_t size;
 	for (size = 1; size != 0 && size <= target; size *= 2);
 
 	size /= 2;
@@ -219,11 +218,11 @@ static int_fast32_t trans_age(const trans_t *trans, int_fast32_t date) {
 
 // trans_store()
 
-void trans_store(trans_t *trans, uint_fast64_t key, int_fast32_t move, int_fast32_t depth, int_fast32_t min_value,
+void trans_store(trans_t *trans, uint_fast64_t key, uint_fast16_t move, int_fast32_t depth, int_fast32_t min_value,
 				 int_fast32_t max_value) {
 
 	ASSERT(trans_is_ok(trans));
-	ASSERT(move >= 0 && move < 65536);
+	//ASSERT(move >= 0 && move < 65536); move is uint16
 	ASSERT(depth >= -127 && depth <= +127);
 	ASSERT(min_value >= -ValueInf && min_value <= +ValueInf);
 	ASSERT(max_value >= -ValueInf && max_value <= +ValueInf);

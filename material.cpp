@@ -43,8 +43,6 @@ static /*const*/ int_fast32_t Queen_Knight_combo = 15; // with no rooks
 static /*const*/ int_fast32_t Rook_Bishop_combo  = 15;  // with no queens
 static /*const*/ int_fast32_t bad_trade_value    = 50; // not used like in crafty... (will be for 3 minors vs queen)
 
-static int_fast32_t bitbase_pieces = 2;
-
 static constexpr std::array<int_fast8_t, 17> RookPawnPenalty = {15, 15, 13, 11, 9, 7, 5, 3, 1, -1, -3, -5, -7, -9, -11,
 																-13, -15};
 
@@ -65,7 +63,11 @@ struct material_t {
 
 // variables
 
+entry_t material_table[TableSize];
+
 static material_t Material[1];
+
+uint_fast8_t bitbase_pieces = 2;
 
 // prototypes
 
@@ -116,7 +118,8 @@ void material_alloc() {
 
 	Material->size  = TableSize;
 	Material->mask  = TableSize - 1;
-	Material->table = (entry_t *) my_malloc(Material->size * sizeof(entry_t));
+	//Material->table = (entry_t *) my_malloc(Material->size * sizeof(entry_t));
+	Material->table = material_table;
 //    Material->table = new entry_t[Material->size];
 	material_clear();
 
@@ -571,7 +574,34 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 		}
 	}
 
-	if (wp + bp + wm + bm + WhiteMajors + BlackMajors <= bitbase_pieces) flags |= MatBitbaseFlag;
+	/* //TODO: test
+	constexpr int_fast16_t RookElephantiasisOpeningPenalty = -10;
+	constexpr int_fast16_t RookElephantiasisEndgamePenalty = -50;
+	constexpr int_fast16_t QueenElephantiasisOpeningPenalty = -20;
+	constexpr int_fast16_t QueenElephantiasisEndgamePenalty = -100;
+	/* Elephantiasis effect by Harm Geert Muller. Stronger pieces lose value in the presence of lower-valued pieces of
+	 the opponent, because the latter can easily interdict their access to part of the board. * /
+	if (bb > 0 || bn > 0) {
+		opening += RookElephantiasisOpeningPenalty * wr; //not depending on bb, bn? bb, bn and br separately?
+		endgame += RookElephantiasisEndgamePenalty * wr;
+		opening += RookElephantiasisOpeningPenalty * wq;
+		endgame += RookElephantiasisEndgamePenalty * wq;
+	} else if (br > 0) {
+		opening += RookElephantiasisOpeningPenalty * wq;
+		endgame += RookElephantiasisEndgamePenalty * wq;
+	}
+	if (wb > 0 || wn > 0) {
+		opening -= RookElephantiasisOpeningPenalty * br;
+		endgame -= RookElephantiasisEndgamePenalty * br;
+		opening -= RookElephantiasisOpeningPenalty * bq;
+		endgame -= RookElephantiasisEndgamePenalty * bq;
+	} else if (wr > 0) {
+		opening -= RookElephantiasisOpeningPenalty * bq;
+		endgame -= RookElephantiasisEndgamePenalty * bq;
+	}
+	*/
+
+	if (wp + bp + wm + bm + WhiteMajors + BlackMajors <= bitbase_pieces) flags |= MatBitbaseFlag; //remove me?
 
 	// store info
 

@@ -230,12 +230,12 @@ bool is_attacked(const board_t *board, int_fast32_t to, int_fast8_t colour) {
 
 		if (PSEUDO_ATTACK(piece, delta)) {
 
-			const int_fast32_t inc = DELTA_INC_ALL(delta);
-			ASSERT(inc != IncNone);
+			const int_fast32_t inc_piece = DELTA_INC_ALL(delta);
+			ASSERT(inc_piece != IncNone);
 
 			int_fast32_t sq = *from;
 			do {
-				sq += inc;
+				sq += inc_piece;
 				if (sq == to) return true;
 			} while (board->square[sq] == Empty);
 		}

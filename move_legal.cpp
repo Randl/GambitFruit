@@ -11,13 +11,13 @@
 
 // prototypes
 
-static bool move_is_pseudo_debug(int_fast32_t move, board_t *board);
+static bool move_is_pseudo_debug(uint_fast16_t move, board_t *board);
 
 // functions
 
 // move_is_pseudo()
 
-bool move_is_pseudo(int_fast32_t move, board_t *board) {
+bool move_is_pseudo(uint_fast16_t move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -79,7 +79,7 @@ bool move_is_pseudo(int_fast32_t move, board_t *board) {
 
 // quiet_is_pseudo()
 
-bool quiet_is_pseudo(int_fast32_t move, board_t *board) {
+bool quiet_is_pseudo(uint_fast16_t move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -133,7 +133,7 @@ bool quiet_is_pseudo(int_fast32_t move, board_t *board) {
 
 // pseudo_is_legal()
 
-bool pseudo_is_legal(int_fast32_t move, board_t *board) {
+bool pseudo_is_legal(uint_fast16_t move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -179,7 +179,7 @@ bool pseudo_is_legal(int_fast32_t move, board_t *board) {
 
 // move_is_pseudo_debug()
 
-static bool move_is_pseudo_debug(int_fast32_t move, board_t *board) {
+static bool move_is_pseudo_debug(uint_fast16_t move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);

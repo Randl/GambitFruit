@@ -36,17 +36,20 @@ constexpr int_fast32_t MatKnightFlag   = 1 << 2;
 constexpr int_fast32_t MatKingFlag     = 1 << 3;
 constexpr int_fast32_t MatBitbaseFlag  = 1 << 4;
 
+// variables
+extern uint_fast8_t bitbase_pieces;
+
 // types
 
 struct material_info_t {
-	std::array<uint_fast8_t, ColourNb> cflags;
-	std::array<uint_fast8_t, ColourNb> mul;
 	uint_fast32_t                      lock;
 	int_fast16_t                       phase;
 	int_fast16_t                       opening;
 	int_fast16_t                       endgame;
 	uint_fast8_t                       recog;
 	uint_fast8_t                       flags;
+    std::array<uint_fast8_t, ColourNb> cflags;
+    std::array<uint_fast8_t, ColourNb> mul;
 	//int_fast32_t pv[ColourNb]; /* Material without pawn and king */
 };
 

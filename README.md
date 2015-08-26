@@ -13,7 +13,7 @@ TODO:
 * Try [Texel's Tuning Method](https://chessprogramming.wikispaces.com/Texel%27s+Tuning+Method). Using [txt automatic tool](https://bitbucket.org/zurichess/txt);
 * [Progressive mobility](https://chessprogramming.wikispaces.com/Mobility#ProgressiveMobility) and [connectivity](https://chessprogramming.wikispaces.com/Connectivity);
 * Kingside/queenside attack;
-* [Pawn ram](https://chessprogramming.wikispaces.com/Pawn+Rams+%28Bitboards%29) handling;
+* [Pawn ram](https://chessprogramming.wikispaces.com/Pawn+Rams+%28Bitboards%29) handling + open/closed position based on this;
 * [Pawn islands](https://chessprogramming.wikispaces.com/Pawn+Islands);
 * Tune extensions (King safety extension, sacrifice extension, extend on K+P eg) and reductions;
 * Better draw recog(e.g. Blockage detection, KQKP);
@@ -21,10 +21,11 @@ TODO:
 * Typical sacs;
 * [Pawn chains](https://chessprogramming.wikispaces.com/Pawn+chain);
 * Custom opening book;
-* [Chess960](http://chessprogramming.wikispaces.com/Chess960) support;
+* [Chess960](http://chessprogramming.wikispaces.com/Chess960) support(([guide](http://horizonchess.com/FAQ/Winboard/ucijuly2005.html));
 * Center control (With B as a bonus for a given square, this is B*[AT+2*OC] where AT is #attackers and OC is #occupants.);
 * Bad bishop;
 * Elephantiasis effect as suggested by Harm Geert Muller (meaning that stronger pieces lose part of their value in presence of weaker pieces);
+* Syzygy support
 
 
 Thanks for everyone contributed to Gambit Fruit, Fruit 2.1, Toga, and to those who gave me ideas.

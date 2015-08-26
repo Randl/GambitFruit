@@ -16,9 +16,9 @@ static constexpr std::array<int_fast32_t, 4> PromotePiece = {Knight64, Bishop64,
 
 // move_is_ok()
 
-bool move_is_ok(int_fast32_t move) {
+bool move_is_ok(uint_fast16_t move) {
 
-	if (move < 0 || move >= 65536) return false;
+	//if (move < 0 || move >= 65536) return false;
 	if (move == MoveNone) return false;
 	if (move == MoveNull) return false;
 
@@ -27,7 +27,7 @@ bool move_is_ok(int_fast32_t move) {
 
 // move_promote()
 
-int_fast32_t move_promote(int_fast32_t move) {
+uint_fast16_t move_promote(uint_fast16_t move) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(MOVE_IS_PROMOTE(move));
@@ -47,7 +47,7 @@ int_fast32_t move_promote(int_fast32_t move) {
 
 // move_order()
 
-int_fast32_t move_order(int_fast32_t move) {
+uint_fast16_t move_order(uint_fast16_t move) {
 
 	ASSERT(move_is_ok(move));
 
@@ -56,7 +56,7 @@ int_fast32_t move_order(int_fast32_t move) {
 
 // move_is_capture()
 
-bool move_is_capture(int_fast32_t move, const board_t *board) {
+bool move_is_capture(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -66,7 +66,7 @@ bool move_is_capture(int_fast32_t move, const board_t *board) {
 
 // move_is_under_promote()
 
-bool move_is_under_promote(int_fast32_t move) {
+bool move_is_under_promote(uint_fast16_t move) {
 
 	ASSERT(move_is_ok(move));
 
@@ -75,7 +75,7 @@ bool move_is_under_promote(int_fast32_t move) {
 
 // move_is_tactical()
 
-bool move_is_tactical(int_fast32_t move, const board_t *board) {
+bool move_is_tactical(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -85,7 +85,7 @@ bool move_is_tactical(int_fast32_t move, const board_t *board) {
 
 // move_capture()
 
-int_fast32_t move_capture(int_fast32_t move, const board_t *board) {
+uint_fast16_t move_capture(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -98,7 +98,7 @@ int_fast32_t move_capture(int_fast32_t move, const board_t *board) {
 
 // move_to_string()
 
-bool move_to_string(int_fast32_t move, char string[], int_fast32_t size) {
+bool move_to_string(uint_fast16_t move, char string[], int_fast32_t size) {
 
 	ASSERT(move == MoveNull || move_is_ok(move));
 	ASSERT(string != nullptr);
@@ -131,7 +131,7 @@ bool move_to_string(int_fast32_t move, char string[], int_fast32_t size) {
 
 // move_from_string()
 
-int_fast32_t move_from_string(const char string[], const board_t *board) {
+uint_fast16_t move_from_string(const char string[], const board_t *board) {
 
 	ASSERT(string != nullptr);
 	ASSERT(board != nullptr);
@@ -153,7 +153,7 @@ int_fast32_t move_from_string(const char string[], const board_t *board) {
 	const int_fast32_t to = square_from_string(tmp_string);
 	if (to == SquareNone) return MoveNone;
 
-	int_fast32_t move = MOVE_MAKE(from, to);
+	uint_fast16_t move = MOVE_MAKE(from, to);
 
 	// promote
 	switch (string[4]) {

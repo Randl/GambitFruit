@@ -108,7 +108,6 @@ static bool gen_evasions(list_t *list, const board_t *board, const attack_t *att
 			if (add_piece_moves(list, board, to, legal, stop) && stop) return true;
 		}
 	}
-
 	return false;
 }
 
@@ -124,7 +123,8 @@ static bool add_pawn_moves(list_t *list, const board_t *board, int_fast32_t to, 
 
 	ASSERT(board->square[to] == Empty);
 
-	const int_fast8_t me = board->turn, inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+	const int_fast8_t  me  = board->turn;
+	const int_fast32_t inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
 
 	int_fast32_t from = to - inc, piece = board->square[from];
 

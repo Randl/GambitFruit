@@ -2,6 +2,7 @@
 
 // includes
 
+#include <algorithm>
 #include "board.h"
 #include "list.h"
 #include "move.h"
@@ -27,7 +28,7 @@ bool list_t::is_ok() const {
 void list_t::remove(uint_fast16_t pos) {
 
 	ASSERT(is_ok());
-	ASSERT(pos >= 0 && pos < size);
+	ASSERT(pos < size);
 
 	for (int_fast32_t i = pos; i < size - 1; ++i) {
 		moves[i].move  = moves[i + 1].move;
@@ -82,10 +83,11 @@ void list_t::sort() {
 	// init
 	moves[size].value = -32768; // HACK: sentinel
 
-	// insert sort (stable) TODO: better sort?
+	// insert sort (stable)
 
 	for (int_fast16_t i = size - 2; i >= 0; --i) {
-		const int_fast32_t move = moves[i].move, value = moves[i].value;
+		const uint_fast16_t move  = moves[i].move;
+		const int_fast16_t  value = moves[i].value;
 		int_fast16_t       j;
 		for (j = i; value < moves[j + 1].value; ++j) {
 			moves[j].move  = moves[j + 1].move;
@@ -97,6 +99,7 @@ void list_t::sort() {
 		moves[j].move  = move;
 		moves[j].value = value;
 	}
+	//std::stable_sort(moves.begin(), moves.begin()+size, [](const move_value& a, const move_value& b){return a.value > b.value;});
 
 	// debug
 	if (DEBUG) {
@@ -126,7 +129,7 @@ void list_t::note() {
 	ASSERT(is_ok());
 
 	for (int_fast32_t i = 0; i < size; ++i) {
-		const int_fast32_t move = moves[i].move;
+		const uint_fast16_t move = moves[i].move;
 		ASSERT(move_is_ok(move));
 		moves[i].value = -move_order(move);
 	}

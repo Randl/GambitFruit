@@ -136,7 +136,7 @@ void search() {
 
 	// opening book
 	if (option_get_bool("OwnBook") && !SearchInput->infinite) {
-		const int_fast32_t move = book_move(SearchInput->board);
+		const uint_fast16_t move = book_move(SearchInput->board);
 		if (move != MoveNone) {
 			// play book move
 			SearchBest[SearchCurrent->multipv].move  = move;
@@ -276,8 +276,8 @@ void search_update_best() {
 
 	if (DispBest) {
 
-		int_fast32_t move  = SearchBest[SearchCurrent->multipv].move,
-					 value = SearchBest[SearchCurrent->multipv].value,
+		uint_fast16_t move  = SearchBest[SearchCurrent->multipv].move;
+		int_fast32_t  value = SearchBest[SearchCurrent->multipv].value,
 					 flags = SearchBest[SearchCurrent->multipv].flags,
 					 depth = SearchBest[SearchCurrent->multipv].depth;
 		const mv_t   *pv   = SearchBest[SearchCurrent->multipv].pv;
@@ -402,7 +402,7 @@ void search_update_root() {
 		search_update_current();
 
 		if (SearchCurrent->time >= 1.0) {
-			const int_fast32_t move = SearchRoot->move, move_pos = SearchRoot->move_pos;//, move_nb = SearchRoot->move_nb;
+			const uint_fast16_t move = SearchRoot->move, move_pos = SearchRoot->move_pos;//, move_nb = SearchRoot->move_nb;
 			//double time = SearchCurrent->time;
 			//int_fast64_t node_nb = SearchCurrent->node_nb;
 			char               move_string[256];

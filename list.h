@@ -25,7 +25,7 @@ constexpr int_fast16_t ListSize = 256;
 #define LIST_VALUE(list, pos) ((list)->moves[pos].value)
 
 // types
-typedef bool (*move_test_t)(int_fast32_t move, board_t *board);
+typedef bool (*move_test_t)(uint_fast16_t move, board_t *board);
 
 struct move_value {
 	uint_fast16_t move;

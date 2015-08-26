@@ -45,7 +45,7 @@ void move_do_init() {
 
 // move_do()
 
-void move_do(board_t *board, int_fast32_t move, undo_t *undo) {
+void move_do(board_t *board, uint_fast16_t move, undo_t *undo) {
 
 	ASSERT(board != nullptr);
 	ASSERT(move_is_ok(move));
@@ -179,7 +179,7 @@ void move_do(board_t *board, int_fast32_t move, undo_t *undo) {
 
 // move_undo()
 
-void move_undo(board_t *board, int_fast32_t move, const undo_t *undo) {
+void move_undo(board_t *board, uint_fast16_t move, const undo_t *undo) {
 
 	ASSERT(board != nullptr);
 	ASSERT(move_is_ok(move));
@@ -491,7 +491,7 @@ static void square_set(board_t *board, int_fast32_t square, int_fast32_t piece, 
 
 	// material
 	ASSERT(board->piece_nb < 32);
-	board->piece_nb++;;
+	board->piece_nb++;
 
 	ASSERT(board->number[piece_12] < 9);
 	board->number[piece_12]++;
@@ -529,7 +529,8 @@ static void square_move(board_t *board, int_fast32_t from, int_fast32_t to, int_
 	ASSERT(update == true || update == false);
 
 	// init
-	const int_fast8_t colour = PIECE_COLOUR(piece), pos = board->pos[from];
+	const int_fast8_t  colour = PIECE_COLOUR(piece);
+	const int_fast32_t pos    = board->pos[from];
 	ASSERT(pos >= 0);
 
 	// from

@@ -94,13 +94,13 @@ bool board_is_ok(const board_t *board) {
 
 		for (int_fast32_t pos = 0; pos < size; pos++) {
 
-			int_fast32_t sq = board->pawn[colour][pos];
-			if (!SQUARE_IS_OK(sq)) return false;
-			if (SQUARE_IS_PROMOTE(sq)) return false;
+			int_fast32_t pos_sq = board->pawn[colour][pos];
+			if (!SQUARE_IS_OK(pos_sq)) return false;
+			if (SQUARE_IS_PROMOTE(pos_sq)) return false;
 
-			if (board->pos[sq] != pos) return false;
+			if (board->pos[pos_sq] != pos) return false;
 
-			int_fast32_t piece = board->square[sq];
+			int_fast32_t piece = board->square[pos_sq];
 			if (!COLOUR_IS(piece, colour)) return false;
 			if (!PIECE_IS_PAWN(piece)) return false;
 		}
@@ -125,7 +125,7 @@ bool board_is_ok(const board_t *board) {
 
 	// misc
 	if (!COLOUR_IS_OK(board->turn)) return false;
-	if (board->ply_nb < 0) return false;
+	//if (board->ply_nb < 0) return false;
 	if (board->stack.size() < board->ply_nb) return false;
 	if (board->cap_sq != SquareNone && !SQUARE_IS_OK(board->cap_sq)) return false;
 	if (board->opening != board_opening(board)) return false;
@@ -245,7 +245,7 @@ void board_init_list(board_t *board) {
 		// debug
 		if (DEBUG) {
 
-			for (int_fast32_t i = 0; i < board->piece[colour].size(); i++) {
+			for (uint_fast16_t i = 0; i < board->piece[colour].size(); i++) {
 				int_fast32_t sq = board->piece[colour][i];
 				ASSERT(board->pos[sq] == i);
 
@@ -290,8 +290,8 @@ void board_init_list(board_t *board) {
 
 		ASSERT(pos >= 0 && pos <= 8);
 
-		if (board->piece[colour].size() + board->pawn[colour].size() > 16)
-			printf("%u %u\n", board->piece[colour].size(), board->pawn[colour].size());
+		//if (board->piece[colour].size() + board->pawn[colour].size() > 16)
+		//	printf("%ul %uln", board->piece[colour].size(), board->pawn[colour].size());
 		if (board->piece[colour].size() + board->pawn[colour].size() > 16)
 			my_fatal("board_init_list(): illegal position. %d\n", __LINE__);
 	}
@@ -383,7 +383,7 @@ bool board_is_repetition(const board_t *board) {
 	}
 
 	// position repetition
-	ASSERT(board->sp >= board->ply_nb);
+	ASSERT(board->stack.size() >= board->ply_nb);
 	//z = 0;
 	for (int_fast32_t i = 4; i <= board->ply_nb; i += 2) {
 		if (board->stack[board->stack.size() - i] == board->key) return true;

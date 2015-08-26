@@ -21,7 +21,7 @@ struct option_t {
 // variables
 static option_t Option[] = {
 
-	{"Hash",                     true,  "16",      "spin",   "min 4 max 1024",                     nullptr},
+	{"Hash", true, "64", "spin", "min 16 max 2048", nullptr},
 
 	// JAS
 	// search X seconds for the best move, equal to "go movetime"
@@ -105,6 +105,30 @@ static option_t Option[] = {
 	{"Bad Trade Value",          true,  "50",      "spin",   "min 0 max 1000",                     nullptr},
 
 	{"Contempt Factor",          true,  "0",       "spin",   "min -1000 max 1000",                 nullptr},
+
+
+	/*//test
+	{"PawnAmountBonusOpening0",  true, "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening1",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening2",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening3",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening4",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening5",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening6",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening7",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusOpening8",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
+
+
+	{"PawnAmountBonusEndgame0",  true, "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame1",  true, "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame2",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame3",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame4",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame5",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame6",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame7",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
+	{"PawnAmountBonusEndgame8",  true,  "0",      "spin",   "min -100 max 100",                   nullptr}, */
+
 
 	{nullptr,                    false, nullptr,   nullptr,  nullptr,                              nullptr,},
 };

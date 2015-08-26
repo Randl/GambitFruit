@@ -439,7 +439,7 @@ static void parse_position(char string[]) {
 			}
 
 			undo_t       undo[1];
-			int_fast32_t move = move_from_string(move_string, SearchInput->board);
+			uint_fast16_t move = move_from_string(move_string, SearchInput->board);
 			move_do(SearchInput->board, move, undo);
 
 			while (*ptr == ' ') ++ptr;
@@ -495,7 +495,7 @@ static void send_best_move() {
 	// material_stats();
 
 	// best move
-	int_fast32_t move = SearchBest[0].move;
+	uint_fast16_t move = SearchBest[0].move;
 	mv_t         *pv  = SearchBest[0].pv;
 
 	char move_string[256];

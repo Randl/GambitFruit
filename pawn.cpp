@@ -11,7 +11,7 @@
 
 // constants
 
-static constexpr uint_fast32_t TableSize = 16384; // 256kB
+static constexpr uint_fast16_t TableSize = 25600; // ~512kB    //16384; // 256kB
 
 // types
 
@@ -178,8 +178,8 @@ void pawn_init() {
 
 void pawn_alloc() {
 
-	ASSERT(sizeof(entry_t) == 16);
-
+	ASSERT(sizeof(entry_t) == 20); //not anymore
+	//printf("sizeof(entry_t) == %llu\n", sizeof(entry_t));
 	Pawn->size  = TableSize;
 	Pawn->mask  = TableSize - 1;
 	Pawn->table = (entry_t *) my_malloc(Pawn->size * sizeof(entry_t));
@@ -248,7 +248,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 
 	// pawn_file[]
 
-#if DEBUG
+#ifdef DEBUG
 	for (int_fast8_t colour = 0; colour < ColourNb; ++colour) {
 
 		std::array<int_fast32_t, FileNb> pawn_file;
@@ -257,7 +257,6 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 		for (int_fast32_t file = 0; file < FileNb; ++file)
 			pawn_file[file] = 0;
 
-		int_fast32_t sq;
 		for (auto sq = board->pawn[me].begin(); sq != board->pawn[me].end(); ++sq) {
 
 			int_fast32_t file = SQUARE_FILE(*sq), rank = PAWN_RANK(*sq,me);
@@ -414,32 +413,9 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 					opening[me] -= IsolatedOpeningOpen[file - FileA];
 					endgame[me] -= IsolatedEndgame[file - FileA];
 
-					switch (file) {
-						case FileA:
-							badpawns[me] |= BadPawnFileA;
-							break;
-						case FileB:
-							badpawns[me] |= BadPawnFileB;
-							break;
-						case FileC:
-							badpawns[me] |= BadPawnFileC;
-							break;
-						case FileD:
-							badpawns[me] |= BadPawnFileD;
-							break;
-						case FileE:
-							badpawns[me] |= BadPawnFileE;
-							break;
-						case FileF:
-							badpawns[me] |= BadPawnFileF;
-							break;
-						case FileG:
-							badpawns[me] |= BadPawnFileG;
-							break;
-						case FileH:
-							badpawns[me] |= BadPawnFileH;
-							break;
-					}
+					const int_fast32_t BadPawnFile = 1 << (file - FileA); // HACK: see BadPawnFileA and FileA
+					badpawns[me] |= BadPawnFile;
+
 				} else {
 					opening[me] -= IsolatedOpening[file - FileA];
 					endgame[me] -= IsolatedEndgame[file - FileA];
@@ -451,32 +427,9 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 					opening[me] -= BackwardOpeningOpen[file - FileA];
 					endgame[me] -= BackwardEndgame[file - FileA];
 
-					switch (file) {
-						case FileA:
-							badpawns[me] |= BadPawnFileA;
-							break;
-						case FileB:
-							badpawns[me] |= BadPawnFileB;
-							break;
-						case FileC:
-							badpawns[me] |= BadPawnFileC;
-							break;
-						case FileD:
-							badpawns[me] |= BadPawnFileD;
-							break;
-						case FileE:
-							badpawns[me] |= BadPawnFileE;
-							break;
-						case FileF:
-							badpawns[me] |= BadPawnFileF;
-							break;
-						case FileG:
-							badpawns[me] |= BadPawnFileG;
-							break;
-						case FileH:
-							badpawns[me] |= BadPawnFileH;
-							break;
-					}
+					const int_fast32_t BadPawnFile = 1 << (file - FileA); // HACK: see BadPawnFileA and FileA
+					badpawns[me] |= BadPawnFile;
+
 				} else {
 					opening[me] -= BackwardOpening[file - FileA];
 					endgame[me] -= BackwardEndgame[file - FileA];

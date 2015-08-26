@@ -39,7 +39,7 @@ static int_fast32_t alist_pop(alist_t *alist);
 
 // see_move()
 
-int_fast32_t see_move(int_fast32_t move, const board_t *board) {
+int_fast32_t see_move(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -316,7 +316,6 @@ static void alist_remove(alist_t *alist, int_fast32_t pos) {
 static int_fast32_t alist_pop(alist_t *alist) {
 
 	ASSERT(alist != nullptr);
-	ASSERT(board != nullptr);
 
 	int_fast32_t sq = SquareNone, size = alist->size;
 

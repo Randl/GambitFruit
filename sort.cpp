@@ -88,18 +88,19 @@ static void note_quiet_moves(list_t *list, const board_t *board);
 static void note_moves_simple(list_t *list, const board_t *board);
 static void note_mvv_lva(list_t *list, const board_t *board);
 
-static int_fast32_t move_value(int_fast32_t move, const board_t *board, int_fast32_t height, int_fast32_t trans_killer);
-static int_fast32_t capture_value(int_fast32_t move, const board_t *board);
-static int_fast32_t quiet_move_value(int_fast32_t move, const board_t *board);
-static int_fast32_t move_value_simple(int_fast32_t move, const board_t *board);
+static uint_fast16_t get_move_value(uint_fast16_t move, const board_t *board, int_fast32_t height,
+                                    int_fast32_t trans_killer);
+static int_fast32_t  capture_value(uint_fast16_t move, const board_t *board);
+static int_fast32_t  quiet_move_value(uint_fast16_t move, const board_t *board);
+static uint_fast16_t move_value_simple(uint_fast16_t move, const board_t *board);
 
-static int_fast32_t history_prob(int_fast32_t move, const board_t *board);
+static int_fast32_t history_prob(uint_fast16_t move, const board_t *board);
 
-static bool capture_is_good(int_fast32_t move, const board_t *board);
+static bool capture_is_good(uint_fast16_t move, const board_t *board);
 
-static int_fast32_t mvv_lva(int_fast32_t move, const board_t *board);
+static int_fast32_t mvv_lva(uint_fast16_t move, const board_t *board);
 
-static int_fast32_t history_index(int_fast32_t move, const board_t *board);
+static int_fast32_t history_index(uint_fast16_t move, const board_t *board);
 
 // functions
 
@@ -201,7 +202,7 @@ void sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_
 		LIST_CLEAR(sort->list);
 		sort->gen = PosSEE;
 	}
-	sort->pos          = 0;
+	sort->pos = 0;
 }
 
 // sort_next()
@@ -214,7 +215,7 @@ int_fast32_t sort_next(sort_t *sort) {
 		while (sort->pos < LIST_SIZE(sort->list)) {
 
 			// next move
-			int_fast32_t move = LIST_MOVE(sort->list, sort->pos);
+			uint_fast16_t move = LIST_MOVE(sort->list, sort->pos);
 			sort->value = 16384; // default score
 			sort->pos++;
 
@@ -280,7 +281,6 @@ int_fast32_t sort_next(sort_t *sort) {
 			LIST_CLEAR(sort->bad);
 
 			sort->test = TEST_GOOD_CAPTURE;
-
 		} else if (gen == GEN_BAD_CAPTURE) {
 			*sort->list = sort->bad;
 			sort->test = TEST_BAD_CAPTURE;
@@ -340,7 +340,7 @@ int_fast32_t sort_next_qs(sort_t *sort) {
 		while (sort->pos < LIST_SIZE(sort->list)) {
 
 			// next move
-			int_fast32_t move = LIST_MOVE(sort->list, sort->pos);
+			uint_fast16_t move = LIST_MOVE(sort->list, sort->pos);
 			sort->pos++;
 
 			ASSERT(move != MoveNone);
@@ -399,7 +399,7 @@ int_fast32_t sort_next_qs(sort_t *sort) {
 
 // good_move()
 
-void good_move(int_fast32_t move, const board_t *board, int_fast32_t depth, int_fast32_t height) {
+void good_move(uint_fast16_t move, const board_t *board, int_fast32_t depth, int_fast32_t height) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -427,7 +427,7 @@ void good_move(int_fast32_t move, const board_t *board, int_fast32_t depth, int_
 
 // history_good()
 
-void history_good(int_fast32_t move, const board_t *board) {
+void history_good(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -451,7 +451,7 @@ void history_good(int_fast32_t move, const board_t *board) {
 
 // history_bad()
 
-void history_bad(int_fast32_t move, const board_t *board) {
+void history_bad(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -473,7 +473,7 @@ void history_bad(int_fast32_t move, const board_t *board) {
 
 // history_very_bad()
 
-void history_very_bad(int_fast32_t move, const board_t *board) {
+void history_very_bad(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -496,7 +496,7 @@ void history_very_bad(int_fast32_t move, const board_t *board) {
 
 // history_tried()
 
-void history_tried(int_fast32_t move, const board_t *board) {
+void history_tried(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -510,7 +510,7 @@ void history_tried(int_fast32_t move, const board_t *board) {
 
 // history_success()
 
-void history_success(int_fast32_t move, const board_t *board) {
+void history_success(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -523,7 +523,7 @@ void history_success(int_fast32_t move, const board_t *board) {
 	FailHighStats[index].success++;
 }
 
-bool history_reduction(int_fast32_t move, const board_t *board) {
+bool history_reduction(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -549,8 +549,8 @@ void note_moves(list_t *list, const board_t *board, int_fast32_t height, int_fas
 
 	if (size >= 2)
 		for (int_fast16_t i = 0; i < size; ++i) {
-			const int_fast32_t move = LIST_MOVE(list, i);
-			list->moves[i].value = move_value(move, board, height, trans_killer);
+			const uint_fast16_t move = LIST_MOVE(list, i);
+			list->moves[i].value = get_move_value(move, board, height, trans_killer);
 		}
 }
 
@@ -565,7 +565,7 @@ static void note_captures(list_t *list, const board_t *board) {
 
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
-			const int_fast32_t move = LIST_MOVE(list, i);
+			const uint_fast16_t move = LIST_MOVE(list, i);
 			list->moves[i].value = capture_value(move, board);
 		}
 }
@@ -581,7 +581,7 @@ static void note_quiet_moves(list_t *list, const board_t *board) {
 
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
-			const int_fast32_t move = LIST_MOVE(list, i);
+			const uint_fast16_t move = LIST_MOVE(list, i);
 			list->moves[i].value = quiet_move_value(move, board);
 		}
 }
@@ -597,7 +597,7 @@ static void note_moves_simple(list_t *list, const board_t *board) {
 
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
-			const int_fast32_t move = LIST_MOVE(list, i);
+			const uint_fast16_t move = LIST_MOVE(list, i);
 			list->moves[i].value = move_value_simple(move, board);
 		}
 }
@@ -613,14 +613,14 @@ static void note_mvv_lva(list_t *list, const board_t *board) {
 
 	if (size >= 2)
 		for (int_fast32_t i = 0; i < size; ++i) {
-			const int_fast32_t move = LIST_MOVE(list, i);
+			const uint_fast16_t move = LIST_MOVE(list, i);
 			list->moves[i].value = mvv_lva(move, board);
 		}
 }
 
-// move_value()
+// get_move_value()
 
-static int_fast32_t move_value(int_fast32_t move, const board_t *board, int_fast32_t height,
+static uint_fast16_t get_move_value(uint_fast16_t move, const board_t *board, int_fast32_t height,
 							   int_fast32_t trans_killer) {
 
 	ASSERT(move_is_ok(move));
@@ -651,7 +651,7 @@ static int_fast32_t move_value(int_fast32_t move, const board_t *board, int_fast
 
 // capture_value()
 
-static int_fast32_t capture_value(int_fast32_t move, const board_t *board) {
+static int_fast32_t capture_value(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -672,7 +672,7 @@ static int_fast32_t capture_value(int_fast32_t move, const board_t *board) {
 
 // quiet_move_value()
 
-static int_fast32_t quiet_move_value(int_fast32_t move, const board_t *board) {
+static int_fast32_t quiet_move_value(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -687,7 +687,7 @@ static int_fast32_t quiet_move_value(int_fast32_t move, const board_t *board) {
 
 // move_value_simple()
 
-static int_fast32_t move_value_simple(int_fast32_t move, const board_t *board) {
+static uint_fast16_t move_value_simple(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -700,7 +700,7 @@ static int_fast32_t move_value_simple(int_fast32_t move, const board_t *board) {
 
 // history_prob()
 
-static int_fast32_t history_prob(int_fast32_t move, const board_t *board) {
+static int_fast32_t history_prob(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -719,7 +719,7 @@ static int_fast32_t history_prob(int_fast32_t move, const board_t *board) {
 
 // capture_is_good()
 
-static bool capture_is_good(int_fast32_t move, const board_t *board) {
+static bool capture_is_good(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -748,7 +748,7 @@ static bool capture_is_good(int_fast32_t move, const board_t *board) {
 
 // mvv_lva()
 
-static int_fast32_t mvv_lva(int_fast32_t move, const board_t *board) {
+static int_fast32_t mvv_lva(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -776,7 +776,7 @@ static int_fast32_t mvv_lva(int_fast32_t move, const board_t *board) {
 
 // history_index()
 
-static int_fast32_t history_index(int_fast32_t move, const board_t *board) {
+static int_fast32_t history_index(uint_fast16_t move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);

@@ -339,10 +339,10 @@ void pst_init() {
 	}
 
 	// symmetry copy for black
-	for (int_fast32_t piece = 0; piece < 12; piece += 2) // HACK
+	for (int_fast32_t pc = 0; pc < 12; pc += 2) // HACK
 		for (int_fast32_t sq = 0; sq < 64; ++sq)
 			for (int_fast32_t stage = 0; stage < StageNb; ++stage)
-				P(piece + 1, sq, stage) = -P(piece, square_opp(sq), stage); // HACK
+				P(pc + 1, sq, stage) = -P(pc, square_opp(sq), stage); // HACK
 }
 
 // square_make()

@@ -34,15 +34,15 @@ struct search_multipv_t {
 	int_fast64_t node_nb;
 	char         pv_string[512];
 	int_fast32_t mate;
-	int_fast32_t depth;
-	int_fast32_t max_depth;
+    int_fast32_t depth; // TODO: int_fast16_t?
+    int_fast32_t max_depth; // int_fast16_t?
 	int_fast32_t value;
 };
 
 struct search_param_t {
-	int_fast32_t move;
-	int_fast32_t best_move;
-	int_fast32_t threat_move;
+    uint_fast16_t move;
+    int_fast32_t  best_move; // uint_fast16_t
+    int_fast32_t  threat_move;  // uint_fast16_t
 	bool         reduced;
 };
 
@@ -71,10 +71,10 @@ struct search_info_t {
 struct search_root_t {
 	list_t       list[1];
 	int_fast32_t depth;
-	int_fast32_t move;
 	int_fast32_t move_pos;
 	int_fast32_t move_nb;
 	int_fast32_t last_value;
+    uint_fast16_t move;
 	bool         bad_1;
 	bool         bad_2;
 	bool         change;
@@ -84,10 +84,10 @@ struct search_root_t {
 
 struct search_best_t {
 	mv_t         pv[HeightMax];
-	int_fast32_t move;
 	int_fast32_t value;
 	int_fast32_t flags;
 	int_fast32_t depth;
+    uint_fast16_t move;
 };
 
 struct search_current_t {

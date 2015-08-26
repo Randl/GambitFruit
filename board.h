@@ -75,8 +75,8 @@ struct board_t {
 	int_fast32_t endgame;
 	int_fast32_t pvalue; //Ryan
 
-	int_fast16_t ply_nb;
-	int_fast8_t  piece_nb;
+    uint_fast16_t ply_nb;
+    int_fast8_t   piece_nb;  //remove me?
 
 	bool turn;
 };

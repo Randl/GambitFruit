@@ -13,7 +13,7 @@
 
 // types
 
-struct entry_t {
+struct book_entry_t {
 	uint_fast64_t key;
 	uint_fast16_t move;
 	uint_fast16_t count;
@@ -30,7 +30,7 @@ static int_fast32_t BookSize;
 
 static int_fast32_t find_pos(uint_fast64_t key);
 
-static void          read_entry(entry_t *entry, int_fast32_t n);
+static void read_entry(book_entry_t *entry, int_fast32_t n);
 static uint_fast64_t read_integer(FILE *file, int_fast32_t size);
 
 // functions
@@ -81,11 +81,11 @@ int_fast32_t book_move(board_t *board) {
 
 		for (int_fast32_t pos = find_pos(board->key); pos < BookSize; ++pos) {
 
-			entry_t entry[1];
+			book_entry_t entry[1];
 			read_entry(entry, pos);
 			if (entry->key != board->key) break;
 
-			int_fast32_t move  = entry->move;
+			uint_fast16_t move = entry->move;
 			int_fast32_t score = entry->count;
 
 			// pick this move?
@@ -98,13 +98,17 @@ int_fast32_t book_move(board_t *board) {
 
 		if (best_move != MoveNone) {
 
-			// convert PolyGlot move into Fruit move; TODO: handle promotes
+			// convert PolyGlot move into Fruit move;
 			list_t list[1];
 			gen_legal_moves(list, board);
 
 			for (int_fast32_t i = 0; i < list->size; ++i) {
-				int_fast32_t move = list->moves[i].move;
-				if ((move & 07777) == best_move) return move;
+				uint_fast16_t move = list->moves[i].move;
+				if (MOVE_IS_PROMOTE(move)) {  //promotion TODO: test
+					if ((move & 07777 | ((MOVE_PROMOTE_PIECE(move) + 1) << 12)) == best_move)
+						return move;
+				} else if ((move & 07777) == best_move)
+					return move;
 			}
 		}
 	}
@@ -122,7 +126,7 @@ static int_fast32_t find_pos(uint_fast64_t key) {
 
 	ASSERT(left <= right);
 
-	entry_t entry[1];
+	book_entry_t entry[1];
 	while (left < right) {
 
 		int_fast32_t mid = (left + right) / 2;
@@ -145,7 +149,7 @@ static int_fast32_t find_pos(uint_fast64_t key) {
 
 // read_entry()
 
-static void read_entry(entry_t *entry, int_fast32_t n) {
+static void read_entry(book_entry_t *entry, int_fast32_t n) {
 
 	ASSERT(entry != nullptr);
 	ASSERT(n >= 0 && n < BookSize);
