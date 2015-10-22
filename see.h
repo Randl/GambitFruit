@@ -10,8 +10,8 @@
 
 // functions
 
-extern int_fast32_t see_move(uint_fast16_t move, const board_t *board);
-//extern int_fast32_t see_square (const board_t * board, int_fast32_t to, int_fast8_t colour);
+extern S32 see_move(U16 move, const board_t *board);
+//extern S32 see_square (const board_t * board, S32 to, S8 colour);
 
 #endif // !defined SEE_H
 

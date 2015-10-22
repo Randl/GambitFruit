@@ -11,52 +11,52 @@
 
 // constants
 
-constexpr int_fast16_t WhitePawnFlag = 1 << 2;
-constexpr int_fast16_t BlackPawnFlag = 1 << 3;
-constexpr int_fast16_t KnightFlag    = 1 << 4;
-constexpr int_fast16_t BishopFlag    = 1 << 5;
-constexpr int_fast16_t RookFlag      = 1 << 6;
-constexpr int_fast16_t KingFlag      = 1 << 7;
+constexpr S16 WhitePawnFlag = 1 << 2;
+constexpr S16 BlackPawnFlag = 1 << 3;
+constexpr S16 KnightFlag = 1 << 4;
+constexpr S16 BishopFlag = 1 << 5;
+constexpr S16 RookFlag = 1 << 6;
+constexpr S16 KingFlag = 1 << 7;
 
-constexpr int_fast16_t PawnFlags  = WhitePawnFlag | BlackPawnFlag;
-constexpr int_fast16_t QueenFlags = BishopFlag | RookFlag;
+constexpr S16 PawnFlags = WhitePawnFlag | BlackPawnFlag;
+constexpr S16 QueenFlags = BishopFlag | RookFlag;
 
-constexpr int_fast16_t PieceNone64 = 0;
-constexpr int_fast16_t WhitePawn64 = WhitePawnFlag;
-constexpr int_fast16_t BlackPawn64 = BlackPawnFlag;
-constexpr int_fast16_t Knight64    = KnightFlag;
-constexpr int_fast16_t Bishop64    = BishopFlag;
-constexpr int_fast16_t Rook64      = RookFlag;
-constexpr int_fast16_t Queen64     = QueenFlags;
-constexpr int_fast16_t King64      = KingFlag;
+constexpr S16 PieceNone64 = 0;
+constexpr S16 WhitePawn64 = WhitePawnFlag;
+constexpr S16 BlackPawn64 = BlackPawnFlag;
+constexpr S16 Knight64 = KnightFlag;
+constexpr S16 Bishop64 = BishopFlag;
+constexpr S16 Rook64 = RookFlag;
+constexpr S16 Queen64 = QueenFlags;
+constexpr S16 King64 = KingFlag;
 
-constexpr int_fast16_t PieceNone256   = 0;
-constexpr int_fast16_t WhitePawn256   = WhitePawn64 | WhiteFlag;
-constexpr int_fast16_t BlackPawn256   = BlackPawn64 | BlackFlag;
-constexpr int_fast16_t WhiteKnight256 = Knight64 | WhiteFlag;
-constexpr int_fast16_t BlackKnight256 = Knight64 | BlackFlag;
-constexpr int_fast16_t WhiteBishop256 = Bishop64 | WhiteFlag;
-constexpr int_fast16_t BlackBishop256 = Bishop64 | BlackFlag;
-constexpr int_fast16_t WhiteRook256   = Rook64 | WhiteFlag;
-constexpr int_fast16_t BlackRook256   = Rook64 | BlackFlag;
-constexpr int_fast16_t WhiteQueen256  = Queen64 | WhiteFlag;
-constexpr int_fast16_t BlackQueen256  = Queen64 | BlackFlag;
-constexpr int_fast16_t WhiteKing256   = King64 | WhiteFlag;
-constexpr int_fast16_t BlackKing256   = King64 | BlackFlag;
-constexpr int_fast16_t PieceNb        = 256;
+constexpr S16 PieceNone256 = 0;
+constexpr S16 WhitePawn256 = WhitePawn64 | WhiteFlag;
+constexpr S16 BlackPawn256 = BlackPawn64 | BlackFlag;
+constexpr S16 WhiteKnight256 = Knight64 | WhiteFlag;
+constexpr S16 BlackKnight256 = Knight64 | BlackFlag;
+constexpr S16 WhiteBishop256 = Bishop64 | WhiteFlag;
+constexpr S16 BlackBishop256 = Bishop64 | BlackFlag;
+constexpr S16 WhiteRook256 = Rook64 | WhiteFlag;
+constexpr S16 BlackRook256 = Rook64 | BlackFlag;
+constexpr S16 WhiteQueen256 = Queen64 | WhiteFlag;
+constexpr S16 BlackQueen256 = Queen64 | BlackFlag;
+constexpr S16 WhiteKing256 = King64 | WhiteFlag;
+constexpr S16 BlackKing256 = King64 | BlackFlag;
+constexpr S16 PieceNb = 256;
 
-constexpr int_fast8_t WhitePawn12   = 0;
-constexpr int_fast8_t BlackPawn12   = 1;
-constexpr int_fast8_t WhiteKnight12 = 2;
-constexpr int_fast8_t BlackKnight12 = 3;
-constexpr int_fast8_t WhiteBishop12 = 4;
-constexpr int_fast8_t BlackBishop12 = 5;
-constexpr int_fast8_t WhiteRook12   = 6;
-constexpr int_fast8_t BlackRook12   = 7;
-constexpr int_fast8_t WhiteQueen12  = 8;
-constexpr int_fast8_t BlackQueen12  = 9;
-constexpr int_fast8_t WhiteKing12   = 10;
-constexpr int_fast8_t BlackKing12   = 11;
+constexpr S8 WhitePawn12 = 0;
+constexpr S8 BlackPawn12 = 1;
+constexpr S8 WhiteKnight12 = 2;
+constexpr S8 BlackKnight12 = 3;
+constexpr S8 WhiteBishop12 = 4;
+constexpr S8 BlackBishop12 = 5;
+constexpr S8 WhiteRook12 = 6;
+constexpr S8 BlackRook12 = 7;
+constexpr S8 WhiteQueen12 = 8;
+constexpr S8 BlackQueen12 = 9;
+constexpr S8 WhiteKing12 = 10;
+constexpr S8 BlackKing12 = 11;
 
 // macros
 
@@ -83,13 +83,13 @@ constexpr int_fast8_t BlackKing12   = 11;
 
 // types
 
-typedef int_fast32_t inc_t;
+typedef S32 inc_t;
 
 // "constants"
 
-constexpr std::array<int_fast32_t, ColourNb> PawnMake = {WhitePawn256, BlackPawn256};
+constexpr std::array<S32, ColourNb> PawnMake = {WhitePawn256, BlackPawn256};
 
-constexpr std::array<int_fast32_t, 12> PieceFrom12 = {
+constexpr std::array<S32, 12> PieceFrom12 = {
 	WhitePawn256, BlackPawn256,
 	WhiteKnight256, BlackKnight256,
 	WhiteBishop256, BlackBishop256,
@@ -125,8 +125,8 @@ constexpr std::array<inc_t, 8 + 1> KingInc = {
 
 // variables
 
-extern std::array<int_fast32_t, PieceNb> PieceTo12;
-extern std::array<int_fast32_t, PieceNb> PieceOrder;
+extern std::array<S32, PieceNb> PieceTo12;
+extern std::array<S32, PieceNb> PieceOrder;
 
 extern std::array<const inc_t *, PieceNb> PieceInc;
 
@@ -134,12 +134,12 @@ extern std::array<const inc_t *, PieceNb> PieceInc;
 
 extern void piece_init();
 
-extern bool piece_is_ok(int_fast32_t piece);
+extern bool piece_is_ok(S32 piece);
 
-extern int_fast32_t piece_from_12(int_fast32_t piece_12);
+extern S32 piece_from_12(S32 piece_12);
 
-extern int_fast32_t piece_to_char(int_fast32_t piece);
-extern int_fast32_t piece_from_char(int_fast32_t c);
+extern S32 piece_to_char(S32 piece);
+extern S32 piece_from_char(S32 c);
 
 #endif // !defined PIECE_H
 

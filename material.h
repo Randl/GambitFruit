@@ -27,30 +27,30 @@ enum mat_dummy_t {
 	MAT_NB
 };
 
-constexpr int_fast32_t DrawNodeFlag   = 1 << 0;
-constexpr int_fast32_t DrawBishopFlag = 1 << 1;
+constexpr S32 DrawNodeFlag = 1 << 0;
+constexpr S32 DrawBishopFlag = 1 << 1;
 
-constexpr int_fast32_t MatRookPawnFlag = 1 << 0;
-constexpr int_fast32_t MatBishopFlag   = 1 << 1;
-constexpr int_fast32_t MatKnightFlag   = 1 << 2;
-constexpr int_fast32_t MatKingFlag     = 1 << 3;
-constexpr int_fast32_t MatBitbaseFlag  = 1 << 4;
+constexpr S32 MatRookPawnFlag = 1 << 0;
+constexpr S32 MatBishopFlag = 1 << 1;
+constexpr S32 MatKnightFlag = 1 << 2;
+constexpr S32 MatKingFlag = 1 << 3;
+constexpr S32 MatBitbaseFlag = 1 << 4;
 
 // variables
-extern uint_fast8_t bitbase_pieces;
+extern U8 bitbase_pieces;
 
 // types
 
 struct material_info_t {
-	uint_fast32_t                      lock;
-	int_fast16_t                       phase;
-	int_fast16_t                       opening;
-	int_fast16_t                       endgame;
-	uint_fast8_t                       recog;
-	uint_fast8_t                       flags;
-    std::array<uint_fast8_t, ColourNb> cflags;
-    std::array<uint_fast8_t, ColourNb> mul;
-	//int_fast32_t pv[ColourNb]; /* Material without pawn and king */
+    U32 lock;
+    S16 phase;
+    S16 opening;
+    S16 endgame;
+    U8 recog;
+    U8 flags;
+    std::array<U8, ColourNb> cflags;
+    std::array<U8, ColourNb> mul;
+    //S32 pv[ColourNb]; /* Material without pawn and king */
 };
 
 // functions

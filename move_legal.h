@@ -12,10 +12,10 @@
 
 // functions
 
-extern bool move_is_pseudo(uint_fast16_t move, board_t *board);
-extern bool quiet_is_pseudo(uint_fast16_t move, board_t *board);
+extern bool move_is_pseudo(U16 move, board_t *board);
+extern bool quiet_is_pseudo(U16 move, board_t *board);
 
-extern bool pseudo_is_legal(uint_fast16_t move, board_t *board);
+extern bool pseudo_is_legal(U16 move, board_t *board);
 
 #endif // !defined MOVE_LEGAL_H
 

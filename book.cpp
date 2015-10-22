@@ -14,24 +14,24 @@
 // types
 
 struct book_entry_t {
-	uint_fast64_t key;
-	uint_fast16_t move;
-	uint_fast16_t count;
-	uint_fast16_t n;
-	uint_fast16_t sum;
+    U64 key;
+    U16 move;
+    U16 count;
+    U16 n;
+    U16 sum;
 };
 
 // variables
 
 static FILE         *BookFile;
-static int_fast32_t BookSize;
+static S32 BookSize;
 
 // prototypes
 
-static int_fast32_t find_pos(uint_fast64_t key);
+static S32 find_pos(U64 key);
 
-static void read_entry(book_entry_t *entry, int_fast32_t n);
-static uint_fast64_t read_integer(FILE *file, int_fast32_t size);
+static void read_entry(book_entry_t *entry, S32 n);
+static U64 read_integer(FILE *file, S32 size);
 
 // functions
 
@@ -68,7 +68,7 @@ void book_close() {
 
 // book_move()
 
-int_fast32_t book_move(board_t *board) {
+S32 book_move(board_t *board) {
 
 	ASSERT(board != nullptr);
 
@@ -76,17 +76,17 @@ int_fast32_t book_move(board_t *board) {
 
 		// draw a move according to a fixed probability distribution
 
-		int_fast32_t best_move  = MoveNone;
-		int_fast32_t best_score = 0;
+		S32 best_move = MoveNone;
+		S32 best_score = 0;
 
-		for (int_fast32_t pos = find_pos(board->key); pos < BookSize; ++pos) {
+		for (S32 pos = find_pos(board->key); pos < BookSize; ++pos) {
 
 			book_entry_t entry[1];
 			read_entry(entry, pos);
 			if (entry->key != board->key) break;
 
-			uint_fast16_t move = entry->move;
-			int_fast32_t score = entry->count;
+			U16 move = entry->move;
+			S32 score = entry->count;
 
 			// pick this move?
 
@@ -102,8 +102,8 @@ int_fast32_t book_move(board_t *board) {
 			list_t list[1];
 			gen_legal_moves(list, board);
 
-			for (int_fast32_t i = 0; i < list->size; ++i) {
-				uint_fast16_t move = list->moves[i].move;
+			for (S32 i = 0; i < list->size; ++i) {
+				U16 move = list->moves[i].move;
 				if (MOVE_IS_PROMOTE(move)) {  //promotion TODO: test
 					if ((move & 07777 | ((MOVE_PROMOTE_PIECE(move) + 1) << 12)) == best_move)
 						return move;
@@ -118,18 +118,18 @@ int_fast32_t book_move(board_t *board) {
 
 // find_pos()
 
-static int_fast32_t find_pos(uint_fast64_t key) {
+static S32 find_pos(U64 key) {
 
 	// binary search (finds the leftmost entry)
 
-	int_fast32_t left = 0, right = BookSize - 1;
+	S32 left = 0, right = BookSize - 1;
 
 	ASSERT(left <= right);
 
 	book_entry_t entry[1];
 	while (left < right) {
 
-		int_fast32_t mid = (left + right) / 2;
+		S32 mid = (left + right) / 2;
 		ASSERT(mid >= left && mid < right);
 
 		read_entry(entry, mid);
@@ -149,7 +149,7 @@ static int_fast32_t find_pos(uint_fast64_t key) {
 
 // read_entry()
 
-static void read_entry(book_entry_t *entry, int_fast32_t n) {
+static void read_entry(book_entry_t *entry, S32 n) {
 
 	ASSERT(entry != nullptr);
 	ASSERT(n >= 0 && n < BookSize);
@@ -168,16 +168,16 @@ static void read_entry(book_entry_t *entry, int_fast32_t n) {
 
 // read_integer()
 
-static uint_fast64_t read_integer(FILE *file, int_fast32_t size) {
+static U64 read_integer(FILE *file, S32 size) {
 
 	ASSERT(file != nullptr);
 	ASSERT(size > 0 && size <= 8);
 
-	uint_fast64_t n = 0;
+	U64 n = 0;
 
-	for (int_fast32_t i = 0; i < size; ++i) {
+	for (S32 i = 0; i < size; ++i) {
 
-		int_fast32_t b = fgetc(file);
+		S32 b = fgetc(file);
 
 		if (b == EOF) {
 			if (feof(file))

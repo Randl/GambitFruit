@@ -109,7 +109,7 @@ bool input_available() {
 	time_val->tv_sec = 0;
 	time_val->tv_usec = 0;
 
-	int_fast32_t val = select(STDIN_FILENO+1,set,nullptr,nullptr,time_val);
+	S32 val = select(STDIN_FILENO+1,set,nullptr,nullptr,time_val);
 	if (val == -1 && errno != EINTR)
 		my_fatal("input_available(): select(): %s\n",strerror(errno));
 

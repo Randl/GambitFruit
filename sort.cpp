@@ -17,18 +17,18 @@
 
 // constants
 
-static constexpr int_fast8_t KillerNb = 2;
+static constexpr S8 KillerNb = 2;
 
-static constexpr int_fast32_t HistorySize = 12 * 64;
-static constexpr int_fast32_t HistoryMax  = 16384;
+static constexpr S32 HistorySize = 12 * 64;
+static constexpr S32 HistoryMax = 16384;
 
-static constexpr int_fast32_t TransScore   = +32766;
-static constexpr int_fast32_t GoodScore    = +4000;
-static constexpr int_fast32_t KillerScore  = +4;
-static constexpr int_fast32_t HistoryScore = -24000;
-static constexpr int_fast32_t BadScore     = -28000;
+static constexpr S32 TransScore = +32766;
+static constexpr S32 GoodScore = +4000;
+static constexpr S32 KillerScore = +4;
+static constexpr S32 HistoryScore = -24000;
+static constexpr S32 BadScore = -28000;
 
-static constexpr int_fast16_t CODE_SIZE = 256;
+static constexpr S16 CODE_SIZE = 256;
 
 // macros
 
@@ -65,21 +65,21 @@ enum test_t {
 
 // variables
 
-static int_fast32_t PosLegalEvasion;
-static int_fast32_t PosSEE;
+static S32 PosLegalEvasion;
+static S32 PosSEE;
 
-static int_fast32_t PosEvasionQS;
-static int_fast32_t PosCheckQS;
-static int_fast32_t PosCaptureQS;
+static S32 PosEvasionQS;
+static S32 PosCheckQS;
+static S32 PosCaptureQS;
 
-static std::array<int_fast32_t, CODE_SIZE> Code;
+static std::array<S32, CODE_SIZE> Code;
 
-static std::array<std::array<uint_fast16_t, KillerNb>, HeightMax> Killer;
+static std::array<std::array<U16, KillerNb>, HeightMax> Killer;
 
 static std::array<fail_high_stats_t, HistorySize> FailHighStats;
-static std::array<uint_fast16_t, HistorySize>     History;
-static std::array<uint_fast16_t, HistorySize>     HistHit;
-static std::array<uint_fast16_t, HistorySize>     HistTot;
+static std::array<U16, HistorySize> History;
+static std::array<U16, HistorySize> HistHit;
+static std::array<U16, HistorySize> HistTot;
 
 // prototypes
 
@@ -88,19 +88,18 @@ static void note_quiet_moves(list_t *list, const board_t *board);
 static void note_moves_simple(list_t *list, const board_t *board);
 static void note_mvv_lva(list_t *list, const board_t *board);
 
-static uint_fast16_t get_move_value(uint_fast16_t move, const board_t *board, int_fast32_t height,
-                                    int_fast32_t trans_killer);
-static int_fast32_t  capture_value(uint_fast16_t move, const board_t *board);
-static int_fast32_t  quiet_move_value(uint_fast16_t move, const board_t *board);
-static uint_fast16_t move_value_simple(uint_fast16_t move, const board_t *board);
+static U16 get_move_value(U16 move, const board_t *board, S32 height, S32 trans_killer);
+static S32 capture_value(U16 move, const board_t *board);
+static S32 quiet_move_value(U16 move, const board_t *board);
+static U16 move_value_simple(U16 move, const board_t *board);
 
-static int_fast32_t history_prob(uint_fast16_t move, const board_t *board);
+static S32 history_prob(U16 move, const board_t *board);
 
-static bool capture_is_good(uint_fast16_t move, const board_t *board);
+static bool capture_is_good(U16 move, const board_t *board);
 
-static int_fast32_t mvv_lva(uint_fast16_t move, const board_t *board);
+static S32 mvv_lva(U16 move, const board_t *board);
 
-static int_fast32_t history_index(uint_fast16_t move, const board_t *board);
+static S32 history_index(U16 move, const board_t *board);
 
 // functions
 
@@ -110,15 +109,15 @@ void sort_init() {
 
 	// killer
 
-	for (int_fast32_t height = 0; height < HeightMax; ++height)
-		for (int_fast32_t i = 0; i < KillerNb; ++i)
+	for (S32 height = 0; height < HeightMax; ++height)
+		for (S32 i = 0; i < KillerNb; ++i)
 			Killer[height][i] = MoveNone;
 
 	// history
-	for (int_fast32_t i = 0; i < HistorySize; ++i)
+	for (S32 i = 0; i < HistorySize; ++i)
 		History[i] = 0;
 
-	for (int_fast32_t i = 0; i < HistorySize; ++i) {
+	for (S32 i = 0; i < HistorySize; ++i) {
 		HistHit[i] = 1;
 		HistTot[i] = 1;
 		FailHighStats[i].success = 1;
@@ -126,10 +125,10 @@ void sort_init() {
 	}
 
 	// Code[]
-	for (int_fast32_t pos = 0; pos < CODE_SIZE; ++pos)
+	for (S32 pos = 0; pos < CODE_SIZE; ++pos)
 		Code[pos] = GEN_ERROR;
 
-	int_fast32_t pos = 0; //rename?
+	S32 pos = 0; //rename?
 
 	// main search
 	PosLegalEvasion = pos;
@@ -163,8 +162,7 @@ void sort_init() {
 
 // sort_init()
 
-void sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_t depth, int_fast32_t height,
-			   int_fast32_t trans_killer) {
+void sort_init(sort_t *sort, board_t *board, const attack_t *attack, S32 depth, S32 height, S32 trans_killer) {
 
 	ASSERT(sort != nullptr);
 	ASSERT(board != nullptr);
@@ -207,7 +205,7 @@ void sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_
 
 // sort_next()
 
-int_fast32_t sort_next(sort_t *sort) {
+S32 sort_next(sort_t *sort) {
 
 	ASSERT(sort != nullptr);
 
@@ -215,7 +213,7 @@ int_fast32_t sort_next(sort_t *sort) {
 		while (sort->pos < LIST_SIZE(sort->list)) {
 
 			// next move
-			uint_fast16_t move = LIST_MOVE(sort->list, sort->pos);
+			U16 move = LIST_MOVE(sort->list, sort->pos);
 			sort->value = 16384; // default score
 			sort->pos++;
 
@@ -266,7 +264,7 @@ int_fast32_t sort_next(sort_t *sort) {
 		}
 
 		// next stage
-		int_fast32_t gen = Code[sort->gen++];
+		S32 gen = Code[sort->gen++];
 
 		if (false) {
 		} else if (gen == GEN_TRANS) {
@@ -332,7 +330,7 @@ void sort_init_qs(sort_t *sort, board_t *board, const attack_t *attack, bool che
 
 // sort_next_qs()
 
-int_fast32_t sort_next_qs(sort_t *sort) {
+S32 sort_next_qs(sort_t *sort) {
 
 	ASSERT(sort != nullptr);
 
@@ -340,7 +338,7 @@ int_fast32_t sort_next_qs(sort_t *sort) {
 		while (sort->pos < LIST_SIZE(sort->list)) {
 
 			// next move
-			uint_fast16_t move = LIST_MOVE(sort->list, sort->pos);
+			U16 move = LIST_MOVE(sort->list, sort->pos);
 			sort->pos++;
 
 			ASSERT(move != MoveNone);
@@ -370,7 +368,7 @@ int_fast32_t sort_next_qs(sort_t *sort) {
 		}
 
 		// next stage
-		int_fast32_t gen = Code[sort->gen++];
+		S32 gen = Code[sort->gen++];
 
 		if (false) {
 		} else if (gen == GEN_EVASION_QS) {
@@ -399,7 +397,7 @@ int_fast32_t sort_next_qs(sort_t *sort) {
 
 // good_move()
 
-void good_move(uint_fast16_t move, const board_t *board, int_fast32_t depth, int_fast32_t height) {
+void good_move(U16 move, const board_t *board, S32 depth, S32 height) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -418,16 +416,16 @@ void good_move(uint_fast16_t move, const board_t *board, int_fast32_t depth, int
 	ASSERT(Killer[height][1] != move);
 
 	// history
-	int_fast32_t index = history_index(move, board);
+	S32 index = history_index(move, board);
 	History[index] += HISTORY_INC(depth);
 	if (History[index] >= HistoryMax)
-		for (int_fast32_t i = 0; i < HistorySize; ++i)
+		for (S32 i = 0; i < HistorySize; ++i)
 			History[i]      = (History[i] + 1) / 2;
 }
 
 // history_good()
 
-void history_good(uint_fast16_t move, const board_t *board) {
+void history_good(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -435,7 +433,7 @@ void history_good(uint_fast16_t move, const board_t *board) {
 	if (move_is_tactical(move, board)) return;
 
 	// history
-	const int_fast32_t index = history_index(move, board);
+	const S32 index = history_index(move, board);
 
 	++HistHit[index];
 	++HistTot[index];
@@ -451,7 +449,7 @@ void history_good(uint_fast16_t move, const board_t *board) {
 
 // history_bad()
 
-void history_bad(uint_fast16_t move, const board_t *board) {
+void history_bad(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -459,7 +457,7 @@ void history_bad(uint_fast16_t move, const board_t *board) {
 	if (move_is_tactical(move, board)) return;
 
 	// history
-	const int_fast32_t index = history_index(move, board);
+	const S32 index = history_index(move, board);
 
 	++HistTot[index];
 	if (HistTot[index] >= HistoryMax) {
@@ -473,7 +471,7 @@ void history_bad(uint_fast16_t move, const board_t *board) {
 
 // history_very_bad()
 
-void history_very_bad(uint_fast16_t move, const board_t *board) {
+void history_very_bad(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -481,7 +479,7 @@ void history_very_bad(uint_fast16_t move, const board_t *board) {
 	//if (move_is_tactical(move,board)) return;
 
 	// history
-	int_fast32_t index = PIECE_TO_12(board->square[MOVE_TO(move)]) * 64 + SQUARE_TO_64(MOVE_TO(move));
+	S32 index = PIECE_TO_12(board->square[MOVE_TO(move)]) * 64 + SQUARE_TO_64(MOVE_TO(move));
 
 	HistTot[index] += 100;
 
@@ -496,7 +494,7 @@ void history_very_bad(uint_fast16_t move, const board_t *board) {
 
 // history_tried()
 
-void history_tried(uint_fast16_t move, const board_t *board) {
+void history_tried(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -504,13 +502,13 @@ void history_tried(uint_fast16_t move, const board_t *board) {
 	if (move_is_tactical(move, board)) return;
 
 	// history
-	int_fast32_t index = history_index(move, board);
+	S32 index = history_index(move, board);
 	FailHighStats[index].tried++;
 }
 
 // history_success()
 
-void history_success(uint_fast16_t move, const board_t *board) {
+void history_success(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -518,18 +516,18 @@ void history_success(uint_fast16_t move, const board_t *board) {
 	if (move_is_tactical(move, board)) return;
 
 	// history
-	int_fast32_t index = history_index(move, board);
+	S32 index = history_index(move, board);
 
 	FailHighStats[index].success++;
 }
 
-bool history_reduction(uint_fast16_t move, const board_t *board) {
+bool history_reduction(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 
 	// history
-	int_fast32_t index = history_index(move, board);
+	S32 index = history_index(move, board);
 
 	if (FailHighStats[index].success > FailHighStats[index].tried / 8)
 		return false;
@@ -538,18 +536,18 @@ bool history_reduction(uint_fast16_t move, const board_t *board) {
 
 // note_moves()
 
-void note_moves(list_t *list, const board_t *board, int_fast32_t height, int_fast32_t trans_killer) {
+void note_moves(list_t *list, const board_t *board, S32 height, S32 trans_killer) {
 
 	ASSERT(list->is_ok());
 	ASSERT(board != nullptr);
 	ASSERT(height_is_ok(height));
 	ASSERT(trans_killer == MoveNone || move_is_ok(trans_killer));
 
-	const int_fast16_t size = LIST_SIZE(list);
+	const S16 size = LIST_SIZE(list);
 
 	if (size >= 2)
-		for (int_fast16_t i = 0; i < size; ++i) {
-			const uint_fast16_t move = LIST_MOVE(list, i);
+		for (S16 i = 0; i < size; ++i) {
+			const U16 move = LIST_MOVE(list, i);
 			list->moves[i].value = get_move_value(move, board, height, trans_killer);
 		}
 }
@@ -561,11 +559,11 @@ static void note_captures(list_t *list, const board_t *board) {
 	ASSERT(list->is_ok());
 	ASSERT(board != nullptr);
 
-	const int_fast32_t size = LIST_SIZE(list);
+	const S32 size = LIST_SIZE(list);
 
 	if (size >= 2)
-		for (int_fast32_t i = 0; i < size; ++i) {
-			const uint_fast16_t move = LIST_MOVE(list, i);
+		for (S32 i = 0; i < size; ++i) {
+			const U16 move = LIST_MOVE(list, i);
 			list->moves[i].value = capture_value(move, board);
 		}
 }
@@ -577,11 +575,11 @@ static void note_quiet_moves(list_t *list, const board_t *board) {
 	ASSERT(list->is_ok());
 	ASSERT(board != nullptr);
 
-	const int_fast32_t size = LIST_SIZE(list);
+	const S32 size = LIST_SIZE(list);
 
 	if (size >= 2)
-		for (int_fast32_t i = 0; i < size; ++i) {
-			const uint_fast16_t move = LIST_MOVE(list, i);
+		for (S32 i = 0; i < size; ++i) {
+			const U16 move = LIST_MOVE(list, i);
 			list->moves[i].value = quiet_move_value(move, board);
 		}
 }
@@ -593,11 +591,11 @@ static void note_moves_simple(list_t *list, const board_t *board) {
 	ASSERT(list->is_ok());
 	ASSERT(board != nullptr);
 
-	const int_fast32_t size = LIST_SIZE(list);
+	const S32 size = LIST_SIZE(list);
 
 	if (size >= 2)
-		for (int_fast32_t i = 0; i < size; ++i) {
-			const uint_fast16_t move = LIST_MOVE(list, i);
+		for (S32 i = 0; i < size; ++i) {
+			const U16 move = LIST_MOVE(list, i);
 			list->moves[i].value = move_value_simple(move, board);
 		}
 }
@@ -609,26 +607,25 @@ static void note_mvv_lva(list_t *list, const board_t *board) {
 	ASSERT(list->is_ok());
 	ASSERT(board != nullptr);
 
-	const int_fast32_t size = LIST_SIZE(list);
+	const S32 size = LIST_SIZE(list);
 
 	if (size >= 2)
-		for (int_fast32_t i = 0; i < size; ++i) {
-			const uint_fast16_t move = LIST_MOVE(list, i);
+		for (S32 i = 0; i < size; ++i) {
+			const U16 move = LIST_MOVE(list, i);
 			list->moves[i].value = mvv_lva(move, board);
 		}
 }
 
 // get_move_value()
 
-static uint_fast16_t get_move_value(uint_fast16_t move, const board_t *board, int_fast32_t height,
-							   int_fast32_t trans_killer) {
+static U16 get_move_value(U16 move, const board_t *board, S32 height, S32 trans_killer) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 	ASSERT(height_is_ok(height));
 	ASSERT(trans_killer == MoveNone || move_is_ok(trans_killer));
 
-	int_fast32_t value;
+	S32 value;
 	if (false) {
 	} else if (move == trans_killer) { // transposition table killer
 		value = TransScore;
@@ -651,14 +648,14 @@ static uint_fast16_t get_move_value(uint_fast16_t move, const board_t *board, in
 
 // capture_value()
 
-static int_fast32_t capture_value(uint_fast16_t move, const board_t *board) {
+static S32 capture_value(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 
 	ASSERT(move_is_tactical(move, board));
 
-	int_fast32_t value = mvv_lva(move, board);
+	S32 value = mvv_lva(move, board);
 
 	if (capture_is_good(move, board))
 		value += GoodScore;
@@ -672,13 +669,13 @@ static int_fast32_t capture_value(uint_fast16_t move, const board_t *board) {
 
 // quiet_move_value()
 
-static int_fast32_t quiet_move_value(uint_fast16_t move, const board_t *board) {
+static S32 quiet_move_value(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 	ASSERT(!move_is_tactical(move, board));
 
-	const int_fast32_t index = history_index(move, board), value = HistoryScore + History[index];
+	const S32 index = history_index(move, board), value = HistoryScore + History[index];
 
 	ASSERT(value >= HistoryScore && value <= KillerScore - 4);
 
@@ -687,12 +684,12 @@ static int_fast32_t quiet_move_value(uint_fast16_t move, const board_t *board) {
 
 // move_value_simple()
 
-static uint_fast16_t move_value_simple(uint_fast16_t move, const board_t *board) {
+static U16 move_value_simple(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 
-	int_fast32_t value = HistoryScore;
+	S32 value = HistoryScore;
 	if (move_is_tactical(move, board)) value = mvv_lva(move, board);
 
 	return value;
@@ -700,18 +697,18 @@ static uint_fast16_t move_value_simple(uint_fast16_t move, const board_t *board)
 
 // history_prob()
 
-static int_fast32_t history_prob(uint_fast16_t move, const board_t *board) {
+static S32 history_prob(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 	ASSERT(!move_is_tactical(move, board));
 
-	const int_fast32_t index = history_index(move, board);
+	const S32 index = history_index(move, board);
 
 	ASSERT(HistHit[index] <= HistTot[index]);
 	ASSERT(HistTot[index] < HistoryMax);
 
-	const int_fast32_t value = (HistHit[index] * 16384) / HistTot[index];
+	const S32 value = (HistHit[index] * 16384) / HistTot[index];
 	ASSERT(value >= 0 && value <= 16384);
 
 	return value;
@@ -719,7 +716,7 @@ static int_fast32_t history_prob(uint_fast16_t move, const board_t *board) {
 
 // capture_is_good()
 
-static bool capture_is_good(uint_fast16_t move, const board_t *board) {
+static bool capture_is_good(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -731,7 +728,7 @@ static bool capture_is_good(uint_fast16_t move, const board_t *board) {
 	if (move_is_under_promote(move)) return false; // REMOVE ME? Why?
 
 	// captures and queen promotes
-	const int_fast32_t capture = board->square[MOVE_TO(move)];
+	const S32 capture = board->square[MOVE_TO(move)];
 
 	if (capture != Empty) {
 		// capture
@@ -739,7 +736,7 @@ static bool capture_is_good(uint_fast16_t move, const board_t *board) {
 
 		if (MOVE_IS_PROMOTE(move)) return true; // promote-capture
 
-		const int_fast32_t piece = board->square[MOVE_FROM(move)];
+		const S32 piece = board->square[MOVE_FROM(move)];
 		if (VALUE_PIECE(capture) >= VALUE_PIECE(piece)) return true;
 	}
 
@@ -748,23 +745,23 @@ static bool capture_is_good(uint_fast16_t move, const board_t *board) {
 
 // mvv_lva()
 
-static int_fast32_t mvv_lva(uint_fast16_t move, const board_t *board) {
+static S32 mvv_lva(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 	ASSERT(move_is_tactical(move, board));
 
-	int_fast32_t value, capture;
+	S32 value, capture;
 	if (MOVE_IS_EN_PASSANT(move)) { // en-passant capture
 		value = 5; // PxP
 	} else if ((capture = board->square[MOVE_TO(move)]) != Empty) { // normal capture
-		const int_fast32_t piece = board->square[MOVE_FROM(move)];
+		const S32 piece = board->square[MOVE_FROM(move)];
 		value = PIECE_ORDER(capture) * 6 - PIECE_ORDER(piece) + 5;
 		ASSERT(value >= 0 && value < 30);
 	} else { // promote
 
 		ASSERT(MOVE_IS_PROMOTE(move));
-		const int_fast32_t promote = move_promote(move);
+		const S32 promote = move_promote(move);
 		value = PIECE_ORDER(promote) - 5;
 		ASSERT(value >= -4 && value < 0);
 	}
@@ -776,14 +773,14 @@ static int_fast32_t mvv_lva(uint_fast16_t move, const board_t *board) {
 
 // history_index()
 
-static int_fast32_t history_index(uint_fast16_t move, const board_t *board) {
+static S32 history_index(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 
 	ASSERT(!move_is_tactical(move, board));
 
-	const int_fast32_t index = PIECE_TO_12(board->square[MOVE_FROM(move)]) * 64 + SQUARE_TO_64(MOVE_TO(move));
+	const S32 index = PIECE_TO_12(board->square[MOVE_FROM(move)]) * 64 + SQUARE_TO_64(MOVE_TO(move));
 
 	ASSERT(index >= 0 && index < HistorySize);
 

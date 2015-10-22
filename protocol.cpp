@@ -196,8 +196,8 @@ static void parse_go(char string[]) {
 	// init
 	bool infinite = false, ponder = false;
 
-	int_fast32_t depth = -1, mate = -1, movestogo = -1;
-	int_fast64_t nodes = -1;
+	S32 depth = -1, mate = -1, movestogo = -1;
+	S64 nodes = -1;
 
 	double binc = -1.0, btime = -1.0, movetime = -1.0, winc = -1.0, wtime = -1.0;
 
@@ -297,7 +297,7 @@ static void parse_go(char string[]) {
 	// depth limit
 
 	// JAS
-	int_fast32_t option_depth = 0;
+	S32 option_depth = 0;
 	option_depth = option_get_int("Search Depth");
 	if (option_depth > 0)
 		depth    = option_depth;
@@ -325,7 +325,7 @@ static void parse_go(char string[]) {
 	if (inc < 0.0) inc                              = 0.0;
 
 	// JAS
-	int_fast32_t option_movetime = 0;
+	S32 option_movetime = 0;
 	option_movetime = option_get_int("Search Time");
 	if (option_movetime > 0) {
 		movetime = option_movetime;
@@ -422,7 +422,7 @@ static void parse_position(char string[]) {
 			}
 
 			undo_t undo[1];
-			uint_fast16_t move = move_from_string(move_string, SearchInput->board);
+			U16 move = move_from_string(move_string, SearchInput->board);
 			move_do(SearchInput->board, move, undo);
 
 			while (*ptr == ' ') ++ptr;
@@ -470,7 +470,7 @@ static void send_best_move() {
 
 	// HACK: should be in search.cpp
 	double       time    = SearchCurrent->time, speed = SearchCurrent->speed, cpu = SearchCurrent->cpu;
-	int_fast64_t node_nb = SearchCurrent->node_nb;
+	S64 node_nb = SearchCurrent->node_nb;
 
 	send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f", time * 1000.0, node_nb, speed, cpu * 1000.0);
 
@@ -479,7 +479,7 @@ static void send_best_move() {
 	// material_stats();
 
 	// best move
-	uint_fast16_t move = SearchBest[0].move;
+	U16 move = SearchBest[0].move;
 	mv_t *pv = SearchBest[0].pv;
 
 	char move_string[256];
@@ -496,7 +496,7 @@ static void send_best_move() {
 
 // get()
 
-void get(char string[], int_fast32_t size) {
+void get(char string[], S32 size) {
 
 	ASSERT(string != nullptr);
 	ASSERT(size >= 65536);

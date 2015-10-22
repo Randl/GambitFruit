@@ -16,9 +16,9 @@ bool pv_is_ok(const mv_t pv[]) {
 
 	if (pv == nullptr) return false;
 
-	for (int_fast32_t pos = 0; true; ++pos) {
+	for (S32 pos = 0; true; ++pos) {
 		if (pos >= 256) return false;
-		uint_fast16_t move = pv[pos];
+		U16 move = pv[pos];
 
 		if (move == MoveNone) return true;
 		if (!move_is_ok(move)) return false;
@@ -39,7 +39,7 @@ void pv_copy(mv_t dst[], const mv_t src[]) {
 
 // pv_cat()
 
-void pv_cat(mv_t dst[], const mv_t src[], uint_fast16_t move) {
+void pv_cat(mv_t dst[], const mv_t src[], U16 move) {
 
 	ASSERT(pv_is_ok(src));
 	ASSERT(dst != nullptr);
@@ -50,7 +50,7 @@ void pv_cat(mv_t dst[], const mv_t src[], uint_fast16_t move) {
 
 // pv_to_string()
 
-bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size) {
+bool pv_to_string(const mv_t pv[], char string[], S32 size) {
 
 	ASSERT(pv_is_ok(pv));
 	ASSERT(string != nullptr);
@@ -58,10 +58,10 @@ bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size) {
 
 	// init
 	if (size < 512) return false;
-	int_fast32_t pos = 0;
+	S32 pos = 0;
 
 	// loop
-	uint_fast16_t move;
+	U16 move;
 	while ((move = *pv++) != MoveNone) {
 		if (pos != 0) string[pos++] = ' ';
 

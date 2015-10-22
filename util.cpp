@@ -30,7 +30,7 @@ void my_random_init() {
 
 // my_random()
 
-int_fast32_t my_random(int_fast32_t n) { //std:;random, new, c++ functions instead
+S32 my_random(S32 n) { //std:;random, new, c++ functions instead
 
 	double r;
 
@@ -43,16 +43,16 @@ int_fast32_t my_random(int_fast32_t n) { //std:;random, new, c++ functions inste
 
 // my_atoll()
 
-int_fast64_t my_atoll(const char string[]) {
+S64 my_atoll(const char string[]) {
 
-	int_fast64_t n;
+	S64 n;
 	sscanf(string, S64_FORMAT, &n);
 	return n;
 }
 
 // my_round()
 
-int_fast32_t my_round(double x) {
+S32 my_round(double x) {
 	return int(floor(x + 0.5));
 }
 
@@ -91,7 +91,7 @@ void my_fatal(const char format[], ...) {
 
 // my_file_read_line()
 
-bool my_file_read_line(FILE *file, char string[], int_fast32_t size) {
+bool my_file_read_line(FILE *file, char string[], S32 size) {
 
 	ASSERT(file != nullptr);
 	ASSERT(string != nullptr);
@@ -125,7 +125,7 @@ bool my_string_equal(const char string_1[], const char string_2[]) {
 	ASSERT(string_2 != nullptr);
 
 	while (true) {
-		int_fast32_t c1 = *string_1++, c2 = *string_2++;
+		S32 c1 = *string_1++, c2 = *string_2++;
 		if (tolower(c1) != tolower(c2)) return false;
 		if (c1 == '\0') return true;
 	}

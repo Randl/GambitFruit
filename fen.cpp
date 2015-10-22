@@ -28,20 +28,20 @@ void board_from_fen(board_t *board, const char fen[]) {
 
 	board_clear(board);
 
-	int_fast32_t pos = 0, c = fen[pos];
+	S32 pos = 0, c = fen[pos];
 
 	// piece placement
-	for (int_fast32_t rank = Rank8; rank >= Rank1; --rank) {
-		for (int_fast32_t file = FileA; file <= FileH;) {
+	for (S32 rank = Rank8; rank >= Rank1; --rank) {
+		for (S32 file = FileA; file <= FileH;) {
 			if (c >= '1' && c <= '8') { // empty square(s)
-				int_fast32_t      len = c - '0';
-				for (int_fast32_t i   = 0; i < len; ++i) {
+				S32 len = c - '0';
+				for (S32 i = 0; i < len; ++i) {
 					if (file > FileH) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 					board->square[SQUARE_MAKE(file, rank)] = Empty;
 					++file;
 				}
 			} else { // piece
-				int_fast32_t piece = piece_from_char(c);
+				S32 piece = piece_from_char(c);
 				if (piece == PieceNone256) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 				board->square[SQUARE_MAKE(file, rank)] = piece;
 				++file;
@@ -108,21 +108,21 @@ void board_from_fen(board_t *board, const char fen[]) {
 	if (c != ' ') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 	c = fen[++pos];
 
-	int_fast32_t sq;
+	S32 sq;
 	if (c == '-') { // no en-passant
 		sq = SquareNone;
 		c  = fen[++pos];
 	} else {
 		if (c < 'a' || c > 'h') my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
-		int_fast32_t file = file_from_char(c);
+		S32 file = file_from_char(c);
 		c = fen[++pos];
 
 		if (c != (COLOUR_IS_WHITE(board->turn) ? '6' : '3')) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
-		int_fast32_t rank = rank_from_char(c);
+		S32 rank = rank_from_char(c);
 		c = fen[++pos];
 
 		sq = SQUARE_MAKE(file, rank);
-		const int_fast32_t pawn = SQUARE_EP_DUAL(sq);
+		const S32 pawn = SQUARE_EP_DUAL(sq);
 
 		if (board->square[sq] != Empty
 			|| board->square[pawn] != PAWN_MAKE(COLOUR_OPP(board->turn))
@@ -157,7 +157,7 @@ void board_from_fen(board_t *board, const char fen[]) {
 
 // board_to_fen()
 
-bool board_to_fen(const board_t *board, char fen[], int_fast32_t size) {
+bool board_to_fen(const board_t *board, char fen[], S32 size) {
 
 	ASSERT(board != nullptr);
 	ASSERT(fen != nullptr);
@@ -166,20 +166,20 @@ bool board_to_fen(const board_t *board, char fen[], int_fast32_t size) {
 	// init
 	if (size < 92) return false;
 
-	int_fast32_t pos = 0;
+	S32 pos = 0;
 
 	// piece placement
 
-	for (int_fast32_t rank = Rank8; rank >= Rank1; --rank) {
-		for (int_fast32_t file = FileA; file <= FileH;) {
-			int_fast32_t       c;
-			const int_fast32_t sq    = SQUARE_MAKE(file, rank);
-			const int_fast32_t piece = board->square[sq];
+	for (S32 rank = Rank8; rank >= Rank1; --rank) {
+		for (S32 file = FileA; file <= FileH;) {
+			S32 c;
+			const S32 sq = SQUARE_MAKE(file, rank);
+			const S32 piece = board->square[sq];
 			ASSERT(piece == Empty || piece_is_ok(piece));
 
 			if (piece == Empty) {
 
-				int_fast32_t len = 0;
+				S32 len = 0;
 				for (; file <= FileH && board->square[SQUARE_MAKE(file, rank)] == Empty; ++file)
 					++len;
 

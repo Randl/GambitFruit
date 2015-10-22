@@ -8,6 +8,17 @@
 #include <cstdint>
 #include <cstdio>
 
+//types
+typedef int_fast64_t S64;
+typedef int_fast32_t S32;
+typedef int_fast16_t S16;
+typedef int_fast8_t S8;
+typedef uint_fast64_t U64;
+typedef uint_fast32_t U32;
+typedef uint_fast16_t U16;
+typedef uint_fast8_t U8;
+
+
 // constants
 
 #undef FALSE
@@ -74,7 +85,7 @@ BitBases
 #define _BPAWN    12
 #define _NOTFOUND 99999
 
-typedef int_fast32_t (*PPROBE_EGBB)(int player, int *piece, int *square);
+typedef S32 (*PPROBE_EGBB)(int player, int *piece, int *square);
 extern PPROBE_EGBB probe_egbb;
 extern bool        egbb_is_loaded;
 /*
@@ -86,18 +97,18 @@ end BitBases
 extern void util_init();
 
 extern void         my_random_init();
-extern int_fast32_t my_random(int n);
+extern S32 my_random(int n);
 
-extern int_fast64_t my_atoll(const char string[]);
+extern S64 my_atoll(const char string[]);
 
-extern int_fast32_t my_round(double x);
+extern S32 my_round(double x);
 
 extern void *my_malloc(size_t size);
 extern void my_free(void *address);
 
 extern void my_fatal(const char format[], ...);
 
-extern bool my_file_read_line(FILE *file, char string[], int_fast32_t size);
+extern bool my_file_read_line(FILE *file, char string[], S32 size);
 
 extern bool my_string_empty(const char string[]);
 extern bool my_string_equal(const char string_1[], const char string_2[]);

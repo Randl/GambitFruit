@@ -10,40 +10,40 @@
 #include "option.h"
 
 // constants
-static constexpr uint_fast16_t TableSize = 256; // 4kB
+static constexpr U16 TableSize = 256; // 4kB
 
-static constexpr uint_fast8_t PawnPhase   = 0;
-static constexpr uint_fast8_t KnightPhase = 1;
-static constexpr uint_fast8_t BishopPhase = 1;
-static constexpr uint_fast8_t RookPhase   = 2;
-static constexpr uint_fast8_t QueenPhase  = 4;
+static constexpr U8 PawnPhase = 0;
+static constexpr U8 KnightPhase = 1;
+static constexpr U8 BishopPhase = 1;
+static constexpr U8 RookPhase = 2;
+static constexpr U8 QueenPhase = 4;
 
-static constexpr int_fast16_t TotalPhase =
+static constexpr S16 TotalPhase =
 								  PawnPhase * 16 + KnightPhase * 4 + BishopPhase * 4 + RookPhase * 4 + QueenPhase * 2;
 
 // constants and variables
 
-//static /* const */ int_fast32_t MaterialWeight = 256; // 100%
+//static /* const */ S32 MaterialWeight = 256; // 100%
 
-static /*const*/ int_fast32_t PawnOpening   = 80; // was 100
-static /*const*/ int_fast32_t PawnEndgame   = 90; // was 100
-static /*const*/ int_fast32_t KnightOpening = 320;
-static /*const*/ int_fast32_t KnightEndgame = 320;
-static /*const*/ int_fast32_t BishopOpening = 325;
-static /*const*/ int_fast32_t BishopEndgame = 325;
-static /*const*/ int_fast32_t RookOpening   = 500;
-static /*const*/ int_fast32_t RookEndgame   = 500;
-static /*const*/ int_fast32_t QueenOpening  = 975;
-static /*const*/ int_fast32_t QueenEndgame  = 975;
+static /*const*/ S32 PawnOpening = 80; // was 100
+static /*const*/ S32 PawnEndgame = 90; // was 100
+static /*const*/ S32 KnightOpening = 320;
+static /*const*/ S32 KnightEndgame = 320;
+static /*const*/ S32 BishopOpening = 325;
+static /*const*/ S32 BishopEndgame = 325;
+static /*const*/ S32 RookOpening = 500;
+static /*const*/ S32 RookEndgame = 500;
+static /*const*/ S32 QueenOpening = 975;
+static /*const*/ S32 QueenEndgame = 975;
 
-static /*const*/ int_fast32_t BishopPairOpening = 50;
-static /*const*/ int_fast32_t BishopPairEndgame = 50;
+static /*const*/ S32 BishopPairOpening = 50;
+static /*const*/ S32 BishopPairEndgame = 50;
 
-static /*const*/ int_fast32_t Queen_Knight_combo = 15; // with no rooks
-static /*const*/ int_fast32_t Rook_Bishop_combo  = 15;  // with no queens
-static /*const*/ int_fast32_t bad_trade_value    = 50; // not used like in crafty... (will be for 3 minors vs queen)
+static /*const*/ S32 Queen_Knight_combo = 15; // with no rooks
+static /*const*/ S32 Rook_Bishop_combo = 15;  // with no queens
+static /*const*/ S32 bad_trade_value = 50; // not used like in crafty... (will be for 3 minors vs queen)
 
-static constexpr std::array<int_fast8_t, 17> RookPawnPenalty = {15, 15, 13, 11, 9, 7, 5, 3, 1, -1, -3, -5, -7, -9, -11,
+static constexpr std::array<S8, 17> RookPawnPenalty = {15, 15, 13, 11, 9, 7, 5, 3, 1, -1, -3, -5, -7, -9, -11,
 																-13, -15};
 
 // types
@@ -51,14 +51,14 @@ static constexpr std::array<int_fast8_t, 17> RookPawnPenalty = {15, 15, 13, 11, 
 typedef material_info_t entry_t;
 
 struct material_t {
-	int_fast64_t  read_nb;
-	int_fast64_t  read_hit;
-	int_fast64_t  write_nb;
-	int_fast64_t  write_collision;
+    S64 read_nb;
+    S64 read_hit;
+    S64 write_nb;
+    S64 write_collision;
 	entry_t       *table;
-	uint_fast32_t size;
-	uint_fast32_t mask;
-	uint_fast32_t used;
+    U32 size;
+    U32 mask;
+    U32 used;
 };
 
 // variables
@@ -67,7 +67,7 @@ entry_t material_table[TableSize];
 
 static material_t Material[1];
 
-uint_fast8_t bitbase_pieces = 2;
+U8 bitbase_pieces = 2;
 
 // prototypes
 
@@ -149,7 +149,7 @@ void material_get_info(material_info_t *info, const board_t *board) {
 	// probe
 	Material->read_nb++;
 
-	uint_fast64_t key    = board->material_key;
+	U64 key = board->material_key;
 	entry_t       *entry = &Material->table[KEY_INDEX(key) & Material->mask];
 
 	if (entry->lock == KEY_LOCK(key)) {
@@ -182,10 +182,10 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	int_fast32_t wp, wn, wb, wr, wq;
-	int_fast32_t bp, bn, bb, br, bq;
-	int_fast32_t wt, bt;
-	int_fast32_t wm, bm;
+	S32 wp, wn, wb, wr, wq;
+	S32 bp, bn, bb, br, bq;
+	S32 wt, bt;
+	S32 wm, bm;
 
 	wp = board->number[WhitePawn12];
 	wn = board->number[WhiteKnight12];
@@ -206,7 +206,7 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	bm = bb + bn;
 
 	// recogniser
-	uint_fast8_t recog = MAT_NONE;
+	U8 recog = MAT_NONE;
 
 	if (false) {
 	} /*else if (wt == 0 && bt == 0) {
@@ -220,8 +220,8 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	}
 
 	// draw node (exact-draw recogniser)
-	uint_fast8_t                       flags = 0; // TODO: MOVE ME
-	std::array<uint_fast8_t, ColourNb> cflags;
+	U8 flags = 0; // TODO: MOVE ME
+	std::array<U8, ColourNb> cflags;
 	cflags[0] = cflags[1] = 0;
 
 	// bishop endgame
@@ -230,18 +230,18 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 		flags |= DrawBishopFlag;
 
 	// multipliers
-	std::array<uint_fast8_t, ColourNb> mul;
+	std::array<U8, ColourNb> mul;
 	mul[0] = mul[1] = 16; // 1
 
 	// white multiplier
 	if (wp == 0) { // white has no pawns
-		int_fast32_t w_maj = wq * 2 + wr;
-		int_fast32_t w_min = wb + wn;
-		int_fast32_t w_tot = w_maj * 2 + w_min;
+		S32 w_maj = wq * 2 + wr;
+		S32 w_min = wb + wn;
+		S32 w_tot = w_maj * 2 + w_min;
 
-		int_fast32_t b_maj = bq * 2 + br;
-		int_fast32_t b_min = bb + bn;
-		int_fast32_t b_tot = b_maj * 2 + b_min;
+		S32 b_maj = bq * 2 + br;
+		S32 b_min = bb + bn;
+		S32 b_tot = b_maj * 2 + b_min;
 
 		if (false) {
 		} else if (w_tot == 1) {
@@ -271,13 +271,13 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 		}
 
 	} else if (wp == 1) { // white has one pawn
-		int_fast32_t w_maj = wq * 2 + wr;
-		int_fast32_t w_min = wb + wn;
-		int_fast32_t w_tot = w_maj * 2 + w_min;
+		S32 w_maj = wq * 2 + wr;
+		S32 w_min = wb + wn;
+		S32 w_tot = w_maj * 2 + w_min;
 
-		int_fast32_t b_maj = bq * 2 + br;
-		int_fast32_t b_min = bb + bn;
-		int_fast32_t b_tot = b_maj * 2 + b_min;
+		S32 b_maj = bq * 2 + br;
+		S32 b_min = bb + bn;
+		S32 b_tot = b_maj * 2 + b_min;
 
 		if (false) {
 		} else if (b_min != 0) {
@@ -327,13 +327,13 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 
 	if (bp == 0) { // black has no pawns
 
-		int_fast32_t w_maj = wq * 2 + wr;
-		int_fast32_t w_min = wb + wn;
-		int_fast32_t w_tot = w_maj * 2 + w_min;
+		S32 w_maj = wq * 2 + wr;
+		S32 w_min = wb + wn;
+		S32 w_tot = w_maj * 2 + w_min;
 
-		int_fast32_t b_maj = bq * 2 + br;
-		int_fast32_t b_min = bb + bn;
-		int_fast32_t b_tot = b_maj * 2 + b_min;
+		S32 b_maj = bq * 2 + br;
+		S32 b_min = bb + bn;
+		S32 b_tot = b_maj * 2 + b_min;
 
 		if (false) {
 		} else if (b_tot == 1) {
@@ -365,13 +365,13 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 		}
 	} else if (bp == 1) { // black has one pawn
 
-		int_fast32_t w_maj = wq * 2 + wr;
-		int_fast32_t w_min = wb + wn;
-		int_fast32_t w_tot = w_maj * 2 + w_min;
+		S32 w_maj = wq * 2 + wr;
+		S32 w_min = wb + wn;
+		S32 w_tot = w_maj * 2 + w_min;
 
-		int_fast32_t b_maj = bq * 2 + br;
-		int_fast32_t b_min = bb + bn;
-		int_fast32_t b_tot = b_maj * 2 + b_min;
+		S32 b_maj = bq * 2 + br;
+		S32 b_min = bb + bn;
+		S32 b_tot = b_maj * 2 + b_min;
 
 		if (false) {
 		} else if (w_min != 0) {
@@ -434,7 +434,7 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	if (wq >= 1 && wq + wr + wb + wn >= 2) cflags[Black] |= MatKingFlag;
 
 	// phase (0: opening -> 256: endgame)
-	int_fast16_t phase = TotalPhase;
+	S16 phase = TotalPhase;
 
 	phase -= wp * PawnPhase;
 	phase -= wn * KnightPhase;
@@ -456,10 +456,10 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	ASSERT(phase >= 0 && phase <= 256);
 
 	// material
-	int_fast16_t opening = 0, endgame = 0;
+	S16 opening = 0, endgame = 0;
 
 	/* Thomas */
-	int_fast32_t owf, obf, ewf, ebf;
+	S32 owf, obf, ewf, ebf;
 	owf = wn * KnightOpening + wb * BishopOpening + wr * RookOpening + wq * QueenOpening;
 	//info->pv[White] = owf;
 	opening += owf;
@@ -478,8 +478,8 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	endgame -= bp * PawnEndgame;
 	endgame -= ebf;
 
-	//int_fast8_t WhiteMinors,BlackMinors;
-	int_fast8_t WhiteMajors, BlackMajors;
+	//S8 WhiteMinors,BlackMinors;
+	S8 WhiteMajors, BlackMajors;
 	//WhiteMinors = wn + wb;
 	//BlackMinors = bn + bb;
 	WhiteMajors = wq + wr;
@@ -575,10 +575,10 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	}
 
 	/* //TODO: test
-	constexpr int_fast16_t RookElephantiasisOpeningPenalty = -10;
-	constexpr int_fast16_t RookElephantiasisEndgamePenalty = -50;
-	constexpr int_fast16_t QueenElephantiasisOpeningPenalty = -20;
-	constexpr int_fast16_t QueenElephantiasisEndgamePenalty = -100;
+	constexpr S16 RookElephantiasisOpeningPenalty = -10;
+	constexpr S16 RookElephantiasisEndgamePenalty = -50;
+	constexpr S16 QueenElephantiasisOpeningPenalty = -20;
+	constexpr S16 QueenElephantiasisEndgamePenalty = -100;
 	/* Elephantiasis effect by Harm Geert Muller. Stronger pieces lose value in the presence of lower-valued pieces of
 	 the opponent, because the latter can easily interdict their access to part of the board. * /
 	if (bb > 0 || bn > 0) {

@@ -11,13 +11,13 @@
 
 // prototypes
 
-static bool move_is_pseudo_debug(uint_fast16_t move, board_t *board);
+static bool move_is_pseudo_debug(U16 move, board_t *board);
 
 // functions
 
 // move_is_pseudo()
 
-bool move_is_pseudo(uint_fast16_t move, board_t *board) {
+bool move_is_pseudo(U16 move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -31,28 +31,28 @@ bool move_is_pseudo(uint_fast16_t move, board_t *board) {
 	ASSERT((move & ~07777) == 0);
 
 	// init
-	const int_fast8_t me = board->turn;//, opp = COLOUR_OPP(board->turn);
+	const S8 me = board->turn;//, opp = COLOUR_OPP(board->turn);
 
 	// from
-	const int_fast32_t from = MOVE_FROM(move);
+	const S32 from = MOVE_FROM(move);
 	ASSERT(SQUARE_IS_OK(from));
 
-	const int_fast32_t piece = board->square[from];
+	const S32 piece = board->square[from];
 	if (!COLOUR_IS(piece, me)) return false;
 	ASSERT(piece_is_ok(piece));
 
 	// to
-	const int_fast32_t to = MOVE_TO(move);
+	const S32 to = MOVE_TO(move);
 	ASSERT(SQUARE_IS_OK(to));
 
-	const int_fast32_t capture = board->square[to];
+	const S32 capture = board->square[to];
 	if (COLOUR_IS(capture, me)) return false;
 
 	// move
 	if (PIECE_IS_PAWN(piece)) {
 		if (SQUARE_IS_PROMOTE(to)) return false;
 
-		const int_fast32_t inc = PAWN_MOVE_INC(me), delta = to - from;
+		const S32 inc = PAWN_MOVE_INC(me), delta = to - from;
 		ASSERT(delta_is_ok(delta));
 
 		if (capture == Empty) {
@@ -79,7 +79,7 @@ bool move_is_pseudo(uint_fast16_t move, board_t *board) {
 
 // quiet_is_pseudo()
 
-bool quiet_is_pseudo(uint_fast16_t move, board_t *board) {
+bool quiet_is_pseudo(U16 move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -95,19 +95,19 @@ bool quiet_is_pseudo(uint_fast16_t move, board_t *board) {
 	ASSERT((move & ~07777) == 0);
 
 	// init
-	const int_fast8_t me = board->turn;// opp = COLOUR_OPP(board->turn);
+	const S8 me = board->turn;// opp = COLOUR_OPP(board->turn);
 
 	// from
-	const int_fast32_t from = MOVE_FROM(move);
+	const S32 from = MOVE_FROM(move);
 	ASSERT(SQUARE_IS_OK(from));
 
-	const int_fast32_t piece = board->square[from];
+	const S32 piece = board->square[from];
 	if (!COLOUR_IS(piece, me)) return false;
 
 	ASSERT(piece_is_ok(piece));
 
 	// to
-	const int_fast32_t to = MOVE_TO(move);
+	const S32 to = MOVE_TO(move);
 	ASSERT(SQUARE_IS_OK(to));
 
 	if (board->square[to] != Empty) return false; // capture
@@ -115,7 +115,7 @@ bool quiet_is_pseudo(uint_fast16_t move, board_t *board) {
 	// move
 	if (PIECE_IS_PAWN(piece)) {
 		if (SQUARE_IS_PROMOTE(to)) return false;
-		const int_fast32_t inc = PAWN_MOVE_INC(me), delta = to - from;
+		const S32 inc = PAWN_MOVE_INC(me), delta = to - from;
 		ASSERT(delta_is_ok(delta));
 
 		// pawn push
@@ -133,14 +133,14 @@ bool quiet_is_pseudo(uint_fast16_t move, board_t *board) {
 
 // pseudo_is_legal()
 
-bool pseudo_is_legal(uint_fast16_t move, board_t *board) {
+bool pseudo_is_legal(U16 move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast8_t me   = board->turn, opp = COLOUR_OPP(me);
-	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
+	const S8 me = board->turn, opp = COLOUR_OPP(me);
+	const S32 from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
 	ASSERT(COLOUR_IS(piece, me));
 
 	// slow test for en-passant captures
@@ -170,7 +170,7 @@ bool pseudo_is_legal(uint_fast16_t move, board_t *board) {
 	// pins
 
 	if (is_pinned(board, from, me)) {
-		const int_fast32_t king = KING_POS(board, me);
+		const S32 king = KING_POS(board, me);
 		return DELTA_INC_LINE(king - to) == DELTA_INC_LINE(king - from); // does not discover the line
 	}
 
@@ -179,7 +179,7 @@ bool pseudo_is_legal(uint_fast16_t move, board_t *board) {
 
 // move_is_pseudo_debug()
 
-static bool move_is_pseudo_debug(uint_fast16_t move, board_t *board) {
+static bool move_is_pseudo_debug(U16 move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);

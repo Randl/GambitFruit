@@ -10,7 +10,7 @@
 
 // constants
 
-constexpr int_fast16_t RandomNb = 781;
+constexpr S16 RandomNb = 781;
 
 // macros
 
@@ -18,7 +18,7 @@ constexpr int_fast16_t RandomNb = 781;
 
 // constants
 
-constexpr std::array<uint_fast64_t, RandomNb> Random64 = {
+constexpr std::array<U64, RandomNb> Random64 = {
 	U64(0x9D39247E33776D41), U64(0x2AF7398005AAA5C7), U64(0x44DB015024623547), U64(0x9C15F73E62A76AE2),
 	U64(0x75834465489C0C89), U64(0x3290AC3A203001BF), U64(0x0FBBAD1F61042279), U64(0xE83A908FF2FB60CA),
 	U64(0x0D7E765D58755C10), U64(0x1A083822CEAFE02D), U64(0x9605D5F0E25EC3B0), U64(0xD021FF5CD13A2ED5),

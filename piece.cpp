@@ -13,8 +13,8 @@ static const char PieceString[12 + 1] = "PpNnBbRrQqKk";
 
 // variables
 
-std::array<int_fast32_t, PieceNb> PieceTo12;
-std::array<int_fast32_t, PieceNb> PieceOrder;
+std::array<S32, PieceNb> PieceTo12;
+std::array<S32, PieceNb> PieceOrder;
 
 std::array<const inc_t *, PieceNb> PieceInc;
 
@@ -25,24 +25,24 @@ std::array<const inc_t *, PieceNb> PieceInc;
 void piece_init() {
 	// PieceTo12[]
 
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+	for (S32 piece = 0; piece < PieceNb; ++piece)
 		PieceTo12[piece] = -1;
 
-	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12)
+	for (S32 piece_12 = 0; piece_12 < 12; ++piece_12)
 		PieceTo12[PieceFrom12[piece_12]] = piece_12;
 
 
 	// PieceOrder[]
 
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+	for (S32 piece = 0; piece < PieceNb; ++piece)
 		PieceOrder[piece] = -1;
 
-	for (int_fast32_t piece_12 = 0; piece_12 < 12; ++piece_12)
+	for (S32 piece_12 = 0; piece_12 < 12; ++piece_12)
 		PieceOrder[PieceFrom12[piece_12]] = piece_12 >> 1;
 
 	// PieceInc[]
 
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+	for (S32 piece = 0; piece < PieceNb; ++piece)
 		PieceInc[piece] = nullptr;
 
 	PieceInc[WhiteKnight256] = KnightInc.data();
@@ -60,7 +60,7 @@ void piece_init() {
 
 // piece_is_ok()
 
-bool piece_is_ok(int_fast32_t piece) {
+bool piece_is_ok(S32 piece) {
 
 	if (piece < 0 || piece >= PieceNb) return false;
 	if (PieceTo12[piece] < 0) return false;
@@ -70,7 +70,7 @@ bool piece_is_ok(int_fast32_t piece) {
 
 // piece_from_12()
 
-int_fast32_t piece_from_12(int_fast32_t piece_12) {
+S32 piece_from_12(S32 piece_12) {
 
 	ASSERT(piece_12 >= 0 && piece_12 < 12);
 
@@ -79,7 +79,7 @@ int_fast32_t piece_from_12(int_fast32_t piece_12) {
 
 // piece_to_char()
 
-int_fast32_t piece_to_char(int_fast32_t piece) {
+S32 piece_to_char(S32 piece) {
 
 	ASSERT(piece_is_ok(piece));
 
@@ -88,7 +88,7 @@ int_fast32_t piece_to_char(int_fast32_t piece) {
 
 // piece_from_char()
 
-int_fast32_t piece_from_char(int_fast32_t c) {
+S32 piece_from_char(S32 c) {
 
 	const char *ptr = strchr(PieceString, c);
 	if (ptr == nullptr) return PieceNone256;

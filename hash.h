@@ -12,32 +12,32 @@
 
 // macros
 
-#define KEY_INDEX(key) (uint_fast32_t(key))
-#define KEY_LOCK(key)  (uint_fast32_t((key)>>32))
+#define KEY_INDEX(key) (U32(key))
+#define KEY_LOCK(key)  (U32((key)>>32))
 
 // constants
 
-constexpr int_fast32_t RandomPiece     = 0; // 12 * 64
-constexpr int_fast32_t RandomCastle    = 768; // 4
-constexpr int_fast32_t RandomEnPassant = 772; // 8
-constexpr int_fast32_t RandomTurn      = 780; // 1
+constexpr S32 RandomPiece = 0; // 12 * 64
+constexpr S32 RandomCastle = 768; // 4
+constexpr S32 RandomEnPassant = 772; // 8
+constexpr S32 RandomTurn = 780; // 1
 
 // variables
 
-extern std::array<uint_fast64_t, 16> Castle64;
+extern std::array<U64, 16> Castle64;
 
 // functions
 
 extern void hash_init();
 
-extern uint_fast64_t hash_key(const board_t *board);
-extern uint_fast64_t hash_pawn_key(const board_t *board);
-extern uint_fast64_t hash_material_key(const board_t *board);
+extern U64 hash_key(const board_t *board);
+extern U64 hash_pawn_key(const board_t *board);
+extern U64 hash_material_key(const board_t *board);
 
-extern uint_fast64_t hash_piece_key(int_fast32_t piece, int_fast32_t square);
-extern uint_fast64_t hash_castle_key(int_fast32_t flags);
-extern uint_fast64_t hash_ep_key(int_fast32_t square);
-extern uint_fast64_t hash_turn_key(int_fast8_t colour);
+extern U64 hash_piece_key(S32 piece, S32 square);
+extern U64 hash_castle_key(S32 flags);
+extern U64 hash_ep_key(S32 square);
+extern U64 hash_turn_key(S8 colour);
 
 #endif // !defined HASH_H
 

@@ -14,30 +14,30 @@
 
 // constants
 
-constexpr int_fast32_t Empty = 0;
-constexpr int_fast32_t Edge  = Knight64; // HACK: uncoloured knight
+constexpr S32 Empty = 0;
+constexpr S32 Edge = Knight64; // HACK: uncoloured knight
 
-constexpr int_fast32_t WP = WhitePawn256;
-constexpr int_fast32_t WN = WhiteKnight256;
-constexpr int_fast32_t WB = WhiteBishop256;
-constexpr int_fast32_t WR = WhiteRook256;
-constexpr int_fast32_t WQ = WhiteQueen256;
-constexpr int_fast32_t WK = WhiteKing256;
+constexpr S32 WP = WhitePawn256;
+constexpr S32 WN = WhiteKnight256;
+constexpr S32 WB = WhiteBishop256;
+constexpr S32 WR = WhiteRook256;
+constexpr S32 WQ = WhiteQueen256;
+constexpr S32 WK = WhiteKing256;
 
-constexpr int_fast32_t BP = BlackPawn256;
-constexpr int_fast32_t BN = BlackKnight256;
-constexpr int_fast32_t BB = BlackBishop256;
-constexpr int_fast32_t BR = BlackRook256;
-constexpr int_fast32_t BQ = BlackQueen256;
-constexpr int_fast32_t BK = BlackKing256;
+constexpr S32 BP = BlackPawn256;
+constexpr S32 BN = BlackKnight256;
+constexpr S32 BB = BlackBishop256;
+constexpr S32 BR = BlackRook256;
+constexpr S32 BQ = BlackQueen256;
+constexpr S32 BK = BlackKing256;
 
-constexpr int_fast8_t FlagsNone             = 0;
-constexpr int_fast8_t FlagsWhiteKingCastle  = 1 << 0;
-constexpr int_fast8_t FlagsWhiteQueenCastle = 1 << 1;
-constexpr int_fast8_t FlagsBlackKingCastle  = 1 << 2;
-constexpr int_fast8_t FlagsBlackQueenCastle = 1 << 3;
+constexpr S8 FlagsNone = 0;
+constexpr S8 FlagsWhiteKingCastle = 1 << 0;
+constexpr S8 FlagsWhiteQueenCastle = 1 << 1;
+constexpr S8 FlagsBlackKingCastle = 1 << 2;
+constexpr S8 FlagsBlackQueenCastle = 1 << 3;
 
-constexpr uint_fast16_t StackSize = 4096;
+constexpr U16 StackSize = 4096;
 
 // macros
 
@@ -47,36 +47,36 @@ constexpr uint_fast16_t StackSize = 4096;
 
 struct board_t {
 
-	uint_fast64_t key;
-	uint_fast64_t pawn_key;
-	uint_fast64_t material_key;
+    U64 key;
+    U64 pawn_key;
+    U64 material_key;
 
-	std::vector<uint_fast64_t> stack;
+    std::vector<U64> stack;
 
-	std::array<int_fast16_t, ColourNb> piece_material; // Thomas
+    std::array<S16, ColourNb> piece_material; // Thomas
 
-	std::array<int_fast32_t, SquareNb> square;
-	std::array<int_fast8_t, SquareNb>  pos;
+    std::array<S32, SquareNb> square;
+    std::array<S8, SquareNb> pos;
 
 	std::array<std::vector<sq_t>, ColourNb> piece;
 	std::array<std::vector<sq_t>, ColourNb> pawn;
 
-	std::array<int_fast32_t, 12> number; // was 16
+    std::array<S32, 12> number; // was 16
 
-	std::array<std::array<int_fast8_t, FileNb>, ColourNb> pawn_file;
+    std::array<std::array<S8, FileNb>, ColourNb> pawn_file;
 
 
-	int_fast32_t flags;
-	int_fast32_t ep_square;
+    S32 flags;
+    S32 ep_square;
 
-	int_fast32_t cap_sq;
+    S32 cap_sq;
 
-	int_fast32_t opening;
-	int_fast32_t endgame;
-	int_fast32_t pvalue; //Ryan
+    S32 opening;
+    S32 endgame;
+    S32 pvalue; //Ryan
 
-    uint_fast16_t ply_nb;
-    int_fast8_t   piece_nb;  //remove me?
+    U16 ply_nb;
+    S8 piece_nb;  //remove me?
 
 	bool turn;
 };
@@ -97,9 +97,9 @@ extern bool board_is_stalemate(board_t *board);
 
 extern bool board_is_repetition(const board_t *board);
 
-extern int_fast32_t board_material(const board_t *board);
-extern int_fast32_t board_opening(const board_t *board);
-extern int_fast32_t board_endgame(const board_t *board);
+extern S32 board_material(const board_t *board);
+extern S32 board_opening(const board_t *board);
+extern S32 board_endgame(const board_t *board);
 
 #endif // !defined BOARD_H
 

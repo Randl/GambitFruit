@@ -24,7 +24,7 @@
 static constexpr bool UseCpuTime = false; // false
 
 static constexpr bool        UseShortSearch   = true;
-static constexpr int_fast8_t ShortSearchDepth = 1;
+static constexpr S8 ShortSearchDepth = 1;
 
 static constexpr bool DispBest       = true; // true
 static constexpr bool DispDepthStart = true; // true
@@ -32,12 +32,12 @@ static constexpr bool DispDepthEnd   = true; // true
 static constexpr bool DispRoot       = true; // true
 static constexpr bool DispStat       = true; // true
 
-static constexpr int_fast16_t EasyThreshold = 150;
+static constexpr S16 EasyThreshold = 150;
 static constexpr double       EasyRatio     = 0.20;
 
 static constexpr double EarlyRatio = 0.60;
 
-static constexpr int_fast16_t BadThreshold = 50; // 50
+static constexpr S16 BadThreshold = 50; // 50
 static constexpr bool         UseExtension = true;
 
 // variables
@@ -61,13 +61,13 @@ static void search_send_stat();
 
 // depth_is_ok()
 
-bool depth_is_ok(int_fast32_t depth) {
+bool depth_is_ok(S32 depth) {
 	return depth > -128 && depth < DepthMax;
 }
 
 // height_is_ok()
 
-bool height_is_ok(int_fast32_t height) {
+bool height_is_ok(S32 height) {
 	return height >= 0 && height < HeightMax;
 }
 
@@ -119,7 +119,7 @@ void search_clear() {
 // search()
 
 void search() {
-	for (int_fast32_t i = 0; i < MultiPVMax; ++i) {
+	for (S32 i = 0; i < MultiPVMax; ++i) {
 		save_multipv[SearchCurrent->multipv].mate      = 0;
 		save_multipv[SearchCurrent->multipv].depth     = 0;
 		save_multipv[SearchCurrent->multipv].max_depth = 0;
@@ -136,7 +136,7 @@ void search() {
 
 	// opening book
 	if (option_get_bool("OwnBook") && !SearchInput->infinite) {
-		const uint_fast16_t move = book_move(SearchInput->board);
+		const U16 move = book_move(SearchInput->board);
 		if (move != MoveNone) {
 			// play book move
 			SearchBest[SearchCurrent->multipv].move  = move;
@@ -194,7 +194,7 @@ void search() {
 	// iterative deepening
 	bool search_ready = false;
 
-	for (int_fast32_t depth = 1; depth < DepthMax; ++depth) {
+	for (S32 depth = 1; depth < DepthMax; ++depth) {
 		for (SearchCurrent->multipv = 0; SearchCurrent->multipv <= SearchInput->multipv; SearchCurrent->multipv++) {
 			if (DispDepthStart && SearchCurrent->multipv == 0) send("info depth %d", depth);
 
@@ -276,21 +276,21 @@ void search_update_best() {
 
 	if (DispBest) {
 
-		uint_fast16_t move  = SearchBest[SearchCurrent->multipv].move;
-		int_fast32_t  value = SearchBest[SearchCurrent->multipv].value,
+		U16 move = SearchBest[SearchCurrent->multipv].move;
+		S32 value = SearchBest[SearchCurrent->multipv].value,
 					 flags = SearchBest[SearchCurrent->multipv].flags,
 					 depth = SearchBest[SearchCurrent->multipv].depth;
 		const mv_t   *pv   = SearchBest[SearchCurrent->multipv].pv;
 
-		const int_fast32_t max_depth = SearchCurrent->max_depth;
+		const S32 max_depth = SearchCurrent->max_depth;
 		double             time      = SearchCurrent->time;
-		int_fast64_t       node_nb   = SearchCurrent->node_nb;
+		S64 node_nb = SearchCurrent->node_nb;
 
 		char move_string[256], pv_string[512];
 		move_to_string(move, move_string, 256);
 		pv_to_string(pv, pv_string, 512);
 
-		int_fast32_t mate = value_to_mate(value);
+		S32 mate = value_to_mate(value);
 
 		if (SearchCurrent->multipv == 0) {
 			save_multipv[SearchCurrent->multipv].mate      = mate;
@@ -302,7 +302,7 @@ void search_update_best() {
 			strcpy(save_multipv[SearchCurrent->multipv].pv_string, pv_string);
 		} else {
 			bool         found = false;
-			int_fast32_t i;
+			S32 i;
 			for (i = 0; i < SearchCurrent->multipv; ++i) {
 				if (save_multipv[i].value < value) {
 					found = true;
@@ -311,7 +311,7 @@ void search_update_best() {
 			}
 
 			if (found) {
-				for (int_fast32_t z       = SearchCurrent->multipv; z > i; --z) {
+				for (S32 z = SearchCurrent->multipv; z > i; --z) {
 					save_multipv[z].mate      = save_multipv[z - 1].mate;
 					save_multipv[z].depth     = save_multipv[z - 1].depth;
 					save_multipv[z].max_depth = save_multipv[z - 1].max_depth;
@@ -339,7 +339,7 @@ void search_update_best() {
 		}
 
 		if (depth > 1 || (depth == 1 && SearchCurrent->multipv == SearchInput->multipv)) {
-			for (int_fast32_t i = 0; i <= SearchInput->multipv; ++i) {
+			for (S32 i = 0; i <= SearchInput->multipv; ++i) {
 				if (save_multipv[i].mate == 0) {
 					// normal evaluation
 					if (false) {
@@ -402,9 +402,9 @@ void search_update_root() {
 		search_update_current();
 
 		if (SearchCurrent->time >= 1.0) {
-			const uint_fast16_t move = SearchRoot->move, move_pos = SearchRoot->move_pos;//, move_nb = SearchRoot->move_nb;
+			const U16 move = SearchRoot->move, move_pos = SearchRoot->move_pos;//, move_nb = SearchRoot->move_nb;
 			//double time = SearchCurrent->time;
-			//int_fast64_t node_nb = SearchCurrent->node_nb;
+			//S64 node_nb = SearchCurrent->node_nb;
 			char               move_string[256];
 
 			move_to_string(move, move_string, 256);
@@ -419,7 +419,7 @@ void search_update_root() {
 void search_update_current() {
 
 	my_timer_t   *timer  = SearchCurrent->timer;
-	int_fast64_t node_nb = SearchCurrent->node_nb;
+	S64 node_nb = SearchCurrent->node_nb;
 	const double time    = (UseCpuTime) ? my_timer_elapsed_cpu(timer) : my_timer_elapsed_real(timer),
 				 speed   = (time >= 1.0) ? double(node_nb) / time : 0.0, cpu = my_timer_cpu_usage(timer);
 
@@ -465,7 +465,7 @@ static void search_send_stat() {
 		SearchInfo->last_time = SearchCurrent->time;
 
 		const double       time    = SearchCurrent->time, speed = SearchCurrent->speed, cpu = SearchCurrent->cpu;
-		const int_fast64_t node_nb = SearchCurrent->node_nb;
+		const S64 node_nb = SearchCurrent->node_nb;
 
 		send("info time %.0f nodes " S64_FORMAT " nps %.0f cpuload %.0f", time * 1000.0, node_nb, speed, cpu * 1000.0);
 

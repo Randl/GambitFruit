@@ -10,13 +10,13 @@
 
 // constants
 
-constexpr int_fast8_t ColourNone = -1;
-constexpr int_fast8_t White      = 0;
-constexpr int_fast8_t Black      = 1;
-constexpr int_fast8_t ColourNb   = 2;
+constexpr S8 ColourNone = -1;
+constexpr S8 White = 0;
+constexpr S8 Black = 1;
+constexpr S8 ColourNb = 2;
 
-constexpr int_fast8_t WhiteFlag = 1 << White;
-constexpr int_fast8_t BlackFlag = 1 << Black;
+constexpr S8 WhiteFlag = 1 << White;
+constexpr S8 BlackFlag = 1 << Black;
 
 // macros
 

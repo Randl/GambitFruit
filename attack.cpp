@@ -6,21 +6,20 @@
 
 // variables
 
-std::array<int_fast32_t, DeltaNb> DeltaIncLine;
-std::array<int_fast32_t, DeltaNb> DeltaIncAll;
+std::array<S32, DeltaNb> DeltaIncLine;
+std::array<S32, DeltaNb> DeltaIncAll;
 
-std::array<int_fast32_t, DeltaNb> DeltaMask;
-std::array<int_fast32_t, IncNb>   IncMask;
+std::array<S32, DeltaNb> DeltaMask;
+std::array<S32, IncNb> IncMask;
 
-static std::array<int_fast32_t, PieceNb> PieceCode;
+static std::array<S32, PieceNb> PieceCode;
 
-static std::array<std::array<int_fast32_t, 256>, 4> PieceDeltaSize; // 4kB
-static std::array<std::array<std::array<int_fast32_t, 4>, 256>, 4>
-													PieceDeltaDelta; // 16 kB
+static std::array<std::array<S32, 256>, 4> PieceDeltaSize; // 4kB
+static std::array<std::array<std::array<S32, 4>, 256>, 4> PieceDeltaDelta; // 16 kB
 
 // prototypes
 
-static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t target);
+static void add_attack(S32 piece, S32 king, S32 target);
 
 // functions
 
@@ -30,13 +29,13 @@ void attack_init() {
 
 	// clear
 
-	for (int_fast32_t delta = 0; delta < DeltaNb; ++delta) {
+	for (S32 delta = 0; delta < DeltaNb; ++delta) {
 		DeltaIncLine[delta] = IncNone;
-		DeltaIncAll[delta]  = IncNone;
-		DeltaMask[delta]    = 0;
+		DeltaIncAll[delta] = IncNone;
+		DeltaMask[delta] = 0;
 	}
 
-	for (int_fast32_t inc = 0; inc < IncNb; ++inc)
+	for (S32 inc = 0; inc < IncNb; ++inc)
 		IncMask[inc] = 0;
 
 
@@ -50,9 +49,9 @@ void attack_init() {
 
 	// knight attacks
 
-	for (int_fast32_t dir = 0; dir < 8; ++dir) {
+	for (S32 dir = 0; dir < 8; ++dir) {
 
-		const int_fast32_t delta = KnightInc[dir];
+		const S32 delta = KnightInc[dir];
 		ASSERT(delta_is_ok(delta));
 
 		ASSERT(DeltaIncAll[DeltaOffset + delta] == IncNone);
@@ -62,16 +61,16 @@ void attack_init() {
 
 	// bishop/queen attacks
 
-	for (int_fast32_t dir = 0; dir < 4; ++dir) {
+	for (S32 dir = 0; dir < 4; ++dir) {
 
-		const int_fast32_t inc = BishopInc[dir];
+		const S32 inc = BishopInc[dir];
 		ASSERT(inc != IncNone);
 
 		IncMask[IncOffset + inc] |= BishopFlag;
 
-		for (int_fast32_t dist = 1; dist < 8; ++dist) {
+		for (S32 dist = 1; dist < 8; ++dist) {
 
-			const int_fast32_t delta = inc * dist;
+			const S32 delta = inc * dist;
 			ASSERT(delta_is_ok(delta));
 
 			ASSERT(DeltaIncLine[DeltaOffset + delta] == IncNone);
@@ -84,16 +83,16 @@ void attack_init() {
 
 	// rook/queen attacks
 
-	for (int_fast32_t dir = 0; dir < 4; ++dir) {
+	for (S32 dir = 0; dir < 4; ++dir) {
 
-		const int_fast32_t inc = RookInc[dir];
+		const S32 inc = RookInc[dir];
 		ASSERT(inc != IncNone);
 
 		IncMask[IncOffset + inc] |= RookFlag;
 
-		for (int_fast32_t dist = 1; dist < 8; ++dist) {
+		for (S32 dist = 1; dist < 8; ++dist) {
 
-			const int_fast32_t delta = inc * dist;
+			const S32 delta = inc * dist;
 			ASSERT(delta_is_ok(delta));
 
 			ASSERT(DeltaIncLine[DeltaOffset + delta] == IncNone);
@@ -106,9 +105,9 @@ void attack_init() {
 
 	// king attacks
 
-	for (int_fast32_t dir = 0; dir < 8; ++dir) {
+	for (S32 dir = 0; dir < 8; ++dir) {
 
-		const int_fast32_t delta = KingInc[dir];
+		const S32 delta = KingInc[dir];
 		ASSERT(delta_is_ok(delta));
 
 		DeltaMask[DeltaOffset + delta] |= KingFlag;
@@ -116,7 +115,7 @@ void attack_init() {
 
 	// PieceCode[]
 
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+	for (S32 piece = 0; piece < PieceNb; ++piece)
 		PieceCode[piece] = -1;
 
 	PieceCode[WN] = 0;
@@ -131,28 +130,28 @@ void attack_init() {
 
 	// PieceDeltaSize[][] & PieceDeltaDelta[][][]
 
-	for (int_fast32_t piece = 0; piece < 4; ++piece)
-		for (int_fast32_t delta = 0; delta < 256; ++delta)
+	for (S32 piece = 0; piece < 4; ++piece)
+		for (S32 delta = 0; delta < 256; ++delta)
 			PieceDeltaSize[piece][delta] = 0;
 
-	for (int_fast32_t king = 0; king < SquareNb; ++king)
+	for (S32 king = 0; king < SquareNb; ++king)
 		if (SQUARE_IS_OK(king))
-			for (int_fast32_t from = 0; from < SquareNb; ++from)
+			for (S32 from = 0; from < SquareNb; ++from)
 				if (SQUARE_IS_OK(from)) {
 
-					int_fast32_t inc;
+					S32 inc;
 					// knight
 
-					for (int_fast32_t pos = 0; (inc = KnightInc[pos]) != IncNone; ++pos) {
-						const int_fast32_t to = from + inc;
+					for (S32 pos = 0; (inc = KnightInc[pos]) != IncNone; ++pos) {
+						const S32 to = from + inc;
 						if (SQUARE_IS_OK(to) && DISTANCE(to, king) == 1)
 							add_attack(0, king - from, to - from);
 					}
 
 					// bishop
 
-					for (int_fast32_t pos = 0; (inc = BishopInc[pos]) != IncNone; ++pos)
-						for (int_fast32_t to = from + inc; SQUARE_IS_OK(to); to += inc)
+					for (S32 pos = 0; (inc = BishopInc[pos]) != IncNone; ++pos)
+						for (S32 to = from + inc; SQUARE_IS_OK(to); to += inc)
 							if (DISTANCE(to, king) == 1) {
 								add_attack(1, king - from, to - from);
 								break;
@@ -160,8 +159,8 @@ void attack_init() {
 
 					// rook
 
-					for (int_fast32_t pos = 0; (inc = RookInc[pos]) != IncNone; ++pos)
-						for (int_fast32_t to = from + inc; SQUARE_IS_OK(to); to += inc)
+					for (S32 pos = 0; (inc = RookInc[pos]) != IncNone; ++pos)
+						for (S32 to = from + inc; SQUARE_IS_OK(to); to += inc)
 							if (DISTANCE(to, king) == 1) {
 								add_attack(2, king - from, to - from);
 								break;
@@ -169,17 +168,17 @@ void attack_init() {
 
 					// queen
 
-					for (int_fast32_t pos = 0; (inc = QueenInc[pos]) != IncNone; ++pos)
-						for (int_fast32_t to = from + inc; SQUARE_IS_OK(to); to += inc)
+					for (S32 pos = 0; (inc = QueenInc[pos]) != IncNone; ++pos)
+						for (S32 to = from + inc; SQUARE_IS_OK(to); to += inc)
 							if (DISTANCE(to, king) == 1) {
 								add_attack(3, king - from, to - from);
 								break;
 							}
 				}
 
-	for (int_fast32_t piece = 0; piece < 4; ++piece)
-		for (int_fast32_t delta = 0; delta < 256; ++delta) {
-			const int_fast32_t size = PieceDeltaSize[piece][delta];
+	for (S32 piece = 0; piece < 4; ++piece)
+		for (S32 delta = 0; delta < 256; ++delta) {
+			const S32 size = PieceDeltaSize[piece][delta];
 			ASSERT(size >= 0 && size < 3);
 			PieceDeltaDelta[piece][delta][size] = DeltaNone;
 		}
@@ -187,16 +186,16 @@ void attack_init() {
 
 // add_attack()
 
-static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t target) {
+static void add_attack(S32 piece, S32 king, S32 target) {
 
 	ASSERT(piece >= 0 && piece < 4);
 	ASSERT(delta_is_ok(king));
 	ASSERT(delta_is_ok(target));
 
-	int_fast32_t size = PieceDeltaSize[piece][DeltaOffset + king];
+	S32 size = PieceDeltaSize[piece][DeltaOffset + king];
 	ASSERT(size >= 0 && size < 3);
 
-	for (int_fast32_t i = 0; i < size; ++i)
+	for (S32 i = 0; i < size; ++i)
 		if (PieceDeltaDelta[piece][DeltaOffset + king][i] == target) return; // already in the table
 
 	if (size < 2) {
@@ -208,7 +207,7 @@ static void add_attack(int_fast32_t piece, int_fast32_t king, int_fast32_t targe
 
 // is_attacked()
 
-bool is_attacked(const board_t *board, int_fast32_t to, int_fast8_t colour) {
+bool is_attacked(const board_t *board, S32 to, S8 colour) {
 
 	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(to));
@@ -216,8 +215,8 @@ bool is_attacked(const board_t *board, int_fast32_t to, int_fast8_t colour) {
 
 	// pawn attack
 
-	int_fast32_t inc  = PAWN_MOVE_INC(colour);
-	int_fast32_t pawn = PAWN_MAKE(colour);
+	S32 inc = PAWN_MOVE_INC(colour);
+	S32 pawn = PAWN_MAKE(colour);
 
 	if (board->square[to - (inc - 1)] == pawn) return true;
 	if (board->square[to - (inc + 1)] == pawn) return true;
@@ -225,15 +224,15 @@ bool is_attacked(const board_t *board, int_fast32_t to, int_fast8_t colour) {
 	// piece attack
 	for (auto from = board->piece[colour].begin(); from != board->piece[colour].end(); ++from) {
 
-		const int_fast32_t piece = board->square[*from];
-		const int_fast32_t delta = to - *from;
+		const S32 piece = board->square[*from];
+		const S32 delta = to - *from;
 
 		if (PSEUDO_ATTACK(piece, delta)) {
 
-			const int_fast32_t inc_piece = DELTA_INC_ALL(delta);
+			const S32 inc_piece = DELTA_INC_ALL(delta);
 			ASSERT(inc_piece != IncNone);
 
-			int_fast32_t sq = *from;
+			S32 sq = *from;
 			do {
 				sq += inc_piece;
 				if (sq == to) return true;
@@ -246,19 +245,19 @@ bool is_attacked(const board_t *board, int_fast32_t to, int_fast8_t colour) {
 
 // line_is_empty()
 
-bool line_is_empty(const board_t *board, int_fast32_t from, int_fast32_t to) {
+bool line_is_empty(const board_t *board, S32 from, S32 to) {
 
 	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(from));
 	ASSERT(SQUARE_IS_OK(to));
 
-	const int_fast32_t delta = to - from;
+	const S32 delta = to - from;
 	ASSERT(delta_is_ok(delta));
 
-	const int_fast32_t inc = DELTA_INC_ALL(delta);
+	const S32 inc = DELTA_INC_ALL(delta);
 	ASSERT(inc != IncNone);
 
-	int_fast32_t sq = from;
+	S32 sq = from;
 	do {
 		sq += inc;
 		if (sq == to) return true;
@@ -269,25 +268,25 @@ bool line_is_empty(const board_t *board, int_fast32_t from, int_fast32_t to) {
 
 // is_pinned()
 
-bool is_pinned(const board_t *board, int_fast32_t square, int_fast8_t colour) {
+bool is_pinned(const board_t *board, S32 square, S8 colour) {
 
 	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(square));
 	ASSERT(COLOUR_IS_OK(colour));
 
-	const int_fast32_t from = square;
-	const int_fast32_t to   = KING_POS(board, colour);
+	const S32 from = square;
+	const S32 to = KING_POS(board, colour);
 
-	const int_fast32_t inc = DELTA_INC_LINE(to - from);
+	const S32 inc = DELTA_INC_LINE(to - from);
 	if (inc == IncNone) return false; // not a line
 
-	int_fast32_t sq = from;
+	S32 sq = from;
 	do sq += inc; while (board->square[sq] == Empty);
 
 	if (sq != to) return false; // blocker
 
 	sq = from;
-	int_fast32_t piece;
+	S32 piece;
 	do sq -= inc; while ((piece = board->square[sq]) == Empty);
 
 	return COLOUR_IS(piece, COLOUR_OPP(colour)) && SLIDER_ATTACK(piece, inc);
@@ -303,9 +302,9 @@ bool attack_is_ok(const attack_t *attack) {
 
 	if (attack->dn < 0 || attack->dn > 2) return false;
 
-	for (int_fast32_t i = 0; i < attack->dn; ++i) {
+	for (S32 i = 0; i < attack->dn; ++i) {
 		if (!SQUARE_IS_OK(attack->ds[i])) return false;
-		const int_fast32_t inc = attack->di[i];
+		const S32 inc = attack->di[i];
 		if (inc != IncNone && !inc_is_ok(inc)) return false;
 	}
 
@@ -326,15 +325,15 @@ void attack_set(attack_t *attack, const board_t *board) {
 
 	attack->dn = 0;
 
-	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me);
-	int_fast32_t      to = KING_POS(board, me);
+	const S8 me = board->turn, opp = COLOUR_OPP(me);
+	S32 to = KING_POS(board, me);
 
 	// pawn attacks
 	{
-		int_fast32_t inc  = PAWN_MOVE_INC(opp);
-		int_fast32_t pawn = PAWN_MAKE(opp);
+		S32 inc = PAWN_MOVE_INC(opp);
+		S32 pawn = PAWN_MAKE(opp);
 
-		int_fast32_t from = to - (inc - 1);
+		S32 from = to - (inc - 1);
 		if (board->square[from] == pawn) {
 			attack->ds[attack->dn] = from;
 			attack->di[attack->dn] = IncNone;
@@ -351,14 +350,14 @@ void attack_set(attack_t *attack, const board_t *board) {
 	// piece attacks
 	for (auto from = board->piece[opp].begin() + 1; from != board->piece[opp].end(); ++from) { // HACK: no king
 
-		const int_fast32_t piece = board->square[*from];
+		const S32 piece = board->square[*from];
 
-		const int_fast32_t delta = to - *from;
+		const S32 delta = to - *from;
 		ASSERT(delta_is_ok(delta));
 
 		if (PSEUDO_ATTACK(piece, delta)) {
 
-			int_fast32_t inc = IncNone;
+			S32 inc = IncNone;
 
 			if (PIECE_IS_SLIDER(piece)) {
 
@@ -367,7 +366,7 @@ void attack_set(attack_t *attack, const board_t *board) {
 				inc = DELTA_INC_LINE(delta);
 				ASSERT(inc != IncNone);
 
-				int_fast32_t sq = *from;
+				S32 sq = *from;
 				do sq += inc; while (board->square[sq] == Empty);
 
 				if (sq != to) continue; // blocker => next attacker
@@ -388,29 +387,29 @@ void attack_set(attack_t *attack, const board_t *board) {
 
 // piece_attack_king()
 
-bool piece_attack_king(const board_t *board, int_fast32_t piece, int_fast32_t from, int_fast32_t king) {
+bool piece_attack_king(const board_t *board, S32 piece, S32 from, S32 king) {
 
 	ASSERT(board != nullptr);
 	ASSERT(piece_is_ok(piece));
 	ASSERT(SQUARE_IS_OK(from));
 	ASSERT(SQUARE_IS_OK(king));
 
-	const int_fast32_t code = PieceCode[piece];
+	const S32 code = PieceCode[piece];
 	ASSERT(code >= 0 && code < 4);
 
 	if (PIECE_IS_SLIDER(piece)) {
-		int_fast32_t delta;
-		for (auto    delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
-			 (delta = *delta_ptr) != DeltaNone; ++delta_ptr) {
+		S32 delta;
+		for (auto delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
+		     (delta = *delta_ptr) != DeltaNone; ++delta_ptr) {
 
 			ASSERT(delta_is_ok(delta));
 
-			const int_fast32_t inc = DeltaIncLine[DeltaOffset + delta];
+			const S32 inc = DeltaIncLine[DeltaOffset + delta];
 			ASSERT(inc != IncNone);
 
-			const int_fast32_t to = from + delta;
+			const S32 to = from + delta;
 
-			int_fast32_t sq = from;
+			S32 sq = from;
 			do {
 				sq += inc;
 				if (sq == to && SQUARE_IS_OK(to)) {
@@ -422,13 +421,13 @@ bool piece_attack_king(const board_t *board, int_fast32_t piece, int_fast32_t fr
 
 	} else { // non-slider
 
-		int_fast32_t delta;
-		for (auto    delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
-			 (delta = *delta_ptr) != DeltaNone; ++delta_ptr) {
+		S32 delta;
+		for (auto delta_ptr = PieceDeltaDelta[code][DeltaOffset + (king - from)].begin();
+		     (delta = *delta_ptr) != DeltaNone; ++delta_ptr) {
 
 			ASSERT(delta_is_ok(delta));
 
-			const int_fast32_t to = from + delta;
+			const S32 to = from + delta;
 
 			if (SQUARE_IS_OK(to)) {
 				ASSERT(DISTANCE(to, king) == 1);

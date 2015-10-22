@@ -10,13 +10,13 @@
 
 // "constants"
 
-constexpr int_fast8_t IncNone   = 0;
-constexpr int_fast8_t IncNb     = 2 * 17 + 1;
-constexpr int_fast8_t IncOffset = 17;
+constexpr S8 IncNone = 0;
+constexpr S8 IncNb = 2 * 17 + 1;
+constexpr S8 IncOffset = 17;
 
-constexpr int_fast8_t  DeltaNone   = 0;
-constexpr int_fast16_t DeltaNb     = 2 * 119 + 1;
-constexpr int_fast16_t DeltaOffset = 119;
+constexpr S8 DeltaNone = 0;
+constexpr S16 DeltaNb = 2 * 119 + 1;
+constexpr S16 DeltaOffset = 119;
 
 // macros
 
@@ -24,14 +24,14 @@ constexpr int_fast16_t DeltaOffset = 119;
 
 // variables
 
-extern std::array<int_fast32_t, DeltaNb> Distance;
+extern std::array<S32, DeltaNb> Distance;
 
 // functions
 
 extern void vector_init();
 
-extern bool delta_is_ok(int_fast32_t delta);
-extern bool inc_is_ok(int_fast32_t inc);
+extern bool delta_is_ok(S32 delta);
+extern bool inc_is_ok(S32 inc);
 
 #endif // !defined VECTOR_H
 

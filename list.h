@@ -11,7 +11,7 @@
 
 // constants
 
-constexpr int_fast16_t ListSize = 256;
+constexpr S16 ListSize = 256;
 
 // macros
 
@@ -25,16 +25,16 @@ constexpr int_fast16_t ListSize = 256;
 #define LIST_VALUE(list, pos) ((list)->moves[pos].value)
 
 // types
-typedef bool (*move_test_t)(uint_fast16_t move, board_t *board);
+typedef bool (*move_test_t)(U16 move, board_t *board);
 
 struct move_value {
-	uint_fast16_t move;
-	int_fast16_t  value;
+    U16 move;
+    S16 value;
 };
 
 struct list_t {
 	std::array<move_value, ListSize> moves;
-	int_fast16_t                     size;
+    S16 size;
 
 	list_t() : size(0) { }
 
@@ -45,9 +45,9 @@ struct list_t {
 	void sort();
 	void note();
 	bool is_ok() const;
-	void remove(uint_fast16_t pos);
+    void remove(U16 pos);
 	void filter(board_t *board, move_test_t test, bool keep);
-	bool contains(uint_fast16_t move) const;
+    bool contains(U16 move) const;
 };
 
 #endif // !defined LIST_H

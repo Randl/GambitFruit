@@ -11,21 +11,21 @@
 
 // constants
 
-constexpr uint_fast16_t MoveNone = 0;  // HACK: a1a1 cannot be a legal move
-constexpr uint_fast16_t MoveNull = 11; // HACK: a1d2 cannot be a legal move
+constexpr U16 MoveNone = 0;  // HACK: a1a1 cannot be a legal move
+constexpr U16 MoveNull = 11; // HACK: a1d2 cannot be a legal move
 
-constexpr uint_fast16_t MoveNormal    = 0 << 14;
-constexpr uint_fast16_t MoveCastle    = 1 << 14;
-constexpr uint_fast16_t MovePromote   = 2 << 14;
-constexpr uint_fast16_t MoveEnPassant = 3 << 14;
-constexpr uint_fast16_t MoveFlags     = 3 << 14;
+constexpr U16 MoveNormal = 0 << 14;
+constexpr U16 MoveCastle = 1 << 14;
+constexpr U16 MovePromote = 2 << 14;
+constexpr U16 MoveEnPassant = 3 << 14;
+constexpr U16 MoveFlags = 3 << 14;
 
-constexpr uint_fast16_t MovePromoteKnight = MovePromote | (0 << 12);
-constexpr uint_fast16_t MovePromoteBishop = MovePromote | (1 << 12);
-constexpr uint_fast16_t MovePromoteRook   = MovePromote | (2 << 12);
-constexpr uint_fast16_t MovePromoteQueen  = MovePromote | (3 << 12);
+constexpr U16 MovePromoteKnight = MovePromote | (0 << 12);
+constexpr U16 MovePromoteBishop = MovePromote | (1 << 12);
+constexpr U16 MovePromoteRook = MovePromote | (2 << 12);
+constexpr U16 MovePromoteQueen = MovePromote | (3 << 12);
 
-constexpr uint_fast16_t MoveAllFlags = 0xF << 12; //??
+constexpr U16 MoveAllFlags = 0xF << 12; //??
 
 const char NullMoveString[] = "null"; // "0000" in UCI
 
@@ -47,24 +47,24 @@ const char NullMoveString[] = "null"; // "0000" in UCI
 
 // types
 
-typedef uint_fast16_t mv_t;
+typedef U16 mv_t;
 
 // functions
 
-extern bool move_is_ok(uint_fast16_t move);
+extern bool move_is_ok(U16 move);
 
-extern uint_fast16_t move_promote(uint_fast16_t move);
+extern U16 move_promote(U16 move);
 
-extern uint_fast16_t move_order(uint_fast16_t move);
+extern U16 move_order(U16 move);
 
-extern bool move_is_capture(uint_fast16_t move, const board_t *board);
-extern bool move_is_under_promote(uint_fast16_t move);
-extern bool move_is_tactical(uint_fast16_t move, const board_t *board);
+extern bool move_is_capture(U16 move, const board_t *board);
+extern bool move_is_under_promote(U16 move);
+extern bool move_is_tactical(U16 move, const board_t *board);
 
-extern uint_fast16_t move_capture(uint_fast16_t move, const board_t *board);
+extern U16 move_capture(U16 move, const board_t *board);
 
-extern bool          move_to_string(uint_fast16_t move, char string[], int_fast32_t size);
-extern uint_fast16_t move_from_string(const char string[], const board_t *board);
+extern bool move_to_string(U16 move, char string[], S32 size);
+extern U16 move_from_string(const char string[], const board_t *board);
 
 #endif // !defined MOVE_H
 

@@ -12,7 +12,7 @@
 extern void loop();
 extern void event();
 
-extern void get(char string[], int_fast32_t size);
+extern void get(char string[], S32 size);
 extern void send(const char format[], ...);
 
 #endif // !defined PROTOCOL_H

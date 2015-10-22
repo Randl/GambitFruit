@@ -8,7 +8,7 @@
 
 // variables
 
-std::array<int_fast32_t, PieceNb> ValuePiece;
+std::array<S32, PieceNb> ValuePiece;
 
 // functions
 
@@ -17,7 +17,7 @@ std::array<int_fast32_t, PieceNb> ValuePiece;
 void value_init() {
 
 	// ValuePiece[]
-	for (int_fast32_t piece = 0; piece < PieceNb; ++piece)
+	for (S32 piece = 0; piece < PieceNb; ++piece)
 		ValuePiece[piece] = -1;
 
 	ValuePiece[Empty] = 0; // needed?
@@ -40,7 +40,7 @@ void value_init() {
 
 // value_is_ok()
 
-bool value_is_ok(int_fast32_t value) {
+bool value_is_ok(S32 value) {
 
 	if (value < -ValueInf || value > +ValueInf) return false;
 
@@ -49,7 +49,7 @@ bool value_is_ok(int_fast32_t value) {
 
 // range_is_ok()
 
-bool range_is_ok(int_fast32_t min, int_fast32_t max) {
+bool range_is_ok(S32 min, S32 max) {
 
 	if (!value_is_ok(min)) return false;
 	if (!value_is_ok(max)) return false;
@@ -61,7 +61,7 @@ bool range_is_ok(int_fast32_t min, int_fast32_t max) {
 
 // value_is_mate()
 
-bool value_is_mate(int_fast32_t value) {
+bool value_is_mate(S32 value) {
 
 	ASSERT(value_is_ok(value));
 
@@ -72,7 +72,7 @@ bool value_is_mate(int_fast32_t value) {
 
 // value_to_trans()
 
-int_fast32_t value_to_trans(int_fast32_t value, int_fast32_t height) {
+S32 value_to_trans(S32 value, S32 height) {
 
 	ASSERT(value_is_ok(value));
 	ASSERT(height_is_ok(height));
@@ -89,7 +89,7 @@ int_fast32_t value_to_trans(int_fast32_t value, int_fast32_t height) {
 
 // value_from_trans()
 
-int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height) {
+S32 value_from_trans(S32 value, S32 height) {
 
 	ASSERT(value_is_ok(value));
 	ASSERT(height_is_ok(height));
@@ -105,16 +105,16 @@ int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height) {
 
 // value_to_mate()
 
-int_fast32_t value_to_mate(int_fast32_t value) {
+S32 value_to_mate(S32 value) {
 
 	ASSERT(value_is_ok(value));
 
 	if (value < -ValueEvalInf) {
-		const int_fast32_t dist = (ValueMate + value) / 2;
+		const S32 dist = (ValueMate + value) / 2;
 		ASSERT(dist > 0);
 		return -dist;
 	} else if (value > +ValueEvalInf) {
-		const int_fast32_t dist = (ValueMate - value + 1) / 2;
+		const S32 dist = (ValueMate - value + 1) / 2;
 		ASSERT(dist > 0);
 		return +dist;
 	}

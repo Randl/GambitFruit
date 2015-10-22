@@ -19,30 +19,30 @@
 #include "value.h"
 
 // constants and variables
-int_fast32_t ValueDraw;
+S32 ValueDraw;
 
 
 // main search
 
 // transposition table
 
-static constexpr int_fast8_t TransDepth = 1;
+static constexpr S8 TransDepth = 1;
 
 // null move
 
 static /* const */ bool         UseNull       = true;
 static /* const */ bool         UseNullEval   = true; // true
-static constexpr int_fast8_t    NullDepth     = 2;
-static /* const */ int_fast16_t NullReduction = 3;
+static constexpr S8 NullDepth = 2;
+static /* const */ S16 NullReduction = 3;
 
 static /* const */ bool         UseVer        = true;
 static /* const */ bool         UseVerEndgame = true; // true
-static /* const */ int_fast16_t VerReduction  = 5; // was 3
+static /* const */ S16 VerReduction = 5; // was 3
 
 // move ordering
 
-static constexpr int_fast8_t IIDDepth     = 3;
-static constexpr int_fast8_t IIDReduction = 2;
+static constexpr S8 IIDDepth = 3;
+static constexpr S8 IIDReduction = 2;
 
 // extensions
 
@@ -51,47 +51,47 @@ static bool use_rebel_reduction = false; // I hope I did this right...
 
 // razoring
 
-static constexpr int_fast8_t  RazorDepth  = 3;
-static constexpr int_fast16_t RazorMargin = 300;
+static constexpr S8 RazorDepth = 3;
+static constexpr S16 RazorMargin = 300;
 
 // history pruning
 
 static /* const */ bool         UseHistory         = true;
-static constexpr int_fast8_t    HistoryDepth       = 3; // was 3
-static constexpr int_fast8_t    HistoryMoveNb      = 3; // was 3
-static /* const */ int_fast32_t HistoryValue       = 9830; // 60%
-//static /* const */ int_fast16_t HistoryBound       = 2458; // * 16384 + 50) / 100 10%=1638 15%=2458 20%=3277
+static constexpr S8 HistoryDepth = 3; // was 3
+static constexpr S8 HistoryMoveNb = 3; // was 3
+static /* const */ S32 HistoryValue = 9830; // 60%
+//static /* const */ S16 HistoryBound       = 2458; // * 16384 + 50) / 100 10%=1638 15%=2458 20%=3277
 static /* const */ bool         UseExtendedHistory = true;
 static bool                     research_on_beta   = true;
 
 // futility pruning
 
 static /* const */ bool         UseFutility          = true; // false
-static constexpr int_fast16_t   FutilityMargin       = 100;
+static constexpr S16 FutilityMargin = 100;
 //static bool quick_futility = false;
-static /* const */ int_fast16_t FutilityMargin1      = 100;
-static /* const */ int_fast16_t FutilityMargin2      = 200;
-static /* const */ int_fast16_t FutilityMargin3      = 350;
-static /* const */ int_fast8_t  FutilityPruningDepth = 3; // was 3
+static /* const */ S16 FutilityMargin1 = 100;
+static /* const */ S16 FutilityMargin2 = 200;
+static /* const */ S16 FutilityMargin3 = 350;
+static /* const */ S8 FutilityPruningDepth = 3; // was 3
 
 // quiescence search
 
 static /* const */ bool         UseDelta    = true; // false
-static /* const */ int_fast16_t DeltaMargin = 50;
+static /* const */ S16 DeltaMargin = 50;
 
-static /* const */ int_fast8_t CheckNb    = 1;
-static /* const */ int_fast8_t CheckDepth = 0; // 1 - CheckNb
+static /* const */ S8 CheckNb = 1;
+static /* const */ S8 CheckDepth = 0; // 1 - CheckNb
 
 //margin
 
-constexpr std::array<uint_fast16_t, 9> depth_margin   = {0, 0, 0, 500, 600, 700, 800, 900, 1000};
-constexpr uint_fast16_t                default_margin = 1600;
+constexpr std::array<U16, 9> depth_margin = {0, 0, 0, 500, 600, 700, 800, 900, 1000};
+constexpr U16 default_margin = 1600;
 
 // misc
 
-static constexpr int_fast8_t NodeAll = -1;
-static constexpr int_fast8_t NodePV  = 0;
-static constexpr int_fast8_t NodeCut = +1;
+static constexpr S8 NodeAll = -1;
+static constexpr S8 NodePV = 0;
+static constexpr S8 NodeCut = +1;
 
 // macros
 
@@ -100,29 +100,31 @@ static constexpr int_fast8_t NodeCut = +1;
 
 // prototypes
 
-static int_fast32_t full_root(list_t *list, board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                              int_fast32_t height, int_fast32_t search_type);
+static S32 full_root(list_t *list, board_t *board, S32 alpha, S32 beta, S32 depth, S32 height, S32 search_type);
 
-static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                                int_fast32_t height, mv_t pv[], int_fast32_t node_type);
-static int_fast32_t full_no_null(board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                                 int_fast32_t height, mv_t pv[], int_fast32_t node_type, int_fast32_t trans_move,
-                                 uint_fast16_t *best_move);
+static S32 full_search(board_t *board, S32 alpha, S32 beta, S32 depth, S32 height, mv_t pv[], S32 node_type);
+static S32 full_no_null(board_t *board,
+                        S32 alpha,
+                        S32 beta,
+                        S32 depth,
+                        S32 height,
+                        mv_t pv[],
+                        S32 node_type,
+                        S32 trans_move,
+                        U16 *best_move);
 
-static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                                    int_fast32_t height, mv_t pv[]);
+static S32 full_quiescence(board_t *board, S32 alpha, S32 beta, S32 depth, S32 height, mv_t pv[]);
 
-static int_fast32_t full_new_depth(int_fast32_t depth, uint_fast16_t move, board_t *board, bool single_reply,
-                                   bool in_pv,
-                                   int_fast32_t height);
+static S32 full_new_depth(S32 depth, U16 move, board_t *board, bool single_reply,
+                                   bool in_pv, S32 height);
 
 static bool do_null(const board_t *board);
 static bool do_ver(const board_t *board);
 
 static void pv_fill(const mv_t pv[], board_t *board);
 
-static bool move_is_dangerous(uint_fast16_t move, const board_t *board);
-static bool capture_is_dangerous(uint_fast16_t move, const board_t *board);
+static bool move_is_dangerous(U16 move, const board_t *board);
+static bool capture_is_dangerous(U16 move, const board_t *board);
 
 static bool simple_stalemate(const board_t *board);
 
@@ -208,7 +210,7 @@ void search_full_init(list_t *list, board_t *board) {
 	list->sort();
 
 	// basic sort
-	int_fast32_t trans_move, trans_min_depth, trans_max_depth, trans_min_value, trans_max_value;
+	S32 trans_move, trans_min_depth, trans_max_depth, trans_min_value, trans_max_value;
 	trans_move = MoveNone;
 	trans_retrieve(Trans, board->key, &trans_move, &trans_min_depth, &trans_max_depth, &trans_min_value,
 	               &trans_max_value);
@@ -219,7 +221,7 @@ void search_full_init(list_t *list, board_t *board) {
 
 // search_full_root()
 
-int_fast32_t search_full_root(list_t *list, board_t *board, int_fast32_t depth, int_fast32_t search_type) {
+S32 search_full_root(list_t *list, board_t *board, S32 depth, S32 search_type) {
 
 	ASSERT(list->is_ok());
 	ASSERT(board_is_ok(board));
@@ -232,7 +234,7 @@ int_fast32_t search_full_root(list_t *list, board_t *board, int_fast32_t depth, 
 	ASSERT(board_is_legal(board));
 	ASSERT(depth >= 1);
 
-	int_fast32_t a, b;
+	S32 a, b;
 	if (SearchBest[SearchCurrent->multipv].value == 0) {
 		a = -ValueInf;
 		b = +ValueInf;
@@ -246,7 +248,7 @@ int_fast32_t search_full_root(list_t *list, board_t *board, int_fast32_t depth, 
 		b = +ValueInf;
 	}
 
-	const int_fast32_t value = full_root(list, board, a, b, depth, 0, search_type);
+	const S32 value = full_root(list, board, a, b, depth, 0, search_type);
 
 	ASSERT(value_is_ok(value));
 	//ASSERT(LIST_VALUE(list, 0) == value); //TODO: if it's alpha or beta?
@@ -256,8 +258,7 @@ int_fast32_t search_full_root(list_t *list, board_t *board, int_fast32_t depth, 
 
 // full_root()
 
-static int_fast32_t full_root(list_t *list, board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                              int_fast32_t height, int_fast32_t search_type) {
+static S32 full_root(list_t *list, board_t *board, S32 alpha, S32 beta, S32 depth, S32 height, S32 search_type) {
 
 	ASSERT(list->is_ok());
 	ASSERT(board_is_ok(board));
@@ -282,22 +283,22 @@ static int_fast32_t full_root(list_t *list, board_t *board, int_fast32_t alpha, 
 	SearchInfo->check_nb--;
 
 	if (SearchCurrent->multipv == 0)
-		for (int_fast32_t i = 0; i < LIST_SIZE(list); ++i)
+		for (S32 i = 0; i < LIST_SIZE(list); ++i)
 			list->moves[i].value = ValueNone;
 
-	int_fast32_t                         old_alpha = alpha;
-	std::array<int_fast32_t, MultiPVMax> best_value;
+	S32 old_alpha = alpha;
+	std::array<S32, MultiPVMax> best_value;
 	best_value[SearchCurrent->multipv] = ValueNone;
 
 	// move loop
-	for (int_fast32_t i = 0; i < LIST_SIZE(list); ++i) {
+	for (S32 i = 0; i < LIST_SIZE(list); ++i) {
 
-		uint_fast16_t move = LIST_MOVE(list, i);
+		U16 move = LIST_MOVE(list, i);
 
 		if (SearchCurrent->multipv > 0) {
 			bool found = false;
 
-			for (int_fast32_t j = 0; j < SearchCurrent->multipv; ++j) {
+			for (S32 j = 0; j < SearchCurrent->multipv; ++j) {
 				if (SearchBest[j].pv[0] == move) {
 					found = true;
 					break;
@@ -315,13 +316,13 @@ static int_fast32_t full_root(list_t *list, board_t *board, int_fast32_t alpha, 
 		SearchRoot->move_nb  = LIST_SIZE(list);
 
 		search_update_root();
-		int_fast32_t new_depth = full_new_depth(depth, move, board, board_is_check(board) && LIST_SIZE(list) == 1, true,
+		S32 new_depth = full_new_depth(depth, move, board, board_is_check(board) && LIST_SIZE(list) == 1, true,
 		                                        height);
 
 		undo_t undo[1];
 		move_do(board, move, undo);
 
-		int_fast32_t value;
+		S32 value;
 		mv_t         new_pv[HeightMax];
 		if (search_type == SearchShort || best_value[SearchCurrent->multipv] == ValueNone) { // first move
 			value = -full_search(board, -beta, -alpha, new_depth, height + 1, new_pv, NodePV);
@@ -396,8 +397,7 @@ static int_fast32_t full_root(list_t *list, board_t *board, int_fast32_t alpha, 
 
 // full_search()
 
-static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                                int_fast32_t height, mv_t pv[], int_fast32_t node_type) {
+static S32 full_search(board_t *board, S32 alpha, S32 beta, S32 depth, S32 height, mv_t pv[], S32 node_type) {
 
 	ASSERT(board != nullptr);
 	ASSERT(range_is_ok(alpha, beta));
@@ -434,7 +434,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 	// mate-distance pruning
 
 	// lower bound
-	int_fast32_t value = VALUE_MATE(height + 2); // does not work if the current position is mate
+	S32 value = VALUE_MATE(height + 2); // does not work if the current position is mate
 	if (value > alpha && board_is_mate(board)) value = VALUE_MATE(height);
 	if (value > alpha) {
 		alpha = value;
@@ -451,8 +451,8 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 
 
 	// transposition table
-	int_fast32_t trans_move = MoveNone;
-	int_fast32_t trans_depth, trans_min_depth, trans_max_depth, trans_min_value, trans_max_value;
+	S32 trans_move = MoveNone;
+	S32 trans_depth, trans_min_depth, trans_max_depth, trans_min_value, trans_max_value;
 	if (depth >= TransDepth) {
 
 		if (trans_retrieve(Trans, board->key, &trans_move, &trans_min_depth, &trans_max_depth, &trans_min_value,
@@ -466,14 +466,14 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 				if (trans_max_value < -ValueEvalInf && trans_max_depth < depth)
 					trans_max_depth = depth;
 
-				int_fast32_t min_value = -ValueInf;
+				S32 min_value = -ValueInf;
 
 				if (DEPTH_MATCH(trans_min_depth, depth)) {
 					min_value = value_from_trans(trans_min_value, height);
 					if (min_value >= beta) return min_value;
 				}
 
-				int_fast32_t max_value = +ValueInf;
+				S32 max_value = +ValueInf;
 
 				if (DEPTH_MATCH(trans_max_depth, depth)) {
 					max_value = value_from_trans(trans_max_value, height);
@@ -491,7 +491,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 	if (height >= HeightMax - 1) return eval(board, alpha, false, false);
 
 	// more init
-	int_fast32_t old_alpha = alpha, best_value = ValueNone, best_move = MoveNone, played_nb = 0;
+	S32 old_alpha = alpha, best_value = ValueNone, best_move = MoveNone, played_nb = 0;
 
 	attack_t attack[1];
 	attack_set(attack, board);
@@ -500,7 +500,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 	undo_t                undo[1];
 	mv_t                  new_pv[HeightMax];
 	bool                  single_reply;
-	int_fast32_t          opt_value;
+	S32 opt_value;
 	std::array<mv_t, 256> played;
 	sort_t                sort[1];
 
@@ -512,7 +512,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 		    && (!UseNullEval || depth <= NullReduction + 1 || eval(board, alpha, false, in_check) >= beta)) {
 
 			// null-move search
-			int_fast32_t new_depth = depth - NullReduction - 1;
+			S32 new_depth = depth - NullReduction - 1;
 
 			move_do_null(board, undo);
 			value = -full_search(board, -beta, -beta + 1, new_depth, height + 1, new_pv, NODE_OPP(node_type));
@@ -524,7 +524,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 					new_depth = depth - VerReduction;
 					ASSERT(new_depth > 0);
 
-					uint_fast16_t move;
+					U16 move;
 					value = full_no_null(board, alpha, beta, new_depth, height, new_pv, NodeCut, trans_move, &move);
 
 					if (value >= beta) {
@@ -578,7 +578,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 	if (depth >= IIDDepth && node_type == NodePV && trans_move == MoveNone) {
 
 		// new_depth = depth - IIDReduction;
-		const int_fast32_t new_depth = std::min(depth - IIDReduction, depth / 2);
+		const S32 new_depth = std::min(depth - IIDReduction, depth / 2);
 		ASSERT(new_depth > 0);
 
 		value = full_search(board, alpha, beta, new_depth, height, new_pv, node_type);
@@ -596,7 +596,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 	// move loop
 	opt_value = +ValueInf;
 
-	uint_fast16_t move;
+	U16 move;
 	while ((move = sort_next(sort)) != MoveNone) {
 		bool     pl = false;
 		for (int i  = 0; i < played_nb; ++i)
@@ -609,7 +609,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 		SearchStack[height].move = move;
 
 		// extensions
-		int_fast32_t new_depth = full_new_depth(depth, move, board, single_reply, node_type == NodePV, height);
+		S32 new_depth = full_new_depth(depth, move, board, single_reply, node_type == NodePV, height);
 		if (depth == 1 && opt_value == ValueInf && new_depth < depth)
 			opt_value = eval(board, alpha, false, in_check);
 
@@ -621,7 +621,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 
 				// optimistic evaluation
 				if (opt_value == +ValueInf) {
-					int_fast32_t FutilityMarg;
+					S32 FutilityMarg;
 					if (depth == 2) {
 						FutilityMarg = FutilityMargin2;
 					} else if (depth == 3) {
@@ -678,7 +678,7 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 		if (use_rebel_reduction && !in_check && !reduced && depth > 2 && new_depth < depth && node_type != NodePV &&
 			!move_is_tactical(move, board) && !move_is_dangerous(move, board)) {
 
-			uint_fast16_t margin;
+			U16 margin;
 			if (depth >= depth_margin.size())
 				margin = default_margin;
 			else
@@ -788,8 +788,8 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 
 			ASSERT(played_nb > 0 && played[played_nb - 1] == best_move);
 
-			for (int_fast32_t i = 0; i < played_nb - 1; ++i) {
-				const int_fast32_t mv = played[i];
+			for (S32 i = 0; i < played_nb - 1; ++i) {
+				const S32 mv = played[i];
 				ASSERT(mv != best_move);
 				history_bad(mv, board);
 			}
@@ -815,9 +815,15 @@ static int_fast32_t full_search(board_t *board, int_fast32_t alpha, int_fast32_t
 
 // full_no_null()
 
-static int_fast32_t full_no_null(board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                                 int_fast32_t height, mv_t pv[], int_fast32_t node_type, int_fast32_t trans_move,
-                                 uint_fast16_t *best_move) {
+static S32 full_no_null(board_t *board,
+                        S32 alpha,
+                        S32 beta,
+                        S32 depth,
+                        S32 height,
+                        mv_t pv[],
+                        S32 node_type,
+                        S32 trans_move,
+                        U16 *best_move) {
 
 	ASSERT(board != nullptr);
 	ASSERT(range_is_ok(alpha, beta));
@@ -854,25 +860,25 @@ static int_fast32_t full_no_null(board_t *board, int_fast32_t alpha, int_fast32_
 	ASSERT(!ATTACK_IN_CHECK(attack));
 
 	*best_move = MoveNone;
-	int_fast32_t best_value = ValueNone;
+	S32 best_value = ValueNone;
 
 	// move loop
 
 	sort_t sort[1];
 	sort_init(sort, board, attack, depth, height, trans_move);
 
-	uint_fast16_t move;
+	U16 move;
 	while ((move = sort_next(sort)) != MoveNone) {
 
 		SearchStack[height].move = move;
 
-		const int_fast32_t new_depth = full_new_depth(depth, move, board, false, false, height);
+		const S32 new_depth = full_new_depth(depth, move, board, false, false, height);
 
 		undo_t undo[1];
 		mv_t   new_pv[HeightMax];
 
 		move_do(board, move, undo);
-		int_fast32_t value = -full_search(board, -beta, -alpha, new_depth, height + 1, new_pv, NODE_OPP(node_type));
+		S32 value = -full_search(board, -beta, -alpha, new_depth, height + 1, new_pv, NODE_OPP(node_type));
 		move_undo(board, move, undo);
 
 		if (value > best_value) {
@@ -902,8 +908,7 @@ static int_fast32_t full_no_null(board_t *board, int_fast32_t alpha, int_fast32_
 
 // full_quiescence()
 
-static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast32_t beta, int_fast32_t depth,
-                                    int_fast32_t height, mv_t pv[]) {
+static S32 full_quiescence(board_t *board, S32 alpha, S32 beta, S32 depth, S32 height, mv_t pv[]) {
 
 	ASSERT(board != nullptr);
 	ASSERT(range_is_ok(alpha, beta));
@@ -937,7 +942,7 @@ static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast
 	// mate-distance pruning
 
 	// lower bound
-	int_fast32_t value = VALUE_MATE(height + 2); // does not work if the current position is mate
+	S32 value = VALUE_MATE(height + 2); // does not work if the current position is mate
 
 	if (value > alpha && board_is_mate(board)) value = VALUE_MATE(height);
 	if (value > alpha) {
@@ -968,9 +973,9 @@ static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast
 	if (height >= HeightMax - 1) return eval(board, alpha, false, false);
 
 	// more init
-	int_fast32_t old_alpha = alpha, best_value = ValueNone, best_move = MoveNone;
+	S32 old_alpha = alpha, best_value = ValueNone, best_move = MoveNone;
 
-	/* if (UseDelta) */ int_fast32_t opt_value = +ValueInf;
+	/* if (UseDelta) */ S32 opt_value = +ValueInf;
 	sort_t                           sort[1];
 
 	if (!in_check) {
@@ -997,7 +1002,7 @@ static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast
 	// move loop
 	sort_init_qs(sort, board, attack, depth >= CheckDepth);
 
-	uint_fast16_t move;
+	U16 move;
 	while ((move = sort_next_qs(sort)) != MoveNone) {
 		SearchStack[height].move = move;
 
@@ -1009,7 +1014,7 @@ static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast
 				// optimistic evaluation
 				value = opt_value;
 
-				int_fast32_t to = MOVE_TO(move), capture = board->square[to];
+				S32 to = MOVE_TO(move), capture = board->square[to];
 
 				if (capture != Empty) {
 					value += VALUE_PIECE(capture);
@@ -1064,9 +1069,8 @@ static int_fast32_t full_quiescence(board_t *board, int_fast32_t alpha, int_fast
 
 // full_new_depth()
 
-static int_fast32_t full_new_depth(int_fast32_t depth, uint_fast16_t move, board_t *board, bool single_reply,
-                                   bool in_pv,
-                                   int_fast32_t height) {
+static S32 full_new_depth(S32 depth, U16 move, board_t *board, bool single_reply,
+                                   bool in_pv, S32 height) {
 
 	ASSERT(depth_is_ok(depth));
 	ASSERT(move_is_ok(move));
@@ -1076,7 +1080,7 @@ static int_fast32_t full_new_depth(int_fast32_t depth, uint_fast16_t move, board
 
 	ASSERT(depth > 0);
 
-	int_fast32_t new_depth = depth - 1;
+	S32 new_depth = depth - 1;
 
 	if (SearchCurrent->max_extensions > height) {
 		if ((single_reply)
@@ -1121,7 +1125,7 @@ static void pv_fill(const mv_t pv[], board_t *board) {
 	ASSERT(pv != nullptr);
 	ASSERT(board != nullptr);
 
-	const uint_fast16_t move = *pv;
+	const U16 move = *pv;
 
 	if (move != MoveNone && move != MoveNull) {
 
@@ -1130,7 +1134,7 @@ static void pv_fill(const mv_t pv[], board_t *board) {
 		pv_fill(pv + 1, board);
 		move_undo(board, move, undo);
 
-		int_fast32_t trans_move      = move,
+		S32 trans_move = move,
 		             trans_depth     = -127, // HACK
 		             trans_min_value = -ValueInf,
 		             trans_max_value = +ValueInf;
@@ -1141,13 +1145,13 @@ static void pv_fill(const mv_t pv[], board_t *board) {
 
 // move_is_dangerous()
 
-static bool move_is_dangerous(uint_fast16_t move, const board_t *board) {
+static bool move_is_dangerous(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 	ASSERT(!move_is_tactical(move, board));
 
-	int_fast32_t piece = MOVE_PIECE(move, board);
+	S32 piece = MOVE_PIECE(move, board);
 
 	if (PIECE_IS_PAWN(piece)
 	    && PAWN_RANK(MOVE_TO(move), board->turn) >= Rank7)
@@ -1158,19 +1162,19 @@ static bool move_is_dangerous(uint_fast16_t move, const board_t *board) {
 
 // capture_is_dangerous()
 
-static bool capture_is_dangerous(uint_fast16_t move, const board_t *board) {
+static bool capture_is_dangerous(U16 move, const board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
 	ASSERT(move_is_tactical(move, board));
 
-	int_fast32_t piece = MOVE_PIECE(move, board);
+	S32 piece = MOVE_PIECE(move, board);
 
 	if (PIECE_IS_PAWN(piece)
 	    && PAWN_RANK(MOVE_TO(move), board->turn) >= Rank7)
 		return true;
 
-	int_fast32_t capture = move_capture(move, board);
+	S32 capture = move_capture(move, board);
 
 	if (PIECE_IS_QUEEN(capture)) return true;
 
@@ -1190,22 +1194,22 @@ static bool simple_stalemate(const board_t *board) {
 	ASSERT(!board_is_check(board));
 
 	// lone king?
-	const int_fast8_t me = board->turn;
+	const S8 me = board->turn;
 	if (board->piece[me].size() != 1 || board->pawn[me].size() != 0) return false; // no
 
 	// king in a corner?
-	const int_fast32_t king = KING_POS(board, me);
+	const S32 king = KING_POS(board, me);
 	if (king != A1 && king != H1 && king != A8 && king != H8) return false; // no
 
 	// init
-	const int_fast32_t opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
+	const S32 opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
 
 	// king can move?
-	const int_fast32_t from   = king;
+	const S32 from = king;
 
-	int_fast32_t     inc;
+	S32 inc;
 	for (const inc_t *inc_ptr = KingInc.data(); (inc = *inc_ptr) != IncNone; ++inc_ptr) {
-		const int_fast32_t to = from + inc, capture = board->square[to];
+		const S32 to = from + inc, capture = board->square[to];
 		if (capture == Empty || FLAG_IS(capture, opp_flag)) {
 			if (!is_attacked(board, to, opp)) return false; // legal king move
 		}

@@ -13,8 +13,8 @@
 // types
 
 struct fail_high_stats_t {
-	uint_fast64_t tried;
-	uint_fast64_t success;
+    U64 tried;
+    U64 success;
 };
 
 
@@ -23,42 +23,40 @@ struct sort_t {
 	const attack_t *attack;
 	list_t         list[1];
 	list_t         bad[1];
-	int_fast32_t   depth;
-	int_fast32_t   height;
-	int_fast32_t   trans_killer;
-	int_fast32_t   killer_1;
-	int_fast32_t   killer_2;
-	int_fast32_t   killer_3;
-	int_fast32_t   killer_4;
-	int_fast32_t   gen;
-	int_fast32_t   test;
-	int_fast32_t   pos;
-	int_fast32_t   value;
+    S32 depth;
+    S32 height;
+    S32 trans_killer;
+    S32 killer_1;
+    S32 killer_2;
+    S32 killer_3;
+    S32 killer_4;
+    S32 gen;
+    S32 test;
+    S32 pos;
+    S32 value;
 };
 
 // functions
 
 extern void sort_init();
 
-extern void         sort_init(sort_t *sort, board_t *board, const attack_t *attack, int_fast32_t depth,
-							  int_fast32_t height,
-							  int_fast32_t trans_killer);
-extern int_fast32_t sort_next(sort_t *sort);
+extern void sort_init(sort_t *sort, board_t *board, const attack_t *attack, S32 depth, S32 height, S32 trans_killer);
+extern S32 sort_next(sort_t *sort);
 
 extern void         sort_init_qs(sort_t *sort, board_t *board, const attack_t *attack, bool check);
-extern int_fast32_t sort_next_qs(sort_t *sort);
+extern S32 sort_next_qs(sort_t *sort);
 
-extern void good_move(uint_fast16_t move, const board_t *board, int_fast32_t depth, int_fast32_t height);
+extern void good_move(U16 move, const board_t *board, S32 depth, S32 height);
 
-extern void history_good(uint_fast16_t move, const board_t *board);
-extern void history_bad(uint_fast16_t move, const board_t *board);
-extern void history_very_bad(uint_fast16_t move, const board_t *board);
+extern void history_good(U16 move, const board_t *board);
+extern void history_bad(U16 move, const board_t *board);
+extern void history_very_bad(U16 move, const board_t *board);
 
-extern bool history_reduction(uint_fast16_t move, const board_t *board);
-extern void history_tried(uint_fast16_t move, const board_t *board);
-extern void history_success(uint_fast16_t move, const board_t *board);
+extern bool history_reduction(U16 move, const board_t *board);
+extern void history_tried(U16 move, const board_t *board);
+extern void history_success(U16 move, const board_t *board);
 
-extern void note_moves(list_t *list, const board_t *board, int_fast32_t height, int_fast32_t trans_killer);
+extern void note_moves(list_t *list, const board_t *board, S32 height, S32 trans_killer);
 
 #endif // !defined SORT_H
 

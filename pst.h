@@ -10,9 +10,9 @@
 
 // constants
 
-constexpr int_fast8_t Opening = 0;
-constexpr int_fast8_t Endgame = 1;
-constexpr int_fast8_t StageNb = 2;
+constexpr S8 Opening = 0;
+constexpr S8 Endgame = 1;
+constexpr S8 StageNb = 2;
 
 // macros
 
@@ -20,7 +20,7 @@ constexpr int_fast8_t StageNb = 2;
 
 // variables
 
-extern std::array<std::array<std::array<int_fast16_t, StageNb>, 64>, 12> Pst;
+extern std::array<std::array<std::array<S16, StageNb>, 64>, 12> Pst;
 
 // functions
 

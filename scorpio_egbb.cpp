@@ -27,21 +27,21 @@
 enum {
     LOAD_NONE, LOAD_4MEN, SMART_LOAD, LOAD_5MEN
 };
-static uint_fast8_t egbb_ram_load = LOAD_4MEN;
+static U8 egbb_ram_load = LOAD_4MEN;
 
-constexpr int_fast8_t max_pieces = 32;
+constexpr S8 max_pieces = 32;
 
 
 PPROBE_EGBB probe_egbb;
 bool        egbb_is_loaded; //bool?
-typedef void (*PLOAD_EGBB)(const char *path, int_fast32_t cache_size, int_fast32_t load_options);
+typedef void (*PLOAD_EGBB)(const char *path, S32 cache_size, S32 load_options);
 
 void load_egbb_library() {
 	HMODULE hmod;
 
 	const char *main_path = option_get("Scorpio Bitbases Path");
 
-	uint_fast32_t egbb_cache_size = option_get_int("Scorpio Bitbases Cache Size") * 1024 * 1024;
+	U32 egbb_cache_size = option_get_int("Scorpio Bitbases Cache Size") * 1024 * 1024;
 
 	// RAM options
 	const char *string = option_get_string("Load Scorpio Bitbases in RAM");
@@ -79,20 +79,20 @@ void load_egbb_library() {
 	}
 }
 
-bool bitbase_probe(const board_t *board, int_fast32_t value) {
+bool bitbase_probe(const board_t *board, S32 value) {
 
-	const int_fast8_t player       = board->turn;
-	int_fast8_t       total_pieces = 2;
-	int_fast32_t      egbb_piece[max_pieces], egbb_square[max_pieces];
+	const S8 player = board->turn;
+	S8 total_pieces = 2;
+	S32 egbb_piece[max_pieces], egbb_square[max_pieces];
 
-	for (int_fast32_t i = 0; i < max_pieces; ++i) {
+	for (S32 i = 0; i < max_pieces; ++i) {
 		egbb_piece[i]  = 0;
 		egbb_square[i] = 0;
 	}
 
 	egbb_piece[0] = _WKING;
 	egbb_piece[1] = _BKING;
-	for (int_fast8_t from = 0; from < 64; ++from) {
+	for (S8 from = 0; from < 64; ++from) {
 		if (board->square[SQUARE_FROM_64(from)] == Empty) continue;
 
 		switch (board->square[SQUARE_FROM_64(from)]) {
@@ -127,7 +127,7 @@ bool bitbase_probe(const board_t *board, int_fast32_t value) {
 		}
 	}
 
-	const int_fast32_t score = probe_egbb(player, egbb_piece, egbb_square);
+	const S32 score = probe_egbb(player, egbb_piece, egbb_square);
 
 	if (score != _NOTFOUND) {
 		if (score == 0)

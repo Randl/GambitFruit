@@ -16,7 +16,7 @@ extern const char *const StartFen;
 // functions
 
 extern void board_from_fen(board_t *board, const char fen[]);
-extern bool board_to_fen(const board_t *board, char fen[], int_fast32_t size);
+extern bool board_to_fen(const board_t *board, char fen[], S32 size);
 
 #endif // !defined FEN_H
 

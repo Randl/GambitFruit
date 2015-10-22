@@ -18,9 +18,9 @@
 extern bool pv_is_ok(const mv_t pv[]);
 
 extern void pv_copy(mv_t dst[], const mv_t src[]);
-extern void pv_cat(mv_t dst[], const mv_t src[], uint_fast16_t move);
+extern void pv_cat(mv_t dst[], const mv_t src[], U16 move);
 
-extern bool pv_to_string(const mv_t pv[], char string[], int_fast32_t size);
+extern bool pv_to_string(const mv_t pv[], char string[], S32 size);
 
 #endif // !defined PV_H
 

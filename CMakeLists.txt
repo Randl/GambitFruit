@@ -11,8 +11,6 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-O1 -s")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -std=c++14 -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -Wstrict-aliasing -Weffc++")
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 set(HEADERS
         attack.h
         scorpio_egbb.h

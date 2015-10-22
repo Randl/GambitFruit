@@ -11,18 +11,18 @@
 
 // constants
 
-constexpr int_fast16_t ValuePawn   = 100;   // was 100
-constexpr int_fast16_t ValueKnight = 325;   // was 300
-constexpr int_fast16_t ValueBishop = 325;   // was 300
-constexpr int_fast16_t ValueRook   = 500;   // was 500
-constexpr int_fast16_t ValueQueen  = 1000;  // was 900
-constexpr int_fast16_t ValueKing   = 10000; // was 10000
+constexpr S16 ValuePawn = 100;   // was 100
+constexpr S16 ValueKnight = 325;   // was 300
+constexpr S16 ValueBishop = 325;   // was 300
+constexpr S16 ValueRook = 500;   // was 500
+constexpr S16 ValueQueen = 1000;  // was 900
+constexpr S16 ValueKing = 10000; // was 10000
 
-constexpr int_fast32_t        ValueNone    = -32767;
-/*const*/ extern int_fast32_t ValueDraw;
-constexpr int_fast32_t        ValueMate    = 30000;
-constexpr int_fast32_t        ValueInf     = ValueMate;
-constexpr int_fast32_t        ValueEvalInf = ValueMate - 256; // handle mates upto 255 plies
+constexpr S32 ValueNone = -32767;
+/*const*/ extern S32 ValueDraw;
+constexpr S32 ValueMate = 30000;
+constexpr S32 ValueInf = ValueMate;
+constexpr S32 ValueEvalInf = ValueMate - 256; // handle mates upto 255 plies
 
 // macros
 
@@ -31,21 +31,21 @@ constexpr int_fast32_t        ValueEvalInf = ValueMate - 256; // handle mates up
 
 // variables
 
-extern std::array<int_fast32_t, PieceNb> ValuePiece;
+extern std::array<S32, PieceNb> ValuePiece;
 
 // functions
 
 extern void value_init();
 
-extern bool value_is_ok(int_fast32_t value);
-extern bool range_is_ok(int_fast32_t min, int_fast32_t max);
+extern bool value_is_ok(S32 value);
+extern bool range_is_ok(S32 min, S32 max);
 
-extern bool value_is_mate(int_fast32_t value);
+extern bool value_is_mate(S32 value);
 
-extern int_fast32_t value_to_trans(int_fast32_t value, int_fast32_t height);
-extern int_fast32_t value_from_trans(int_fast32_t value, int_fast32_t height);
+extern S32 value_to_trans(S32 value, S32 height);
+extern S32 value_from_trans(S32 value, S32 height);
 
-extern int_fast32_t value_to_mate(int_fast32_t value);
+extern S32 value_to_mate(S32 value);
 
 #endif // !defined VALUE_H
 

@@ -12,9 +12,9 @@
 
 static bool gen_evasions(list_t *list, const board_t *board, const attack_t *attack, bool legal, bool stop);
 
-static bool add_pawn_moves(list_t *list, const board_t *board, int_fast32_t to, bool legal, bool stop);
-static bool add_pawn_captures(list_t *list, const board_t *board, int_fast32_t to, bool legal, bool stop);
-static bool add_piece_moves(list_t *list, const board_t *board, int_fast32_t to, bool legal, bool stop);
+static bool add_pawn_moves(list_t *list, const board_t *board, S32 to, bool legal, bool stop);
+static bool add_pawn_captures(list_t *list, const board_t *board, S32 to, bool legal, bool stop);
+static bool add_piece_moves(list_t *list, const board_t *board, S32 to, bool legal, bool stop);
 
 // functions
 
@@ -73,12 +73,12 @@ static bool gen_evasions(list_t *list, const board_t *board, const attack_t *att
 	// init
 	LIST_CLEAR(list);
 
-	const int_fast8_t  me   = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
-	const int_fast32_t king = KING_POS(board, me);
+	const S8 me = board->turn, opp = COLOUR_OPP(me), opp_flag = COLOUR_FLAG(opp);
+	const S32 king = KING_POS(board, me);
 
 	for (const inc_t *inc_ptr = KingInc.data(); *inc_ptr != IncNone; ++inc_ptr) {
 		if (*inc_ptr != -attack->di[0] && *inc_ptr != -attack->di[1]) { // avoid escaping along a check line
-			const int_fast32_t to = king + *inc_ptr, piece = board->square[to];
+			const S32 to = king + *inc_ptr, piece = board->square[to];
 			if (piece == Empty || FLAG_IS(piece, opp_flag)) {
 				if (!legal || !is_attacked(board, to, opp)) {
 					if (stop) return true;
@@ -98,10 +98,10 @@ static bool gen_evasions(list_t *list, const board_t *board, const attack_t *att
 	if (add_piece_moves(list, board, attack->ds[0], legal, stop) && stop) return true;
 
 	// interpose a piece
-	const int_fast32_t inc = attack->di[0];
+	const S32 inc = attack->di[0];
 
 	if (inc != IncNone) { // line
-		for (int_fast32_t to = king + inc; to != attack->ds[0]; to += inc) {
+		for (S32 to = king + inc; to != attack->ds[0]; to += inc) {
 			ASSERT(SQUARE_IS_OK(to));
 			ASSERT(board->square[to] == Empty);
 			if (add_pawn_moves(list, board, to, legal, stop) && stop) return true;
@@ -113,7 +113,7 @@ static bool gen_evasions(list_t *list, const board_t *board, const attack_t *att
 
 // add_pawn_moves()
 
-static bool add_pawn_moves(list_t *list, const board_t *board, int_fast32_t to, bool legal, bool stop) {
+static bool add_pawn_moves(list_t *list, const board_t *board, S32 to, bool legal, bool stop) {
 
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
@@ -123,10 +123,10 @@ static bool add_pawn_moves(list_t *list, const board_t *board, int_fast32_t to, 
 
 	ASSERT(board->square[to] == Empty);
 
-	const int_fast8_t  me  = board->turn;
-	const int_fast32_t inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+	const S8 me = board->turn;
+	const S32 inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
 
-	int_fast32_t from = to - inc, piece = board->square[from];
+	S32 from = to - inc, piece = board->square[from];
 
 	if (piece == pawn) { // single push
 		if (!legal || !is_pinned(board, from, me)) {
@@ -149,7 +149,7 @@ static bool add_pawn_moves(list_t *list, const board_t *board, int_fast32_t to, 
 
 // add_pawn_captures()
 
-static bool add_pawn_captures(list_t *list, const board_t *board, int_fast32_t to, bool legal, bool stop) {
+static bool add_pawn_captures(list_t *list, const board_t *board, S32 to, bool legal, bool stop) {
 
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
@@ -159,10 +159,10 @@ static bool add_pawn_captures(list_t *list, const board_t *board, int_fast32_t t
 
 	ASSERT(COLOUR_IS(board->square[to], COLOUR_OPP(board->turn)));
 
-	const int_fast8_t  me  = board->turn;
-	const int_fast32_t inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+	const S8 me = board->turn;
+	const S32 inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
 
-	int_fast32_t from = to - (inc - 1);
+	S32 from = to - (inc - 1);
 	if (board->square[from] == pawn) {
 		if (!legal || !is_pinned(board, from, me)) {
 			if (stop) return true;
@@ -212,7 +212,7 @@ static bool add_pawn_captures(list_t *list, const board_t *board, int_fast32_t t
 
 // add_piece_moves()
 
-static bool add_piece_moves(list_t *list, const board_t *board, int_fast32_t to, bool legal, bool stop) {
+static bool add_piece_moves(list_t *list, const board_t *board, S32 to, bool legal, bool stop) {
 
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
@@ -220,11 +220,11 @@ static bool add_piece_moves(list_t *list, const board_t *board, int_fast32_t to,
 	ASSERT(legal == true || legal == false);
 	ASSERT(stop == true || stop == false);
 
-	const int_fast8_t me = board->turn;
+	const S8 me = board->turn;
 
 	for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr) { // HACK: no king
 
-		const int_fast32_t piece = board->square[*ptr];
+		const S32 piece = board->square[*ptr];
 
 		if (PIECE_ATTACK(board, piece, *ptr, to)) {
 			if (!legal || !is_pinned(board, *ptr, me)) {

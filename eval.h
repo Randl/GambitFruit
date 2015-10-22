@@ -12,7 +12,7 @@
 
 extern void eval_init();
 
-extern int_fast32_t eval(/*const*/ board_t *board, int_fast32_t alpha, bool do_le, bool in_check);
+extern S32 eval(/*const*/ board_t *board, S32 alpha, bool do_le, bool in_check);
 
 #endif // !defined EVAL_H
 

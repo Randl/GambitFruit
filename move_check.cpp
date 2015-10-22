@@ -14,9 +14,9 @@ static void add_quiet_checks(list_t *list, const board_t *board);
 
 static void add_castle_checks(list_t *list, board_t *board);
 
-static void add_check(list_t *list, uint_fast16_t move, board_t *board);
+static void add_check(list_t *list, U16 move, board_t *board);
 
-static void find_pins(uint_fast16_t list[], const board_t *board);
+static void find_pins(U16 list[], const board_t *board);
 
 // functions
 
@@ -44,25 +44,25 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast8_t me = board->turn, opp = COLOUR_OPP(me);
-	const int_fast32_t king = KING_POS(board, opp);
+	const S8 me = board->turn, opp = COLOUR_OPP(me);
+	const S32 king = KING_POS(board, opp);
 
-	uint_fast16_t pin[8 + 1];
+	U16 pin[8 + 1];
 	find_pins(pin, board);
 
 	// indirect checks
 	for (const sq_t *ptr = pin; *ptr != SquareNone; ++ptr) {
 
-		const int_fast32_t piece = board->square[*ptr];
+		const S32 piece = board->square[*ptr];
 
 		ASSERT(is_pinned(board, *ptr, opp));
 
 		if (PIECE_IS_PAWN(piece)) {
 
-			const int_fast32_t inc = PAWN_MOVE_INC(me), rank = PAWN_RANK(*ptr, me);
+			const S32 inc = PAWN_MOVE_INC(me), rank = PAWN_RANK(*ptr, me);
 
 			if (rank != Rank7) { // promotes are generated with captures
-				int_fast32_t to = *ptr + inc;
+				S32 to = *ptr + inc;
 				if (board->square[to] == Empty) {
 					if (DELTA_INC_LINE(to - king) != DELTA_INC_LINE(*ptr - king)) {
 						ASSERT(!SQUARE_IS_PROMOTE(to));
@@ -80,14 +80,14 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 			}
 		} else if (PIECE_IS_SLIDER(piece)) {
 			for (const inc_t *inc_ptr = PIECE_INC(piece); *inc_ptr != IncNone; ++inc_ptr) {
-				for (int_fast32_t to = *ptr + *inc_ptr; board->square[to] == Empty; to += *inc_ptr) {
+				for (S32 to = *ptr + *inc_ptr; board->square[to] == Empty; to += *inc_ptr) {
 					ASSERT(DELTA_INC_LINE(to - king) != DELTA_INC_LINE(*ptr - king));
 					LIST_ADD(list, MOVE_MAKE(*ptr, to));
 				}
 			}
 		} else {
 			for (const inc_t *inc_ptr = PIECE_INC(piece); *inc_ptr != IncNone; ++inc_ptr) {
-				int_fast32_t to = *ptr + *inc_ptr;
+				S32 to = *ptr + *inc_ptr;
 				if (board->square[to] == Empty) {
 					if (DELTA_INC_LINE(to - king) != DELTA_INC_LINE(*ptr - king)) {
 						LIST_ADD(list, MOVE_MAKE(*ptr, to));
@@ -101,7 +101,7 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 	for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr) { // HACK: no king
 
 		const inc_t     *inc_ptr;
-		int_fast32_t    piece;
+		S32 piece;
 		for (const sq_t *ptr_2 = pin; *ptr_2 != SquareNone; ++ptr_2) {
 			if (*ptr_2 == *ptr) goto next_piece;
 		}
@@ -113,7 +113,7 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 
 		if (PIECE_IS_SLIDER(piece)) {
 			for (; *inc_ptr != IncNone; ++inc_ptr) {
-				for (int_fast32_t to = *ptr + *inc_ptr; board->square[to] == Empty; to += *inc_ptr) {
+				for (S32 to = *ptr + *inc_ptr; board->square[to] == Empty; to += *inc_ptr) {
 					if (PIECE_ATTACK(board, piece, to, king)) {
 						LIST_ADD(list, MOVE_MAKE(*ptr, to));
 					}
@@ -122,7 +122,7 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 
 		} else {
 			for (; *inc_ptr != IncNone; ++inc_ptr) {
-				int_fast32_t to = *ptr + *inc_ptr;
+				S32 to = *ptr + *inc_ptr;
 				if (board->square[to] == Empty) {
 					if (PSEUDO_ATTACK(piece, king - to)) {
 						LIST_ADD(list, MOVE_MAKE(*ptr, to));
@@ -135,11 +135,11 @@ static void add_quiet_checks(list_t *list, const board_t *board) {
 	}
 
 	// pawn direct checks
-	const int_fast32_t inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
-	int_fast32_t       to  = king - (inc - 1);
+	const S32 inc = PAWN_MOVE_INC(me), pawn = PAWN_MAKE(me);
+	S32 to = king - (inc - 1);
 	ASSERT(PSEUDO_ATTACK(pawn, king - to));
 
-	int_fast32_t from = to - inc;
+	S32 from = to - inc;
 	if (board->square[from] == pawn) {
 		if (board->square[to] == Empty) {
 			ASSERT(!SQUARE_IS_PROMOTE(to));
@@ -225,7 +225,7 @@ static void add_castle_checks(list_t *list, board_t *board) {
 
 // add_check()
 
-static void add_check(list_t *list, uint_fast16_t move, board_t *board) {
+static void add_check(list_t *list, U16 move, board_t *board) {
 
 	ASSERT(list != nullptr);
 	ASSERT(move_is_ok(move));
@@ -239,7 +239,7 @@ static void add_check(list_t *list, uint_fast16_t move, board_t *board) {
 
 // move_is_check()
 
-bool move_is_check(uint_fast16_t move, board_t *board) {
+bool move_is_check(U16 move, board_t *board) {
 
 	ASSERT(move_is_ok(move));
 	ASSERT(board != nullptr);
@@ -256,9 +256,9 @@ bool move_is_check(uint_fast16_t move, board_t *board) {
 	}
 
 	// init
-	const int_fast8_t  me   = board->turn, opp = COLOUR_OPP(me);
-	const int_fast32_t king = KING_POS(board, opp);
-	const int_fast32_t from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
+	const S8 me = board->turn, opp = COLOUR_OPP(me);
+	const S32 king = KING_POS(board, opp);
+	const S32 from = MOVE_FROM(move), to = MOVE_TO(move), piece = board->square[from];
 	ASSERT(COLOUR_IS(piece, me));
 
 	// direct check
@@ -275,36 +275,36 @@ bool move_is_check(uint_fast16_t move, board_t *board) {
 
 // find_pins()
 
-static void find_pins(uint_fast16_t list[], const board_t *board) {
+static void find_pins(U16 list[], const board_t *board) {
 
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
 
 	// init
-	const int_fast8_t  me   = board->turn, opp = COLOUR_OPP(me);
-	const int_fast32_t king = KING_POS(board, opp);
+	const S8 me = board->turn, opp = COLOUR_OPP(me);
+	const S32 king = KING_POS(board, opp);
 
 	for (auto ptr = board->piece[me].begin() + 1; ptr != board->piece[me].end(); ++ptr) { // HACK: no king
 
-		const int_fast32_t piece = board->square[*ptr], delta = king - *ptr;
+		const S32 piece = board->square[*ptr], delta = king - *ptr;
 		ASSERT(delta_is_ok(delta));
 
 		if (PSEUDO_ATTACK(piece, delta)) {
 
 			ASSERT(PIECE_IS_SLIDER(piece));
 
-			const int_fast32_t inc = DELTA_INC_LINE(delta);
+			const S32 inc = DELTA_INC_LINE(delta);
 			ASSERT(inc != IncNone);
 
 			ASSERT(SLIDER_ATTACK(piece, inc));
 
-			int_fast32_t sq = *ptr, capture;
+			S32 sq = *ptr, capture;
 			do sq += inc; while ((capture = board->square[sq]) == Empty);
 
 			ASSERT(sq != king);
 
 			if (COLOUR_IS(capture, me)) {
-				const int_fast32_t pin = sq;
+				const S32 pin = sq;
 				do sq += inc; while (board->square[sq] == Empty);
 				if (sq == king) *list++ = pin;
 			}
