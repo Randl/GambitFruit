@@ -11,7 +11,8 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-O1 -s")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -std=c++14 -DDEBUG")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -Wstrict-aliasing -Weffc++")
 
-file(GLOB SOURCE_FILES "*.c")
+file(GLOB SOURCE_FILES "*.cpp")
 file(GLOB HEADER_FILES "*.h")
 
 add_executable(GambitFruit ${SOURCE_FILES} ${HEADER_FILES})
+add_library(GambitFruitStatic STATIC ${SOURCE_FILES} ${HEADER_FILES})

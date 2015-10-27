@@ -1,0 +1,1 @@
+tmo is a tuning tool for Gambit Fruit which uses [Texel's Tuning Method](https://chessprogramming.wikispaces.com/Texel%27s+Tuning+Method).
