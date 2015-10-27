@@ -44,14 +44,14 @@ S32 rank_from_char(S32 c) {
 
 // file_to_char()
 
-S32 file_to_char(S32 file) {
+char file_to_char(S32 file) {
 	ASSERT(file >= FileA && file <= FileH);
 	return 'a' + (file - FileA);
 }
 
 // rank_to_char()
 
-S32 rank_to_char(S32 rank) {
+char rank_to_char(S32 rank) {
 	ASSERT(rank >= Rank1 && rank <= Rank8);
 	return '1' + (rank - Rank1);
 }

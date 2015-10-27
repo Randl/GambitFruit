@@ -202,9 +202,9 @@ bool option_get_bool(const char var[]) {
 
 // option_get_int()
 
-S32 option_get_int(const char var[]) {
+S64 option_get_int(const char var[]) {
 	const char *val = option_get(var);
-	return atoi(val);
+	return atoll(val);
 }
 
 // option_get_string()

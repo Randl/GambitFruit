@@ -17,19 +17,19 @@
 constexpr S32 Empty = 0;
 constexpr S32 Edge = Knight64; // HACK: uncoloured knight
 
-constexpr S32 WP = WhitePawn256;
-constexpr S32 WN = WhiteKnight256;
-constexpr S32 WB = WhiteBishop256;
-constexpr S32 WR = WhiteRook256;
-constexpr S32 WQ = WhiteQueen256;
-constexpr S32 WK = WhiteKing256;
+constexpr S16 WP = WhitePawn256;
+constexpr S16 WN = WhiteKnight256;
+constexpr S16 WB = WhiteBishop256;
+constexpr S16 WR = WhiteRook256;
+constexpr S16 WQ = WhiteQueen256;
+constexpr S16 WK = WhiteKing256;
 
-constexpr S32 BP = BlackPawn256;
-constexpr S32 BN = BlackKnight256;
-constexpr S32 BB = BlackBishop256;
-constexpr S32 BR = BlackRook256;
-constexpr S32 BQ = BlackQueen256;
-constexpr S32 BK = BlackKing256;
+constexpr S16 BP = BlackPawn256;
+constexpr S16 BN = BlackKnight256;
+constexpr S16 BB = BlackBishop256;
+constexpr S16 BR = BlackRook256;
+constexpr S16 BQ = BlackQueen256;
+constexpr S16 BK = BlackKing256;
 
 constexpr S8 FlagsNone = 0;
 constexpr S8 FlagsWhiteKingCastle = 1 << 0;
@@ -55,7 +55,7 @@ struct board_t {
 
     std::array<S16, ColourNb> piece_material; // Thomas
 
-    std::array<S32, SquareNb> square;
+    std::array<S16, SquareNb> square;
     std::array<S8, SquareNb> pos;
 
     std::array<std::vector<sq_t>, ColourNb> piece;

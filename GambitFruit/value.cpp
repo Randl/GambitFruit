@@ -54,9 +54,7 @@ bool range_is_ok(S32 min, S32 max) {
 	if (!value_is_ok(min)) return false;
 	if (!value_is_ok(max)) return false;
 
-	if (min >= max) return false; // alpha-beta-like ranges cannot be null
-
-	return true;
+	return min < max; // alpha-beta-like ranges cannot be null
 }
 
 // value_is_mate()

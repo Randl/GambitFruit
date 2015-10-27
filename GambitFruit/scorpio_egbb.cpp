@@ -79,7 +79,7 @@ void load_egbb_library() {
 	}
 }
 
-bool bitbase_probe(const board_t *board, S32 value) {
+bool bitbase_probe(const board_t *board, S32 &value) {
 
 	const S8 player = board->turn;
 	S8 total_pieces = 2;

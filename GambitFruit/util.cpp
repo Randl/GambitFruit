@@ -30,7 +30,7 @@ void my_random_init() {
 
 // my_random()
 
-S32 my_random(S32 n) { //std:;random, new, c++ functions instead
+S32 my_random(S32 n) { //TODO: test std::random
 
 	double r;
 

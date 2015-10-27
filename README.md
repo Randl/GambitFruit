@@ -1,12 +1,16 @@
 Gambit Fruit is a free open source project based on Fruit 2.1 and Toga. The goal of Gambit Fruit is a fun free and aggresive chess engine.
 To turn off Lazy Eval set Chess knowledge to 500.
+
 If you have any suggestions please email them to me.
+
 Bitbases can be found [here](http://oics.olympuschess.com/tracker/index.php) and latest egbbdll [here](https://sites.google.com/site/dshawul/home) or [here](https://github.com/dshawul/egbbdll)
 
+#Features
+
 Added:
-* 6-men EGBB
-* *[Texel's Tuning Method](https://chessprogramming.wikispaces.com/Texel%27s+Tuning+Method).
-* * Pawn count - no pawns is bad in endgame
+- 6-men EGBB
+- [Texel's Tuning Method](https://chessprogramming.wikispaces.com/Texel%27s+Tuning+Method).
+- Pawn count - no pawns is bad in endgame
 
 TODO:
 * SMP([Lazy SMP](https://chessprogramming.wikispaces.com/Parallel+Search#Shared%20Hash%20Table-Lazy%20SMP));
@@ -28,5 +32,7 @@ TODO:
 * Elephantiasis effect as suggested by Harm Geert Muller (meaning that stronger pieces lose part of their value in presence of weaker pieces);
 * Syzygy support
 
-
 Thanks for everyone contributed to Gambit Fruit, Fruit 2.1, Toga, and to those who gave me ideas.
+
+#Building
+Gambit Fruit and all the utilities are built with cmake.

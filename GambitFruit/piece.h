@@ -11,59 +11,59 @@
 
 // constants
 
-constexpr S16 WhitePawnFlag = 1 << 2;
-constexpr S16 BlackPawnFlag = 1 << 3;
-constexpr S16 KnightFlag = 1 << 4;
-constexpr S16 BishopFlag = 1 << 5;
-constexpr S16 RookFlag = 1 << 6;
-constexpr S16 KingFlag = 1 << 7;
+constexpr U16 WhitePawnFlag = 1 << 2;
+constexpr U16 BlackPawnFlag = 1 << 3;
+constexpr U16 KnightFlag = 1 << 4;
+constexpr U16 BishopFlag = 1 << 5;
+constexpr U16 RookFlag = 1 << 6;
+constexpr U16 KingFlag = 1 << 7;
 
-constexpr S16 PawnFlags = WhitePawnFlag | BlackPawnFlag;
-constexpr S16 QueenFlags = BishopFlag | RookFlag;
+constexpr U16 PawnFlags = WhitePawnFlag | BlackPawnFlag;
+constexpr U16 QueenFlags = BishopFlag | RookFlag;
 
-constexpr S16 PieceNone64 = 0;
-constexpr S16 WhitePawn64 = WhitePawnFlag;
-constexpr S16 BlackPawn64 = BlackPawnFlag;
-constexpr S16 Knight64 = KnightFlag;
-constexpr S16 Bishop64 = BishopFlag;
-constexpr S16 Rook64 = RookFlag;
-constexpr S16 Queen64 = QueenFlags;
-constexpr S16 King64 = KingFlag;
+constexpr U16 PieceNone64 = 0;
+constexpr U16 WhitePawn64 = WhitePawnFlag;
+constexpr U16 BlackPawn64 = BlackPawnFlag;
+constexpr U16 Knight64 = KnightFlag;
+constexpr U16 Bishop64 = BishopFlag;
+constexpr U16 Rook64 = RookFlag;
+constexpr U16 Queen64 = QueenFlags;
+constexpr U16 King64 = KingFlag;
 
-constexpr S16 PieceNone256 = 0;
-constexpr S16 WhitePawn256 = WhitePawn64 | WhiteFlag;
-constexpr S16 BlackPawn256 = BlackPawn64 | BlackFlag;
-constexpr S16 WhiteKnight256 = Knight64 | WhiteFlag;
-constexpr S16 BlackKnight256 = Knight64 | BlackFlag;
-constexpr S16 WhiteBishop256 = Bishop64 | WhiteFlag;
-constexpr S16 BlackBishop256 = Bishop64 | BlackFlag;
-constexpr S16 WhiteRook256 = Rook64 | WhiteFlag;
-constexpr S16 BlackRook256 = Rook64 | BlackFlag;
-constexpr S16 WhiteQueen256 = Queen64 | WhiteFlag;
-constexpr S16 BlackQueen256 = Queen64 | BlackFlag;
-constexpr S16 WhiteKing256 = King64 | WhiteFlag;
-constexpr S16 BlackKing256 = King64 | BlackFlag;
-constexpr S16 PieceNb = 256;
+constexpr U16 PieceNone256 = 0;
+constexpr U16 WhitePawn256 = WhitePawn64 | WhiteFlag;
+constexpr U16 BlackPawn256 = BlackPawn64 | BlackFlag;
+constexpr U16 WhiteKnight256 = Knight64 | WhiteFlag;
+constexpr U16 BlackKnight256 = Knight64 | BlackFlag;
+constexpr U16 WhiteBishop256 = Bishop64 | WhiteFlag;
+constexpr U16 BlackBishop256 = Bishop64 | BlackFlag;
+constexpr U16 WhiteRook256 = Rook64 | WhiteFlag;
+constexpr U16 BlackRook256 = Rook64 | BlackFlag;
+constexpr U16 WhiteQueen256 = Queen64 | WhiteFlag;
+constexpr U16 BlackQueen256 = Queen64 | BlackFlag;
+constexpr U16 WhiteKing256 = King64 | WhiteFlag;
+constexpr U16 BlackKing256 = King64 | BlackFlag;
+constexpr U16 PieceNb = 256;
 
-constexpr S8 WhitePawn12 = 0;
-constexpr S8 BlackPawn12 = 1;
-constexpr S8 WhiteKnight12 = 2;
-constexpr S8 BlackKnight12 = 3;
-constexpr S8 WhiteBishop12 = 4;
-constexpr S8 BlackBishop12 = 5;
-constexpr S8 WhiteRook12 = 6;
-constexpr S8 BlackRook12 = 7;
-constexpr S8 WhiteQueen12 = 8;
-constexpr S8 BlackQueen12 = 9;
-constexpr S8 WhiteKing12 = 10;
-constexpr S8 BlackKing12 = 11;
+constexpr U8 WhitePawn12 = 0;
+constexpr U8 BlackPawn12 = 1;
+constexpr U8 WhiteKnight12 = 2;
+constexpr U8 BlackKnight12 = 3;
+constexpr U8 WhiteBishop12 = 4;
+constexpr U8 BlackBishop12 = 5;
+constexpr U8 WhiteRook12 = 6;
+constexpr U8 BlackRook12 = 7;
+constexpr U8 WhiteQueen12 = 8;
+constexpr U8 BlackQueen12 = 9;
+constexpr U8 WhiteKing12 = 10;
+constexpr U8 BlackKing12 = 11;
 
 // macros
 
 #define PAWN_MAKE(colour)        (PawnMake[colour])
 #define PAWN_OPP(pawn)           ((pawn)^(WhitePawn256^BlackPawn256))
 
-#define PIECE_COLOUR(piece)      (((piece)&3)-1)
+#define PIECE_COLOUR(piece)      ((S8)((piece)&3)-1)
 #define PIECE_TYPE(piece)        ((piece)&~3)
 
 #define PIECE_IS_PAWN(piece)     (((piece)&PawnFlags)!=0)
@@ -83,7 +83,7 @@ constexpr S8 BlackKing12 = 11;
 
 // types
 
-typedef S32 inc_t;
+typedef S8 inc_t;
 
 // "constants"
 

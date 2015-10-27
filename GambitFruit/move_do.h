@@ -32,7 +32,7 @@ struct undo_t {
     S32 opening;
     S32 endgame;
 
-    S16 ply_nb;
+    U16 ply_nb;
 
     bool capture;
     bool turn;

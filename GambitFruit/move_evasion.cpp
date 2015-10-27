@@ -64,8 +64,8 @@ static bool gen_evasions(list_t *list, const board_t *board, const attack_t *att
 	ASSERT(list != nullptr);
 	ASSERT(board != nullptr);
 	ASSERT(attack != nullptr);
-	ASSERT(legal == true || legal == false);
-	ASSERT(stop == true || stop == false);
+	//ASSERT(legal == true || legal == false);
+	//ASSERT(stop == true || stop == false); ???
 
 	ASSERT(board_is_check(board));
 	ASSERT(ATTACK_IN_CHECK(attack));

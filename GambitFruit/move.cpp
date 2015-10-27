@@ -10,7 +10,7 @@
 
 // constants
 
-static constexpr std::array<S32, 4> PromotePiece = {Knight64, Bishop64, Rook64, Queen64};
+static constexpr std::array<U16, 4> PromotePiece = {Knight64, Bishop64, Rook64, Queen64};
 
 // functions
 
@@ -32,7 +32,8 @@ U16 move_promote(U16 move) {
 	ASSERT(move_is_ok(move));
 	ASSERT(MOVE_IS_PROMOTE(move));
 
-	S32 code = (move >> 12) & 3, piece = PromotePiece[code];
+	S32 code = (move >> 12) & 3;
+	S16 piece = PromotePiece[code];
 
 	if (SQUARE_RANK(MOVE_TO(move)) == Rank8)
 		piece |= WhiteFlag;
