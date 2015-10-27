@@ -5,12 +5,13 @@ Bitbases can be found [here](http://oics.olympuschess.com/tracker/index.php) and
 
 Added:
 * 6-men EGBB
+* *[Texel's Tuning Method](https://chessprogramming.wikispaces.com/Texel%27s+Tuning+Method).
+* * Pawn count - no pawns is bad in endgame
 
 TODO:
 * SMP([Lazy SMP](https://chessprogramming.wikispaces.com/Parallel+Search#Shared%20Hash%20Table-Lazy%20SMP));
 * Bugs and warning fixes. Static analysis with [cppcheck](http://cppcheck.sourceforge.net/);
 * Converting to c++11/c++14/c++17;
-* Try [Texel's Tuning Method](https://chessprogramming.wikispaces.com/Texel%27s+Tuning+Method). Using [txt automatic tool](https://bitbucket.org/zurichess/txt);
 * [Progressive mobility](https://chessprogramming.wikispaces.com/Mobility#ProgressiveMobility) and [connectivity](https://chessprogramming.wikispaces.com/Connectivity);
 * Kingside/queenside attack;
 * [Pawn ram](https://chessprogramming.wikispaces.com/Pawn+Rams+%28Bitboards%29) handling + open/closed position based on this;

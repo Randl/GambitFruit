@@ -97,6 +97,7 @@ void print(const std::vector<int_fast16_t> v) {
 	}
 }
 
+//TODO: change to object
 std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)> estimated,
                                  std::function<double(std::vector<int_fast16_t>)> precision,
                                  std::vector<int_fast16_t> starting_point,
@@ -197,6 +198,10 @@ std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)
 			std::cout << "Old solution: ";
 			print(current);
 			std::cout << std::endl << "Old value is " << current_value << std::endl;
+
+			std::cout << "Starting solution: ";
+			print(starting_point);
+			std::cout << std::endl;
 
 			current_value = new_value;
 			current = sol;
