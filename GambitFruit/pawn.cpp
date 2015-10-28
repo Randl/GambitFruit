@@ -158,17 +158,26 @@ void pawn_init() {
 
 	PawnStructureWeight = (option_get_int("Pawn Structure") * 256 + 50) / 100;
 #ifdef TMO_OPT
+	char dop[] = "DoubledOpening0", deg[] = "DoubledEndgame0", iso[] = "IsolatedOpening0",
+		isoo[] = "IsolatedOpeningOpen0", ise[] = "IsolatedEndgame0", bo[] = "BackwardOpening0",
+		boo[] = "BackwardOpeningOpen0", beg[] = "BackwardEndgame0";
 	for (U8 i = 0; i < 8; ++i) {
-		char n[1];
-		n[0] = i + '1';
-		DoubledOpening[i] = option_get_int(strcat(n, "DoubledOpening"));
-		DoubledEndgame[i] = option_get_int(strcat(n, "DoubledEndgame1"));
-		IsolatedOpening[i] = option_get_int(strcat(n, "IsolatedOpening1"));
-		IsolatedOpeningOpen[i] = option_get_int(strcat(n, "IsolatedOpeningOpen1"));
-		IsolatedEndgame[i] = option_get_int(strcat(n, "IsolatedEndgame1"));
-		BackwardOpening[i] = option_get_int(strcat(n, "BackwardOpening1"));
-		BackwardOpeningOpen[i] = option_get_int(strcat(n, "BackwardOpeningOpen1"));
-		BackwardEndgame[i] = option_get_int(strcat(n, "BackwardEndgame1"));
+		dop[14]++;
+		deg[14]++;
+		iso[15]++;
+		isoo[19]++;
+		ise[15]++;
+		bo[15]++;
+		boo[19]++;
+		beg[15]++;
+		DoubledOpening[i] = option_get_int(dop);
+		DoubledEndgame[i] = option_get_int(deg);
+		IsolatedOpening[i] = option_get_int(iso);
+		IsolatedOpeningOpen[i] = option_get_int(isoo);
+		IsolatedEndgame[i] = option_get_int(ise);
+		BackwardOpening[i] = option_get_int(bo);
+		BackwardOpeningOpen[i] = option_get_int(boo);
+		BackwardEndgame[i] = option_get_int(beg);
 	}
 #endif
 

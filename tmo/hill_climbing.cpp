@@ -25,7 +25,7 @@ std::vector<S16> mutate(std::vector<S16> starting_point,
 
 	std::vector<S16> new_point;
 	for (size_t i = 0; i < starting_point.size(); ++i) {
-		double sigma = std::max(std::abs(range * starting_point[i] / 3.0), 5.0);
+		double sigma = std::max(std::abs(range * starting_point[i] / 3.0), 3.0);
 		std::normal_distribution<double> d((double) starting_point[i], sigma);
 		new_point.push_back((S16) std::round(d(gen)));
 		new_point[i] = new_point[i] > min[i] ? new_point[i] < max[i] ? new_point[i] : max[i] : min[i];
