@@ -43,16 +43,16 @@ static const S32 BackwardOpening = 8;
 static const S32 BackwardOpeningOpen = 16;
 static const S32 BackwardEndgame = 10;
 */
-static constexpr std::array<S8, 8> DoubledOpening = {10, 10, 10, 12, 12, 10, 10, 10};
-static constexpr std::array<S8, 8> DoubledEndgame = {18, 18, 18, 20, 20, 18, 18, 18};
+static /*constexpr*/ std::array<S8, 8> DoubledOpening = {10, 10, 10, 12, 12, 10, 10, 10};
+static /*constexpr*/ std::array<S8, 8> DoubledEndgame = {18, 18, 18, 20, 20, 18, 18, 18};
 
-static constexpr std::array<S8, 8> IsolatedOpening = {8, 9, 10, 12, 12, 10, 9, 8};
-static constexpr std::array<S8, 8> IsolatedOpeningOpen = {18, 19, 20, 22, 22, 20, 19, 18};
-static constexpr std::array<S8, 8> IsolatedEndgame = {18, 19, 20, 22, 22, 20, 19, 18};
+static /*constexpr*/ std::array<S8, 8> IsolatedOpening = {8, 9, 10, 12, 12, 10, 9, 8};
+static /*constexpr*/ std::array<S8, 8> IsolatedOpeningOpen = {18, 19, 20, 22, 22, 20, 19, 18};
+static /*constexpr*/ std::array<S8, 8> IsolatedEndgame = {18, 19, 20, 22, 22, 20, 19, 18};
 
-static constexpr std::array<S8, 8> BackwardOpening = {6, 7, 8, 10, 10, 8, 7, 6};
-static constexpr std::array<S8, 8> BackwardOpeningOpen = {12, 14, 16, 18, 18, 16, 14, 12};
-static constexpr std::array<S8, 8> BackwardEndgame = {8, 9, 10, 12, 12, 10, 9, 8};
+static /*constexpr*/ std::array<S8, 8> BackwardOpening = {6, 7, 8, 10, 10, 8, 7, 6};
+static /*constexpr*/ std::array<S8, 8> BackwardOpeningOpen = {12, 14, 16, 18, 18, 16, 14, 12};
+static /*constexpr*/ std::array<S8, 8> BackwardEndgame = {8, 9, 10, 12, 12, 10, 9, 8};
 
 static constexpr S8 CandidateOpeningMin = 5;
 static constexpr S16 CandidateOpeningMax = 55;
@@ -157,6 +157,20 @@ void pawn_init() {
 	// UCI options
 
 	PawnStructureWeight = (option_get_int("Pawn Structure") * 256 + 50) / 100;
+#ifdef TMO_OPT
+	for (U8 i = 0; i < 8; ++i) {
+		char n[1];
+		n[0] = i + '1';
+		DoubledOpening[i] = option_get_int(strcat(n, "DoubledOpening"));
+		DoubledEndgame[i] = option_get_int(strcat(n, "DoubledEndgame1"));
+		IsolatedOpening[i] = option_get_int(strcat(n, "IsolatedOpening1"));
+		IsolatedOpeningOpen[i] = option_get_int(strcat(n, "IsolatedOpeningOpen1"));
+		IsolatedEndgame[i] = option_get_int(strcat(n, "IsolatedEndgame1"));
+		BackwardOpening[i] = option_get_int(strcat(n, "BackwardOpening1"));
+		BackwardOpeningOpen[i] = option_get_int(strcat(n, "BackwardOpeningOpen1"));
+		BackwardEndgame[i] = option_get_int(strcat(n, "BackwardEndgame1"));
+	}
+#endif
 
 	// bonus
 

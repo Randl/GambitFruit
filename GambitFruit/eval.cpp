@@ -63,8 +63,8 @@ static constexpr std::array<S8, 27> queen_mob_end =
 static constexpr std::array<S8, 9> pawns_on_bishop_colour_opening = {9, 6, 3, 0, -3, -6, -9, -12, -15};
 static constexpr std::array<S8, 9> pawns_on_bishop_colour_endgame = {12, 8, 4, 0, -4, -8, -12, -16, -20};
 
-static /* constexpr */ std::array<S8, 9> PawnAmountBonusOpening = {-10, -9, -6, 0, 5, 5, 5, 2, -4};
-static /* constexpr */ std::array<S8, 9> PawnAmountBonusEndgame = {-55, -20, -2, 0, 10, 8, 5, 3, -8};
+static /* constexpr */ std::array<S8, 9> PawnAmountBonusOpening = {-25, 5, 13, 15, 13, 13, 13, -2, -10};
+static /* constexpr */ std::array<S8, 9> PawnAmountBonusEndgame = {-40, -20, 6, 14, 20, 20, 20, 20, 16};
 
 static constexpr S8 RookSemiOpenFileOpening = 10;
 static constexpr S8 RookSemiOpenFileEndgame = 10;

@@ -111,7 +111,7 @@ std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
 
 
 	std::cout << "Start optimization" << std::endl;
-#ifndef DEBUG
+#ifdef NDEBUG
 	freopen("log.txt", "w", stdout);
 #endif
 
