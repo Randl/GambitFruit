@@ -12,8 +12,6 @@
 std::vector<std::pair<std::string, double>> load_epds(std::string filename);
 double average_error(std::vector<std::pair<std::string, double>> positions,
                      std::vector<std::string> options,
-                     double K,
-                     int_fast16_t limit,
-                     std::vector<int_fast16_t> params);
+                     double K, S16 limit, std::vector<S16> params);
 
 #endif //TMO_TEXEL_OPTIMIZER_H

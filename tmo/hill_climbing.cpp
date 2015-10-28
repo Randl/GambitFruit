@@ -8,43 +8,42 @@
 #include <functional>
 #include <map>
 #include <iostream>
+#include "hill_climbing.h"
 
 struct CompareSecond {
-    bool operator()(const std::pair<std::vector<int_fast16_t>, double> &left,
-                    const std::pair<std::vector<int_fast16_t>, double> &right) const {
+    bool operator()(const std::pair<std::vector<S16>, double> &left,
+                    const std::pair<std::vector<S16>, double> &right) const {
 	    return left.second < right.second;
     }
 };
 
 //generates new point with normal distribution, 99.7% of values are in (point * (1-range); point * (1+range)). Minimal sigma is 5
-std::vector<int_fast16_t> mutate(std::vector<int_fast16_t> starting_point,
-                                 double range,
-                                 std::vector<int_fast16_t> min,
-                                 std::vector<int_fast16_t> max) {
+std::vector<S16> mutate(std::vector<S16> starting_point,
+                                 double range, std::vector<S16> min, std::vector<S16> max) {
 	int_fast64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::default_random_engine gen(seed);
 
-	std::vector<int_fast16_t> new_point;
+	std::vector<S16> new_point;
 	for (size_t i = 0; i < starting_point.size(); ++i) {
 		double sigma = std::max(std::abs(range * starting_point[i] / 3.0), 5.0);
 		std::normal_distribution<double> d((double) starting_point[i], sigma);
-		new_point.push_back((int_fast16_t) std::round(d(gen)));
+		new_point.push_back((S16) std::round(d(gen)));
 		new_point[i] = new_point[i] > min[i] ? new_point[i] < max[i] ? new_point[i] : max[i] : min[i];
 	}
 	return new_point;
 }
 
-bool add(std::function<double(std::vector<int_fast16_t>)> estimated,
-         std::map<std::vector<int_fast16_t>, double> &solutions,
-         std::vector<int_fast16_t> sol,
-         int_fast16_t pool_size) {
+bool add(std::function<double(std::vector<S16>)> estimated,
+         std::map<std::vector<S16>, double> &solutions,
+         std::vector<S16> sol,
+         S16 pool_size) {
 	double n = estimated(sol);
 	//Add value if it's better than current worst value;
 	if (solutions.size() < pool_size) {
 		solutions[sol] = n;
 		return true;
 	} else {
-		std::pair<std::vector<int_fast16_t>, double>
+		std::pair<std::vector<S16>, double>
 			max = *max_element(solutions.begin(), solutions.end(), CompareSecond());
 		if (max.second > n) {
 			solutions.erase(max.first);
@@ -57,8 +56,7 @@ bool add(std::function<double(std::vector<int_fast16_t>)> estimated,
 
 }
 
-std::vector<int_fast16_t> pop(std::map<std::vector<int_fast16_t>, double> &solutions,
-                              int_fast16_t tournament_size,
+std::vector<S16> pop(std::map<std::vector<S16>, double> &solutions, S16 tournament_size,
                               int_fast64_t seed) {
 	std::default_random_engine gen(seed);
 
@@ -66,8 +64,8 @@ std::vector<int_fast16_t> pop(std::map<std::vector<int_fast16_t>, double> &solut
 
 	auto it = solutions.begin();
 	std::advance(it, step(gen));
-	std::vector<int_fast16_t> best = it->first;
-	for (int_fast16_t i = 0; i < tournament_size; ++i) {
+	std::vector<S16> best = it->first;
+	for (S16 i = 0; i < tournament_size; ++i) {
 		it = solutions.begin();
 		std::advance(it, step(gen));
 		if (solutions[best] > it->second)
@@ -78,19 +76,19 @@ std::vector<int_fast16_t> pop(std::map<std::vector<int_fast16_t>, double> &solut
 	return best;
 }
 
-std::vector<int_fast16_t> child(std::vector<int_fast16_t> first, std::vector<int_fast16_t> second) {
+std::vector<S16> child(std::vector<S16> first, std::vector<S16> second) {
 
 	int_fast64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::default_random_engine gen(seed);
 	std::uniform_int_distribution<int_fast8_t> choose(0, 1);
 
-	std::vector<int_fast16_t> child;
-	for (int_fast16_t i = 0; i < first.size(); ++i)
+	std::vector<S16> child;
+	for (S16 i = 0; i < first.size(); ++i)
 		child.push_back(choose(gen) ? first[i] : second[i]);
 	return child;
 
 }
-void print(const std::vector<int_fast16_t> v) {
+void print(const std::vector<S16> v) {
 
 	for (size_t i = 0; i < v.size(); ++i) {
 		std::cout << v[i] << " ";
@@ -98,15 +96,15 @@ void print(const std::vector<int_fast16_t> v) {
 }
 
 //TODO: change to object
-std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)> estimated,
-                                 std::function<double(std::vector<int_fast16_t>)> precision,
-                                 std::vector<int_fast16_t> starting_point,
-                                 std::vector<int_fast16_t> min,
-                                 std::vector<int_fast16_t> max,
-                                 int_fast16_t pool_size,
-                                 int_fast16_t seed_size,
-                                 int_fast16_t num_candidates,
-                                 int_fast16_t tournament_size) {
+std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
+                        std::function<double(std::vector<S16>)> precision,
+                        std::vector<S16> starting_point,
+                        std::vector<S16> min,
+                        std::vector<S16> max,
+                        S16 pool_size,
+                        S16 seed_size,
+                        S16 num_candidates,
+                        S16 tournament_size) {
 //TODO: comments
 	int_fast64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::default_random_engine gen(seed);
@@ -122,8 +120,8 @@ std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)
 	auto begin = std::chrono::high_resolution_clock::now(), search_start = begin;
 
 	double current_value = precision(starting_point);
-	std::map<std::vector<int_fast16_t>, double> solutions;
-	std::vector<int_fast16_t> current = starting_point;
+	std::map<std::vector<S16>, double> solutions;
+	std::vector<S16> current = starting_point;
 
 	double mutation_randomness = 0.25;
 	int_fast32_t fails = 0;
@@ -135,16 +133,16 @@ std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)
 			mutation_randomness = 0.25;
 			std::cout << "***RESTARTING SEARCH***" << std::endl;
 			fails = 0;
-			for (int_fast16_t i = 0; i < seed_size; ++i) {
+			for (S16 i = 0; i < seed_size; ++i) {
 				add(estimated,
 				    solutions,
 				    mutate(starting_point, mutation_randomness, min, max),
 				    pool_size); //TODO: Test parralel random startpoint. Parallel
 			}
 
-			std::pair<std::vector<int_fast16_t>, double>
+			std::pair<std::vector<S16>, double>
 				mx = *max_element(solutions.begin(), solutions.end(), CompareSecond());
-			std::pair<std::vector<int_fast16_t>, double>
+			std::pair<std::vector<S16>, double>
 				mn = *min_element(solutions.begin(), solutions.end(), CompareSecond());
 			std::cout << "Generated values in range from " << mn.second << " to " << mx.second << std::endl;
 			std::cout << "Minimal value: ";
@@ -157,17 +155,17 @@ std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)
 		}
 
 
-		int_fast16_t accepted = 0;
-		for (int_fast16_t i = 0; i < 5 * num_candidates && accepted < num_candidates; i++) {
+		S16 accepted = 0;
+		for (S16 i = 0; i < 5 * num_candidates && accepted < num_candidates; i++) {
 			if (add(estimated, solutions, mutate(current, mutation_randomness, min, max), pool_size))
 				++accepted;
 		}
 		if (accepted < num_candidates)
 			mutation_randomness *= 1.5;
 
-		std::pair<std::vector<int_fast16_t>, double>
+		std::pair<std::vector<S16>, double>
 			mx = *max_element(solutions.begin(), solutions.end(), CompareSecond());
-		std::pair<std::vector<int_fast16_t>, double>
+		std::pair<std::vector<S16>, double>
 			mn = *min_element(solutions.begin(), solutions.end(), CompareSecond());
 		std::cout << "Generated values in range from " << mn.second << " to " << mx.second << std::endl;
 		std::cout << "Minimal value: ";
@@ -176,7 +174,7 @@ std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)
 		print(mx.first);
 		std::cout << std::endl << std::endl;
 
-		std::vector<int_fast16_t>
+		std::vector<S16>
 			sol = child(pop(solutions, tournament_size, seed / 2), pop(solutions, tournament_size, seed / 3));
 		double new_value = precision(sol);
 

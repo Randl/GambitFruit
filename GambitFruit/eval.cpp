@@ -167,7 +167,8 @@ void eval_init() {
 	StormOpening = (10 * option_get_int("Pawn Storm")) / 100;
 	KingAttackOpening = (20 * option_get_int("King Attack")) / 100;
 
-	/*//test
+#ifdef TMO_OPT
+	//test
 	PawnAmountBonusOpening[0] = option_get_int("PawnAmountBonusOpening0");
 	PawnAmountBonusEndgame[0] = option_get_int("PawnAmountBonusEndgame0");
 	PawnAmountBonusOpening[1] = option_get_int("PawnAmountBonusOpening1");
@@ -185,7 +186,8 @@ void eval_init() {
 	PawnAmountBonusOpening[7] = option_get_int("PawnAmountBonusOpening7");
 	PawnAmountBonusEndgame[7] = option_get_int("PawnAmountBonusEndgame7");
 	PawnAmountBonusOpening[8] = option_get_int("PawnAmountBonusOpening8");
-	PawnAmountBonusEndgame[8] = option_get_int("PawnAmountBonusEndgame8");*/
+	PawnAmountBonusEndgame[8] = option_get_int("PawnAmountBonusEndgame8");
+#endif
 
 	if (option_get_int("Chess Knowledge") == 500) lazy_eval_cutoff = ValueEvalInf; else
 		lazy_eval_cutoff = (50 * option_get_int("Chess Knowledge")) / 100;

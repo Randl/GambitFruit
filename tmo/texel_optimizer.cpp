@@ -36,7 +36,7 @@ std::vector<std::pair<std::string, double>> load_epds(std::string filename) {
 
 //TODO: Calculate K at start
 /*
-double (std::vector<std::pair<std::string, double>> positions, double K, int_fast16_t limit, std::vector<int_fast16_t> params) {
+double (std::vector<std::pair<std::string, double>> positions, double K, S16 limit, std::vector<S16> params) {
 	double E = 0.0;
 	int count = 0;
 
@@ -60,9 +60,7 @@ double (std::vector<std::pair<std::string, double>> positions, double K, int_fas
 
 double average_error(std::vector<std::pair<std::string, double>> positions,
                      std::vector<std::string> options,
-                     double K,
-                     int_fast16_t limit,
-                     std::vector<int_fast16_t> params) {
+                     double K, S16 limit, std::vector<S16> params) {
 //TODO: multithreading; Find all globals to make them private?
 	double E = 0.0;
 	int count = 0;

@@ -105,8 +105,8 @@ static option_t Option[] = {
 
 	{"Contempt Factor", true, "0", "spin", "min -1000 max 1000", nullptr},
 
-
-	/*//test
+#ifdef TMO_OPT
+	//test
 	{"PawnAmountBonusOpening0",  true, "0",      "spin",   "min -100 max 100",                   nullptr},
 	{"PawnAmountBonusOpening1",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
 	{"PawnAmountBonusOpening2",  true,  "0",      "spin",   "min -100 max 100",                   nullptr},
@@ -126,8 +126,8 @@ static option_t Option[] = {
 	{"PawnAmountBonusEndgame5",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
 	{"PawnAmountBonusEndgame6",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
 	{"PawnAmountBonusEndgame7",  true,   "0",      "spin",   "min -100 max 100",                   nullptr},
-	{"PawnAmountBonusEndgame8",  true,  "0",      "spin",   "min -100 max 100",                   nullptr}, */
-
+	{"PawnAmountBonusEndgame8", true, "0", "spin", "min -100 max 100", nullptr},
+#endif
 
 	{nullptr, false, nullptr, nullptr, nullptr, nullptr,},};
 

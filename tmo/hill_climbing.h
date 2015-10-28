@@ -6,14 +6,15 @@
 #define TMO_HILL_CLIMBING_H
 
 #include <vector>
+#include "../GambitFruit/util.h"
 
-std::vector<int_fast16_t> solver(std::function<double(std::vector<int_fast16_t>)> estimated,
-                                 std::function<double(std::vector<int_fast16_t>)> precision,
-                                 std::vector<int_fast16_t> starting_point,
-                                 std::vector<int_fast16_t> min,
-                                 std::vector<int_fast16_t> max,
-                                 int_fast16_t pool_size,
-                                 int_fast16_t seed_size,
-                                 int_fast16_t num_candidates,
-                                 int_fast16_t tournament_size);
+std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
+                        std::function<double(std::vector<S16>)> precision,
+                        std::vector<S16> starting_point,
+                        std::vector<S16> min,
+                        std::vector<S16> max,
+                        S16 pool_size,
+                        S16 seed_size,
+                        S16 num_candidates,
+                        S16 tournament_size);
 #endif //TMO_HILL_CLIMBING_H

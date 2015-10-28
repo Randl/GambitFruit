@@ -1,14 +1,12 @@
 #include <iostream>
 #include <functional>
+#include "3rdParty/SimpleIni.h"
 #include "hill_climbing.h"
 #include "texel_optimizer.h"
-#include "3rdParty/SimpleIni.h"
+
 
 void load_ini(std::string filename,
-              std::vector<std::string> &options,
-              std::vector<int_fast16_t> &v,
-              std::vector<int_fast16_t> &min,
-              std::vector<int_fast16_t> &max) {
+              std::vector<std::string> &options, std::vector<S16> &v, std::vector<S16> &min, std::vector<S16> &max) {
 	// LOADING DATA
 
 	// load from a data file
@@ -24,7 +22,7 @@ void load_ini(std::string filename,
 
 	// GETTING VALUES
 	for (auto section : sections) {
-		int_fast16_t val = std::atoi(ini.GetValue(section.pItem, "value", NULL)),
+		S16 val = std::atoi(ini.GetValue(section.pItem, "value", NULL)),
 			mn = std::atoi(ini.GetValue(section.pItem, "min", NULL)),
 			mx = std::atoi(ini.GetValue(section.pItem, "max", NULL));
 		v.push_back(val);
@@ -38,9 +36,9 @@ int main() {
 	//TODO: ini options for optimization
 
 	std::vector<std::string> options;
-	std::vector<int_fast16_t> v;
-	std::vector<int_fast16_t> min;
-	std::vector<int_fast16_t> max;
+	std::vector<S16> v;
+	std::vector<S16> min;
+	std::vector<S16> max;
 
 	load_ini("options.ini", options, v, min, max);
 
@@ -48,13 +46,13 @@ int main() {
 		std::cout << options[i] << " " << v[i] << " " << min[i] << " " << max[i] << std::endl;
 
 	double K = 0.14;
-	int_fast16_t limit = 500;
+	S16 limit = 500;
 	std::vector<std::pair<std::string, double>> large = load_epds("large.epds");
 	std::vector<std::pair<std::string, double>> small = load_epds("small.epds");
-	std::function<double(std::vector<int_fast16_t>)>
-		est = [=](std::vector<int_fast16_t> params) { return average_error(small, options, K, limit, params); };
-	std::function<double(std::vector<int_fast16_t>)>
-		prec = [=](std::vector<int_fast16_t> params) { return average_error(large, options, K, limit, params); };
+	std::function<double(std::vector<S16>)>
+		est = [=](std::vector<S16> params) { return average_error(small, options, K, limit, params); };
+	std::function<double(std::vector<S16>)>
+		prec = [=](std::vector<S16> params) { return average_error(large, options, K, limit, params); };
 	solver(est, prec, v, min, max, 100, 200, 10, 10);
 	return 0;
 }

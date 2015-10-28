@@ -58,8 +58,10 @@ void engine_init() {
 	sort_init();
 
 	search_clear();
+
+	engine_set_options({"Hash"}, {0});
 }
-void engine_set_options(std::vector<std::string> options, std::vector<int_fast16_t> params) {
+void engine_set_options(std::vector<std::string> options, std::vector<S16> params) {
 	for (int i = 0; i < params.size(); ++i) {
 		std::string num = std::to_string(int_fast32_t(params[i]));
 		std::string tmp = "setoption name " + options[i] + " value " + num;
