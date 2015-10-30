@@ -1,15 +1,15 @@
-//
-// Created by Evgenii on 26.08.2015.
-//
+// scorpio_egbb.cpp
+
+//includes
 
 #include "value.h"
 #include "scorpio_egbb.h"
 #include "option.h"
 
+
+//cross-platform
 #if defined (_WIN32) || defined(_WIN64)
-
 #include <windows.h>
-
 #define EGBB_NAME "egbbdll.dll"
 #else
 #define EGBB_NAME "egbbso.so"
@@ -18,6 +18,8 @@
 #define GetProcAddress dlsym
 #endif
 
+
+//macros
 #define ADD_PIECE(type)  {\
          egbb_piece[total_pieces] = type;\
          egbb_square[total_pieces] = from;\
@@ -35,6 +37,9 @@ constexpr S8 max_pieces = 32;
 PPROBE_EGBB probe_egbb;
 bool egbb_is_loaded; //bool?
 typedef void (*PLOAD_EGBB)(const char *path, S32 cache_size, S32 load_options);
+
+
+// functions
 
 void load_egbb_library() {
 	HMODULE hmod;
@@ -85,7 +90,7 @@ bool bitbase_probe(const board_t *board, S32 &value) {
 	S8 total_pieces = 2;
 	S32 egbb_piece[max_pieces], egbb_square[max_pieces];
 
-	for (S32 i = 0; i < max_pieces; ++i) {
+	for (U8 i = 0; i < max_pieces; ++i) {
 		egbb_piece[i] = 0;
 		egbb_square[i] = 0;
 	}

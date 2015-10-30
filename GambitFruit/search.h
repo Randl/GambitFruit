@@ -14,18 +14,18 @@
 
 // constants
 
-constexpr S8 MultiPVMax = 10;
+constexpr U8 MultiPVMax = 10;
 
-constexpr S16 DepthMax = 64;
-constexpr S16 HeightMax = 256;
+constexpr U16 DepthMax = 64;
+constexpr U16 HeightMax = 256;
 
-constexpr S8 SearchNormal = 0;
-constexpr S8 SearchShort = 1;
+constexpr U8 SearchNormal = 0;
+constexpr U8 SearchShort = 1;
 
-constexpr S8 SearchUnknown = 0;
-constexpr S8 SearchUpper = 1;
-constexpr S8 SearchLower = 2;
-constexpr S8 SearchExact = 3;
+constexpr U8 SearchUnknown = 0;
+constexpr U8 SearchUpper = 1;
+constexpr U8 SearchLower = 2;
+constexpr U8 SearchExact = 3;
 
 // types
 
@@ -34,9 +34,9 @@ struct search_multipv_t {
     S64 node_nb;
     char pv_string[512];
     S32 mate;
-    S32 depth; // TODO: S16?
-    S32 max_depth; // S16?
     S32 value;
+    U16 depth; // TODO: S16?
+    U16 max_depth; // S16?
 };
 
 struct search_param_t {
@@ -51,8 +51,8 @@ struct search_input_t {
     double time_limit_2;
     board_t board[1];
     list_t list[1];
-    S32 depth_limit;
-    S32 multipv;
+    U16 depth_limit; 
+    U8 multipv;
     bool time_is_limited;
     bool infinite;
     bool depth_is_limited;

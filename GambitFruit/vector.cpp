@@ -14,10 +14,10 @@ std::array<S32, DeltaNb> Distance;
 void vector_init() {
 
 	// Distance[]
-	for (S32 delta = 0; delta < DeltaNb; ++delta)
+	for (S16 delta = 0; delta < DeltaNb; ++delta)
 		Distance[delta] = -1;
-	for (S32 y = -7; y <= +7; ++y)
-		for (S32 x = -7; x <= +7; ++x) {
+	for (S8 y = -7; y <= +7; ++y)
+		for (S8 x = -7; x <= +7; ++x) {
 
 			const S32 delta = y * 16 + x;
 			ASSERT(delta_is_ok(delta));

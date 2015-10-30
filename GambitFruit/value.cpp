@@ -17,7 +17,7 @@ std::array<S32, PieceNb> ValuePiece;
 void value_init() {
 
 	// ValuePiece[]
-	for (S32 piece = 0; piece < PieceNb; ++piece)
+	for (U16 piece = 0; piece < PieceNb; ++piece)
 		ValuePiece[piece] = -1;
 
 	ValuePiece[Empty] = 0; // needed?

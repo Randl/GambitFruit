@@ -17,14 +17,14 @@ std::array<bool, SquareNb> SquareIsPromote;
 void square_init() {
 
 	// SquareTo64[]
-	for (S32 sq = 0; sq < SquareNb; ++sq)
+	for (U16 sq = 0; sq < SquareNb; ++sq)
 		SquareTo64[sq] = -1;
 
-	for (S32 sq = 0; sq < 64; ++sq)
+	for (U8 sq = 0; sq < 64; ++sq)
 		SquareTo64[SquareFrom64[sq]] = sq;
 
 	// SquareIsPromote[]
-	for (S32 sq = 0; sq < SquareNb; ++sq)
+	for (U16 sq = 0; sq < SquareNb; ++sq)
 		SquareIsPromote[sq] = SQUARE_IS_OK(sq) && (SQUARE_RANK(sq) == Rank1 || SQUARE_RANK(sq) == Rank8);
 }
 

@@ -16,7 +16,7 @@ bool pv_is_ok(const mv_t pv[]) {
 
 	if (pv == nullptr) return false;
 
-	for (S32 pos = 0; true; ++pos) {
+	for (U16 pos = 0; true; ++pos) {
 		if (pos >= 256) return false;
 		U16 move = pv[pos];
 

@@ -1,6 +1,11 @@
 #include <iostream>
 #include <functional>
 #include "3rdParty/SimpleIni.h"
+
+#ifndef TMO_OPT
+#define TMO_OPT
+#endif
+
 #include "hill_climbing.h"
 #include "texel_optimizer.h"
 

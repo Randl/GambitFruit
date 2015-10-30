@@ -29,13 +29,13 @@ void attack_init() {
 
 	// clear
 
-	for (S32 delta = 0; delta < DeltaNb; ++delta) {
+	for (S16 delta = 0; delta < DeltaNb; ++delta) {
 		DeltaIncLine[delta] = IncNone;
 		DeltaIncAll[delta] = IncNone;
 		DeltaMask[delta] = 0;
 	}
 
-	for (S32 inc = 0; inc < IncNb; ++inc)
+	for (S8 inc = 0; inc < IncNb; ++inc)
 		IncMask[inc] = 0;
 
 
@@ -49,7 +49,7 @@ void attack_init() {
 
 	// knight attacks
 
-	for (S32 dir = 0; dir < 8; ++dir) {
+	for (U8 dir = 0; dir < 8; ++dir) {
 
 		const S32 delta = KnightInc[dir];
 		ASSERT(delta_is_ok(delta));
@@ -61,14 +61,14 @@ void attack_init() {
 
 	// bishop/queen attacks
 
-	for (S32 dir = 0; dir < 4; ++dir) {
+	for (U8 dir = 0; dir < 4; ++dir) {
 
 		const S32 inc = BishopInc[dir];
 		ASSERT(inc != IncNone);
 
 		IncMask[IncOffset + inc] |= BishopFlag;
 
-		for (S32 dist = 1; dist < 8; ++dist) {
+		for (U8 dist = 1; dist < 8; ++dist) {
 
 			const S32 delta = inc * dist;
 			ASSERT(delta_is_ok(delta));
@@ -83,14 +83,14 @@ void attack_init() {
 
 	// rook/queen attacks
 
-	for (S32 dir = 0; dir < 4; ++dir) {
+	for (U8 dir = 0; dir < 4; ++dir) {
 
 		const S32 inc = RookInc[dir];
 		ASSERT(inc != IncNone);
 
 		IncMask[IncOffset + inc] |= RookFlag;
 
-		for (S32 dist = 1; dist < 8; ++dist) {
+		for (U8 dist = 1; dist < 8; ++dist) {
 
 			const S32 delta = inc * dist;
 			ASSERT(delta_is_ok(delta));
@@ -105,7 +105,7 @@ void attack_init() {
 
 	// king attacks
 
-	for (S32 dir = 0; dir < 8; ++dir) {
+	for (U8 dir = 0; dir < 8; ++dir) {
 
 		const S32 delta = KingInc[dir];
 		ASSERT(delta_is_ok(delta));
@@ -115,7 +115,7 @@ void attack_init() {
 
 	// PieceCode[]
 
-	for (S32 piece = 0; piece < PieceNb; ++piece)
+	for (U16 piece = 0; piece < PieceNb; ++piece)
 		PieceCode[piece] = -1;
 
 	PieceCode[WN] = 0;
@@ -130,13 +130,13 @@ void attack_init() {
 
 	// PieceDeltaSize[][] & PieceDeltaDelta[][][]
 
-	for (S32 piece = 0; piece < 4; ++piece)
-		for (S32 delta = 0; delta < 256; ++delta)
+	for (U8 piece = 0; piece < 4; ++piece)
+		for (U16 delta = 0; delta < 256; ++delta)
 			PieceDeltaSize[piece][delta] = 0;
 
-	for (S32 king = 0; king < SquareNb; ++king)
+	for (U16 king = 0; king < SquareNb; ++king)
 		if (SQUARE_IS_OK(king))
-			for (S32 from = 0; from < SquareNb; ++from)
+			for (U16 from = 0; from < SquareNb; ++from)
 				if (SQUARE_IS_OK(from)) {
 
 					S32 inc;
@@ -176,8 +176,8 @@ void attack_init() {
 							}
 				}
 
-	for (S32 piece = 0; piece < 4; ++piece)
-		for (S32 delta = 0; delta < 256; ++delta) {
+	for (U8 piece = 0; piece < 4; ++piece)
+		for (U16 delta = 0; delta < 256; ++delta) {
 			const S32 size = PieceDeltaSize[piece][delta];
 			ASSERT(size >= 0 && size < 3);
 			PieceDeltaDelta[piece][delta][size] = DeltaNone;

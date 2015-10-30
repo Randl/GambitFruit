@@ -20,7 +20,7 @@ static U64 hash_counter_key(S32 piece_12, S32 count);
 // hash_init()
 
 void hash_init() {
-	for (S32 i = 0; i < 16; ++i)
+	for (U8 i = 0; i < 16; ++i)
 		Castle64[i] = hash_castle_key(i);
 }
 
@@ -89,7 +89,7 @@ U64 hash_material_key(const board_t *board) {
 	U64 key = 0;
 
 	// counters
-	for (S32 piece_12 = 0; piece_12 < 12; ++piece_12) {
+	for (U8 piece_12 = 0; piece_12 < 12; ++piece_12) {
 		const S32 count = board->number[piece_12];
 		key ^= hash_counter_key(piece_12, count);
 	}
@@ -114,7 +114,7 @@ U64 hash_castle_key(S32 flags) {
 	ASSERT((flags & ~0xF) == 0);
 	U64 key = 0;
 
-	for (S32 i = 0; i < 4; ++i)
+	for (U8 i = 0; i < 4; ++i)
 		if ((flags & (1 << i)) != 0) key ^= RANDOM_64(RandomCastle + i);
 
 	return key;
@@ -151,7 +151,7 @@ static U64 hash_counter_key(S32 piece_12, S32 count) {
 	// counter
 
 	S32 index = piece_12 * 16;
-	for (S32 i = 0; i < count; ++i) key ^= RANDOM_64(index + i);
+	for (U8 i = 0; i < count; ++i) key ^= RANDOM_64(index + i);
 
 	return key;
 }

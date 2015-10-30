@@ -27,7 +27,7 @@ static void square_move(board_t *board, S32 from, S32 to, S32 piece, bool update
 
 void move_do_init() {
 
-	for (S32 sq = 0; sq < SquareNb; ++sq)
+	for (U16 sq = 0; sq < SquareNb; ++sq)
 		CastleMask[sq] = 0xF;
 
 	CastleMask[E1] &= ~FlagsWhiteKingCastle;
@@ -339,7 +339,7 @@ static void square_clear(board_t *board, S32 square, S32 piece, bool update) {
 	if (!PIECE_IS_PAWN(piece)) {
 
 		// init
-		S32 size = board->piece[colour].size();
+	U16 size = board->piece[colour].size();
 		ASSERT(size >= 1);
 
 		// stable swap
@@ -347,7 +347,7 @@ static void square_clear(board_t *board, S32 square, S32 piece, bool update) {
 		ASSERT(board->pos[square] == pos);
 
 		board->pos[square] = -1;
-		for (S32 i = pos; i < size - 1; ++i) {
+		for (U16 i = pos; i < size - 1; ++i) {
 			const S32 sq = board->piece[colour][i + 1];
 			board->piece[colour][i] = sq;
 
@@ -363,7 +363,7 @@ static void square_clear(board_t *board, S32 square, S32 piece, bool update) {
 	} else {
 
 		// init
-		S32 size = board->pawn[colour].size();
+		U16 size = board->pawn[colour].size();
 		ASSERT(size >= 1);
 
 		// stable swap
@@ -371,7 +371,7 @@ static void square_clear(board_t *board, S32 square, S32 piece, bool update) {
 		ASSERT(board->pos[square] == pos);
 		board->pos[square] = -1;
 
-		for (S32 i = pos; i < size - 1; ++i) {
+		for (U16 i = pos; i < size - 1; ++i) {
 
 			const S32 sq = board->pawn[colour][i + 1];
 			board->pawn[colour][i] = sq;
@@ -439,7 +439,7 @@ static void square_set(board_t *board, S32 square, S32 piece, S32 pos, bool upda
 	if (!PIECE_IS_PAWN(piece)) {
 
 		// init
-		S32 size = board->piece[colour].size();
+		U16 size = board->piece[colour].size();
 		ASSERT(size >= 0);
 
 		// size

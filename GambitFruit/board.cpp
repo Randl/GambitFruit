@@ -65,10 +65,10 @@ bool board_is_ok(const board_t *board) {
 	for (S8 colour = 0; colour < ColourNb; colour++) {
 
 		// piece list
-		S32 size = board->piece[colour].size();
+		U16 size = board->piece[colour].size();
 		if (size < 1 || size > 16) return false;
 
-		for (S32 pos = 0; pos < size; pos++) {
+		for (U8 pos = 0; pos < size; pos++) {
 			S32 sq = board->piece[colour][pos];
 			if (!SQUARE_IS_OK(sq)) return false;
 
@@ -144,12 +144,12 @@ void board_clear(board_t *board) {
 	ASSERT(board != nullptr);
 
 	// edge squares
-	for (S32 sq = 0; sq < SquareNb; sq++) {
+	for (U16 sq = 0; sq < SquareNb; sq++) {
 		board->square[sq] = Edge;
 	}
 
 	// empty squares
-	for (S32 sq_64 = 0; sq_64 < 64; sq_64++) {
+	for (U8 sq_64 = 0; sq_64 < 64; sq_64++) {
 		S32 sq = SQUARE_FROM_64(sq_64);
 		board->square[sq] = Empty;
 	}
@@ -178,22 +178,22 @@ void board_init_list(board_t *board) {
 	ASSERT(board != nullptr);
 
 	// init
-	for (S32 sq = 0; sq < SquareNb; ++sq)
+	for (U16 sq = 0; sq < SquareNb; ++sq)
 		board->pos[sq] = -1;
 
 	board->piece_nb = 0;
-	for (S32 piece = 0; piece < 12; piece++)
+	for (U8 piece = 0; piece < 12; ++piece)
 		board->number[piece] = 0;
 
 	// piece lists
-	for (S8 colour = 0; colour < ColourNb; colour++) {
+	for (U8 colour = 0; colour < ColourNb; colour++) {
 
 		// piece list
 		S32 pos = 0;
 		board->piece_material[colour] = 0; // Thomas
 
 		board->piece[colour].clear();
-		for (S32 sq_64 = 0; sq_64 < 64; sq_64++) {
+		for (U8 sq_64 = 0; sq_64 < 64; ++sq_64) {
 
 			S32 sq = SQUARE_FROM_64(sq_64), piece = board->square[sq];
 			if (piece != Empty && !piece_is_ok(piece)) my_fatal("board_init_list(): illegal position. %d\n", __LINE__);
@@ -222,9 +222,9 @@ void board_init_list(board_t *board) {
 		ASSERT(pos >= 1 && pos <= 16);
 
 		// MV sort
-		S32 size = board->piece[colour].size();
+		U16 size = board->piece[colour].size();
 
-		for (S32 i = 1; i < size; i++) {
+		for (U16 i = 1; i < size; i++) {
 
 			S32 square = board->piece[colour][i], piece = board->square[square], order = PIECE_ORDER(piece);
 
@@ -261,13 +261,13 @@ void board_init_list(board_t *board) {
 
 		// pawn list
 
-		for (S32 file = 0; file < FileNb; file++)
+		for (U8 file = 0; file < FileNb; file++)
 			board->pawn_file[colour][file] = 0;
 
 		pos = 0;
 
 		board->pawn[colour].clear();
-		for (S32 sq_64 = 0; sq_64 < 64; sq_64++) {
+		for (U8 sq_64 = 0; sq_64 < 64; ++sq_64) {
 
 			S32 sq = SQUARE_FROM_64(sq_64), piece = board->square[sq];
 
@@ -304,7 +304,7 @@ void board_init_list(board_t *board) {
 	board->endgame = board_endgame(board);
 
 	// hash key
-	for (S32 i = 0; i < board->ply_nb; i++) board->stack.assign(board->ply_nb, 0); // HACK
+	for (U16 i = 0; i < board->ply_nb; i++) board->stack.assign(board->ply_nb, 0); // HACK
 
 	board->key = hash_key(board);
 	board->pawn_key = hash_pawn_key(board);
@@ -385,7 +385,7 @@ bool board_is_repetition(const board_t *board) {
 	// position repetition
 	ASSERT(board->stack.size() >= board->ply_nb);
 	//z = 0;
-	for (S32 i = 4; i <= board->ply_nb; i += 2) {
+	for (U16 i = 4; i <= board->ply_nb; i += 2) {
 		if (board->stack[board->stack.size() - i] == board->key) return true;
 		//if (board->stack[board->stack.size()-i] == board->key) z++;
 		//if (z >= 2) return true; // value 2 for 3-Times Repetition

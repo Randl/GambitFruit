@@ -119,7 +119,7 @@ void search_clear() {
 // search()
 
 void search() {
-	for (S32 i = 0; i < MultiPVMax; ++i) {
+	for (U8 i = 0; i < MultiPVMax; ++i) {
 		save_multipv[SearchCurrent->multipv].mate = 0;
 		save_multipv[SearchCurrent->multipv].depth = 0;
 		save_multipv[SearchCurrent->multipv].max_depth = 0;
@@ -194,7 +194,7 @@ void search() {
 	// iterative deepening
 	bool search_ready = false;
 
-	for (S32 depth = 1; depth < DepthMax; ++depth) {
+	for (U16 depth = 1; depth < DepthMax; ++depth) {
 		for (SearchCurrent->multipv = 0; SearchCurrent->multipv <= SearchInput->multipv; SearchCurrent->multipv++) {
 			if (DispDepthStart && SearchCurrent->multipv == 0) send("info depth %d", depth);
 

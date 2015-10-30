@@ -31,11 +31,11 @@ void board_from_fen(board_t *board, const char fen[]) {
 	S32 pos = 0, c = fen[pos];
 
 	// piece placement
-	for (S32 rank = Rank8; rank >= Rank1; --rank) {
-		for (S32 file = FileA; file <= FileH;) {
+	for (S16 rank = Rank8; rank >= Rank1; --rank) {
+		for (U16 file = FileA; file <= FileH;) {
 			if (c >= '1' && c <= '8') { // empty square(s)
-				S32 len = c - '0';
-				for (S32 i = 0; i < len; ++i) {
+				S16 len = c - '0';
+				for (S16 i = 0; i < len; ++i) {
 					if (file > FileH) my_fatal("board_from_fen(): bad FEN (pos=%d)\n", pos);
 					board->square[SQUARE_MAKE(file, rank)] = Empty;
 					++file;
@@ -165,16 +165,16 @@ bool board_to_fen(const board_t *board, char fen[], S32 size) {
 
 	// piece placement
 
-	for (S32 rank = Rank8; rank >= Rank1; --rank) {
-		for (S32 file = FileA; file <= FileH;) {
-			S32 c;
+	for (S16 rank = Rank8; rank >= Rank1; --rank) {
+		for (U16 file = FileA; file <= FileH;) {
+			U16 c;
 			const S32 sq = SQUARE_MAKE(file, rank);
 			const S32 piece = board->square[sq];
 			ASSERT(piece == Empty || piece_is_ok(piece));
 
 			if (piece == Empty) {
 
-				S32 len = 0;
+				U16 len = 0;
 				for (; file <= FileH && board->square[SQUARE_MAKE(file, rank)] == Empty; ++file)
 					++len;
 

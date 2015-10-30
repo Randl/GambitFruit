@@ -10,9 +10,9 @@
 
 // constants
 
-constexpr S8 Opening = 0;
-constexpr S8 Endgame = 1;
-constexpr S8 StageNb = 2;
+constexpr U8 Opening = 0;
+constexpr U8 Endgame = 1;
+constexpr U8 StageNb = 2;
 
 // macros
 

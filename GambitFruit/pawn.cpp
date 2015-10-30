@@ -99,7 +99,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board);
 
 void pawn_init_bit() {
 
-	for (S32 rank = 0; rank < RankNb; ++rank) {
+	for (U8 rank = 0; rank < RankNb; ++rank) {
 
 		BitEQ[rank] = 0;
 		BitLT[rank] = 0;
@@ -112,7 +112,7 @@ void pawn_init_bit() {
 		BitRank3[rank] = 0;
 	}
 
-	for (S32 rank = Rank1; rank <= Rank8; ++rank) {
+	for (U16 rank = Rank1; rank <= Rank8; ++rank) {
 		BitEQ[rank] = 1 << (rank - Rank1);
 		BitLT[rank] = BitEQ[rank] - 1;
 		BitLE[rank] = BitLT[rank] | BitEQ[rank];
@@ -120,7 +120,7 @@ void pawn_init_bit() {
 		BitGE[rank] = BitGT[rank] | BitEQ[rank];
 	}
 
-	for (S32 rank = Rank1; rank <= Rank8; ++rank) {
+	for (U16 rank = Rank1; rank <= Rank8; ++rank) {
 		BitRank1[rank] = BitEQ[rank + 1];
 		BitRank2[rank] = BitEQ[rank + 1] | BitEQ[rank + 2];
 		BitRank3[rank] = BitEQ[rank + 1] | BitEQ[rank + 2] | BitEQ[rank + 3];
@@ -128,13 +128,13 @@ void pawn_init_bit() {
 
 	// bit-indexed Bit*[]
 
-	for (S32 b = 0; b < 0x100; ++b) {
+	for (U16 b = 0; b < 0x100; ++b) {
 
 		S32 first = Rank8; // HACK for pawn shelter
 		S32 last = Rank1; // HACK
 		S32 count = 0, rev = 0;
 
-		for (S32 rank = Rank1; rank <= Rank8; ++rank) {
+		for (U16 rank = Rank1; rank <= Rank8; ++rank) {
 			if ((b & BitEQ[rank]) != 0) {
 				if (rank < first) first = rank;
 				if (rank > last) last = rank;
@@ -183,7 +183,7 @@ void pawn_init() {
 
 	// bonus
 
-	for (S32 rank = 0; rank < RankNb; ++rank) Bonus[rank] = 0;
+	for (U8 rank = 0; rank < RankNb; ++rank) Bonus[rank] = 0;
 
 	Bonus[Rank4] = 26;
 	Bonus[Rank5] = 77;
@@ -277,7 +277,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 		std::array<S32, FileNb> pawn_file;
 		const S8 me = colour;
 
-		for (S32 file = 0; file < FileNb; ++file)
+		for (U8 file = 0; file < FileNb; ++file)
 			pawn_file[file] = 0;
 
 		for (auto sq = board->pawn[me].begin(); sq != board->pawn[me].end(); ++sq) {
@@ -290,7 +290,7 @@ static void pawn_comp_info(pawn_info_t *info, const board_t *board) {
 			pawn_file[file] |= BIT(rank);
 		}
 
-		for (S32 file = 0; file < FileNb; ++file)
+		for (U8 file = 0; file < FileNb; ++file)
 			if (board->pawn_file[colour][file] != pawn_file[file]) my_fatal("board->pawn_file[][]\n");
 
 	}

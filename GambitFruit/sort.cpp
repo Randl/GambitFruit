@@ -17,18 +17,18 @@
 
 // constants
 
-static constexpr S8 KillerNb = 2;
+static constexpr U8 KillerNb = 2;
 
-static constexpr S32 HistorySize = 12 * 64;
-static constexpr S32 HistoryMax = 16384;
+static constexpr U16 HistorySize = 12 * 64;
+static constexpr U32 HistoryMax = 16384;
 
-static constexpr S32 TransScore = +32766;
-static constexpr S32 GoodScore = +4000;
-static constexpr S32 KillerScore = +4;
+static constexpr U32 TransScore = +32766;
+static constexpr U16 GoodScore = +4000;
+static constexpr U8 KillerScore = +4;
 static constexpr S32 HistoryScore = -24000;
 static constexpr S32 BadScore = -28000;
 
-static constexpr S16 CODE_SIZE = 256;
+static constexpr U16 CODE_SIZE = 256;
 
 // macros
 
@@ -92,15 +92,15 @@ void sort_init() {
 
 	// killer
 
-	for (S32 height = 0; height < HeightMax; ++height)
-		for (S32 i = 0; i < KillerNb; ++i)
+	for (U16 height = 0; height < HeightMax; ++height)
+		for (U8 i = 0; i < KillerNb; ++i)
 			Killer[height][i] = MoveNone;
 
 	// history
-	for (S32 i = 0; i < HistorySize; ++i)
-		History[i] = 0;
+	for (U16 i = 0; i < HistorySize; ++i)
+		History[i] = 0; 
 
-	for (S32 i = 0; i < HistorySize; ++i) {
+	for (U16 i = 0; i < HistorySize; ++i) {
 		HistHit[i] = 1;
 		HistTot[i] = 1;
 		FailHighStats[i].success = 1;
@@ -108,7 +108,7 @@ void sort_init() {
 	}
 
 	// Code[]
-	for (S32 pos = 0; pos < CODE_SIZE; ++pos)
+	for (U16 pos = 0; pos < CODE_SIZE; ++pos)
 		Code[pos] = GEN_ERROR;
 
 	S32 pos = 0; //rename?
@@ -402,7 +402,7 @@ void good_move(U16 move, const board_t *board, S32 depth, S32 height) {
 	S32 index = history_index(move, board);
 	History[index] += HISTORY_INC(depth);
 	if (History[index] >= HistoryMax)
-		for (S32 i = 0; i < HistorySize; ++i)
+		for (U16 i = 0; i < HistorySize; ++i)
 			History[i] = (History[i] + 1) / 2;
 }
 

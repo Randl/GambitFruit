@@ -1,13 +1,14 @@
-//
-// Created by Evgenii on 26.08.2015.
-//
+//scorpio_egbb.h
 
 #ifndef GAMBITFRUIT_SCORPIO_EGBB_H
 #define GAMBITFRUIT_SCORPIO_EGBB_H
 
 #include "board.h"
 
-bool bitbase_probe(const board_t *board, S32 &value);
-void load_egbb_library();
+
+//functions 
+
+extern bool bitbase_probe(const board_t *board, S32 &value);
+extern void load_egbb_library();
 
 #endif //GAMBITFRUIT_BITBASES_H

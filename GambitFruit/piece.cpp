@@ -25,24 +25,24 @@ std::array<const inc_t *, PieceNb> PieceInc;
 void piece_init() {
 	// PieceTo12[]
 
-	for (S32 piece = 0; piece < PieceNb; ++piece)
+	for (U16 piece = 0; piece < PieceNb; ++piece)
 		PieceTo12[piece] = -1;
 
-	for (S32 piece_12 = 0; piece_12 < 12; ++piece_12)
+	for (U8 piece_12 = 0; piece_12 < 12; ++piece_12)
 		PieceTo12[PieceFrom12[piece_12]] = piece_12;
 
 
 	// PieceOrder[]
 
-	for (S32 piece = 0; piece < PieceNb; ++piece)
+	for (U16 piece = 0; piece < PieceNb; ++piece)
 		PieceOrder[piece] = -1;
 
-	for (S32 piece_12 = 0; piece_12 < 12; ++piece_12)
+	for (U8 piece_12 = 0; piece_12 < 12; ++piece_12)
 		PieceOrder[PieceFrom12[piece_12]] = piece_12 >> 1;
 
 	// PieceInc[]
 
-	for (S32 piece = 0; piece < PieceNb; ++piece)
+	for (U16 piece = 0; piece < PieceNb; ++piece)
 		PieceInc[piece] = nullptr;
 
 	PieceInc[WhiteKnight256] = KnightInc.data();
@@ -60,7 +60,7 @@ void piece_init() {
 
 // piece_is_ok()
 
-bool piece_is_ok(S32 piece) {
+bool piece_is_ok(S32 piece) { //TODO: piece is U16
 
 	if (piece < 0 || piece >= PieceNb) return false;
 	if (PieceTo12[piece] < 0) return false;
@@ -70,7 +70,7 @@ bool piece_is_ok(S32 piece) {
 
 // piece_from_12()
 
-S32 piece_from_12(S32 piece_12) {
+S32 piece_from_12(S32 piece_12) { //TODO: piece12 -> U8
 
 	ASSERT(piece_12 >= 0 && piece_12 < 12);
 

@@ -42,8 +42,8 @@ struct trans { // HACK: typedef'ed in trans.h
     S64 write_nb;
     S64 write_hit;
     S64 write_collision;
-    U64 size;
-    U64 mask;
+    size_t size;
+    size_t mask;
     entry_t *table;
     S32 age[DateSize];
     S32 date;
@@ -78,7 +78,7 @@ bool trans_is_ok(const trans_t *trans) {
 	if (trans->mask == 0 || trans->mask >= trans->size) return false;
 	if (trans->date >= DateSize) return false;
 
-	for (S32 date = 0; date < DateSize; ++date)
+	for (U8 date = 0; date < DateSize; ++date)
 		if (trans->age[date] != trans_age(trans, date)) return false;
 
 	return true;
@@ -236,7 +236,7 @@ void trans_store(trans_t *trans, U64 key, U16 move, S32 depth, S32 min_value, S3
 
 	entry_t *entry = trans_entry(trans, key);
 
-	for (S32 i = 0; i < ClusterSize; ++i, ++entry) {
+	for (U8 i = 0; i < ClusterSize; ++i, ++entry) {
 		if (entry->lock == KEY_LOCK(key)) {
 			// hash hit => update existing entry
 			trans->write_hit++;
@@ -332,7 +332,7 @@ bool trans_retrieve(trans_t *trans,
 	// probe
 	entry_t *entry = trans_entry(trans, key);
 
-	for (S32 i = 0; i < ClusterSize; ++i, ++entry)
+	for (U8 i = 0; i < ClusterSize; ++i, ++entry)
 		if (entry->lock == KEY_LOCK(key)) {
 			// found
 			trans->read_hit++;

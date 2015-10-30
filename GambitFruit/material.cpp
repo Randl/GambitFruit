@@ -583,20 +583,20 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	if (bb > 0 || bn > 0) {
 		opening += RookElephantiasisOpeningPenalty * wr; //not depending on bb, bn? bb, bn and br separately?
 		endgame += RookElephantiasisEndgamePenalty * wr;
-		opening += RookElephantiasisOpeningPenalty * wq;
-		endgame += RookElephantiasisEndgamePenalty * wq;
+		opening += QueenElephantiasisOpeningPenalty * wq;
+		endgame += QueenElephantiasisEndgamePenalty * wq;
 	} else if (br > 0) {
-		opening += RookElephantiasisOpeningPenalty * wq;
-		endgame += RookElephantiasisEndgamePenalty * wq;
+		opening += QueenElephantiasisOpeningPenalty * wq;
+		endgame += QueenElephantiasisEndgamePenalty * wq;
 	}
 	if (wb > 0 || wn > 0) {
 		opening -= RookElephantiasisOpeningPenalty * br;
 		endgame -= RookElephantiasisEndgamePenalty * br;
-		opening -= RookElephantiasisOpeningPenalty * bq;
-		endgame -= RookElephantiasisEndgamePenalty * bq;
+		opening -= QueenElephantiasisOpeningPenalty * bq;
+		endgame -= QueenElephantiasisEndgamePenalty * bq;
 	} else if (wr > 0) {
-		opening -= RookElephantiasisOpeningPenalty * bq;
-		endgame -= RookElephantiasisEndgamePenalty * bq;
+		opening -= QueenElephantiasisOpeningPenalty * bq;
+		endgame -= QueenElephantiasisEndgamePenalty * bq;
 	}
 	*/
 
