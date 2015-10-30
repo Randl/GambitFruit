@@ -18,7 +18,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -Wstr
 file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 file(GLOB_RECURSE HEADER_FILES "*.h")
 
-#add_definitions("-DTMO_OPT")
+add_definitions("-DTMO_OPT")
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../GambitFruit ${CMAKE_CURRENT_BINARY_DIR}/GF)
-add_executable(tmo ${SOURCE_FILES})
+add_executable(tmo ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(tmo GambitFruitStatic)

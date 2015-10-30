@@ -2,16 +2,16 @@
 #include <functional>
 #include "3rdParty/SimpleIni.h"
 
-#ifndef TMO_OPT
-#define TMO_OPT
-#endif
 
 #include "hill_climbing.h"
 #include "texel_optimizer.h"
 
 
 void load_ini(std::string filename,
-              std::vector<std::string> &options, std::vector<S16> &v, std::vector<S16> &min, std::vector<S16> &max) {
+              std::vector<std::string> &options,
+              std::vector<S16> &v,
+              std::vector<S16> &min,
+              std::vector<S16> &max) {
 	// LOADING DATA
 
 	// load from a data file
@@ -38,7 +38,12 @@ void load_ini(std::string filename,
 }
 
 int main() {
-	//TODO: ini options for optimization
+
+	std::cout.precision(std::numeric_limits<double>::max_digits10);
+
+#ifdef NDEBUG
+	freopen("log.txt", "w", stdout);
+#endif
 
 	std::vector<std::string> options;
 	std::vector<S16> v;
@@ -54,6 +59,12 @@ int main() {
 	S16 limit = 500;
 	std::vector<std::pair<std::string, double>> large = load_epds("large.epds");
 	std::vector<std::pair<std::string, double>> small = load_epds("small.epds");
+
+
+	std::function<double(double)> est_k = [=](double Kval) { return average_error(large, options, Kval, limit, v); };
+	K = calculateK(est_k, 1e-7, 1.0, 1e-4);
+	std::cout << "K value is " << K << std::endl;
+
 	std::function<double(std::vector<S16>)>
 		est = [=](std::vector<S16> params) { return average_error(small, options, K, limit, params); };
 	std::function<double(std::vector<S16>)>

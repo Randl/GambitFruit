@@ -18,8 +18,7 @@ struct CompareSecond {
 };
 
 //generates new point with normal distribution, 99.7% of values are in (point * (1-range); point * (1+range)). Minimal sigma is 5
-std::vector<S16> mutate(std::vector<S16> starting_point,
-                                 double range, std::vector<S16> min, std::vector<S16> max) {
+std::vector<S16> mutate(std::vector<S16> starting_point, double range, std::vector<S16> min, std::vector<S16> max) {
 	int_fast64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::default_random_engine gen(seed);
 
@@ -43,8 +42,7 @@ bool add(std::function<double(std::vector<S16>)> estimated,
 		solutions[sol] = n;
 		return true;
 	} else {
-		std::pair<std::vector<S16>, double>
-			max = *max_element(solutions.begin(), solutions.end(), CompareSecond());
+		std::pair<std::vector<S16>, double> max = *max_element(solutions.begin(), solutions.end(), CompareSecond());
 		if (max.second > n) {
 			solutions.erase(max.first);
 			solutions[sol] = n;
@@ -56,8 +54,7 @@ bool add(std::function<double(std::vector<S16>)> estimated,
 
 }
 
-std::vector<S16> pop(std::map<std::vector<S16>, double> &solutions, S16 tournament_size,
-                              int_fast64_t seed) {
+std::vector<S16> pop(std::map<std::vector<S16>, double> &solutions, S16 tournament_size, int_fast64_t seed) {
 	std::default_random_engine gen(seed);
 
 	std::uniform_int_distribution<size_t> step(0, solutions.size() - 1);
@@ -95,6 +92,33 @@ void print(const std::vector<S16> v) {
 	}
 }
 
+double calculateK(std::function<double(double)> f, double lowest, double highest, double tol) {
+	double phi = (std::sqrt(5.0) - 1.0) / 2.0;
+	double high = highest - phi * (highest - lowest), low = lowest + phi * (highest - lowest);
+	int iter = 1;
+	double fhigh = f(high), flow = f(low);
+	while (std::abs(high - low) > tol) {
+		std::cout << "Iter " << iter << ". K is between " << low << " (" << flow << ") and " << high << " (" << fhigh
+			<< ")" << std::endl;
+		++iter;
+		if (fhigh < flow) {
+			highest = low;
+			low = high;
+			flow = fhigh;
+
+			high = highest - phi * (highest - lowest);
+			fhigh = f(high);
+		} else {
+			lowest = high;
+			high = low;
+			fhigh = flow;
+			low = lowest + phi * (highest - lowest);
+			flow = f(low);
+		}
+	}
+	return (highest + lowest) / 2;
+}
+
 //TODO: change to object
 std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
                         std::function<double(std::vector<S16>)> precision,
@@ -109,14 +133,8 @@ std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
 	int_fast64_t seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::default_random_engine gen(seed);
 
-
 	std::cout << "Start optimization" << std::endl;
-#ifdef NDEBUG
-	freopen("log.txt", "w", stdout);
-#endif
 
-	std::cout.precision(std::numeric_limits<double>::max_digits10);
-	std::cout << "Start optimization" << std::endl;
 	auto begin = std::chrono::high_resolution_clock::now(), search_start = begin;
 
 	double current_value = precision(starting_point);
@@ -140,10 +158,8 @@ std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
 				    pool_size); //TODO: Test parralel random startpoint. Parallel
 			}
 
-			std::pair<std::vector<S16>, double>
-				mx = *max_element(solutions.begin(), solutions.end(), CompareSecond());
-			std::pair<std::vector<S16>, double>
-				mn = *min_element(solutions.begin(), solutions.end(), CompareSecond());
+			std::pair<std::vector<S16>, double> mx = *max_element(solutions.begin(), solutions.end(), CompareSecond());
+			std::pair<std::vector<S16>, double> mn = *min_element(solutions.begin(), solutions.end(), CompareSecond());
 			std::cout << "Generated values in range from " << mn.second << " to " << mx.second << std::endl;
 			std::cout << "Minimal value: ";
 			print(mn.first);
@@ -163,10 +179,8 @@ std::vector<S16> solver(std::function<double(std::vector<S16>)> estimated,
 		if (accepted < num_candidates)
 			mutation_randomness *= 1.5;
 
-		std::pair<std::vector<S16>, double>
-			mx = *max_element(solutions.begin(), solutions.end(), CompareSecond());
-		std::pair<std::vector<S16>, double>
-			mn = *min_element(solutions.begin(), solutions.end(), CompareSecond());
+		std::pair<std::vector<S16>, double> mx = *max_element(solutions.begin(), solutions.end(), CompareSecond());
+		std::pair<std::vector<S16>, double> mn = *min_element(solutions.begin(), solutions.end(), CompareSecond());
 		std::cout << "Generated values in range from " << mn.second << " to " << mx.second << std::endl;
 		std::cout << "Minimal value: ";
 		print(mn.first);

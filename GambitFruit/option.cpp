@@ -83,25 +83,25 @@ static option_t Option[] = {
 	{ "rook tropism endgame",  		true, "1",    "spin",  "min 0 max 10", nullptr },
 	{ "queen tropism endgame",  		true, "3",    "spin",  "min 0 max 10", nullptr },
 */
-	{"Opening Pawn Value", true, "100", "spin", "min 0 max 10000", nullptr},
-	{"Opening Knight Value", true, "275", "spin", "min 0 max 10000", nullptr},
-	{"Opening Bishop Value", true, "300", "spin", "min 0 max 10000", nullptr},
-	{"Opening Rook Value", true, "550", "spin", "min 0 max 10000", nullptr},
-	{"Opening Queen Value", true, "1100", "spin", "min 0 max 10000", nullptr},
+	{"Opening Pawn Value", true, "70", "spin", "min 0 max 10000", nullptr},
+	{"Opening Knight Value", true, "325", "spin", "min 0 max 10000", nullptr},
+	{"Opening Bishop Value", true, "325", "spin", "min 0 max 10000", nullptr},
+	{"Opening Rook Value", true, "500", "spin", "min 0 max 10000", nullptr},
+	{"Opening Queen Value", true, "975", "spin", "min 0 max 10000", nullptr},
 
-	{"Endgame Pawn Value", true, "100", "spin", "min 0 max 10000", nullptr},
-	{"Endgame Knight Value", true, "250", "spin", "min 0 max 10000", nullptr},
-	{"Endgame Bishop Value", true, "325", "spin", "min 0 max 10000", nullptr},
-	{"Endgame Rook Value", true, "550", "spin", "min 0 max 10000", nullptr},
-	{"Endgame Queen Value", true, "1000", "spin", "min 0 max 10000", nullptr},
+	{"Endgame Pawn Value", true, "90", "spin", "min 0 max 10000", nullptr},
+	{"Endgame Knight Value", true, "315", "spin", "min 0 max 10000", nullptr},
+	{"Endgame Bishop Value", true, "315", "spin", "min 0 max 10000", nullptr},
+	{"Endgame Rook Value", true, "500", "spin", "min 0 max 10000", nullptr},
+	{"Endgame Queen Value", true, "975", "spin", "min 0 max 10000", nullptr},
 
-	{"Bishop Pair Opening", true, "75", "spin", "min 0 max 1000", nullptr},
-	{"Bishop Pair Endgame", true, "90", "spin", "min 0 max 1000", nullptr},
+	{"Bishop Pair Opening", true, "50", "spin", "min 0 max 1000", nullptr},
+	{"Bishop Pair Endgame", true, "70", "spin", "min 0 max 1000", nullptr},
 
-	{"Queen Knight combo", true, "20", "spin", "min 0 max 1000", nullptr},
-	{"Rook Bishop combo", true, "25", "spin", "min 0 max 1000", nullptr},
+	{"Queen Knight combo", true, "15", "spin", "min 0 max 1000", nullptr},
+	{"Rook Bishop combo", true, "15", "spin", "min 0 max 1000", nullptr},
 
-	{"Bad Trade Value", true, "35", "spin", "min 0 max 1000", nullptr},
+	{"Bad Trade Value", true, "50", "spin", "min 0 max 1000", nullptr},
 
 	{"Contempt Factor", true, "0", "spin", "min -1000 max 1000", nullptr},
 
@@ -116,7 +116,6 @@ static option_t Option[] = {
 	{"PawnAmountBonusOpening6", true, "0", "spin", "min -100 max 100", nullptr},
 	{"PawnAmountBonusOpening7", true, "0", "spin", "min -100 max 100", nullptr},
 	{"PawnAmountBonusOpening8", true, "0", "spin", "min -100 max 100", nullptr},
-
 
 	{"PawnAmountBonusEndgame0", true, "0", "spin", "min -100 max 100", nullptr},
 	{"PawnAmountBonusEndgame1", true, "0", "spin", "min -100 max 100", nullptr},

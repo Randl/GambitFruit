@@ -56,8 +56,6 @@ double (std::vector<std::pair<std::string, double>> positions, double K, S16 lim
 }
 */
 
-
-
 double average_error(std::vector<std::pair<std::string, double>> positions,
                      std::vector<std::string> options,
                      double K, S16 limit, std::vector<S16> params) {
