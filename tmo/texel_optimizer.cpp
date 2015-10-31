@@ -56,9 +56,9 @@ double (std::vector<std::pair<std::string, double>> positions, double K, S16 lim
 }
 */
 
-/*double sigmoid (double x, double K)  {
-	return 1.0 / (1.0 + std::exp(-x*K));
-}*/
+double sigmoid(double x) {
+	return 1.0 / (1.0 + std::exp(-x));
+}
 
 double average_error(std::vector<std::pair<std::string, double>> positions,
                      std::vector<std::string> options,
@@ -80,9 +80,12 @@ double average_error(std::vector<std::pair<std::string, double>> positions,
 				<< " positions count." << std::endl;
 		/*if (eval >= limit || eval <= -limit)
 			continue;*/
-		//E+= -R * std::log(sigmoid(eval)) - (1-R) * std::log(1-sigmoid(eval));
-		E += std::pow(R - 1.0 / (1.0 + std::pow(10.0, -K * eval / 400.0)), 2.0);
-		++count;
+		double e1 = std::log(sigmoid(eval * K / 10000.0)), e2 = std::log(1.0 - sigmoid(eval * K / 10000.0));
+		if (std::isfinite(e1) && std::isfinite(e2)) {
+			E += -R * e1 - (1.0 - R) * e2;
+			//E += std::pow(R - 1.0 / (1.0 + std::pow(10.0, -K * eval / 400.0)), 2.0);
+			++count;
+		}
 	}
 	E /= count;
 	return E;

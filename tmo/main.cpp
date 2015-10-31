@@ -55,14 +55,13 @@ int main() {
 	for (int i = 0; i < options.size(); ++i)
 		std::cout << options[i] << " " << v[i] << " " << min[i] << " " << max[i] << std::endl;
 
-	double K = 0.14;
 	S16 limit = 500;
 	std::vector<std::pair<std::string, double>> large = load_epds("large.epds");
 	std::vector<std::pair<std::string, double>> small = load_epds("small.epds");
 
 
 	std::function<double(double)> est_k = [=](double Kval) { return average_error(large, options, Kval, limit, v); };
-	K = calculateK(est_k, -1.0, 1.0, 1e-4);
+	double K = calculateK(est_k, -1.0, 1.0, 1e-4);
 	std::cout << "K value is " << K << std::endl;
 
 	std::function<double(std::vector<S16>)>
