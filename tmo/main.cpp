@@ -62,7 +62,7 @@ int main() {
 
 
 	std::function<double(double)> est_k = [=](double Kval) { return average_error(large, options, Kval, limit, v); };
-	K = calculateK(est_k, 1e-7, 1.0, 1e-4);
+	K = calculateK(est_k, -1.0, 1.0, 1e-4);
 	std::cout << "K value is " << K << std::endl;
 
 	std::function<double(std::vector<S16>)>

@@ -98,7 +98,8 @@ double calculateK(std::function<double(double)> f, double lowest, double highest
 	int iter = 1;
 	double fhigh = f(high), flow = f(low);
 	while (std::abs(high - low) > tol) {
-		std::cout << "Iter " << iter << ". K is between " << low << " (" << flow << ") and " << high << " (" << fhigh
+		std::cout << "Iter " << iter << ". Current points are " << low << " (" << flow << ") and " << high << " ("
+			<< fhigh
 			<< ")" << std::endl;
 		++iter;
 		if (fhigh < flow) {
