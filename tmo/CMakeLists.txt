@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math -funroll-loo
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-O1 -s -lgomp")
 #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block -ftree-vectorize") #graphite #TODO: tests
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -fopenmp -std=c++14 -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -pg -fopenmp -std=c++14 -DDEBUG")
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-lgomp")
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -w")
@@ -18,7 +18,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wshadow -Wstr
 file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 file(GLOB_RECURSE HEADER_FILES "*.h")
 
-add_definitions("-DTMO_OPT")
+#add_definitions("-DTMO_OPT")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../GambitFruit ${CMAKE_CURRENT_BINARY_DIR}/GF)
 add_executable(tmo ${SOURCE_FILES} ${HEADER_FILES})

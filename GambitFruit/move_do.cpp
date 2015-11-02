@@ -440,7 +440,7 @@ static void square_set(board_t *board, S32 square, S32 piece, S32 pos, bool upda
 
 		// init
 		U16 size = board->piece[colour].size();
-		ASSERT(size >= 0);
+		//ASSERT(size >= 0);
 
 		// size
 		++size;

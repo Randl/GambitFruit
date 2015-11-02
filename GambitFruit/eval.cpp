@@ -258,12 +258,11 @@ S32 eval(/*const*/ board_t *board, S32 alpha, bool do_le, bool in_check) {
 	ASSERT(board_is_legal(board));
 	//ASSERT(!board_is_check(board)); // exceptions are extremely rare //TODO: check already no???
 
-	if (egbb_is_loaded) {
-		if (board->piece_nb <= bitbase_pieces) {
-			S32 eval;
-			if (bitbase_probe(board, eval))
-				return eval;
-		}
+	if (egbb_is_loaded && board->piece_nb <= bitbase_pieces) {
+		S32 eval;
+		if (bitbase_probe(board, eval))
+			return eval;
+
 	}
 
 	// material
@@ -325,12 +324,12 @@ S32 eval(/*const*/ board_t *board, S32 alpha, bool do_le, bool in_check) {
 
 	if (opening > ValueDraw)
 		opening += PawnAmountBonusOpening[board->pawn[White].size()];
-	else
+	else if (opening < ValueDraw)
 		opening -= PawnAmountBonusOpening[board->pawn[Black].size()];
 
 	if (endgame > ValueDraw)
 		endgame += PawnAmountBonusEndgame[board->pawn[White].size()];
-	else
+	else if (endgame < ValueDraw)
 		endgame -= PawnAmountBonusEndgame[board->pawn[Black].size()];
 
 	cut:

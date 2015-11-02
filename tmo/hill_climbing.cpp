@@ -99,8 +99,7 @@ double calculateK(std::function<double(double)> f, double lowest, double highest
 	double fhigh = f(high), flow = f(low);
 	while (std::abs(high - low) > tol) {
 		std::cout << "Iter " << iter << ". Current points are " << low << " (" << flow << ") and " << high << " ("
-			<< fhigh
-			<< ")" << std::endl;
+			<< fhigh << ")" << std::endl;
 		++iter;
 		if (fhigh < flow) {
 			highest = low;
@@ -118,6 +117,35 @@ double calculateK(std::function<double(double)> f, double lowest, double highest
 		}
 	}
 	return (highest + lowest) / 2;
+}
+
+std::vector<S16> localOptimize(std::function<double(std::vector<S16>)> E, std::vector<S16> starting_point) {
+	const size_t nParams = starting_point.size();
+	double bestE = E(starting_point);
+	std::vector<S16> bestParValues = starting_point;
+	bool improved = true;
+	while (improved) {
+		improved = false;
+		for (int pi = 0; pi < nParams; pi++) {
+			std::vector<S16> newParValues = bestParValues;
+			newParValues[pi] += 1;
+			double newE = E(newParValues);
+			if (newE < bestE) {
+				bestE = newE;
+				bestParValues = newParValues;
+				improved = true;
+			} else {
+				newParValues[pi] -= 2;
+				newE = E(newParValues);
+				if (newE < bestE) {
+					bestE = newE;
+					bestParValues = newParValues;
+					improved = true;
+				}
+			}
+		}
+	}
+	return bestParValues;
 }
 
 //TODO: change to object
