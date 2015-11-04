@@ -141,7 +141,6 @@ void list_t::filter(board_t *board, move_test_t test, bool keep) {
 
 	ASSERT(board != nullptr);
 	ASSERT(test != nullptr);
-	ASSERT(keep == true || keep == false);
 
 	S32 pos = 0;
 

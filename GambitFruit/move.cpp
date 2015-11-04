@@ -33,7 +33,7 @@ U16 move_promote(U16 move) {
 	ASSERT(MOVE_IS_PROMOTE(move));
 
 	S32 code = (move >> 12) & 3;
-	S16 piece = PromotePiece[code];
+	U16 piece = PromotePiece[code];
 
 	if (SQUARE_RANK(MOVE_TO(move)) == Rank8)
 		piece |= WhiteFlag;

@@ -31,18 +31,7 @@ struct pawn_t {
 // constants and variables
 
 static /* const */ S32 PawnStructureWeight = 256; // 100%
-/*
-static const S32 DoubledOpening = 10;
-static const S32 DoubledEndgame = 20;
 
-static const S32 IsolatedOpening = 10;
-static const S32 IsolatedOpeningOpen = 20;
-static const S32 IsolatedEndgame = 20;
-
-static const S32 BackwardOpening = 8;
-static const S32 BackwardOpeningOpen = 16;
-static const S32 BackwardEndgame = 10;
-*/
 static /*constexpr*/ std::array<S8, 8> DoubledOpening = {10, 10, 10, 12, 12, 10, 10, 10};
 static /*constexpr*/ std::array<S8, 8> DoubledEndgame = {18, 18, 18, 20, 20, 18, 18, 18};
 

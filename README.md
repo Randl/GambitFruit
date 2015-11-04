@@ -14,7 +14,7 @@ Added:
 
 TODO:
 * SMP([Lazy SMP](https://chessprogramming.wikispaces.com/Parallel+Search#Shared%20Hash%20Table-Lazy%20SMP));
-* Bugs and warning fixes. Static analysis with [cppcheck](http://cppcheck.sourceforge.net/);
+* Bugs and warning fixes. Static analysis;
 * Converting to c++11/c++14/c++17;
 * [Progressive mobility](https://chessprogramming.wikispaces.com/Mobility#ProgressiveMobility) and [connectivity](https://chessprogramming.wikispaces.com/Connectivity);
 * Kingside/queenside attack;

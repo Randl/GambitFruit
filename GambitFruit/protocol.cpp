@@ -340,7 +340,7 @@ static void parse_go(char string[]) {
 	} else if (time >= 0.0) {
 
 		// dynamic allocation
-		//TODO: tune? use fixed part of left time.
+		//TODO: tune? use fixed part of left time. First move depth 1. Bug?
 		time_max = time * 0.95 - 1.0;
 		if (time_max < 0.0) time_max = 0.0;
 
@@ -354,7 +354,8 @@ static void parse_go(char string[]) {
 		if (alloc > time_max) alloc = time_max;
 		SearchInput->time_limit_1 = alloc;
 
-		alloc = (time_max + inc * double(movestogo - 1)) * 0.5; //TODO: tune Tournament 0.3 0.5 0.75, tounament of 30
+		//TODO: tune Tournament 0.3 0.5 0.75, tournament of 30 on short control, 5 best on long
+		alloc = (time_max + inc * double(movestogo - 1)) * 0.5;
 		if (alloc < SearchInput->time_limit_1) alloc = SearchInput->time_limit_1;
 		if (alloc > time_max) alloc = time_max;
 		SearchInput->time_limit_2 = alloc;

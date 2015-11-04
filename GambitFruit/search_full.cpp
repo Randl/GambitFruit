@@ -503,7 +503,8 @@ static S32 full_search(board_t *board, S32 alpha, S32 beta, S32 depth, S32 heigh
 	if (height >= HeightMax - 1) return eval(board, alpha, false, false);
 
 	// more init
-	S32 old_alpha = alpha, best_value = ValueNone, best_move = MoveNone, played_nb = 0;
+	S32 old_alpha = alpha, best_value = ValueNone,played_nb = 0;
+	U16  best_move = MoveNone;
 
 	attack_t attack[1];
 	attack_set(attack, board);

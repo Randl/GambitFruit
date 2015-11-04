@@ -63,7 +63,7 @@ constexpr U8 BlackKing12 = 11;
 #define PAWN_MAKE(colour)        (PawnMake[colour])
 #define PAWN_OPP(pawn)           ((pawn)^(WhitePawn256^BlackPawn256))
 
-#define PIECE_COLOUR(piece)      ((S8)((piece)&3)-1)
+#define PIECE_COLOUR(piece)      (static_cast<S8>(((piece)&3)-1))
 #define PIECE_TYPE(piece)        ((piece)&~3)
 
 #define PIECE_IS_PAWN(piece)     (((piece)&PawnFlags)!=0)

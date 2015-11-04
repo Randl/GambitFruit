@@ -98,7 +98,7 @@ void sort_init() {
 
 	// history
 	for (U16 i = 0; i < HistorySize; ++i)
-		History[i] = 0; 
+		History[i] = 0;
 
 	for (U16 i = 0; i < HistorySize; ++i) {
 		HistHit[i] = 1;

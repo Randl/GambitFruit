@@ -18,7 +18,7 @@ static std::array<S32, SquareNb> CastleMask;
 // prototypes
 
 static void square_clear(board_t *board, S32 square, S32 piece, bool update);
-static void square_set(board_t *board, S32 square, S32 piece, S32 pos, bool update);
+static void square_set(board_t *board, U16 square, U16 piece, S8 pos, bool update);
 static void square_move(board_t *board, S32 from, S32 to, S32 piece, bool update);
 
 // functions
@@ -339,7 +339,7 @@ static void square_clear(board_t *board, S32 square, S32 piece, bool update) {
 	if (!PIECE_IS_PAWN(piece)) {
 
 		// init
-	U16 size = board->piece[colour].size();
+		U16 size = board->piece[colour].size();
 		ASSERT(size >= 1);
 
 		// stable swap
@@ -420,13 +420,12 @@ static void square_clear(board_t *board, S32 square, S32 piece, bool update) {
 
 // square_set()
 
-static void square_set(board_t *board, S32 square, S32 piece, S32 pos, bool update) {
+static void square_set(board_t *board, U16 square, U16 piece, S8 pos, bool update) {
 
 	ASSERT(board != nullptr);
 	ASSERT(SQUARE_IS_OK(square));
 	ASSERT(piece_is_ok(piece));
 	ASSERT(pos >= 0);
-	ASSERT(update == true || update == false);
 
 	// init
 	const S32 piece_12 = PIECE_TO_12(piece), colour = PIECE_COLOUR(piece);
@@ -450,7 +449,7 @@ static void square_set(board_t *board, S32 square, S32 piece, S32 pos, bool upda
 		// stable swap
 		ASSERT(pos >= 0 && pos < size);
 		for (S32 i = size - 1; i > pos; --i) {
-			const S32 sq = board->piece[colour][i - 1];
+			const U16 sq = board->piece[colour][i - 1];
 			board->piece[colour][i] = sq;
 
 			ASSERT(board->pos[sq] == i - 1);
@@ -526,7 +525,6 @@ static void square_move(board_t *board, S32 from, S32 to, S32 piece, bool update
 	ASSERT(SQUARE_IS_OK(from));
 	ASSERT(SQUARE_IS_OK(to));
 	ASSERT(piece_is_ok(piece));
-	ASSERT(update == true || update == false);
 
 	// init
 	const S8 colour = PIECE_COLOUR(piece);

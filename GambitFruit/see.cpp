@@ -51,7 +51,7 @@ S32 see_move(U16 move, const board_t *board) {
 	S32 piece_value = 0, piece = board->square[from];
 	ASSERT(piece_is_ok(piece));
 
-	S32 att = PIECE_COLOUR(piece), def = COLOUR_OPP(att);
+	S8 att = PIECE_COLOUR(piece), def = COLOUR_OPP(att);
 
 	// promote
 	if (MOVE_IS_PROMOTE(move)) {
@@ -159,6 +159,7 @@ S32 see_square(const board_t * board, S32 to, S8 colour) {
    return see_rec(alists,board,att,to,piece_value);
 }
 */
+
 // see_rec()
 
 static S32 see_rec(alists_t *alists, const board_t *board, S8 colour, S32 to, S32 piece_value) {
