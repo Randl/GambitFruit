@@ -727,7 +727,20 @@ static void eval_king(const board_t *board, const material_info_t *mat_info, S32
 	// init
 	S32 op[ColourNb], eg[ColourNb];
 	op[0] = op[1] = eg[0] = eg[1] = 0;
-
+	//TODO: castling opening bonus
+	//TODO: opposite castling opening bonus
+	/*
+	#define WHITE_KINGSIDE_CASTLED  board->castling[White]== KingSide || (board->square[G1] == WK || board->square[H1] == WK)
+	#define WHITE_QUEENSIDE_CASTLED board->castling[White] ==QueenSide || (board->square[B1] == WK || board->square[A1] == WK)
+	#define BLACK_KINGSIDE_CASTLED  board->castling[Black]== KingSide || (board->square[G8] == BK || board->square[H8] == BK)
+	#define BLACK_QUEENSIDE_CASTLED board->castling[Black] ==QueenSide || (board->square[B8] == BK || board->square[A8] == BK)
+	if (WHITE_KINGSIDE_CASTLED || WHITE_QUEENSIDE_CASTLED)
+		op[White] += CastlingBonus; //relatively small because of KingSafety
+	if (BLACK_KINGSIDE_CASTLED || BLACK_QUEENSIDE_CASTLED)
+		op[Black] +=  CastlingBonus;
+	if ((WHITE_KINGSIDE_CASTLED && BLACK_QUEENSIDE_CASTLED)||(BLACK_KINGSIDE_CASTLED && WHITE_QUEENSIDE_CASTLED))
+		op[me] += OppositeCastlingBonus;
+	*/
 	// white pawn shelter
 	if ((mat_info->cflags[White] & MatKingFlag) != 0) {
 
@@ -738,7 +751,10 @@ static void eval_king(const board_t *board, const material_info_t *mat_info, S32
 			if (board->square[G1] == WK || board->square[H1] == WK) {
 				if (board->square[G2] == WP && (board->square[H2] == WP || board->square[H3] == WP)) {
 					king_is_safe[White] = true;
-				} else if (board->square[F2] == WP && board->square[G3] == WP && board->square[H2] == WP) {
+				} else if (board->square[F2] == WP && board->square[G3] == WP
+					&& board->square[H2] == WP) { //TODO: penalty if g3 and no bishop to put on g2
+					/* if (!bishop_can_attack(board, G2, White))
+					 * op[White] -= FianchettoWithoutBishopPenalty; */
 					king_is_safe[White] = true;
 				}
 			} else if (board->square[B1] == WK || board->square[A1] == WK) {
@@ -1410,5 +1426,4 @@ static bool bishop_can_attack(const board_t *board, S32 to, S8 colour) {
 	}
 	return false;
 }
-
 // end of eval.cpp

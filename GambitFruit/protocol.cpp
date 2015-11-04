@@ -340,18 +340,21 @@ static void parse_go(char string[]) {
 	} else if (time >= 0.0) {
 
 		// dynamic allocation
-
+		//TODO: tune? use fixed part of left time.
 		time_max = time * 0.95 - 1.0;
 		if (time_max < 0.0) time_max = 0.0;
 
 		SearchInput->time_is_limited = true;
+
+		/*const double UsedPartOfTime = 5; //TODO: tune Tournament 3,5,6,8,10,12,15,18,20,25
+		alloc = (time_max + inc * double(movestogo - 1)) / std::min(UsedPartOfTime, double(movestogo));*/
 
 		alloc = (time_max + inc * double(movestogo - 1)) / double(movestogo);
 		alloc *= (option_get_bool("Ponder") ? PonderRatio : NormalRatio);
 		if (alloc > time_max) alloc = time_max;
 		SearchInput->time_limit_1 = alloc;
 
-		alloc = (time_max + inc * double(movestogo - 1)) * 0.5;
+		alloc = (time_max + inc * double(movestogo - 1)) * 0.5; //TODO: tune Tournament 0.3 0.5 0.75, tounament of 30
 		if (alloc < SearchInput->time_limit_1) alloc = SearchInput->time_limit_1;
 		if (alloc > time_max) alloc = time_max;
 		SearchInput->time_limit_2 = alloc;

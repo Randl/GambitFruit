@@ -430,6 +430,12 @@ static S32 full_search(board_t *board, S32 alpha, S32 beta, S32 depth, S32 heigh
 	}
 
 	// draw?
+	// TODO: avoid early repetition draws 
+	/*e.g. if (board->piece[White] + board->piece[Black] > ThreefoldPreventPieceNumber)
+			return board->turn ? ValueDraw - ThreefoldPreventValue : ValueDraw + ThreefoldPreventValue;
+		else 
+			return ValueDraw;
+		*/
 	if (board_is_repetition(board)/* || recog_draw(board)*/) return ValueDraw;
 
 	// mate-distance pruning

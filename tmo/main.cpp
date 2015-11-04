@@ -1,6 +1,6 @@
 #include <iostream>
 #include <functional>
-#include "3rdParty/SimpleIni.h"
+#include "3rdParty/SimpleIni/SimpleIni.h"
 
 
 #include "hill_climbing.h"
