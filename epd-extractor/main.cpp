@@ -59,7 +59,7 @@ std::array<std::vector<std::string>, 3> to_epds(std::array<std::string, 3> res) 
 			ps = str.find("\n", ps + 1);
 		}
 
-		for (auto x : positions[i]) {
+		for (auto &x : positions[i]) {
 			size_t pos = x.find(" ", 0);
 			for (int j = 0; j < 3; ++j)
 				pos = x.find(" ", pos + 1);

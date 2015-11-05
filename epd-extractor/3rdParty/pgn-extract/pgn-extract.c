@@ -131,7 +131,7 @@ void *divide(const char *input, const char *output[]) {
 		yyparse(GlobalState.current_file_type);
 /* Remove any temporary files. */
 		clear_duplicate_hash_table();
-
+		fclose(GlobalState.outputfile);
 	}
 }
 
