@@ -30,6 +30,7 @@
 #include "typedef.h"
 #include "map.h"
 #include "apply.h"
+#include "tokens.h"
 #include "taglist.h"
 #include "output.h"
 #include "lex.h"

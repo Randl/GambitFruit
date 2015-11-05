@@ -26,11 +26,14 @@
 #include <io.h>
 #else
 /* For unlink() */
+#include <unistd.h>
 #endif
 #include "bool.h"
 #include "mymalloc.h"
 #include "defs.h"
 #include "typedef.h"
+#include "tokens.h"
+#include "taglist.h"
 #include "lex.h"
 #include "hashing.h"
 

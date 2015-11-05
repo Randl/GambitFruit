@@ -4,15 +4,23 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "bool.h"
+#include "mymalloc.h"
+#include "defs.h"
 #include "typedef.h"
+#include "tokens.h"
 #include "taglist.h"
 #include "lex.h"
+#include "moves.h"
 #include "map.h"
 #include "lists.h"
 #include "output.h"
+#include "end.h"
 #include "grammar.h"
 #include "hashing.h"
+#include "argsfile.h"
 #include "pgn-extract.h"
 
 /* The maximum length of an output line.  This is conservatively
@@ -154,5 +162,6 @@ void *extract(const char *input, const char *output) {
 	yyparse(GlobalState.current_file_type);
 /* Remove any temporary files. */
 	clear_duplicate_hash_table();
-
+	fclose(GlobalState.outputfile);
+	remove(input);
 }

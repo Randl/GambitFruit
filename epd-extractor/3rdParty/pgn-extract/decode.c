@@ -38,6 +38,8 @@
 #include "defs.h"
 #include "typedef.h"
 #include "decode.h"
+#include "tokens.h"
+#include "taglist.h"
 #include "lex.h"
 
 /* Does the character represent a column of the board? */

@@ -26,9 +26,12 @@
 #include "mymalloc.h"
 #include "defs.h"
 #include "typedef.h"
+#include "tokens.h"
+#include "taglist.h"
 #include "lex.h"
 #include "map.h"
 #include "decode.h"
+#include "apply.h"
 
 /* Structures to hold the x,y displacements of the various
  * piece movements.

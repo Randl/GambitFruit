@@ -25,8 +25,11 @@
 #include <string.h>
 #include <ctype.h>
 #include "bool.h"
+#include "defs.h"
 #include "typedef.h"
 #include "lines.h"
+#include "taglist.h"
+#include "tokens.h"
 #include "lex.h"
 #include "taglines.h"
 #include "moves.h"

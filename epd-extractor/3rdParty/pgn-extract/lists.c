@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include "bool.h"
 #include "mymalloc.h"
+#include "defs.h"
 #include "typedef.h"
 #include "lists.h"
 #include "taglist.h"

@@ -23,10 +23,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "bool.h"
 #include "defs.h"
 #include "typedef.h"
 #include "taglist.h"
+#include "tokens.h"
 #include "lex.h"
 #include "grammar.h"
 #include "apply.h"

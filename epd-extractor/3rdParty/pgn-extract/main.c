@@ -21,12 +21,20 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "bool.h"
+#include "mymalloc.h"
+#include "defs.h"
 #include "typedef.h"
+#include "tokens.h"
+#include "taglist.h"
 #include "lex.h"
+#include "moves.h"
 #include "map.h"
 #include "lists.h"
 #include "output.h"
+#include "end.h"
 #include "grammar.h"
 #include "hashing.h"
 #include "argsfile.h"

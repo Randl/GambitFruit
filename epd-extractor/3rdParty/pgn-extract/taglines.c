@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "bool.h"
+#include "defs.h"
 #include "typedef.h"
 #include "tokens.h"
 #include "taglist.h"
