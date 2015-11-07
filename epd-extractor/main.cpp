@@ -120,7 +120,7 @@ std::vector<std::string> create_epd(std::array<std::vector<std::string>, 3> posi
 	return all_pos;
 }
 
-int main() {
+int main(int argc, char *argv[]) { //TODO: -i input file -o output file -d draw rate -n number of positions
 	std::string in = "in.pgn", out = "out.epds";
 	std::array<std::string, 3> res = pgn_process(in);
 	std::array<std::vector<std::string>, 3> epds = to_epds(res);

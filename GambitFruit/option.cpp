@@ -277,6 +277,47 @@ S64 option_get_int(const char var[]) {
 	return atoll(val);
 }
 
+S64 option_get_s64(const char var[]) {
+	const char *val = option_get(var);
+	return strtoll(val, nullptr, 10);
+}
+
+S32 option_get_s32(const char var[]) {
+	const char *val = option_get(var);
+	return strtol(val, nullptr, 10);
+}
+
+S16 option_get_s16(const char var[]) {
+	const char *val = option_get(var);
+	return static_cast<S16>(strtol(val, nullptr, 10));
+}
+
+S8 option_get_s8(const char var[]) {
+	const char *val = option_get(var);
+	return static_cast<S8>(strtol(val, nullptr, 10));
+}
+
+
+U64 option_get_u64(const char var[]) {
+	const char *val = option_get(var);
+	return strtoull(val, nullptr, 10);
+}
+
+U32 option_get_u32(const char var[]) {
+	const char *val = option_get(var);
+	return strtoul(val, nullptr, 10);
+}
+
+U16 option_get_u16(const char var[]) {
+	const char *val = option_get(var);
+	return static_cast<U16>(strtoul(val, nullptr, 10));
+}
+
+U8 option_get_u8(const char var[]) {
+	const char *val = option_get(var);
+	return static_cast<U8>(strtoul(val, nullptr, 10));
+}
+
 // option_get_string()
 
 const char *option_get_string(const char var[]) {

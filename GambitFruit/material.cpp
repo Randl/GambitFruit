@@ -457,6 +457,10 @@ static void material_comp_info(material_info_t *info, const board_t *board) {
 	// material
 	S16 opening = 0, endgame = 0;
 
+	/* //TODO low material penalty
+	 * // this one is asymmetrical - the side to move gets penalty if there are few pieces
+	 * opening[me] += std::min((10 - wn+wb+2*(wr+wq)+bn+bb+2*(br+bq)),0)  *  PieceNumberBonus //10 is half of the maximum
+	 * */
 	/* Thomas */
 	S32 owf, obf, ewf, ebf;
 	owf = wn * KnightOpening + wb * BishopOpening + wr * RookOpening + wq * QueenOpening;
